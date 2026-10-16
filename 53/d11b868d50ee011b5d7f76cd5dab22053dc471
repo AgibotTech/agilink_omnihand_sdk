@@ -1,0 +1,16 @@
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.13.1",
+  "base_commit_sha": "53d11b868d50ee011b5d7f76cd5dab22053dc471",
+  "prompts": {},
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/ota_types.h",
+      "new_path": "windows/x64/cpp/include/omnihand/ota_types.h",
+      "additions": {
+        "human": 18
+      }
+    }
+  ]
+}
