@@ -436,7 +436,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
    */
   virtual bool GetAllTactile(AllTactileFrame& frame) { (void)frame; return false; }
 
-  // ============ O20 Extended API ============
+  // ============ T1.5 Extended API ============
 
   /**
    * @brief Gets the palm board temperature through register 0x21/0x51.
