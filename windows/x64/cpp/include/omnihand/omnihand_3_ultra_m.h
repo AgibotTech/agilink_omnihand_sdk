@@ -438,6 +438,18 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 
   // ============ O20 Extended API ============
 
+  /**
+   * @brief Gets the palm board temperature through register 0x21/0x51.
+   * @return Palm board temperature in degrees Celsius.
+   */
+  virtual int16_t GetTemperatureOfPalm() const = 0;
+
+  /**
+   * @brief Gets the power interface board temperature through register 0x21/0x52.
+   * @return Power interface board temperature in degrees Celsius.
+   */
+  virtual int16_t GetTemperatureOfPower() const = 0;
+
   // ---- IOmniHandCalibrator interface ----
 
   // Pn23 (0x17): Single axis actual (calibration) position
