@@ -151,6 +151,8 @@ struct AGIBOT_EXPORT FirmwareLoadResult {
  * | AGILINK_OTA_SENDING_FINISH | total | total | Sending finish request |
  * | AGILINK_OTA_RESTARTING | total | total | Device restarting |
  * | AGILINK_OTA_VERIFYING | total | total | Verifying upgrade result |
+ * | AGILINK_OTA_VERSION_APP | packed software version | packed hardware version | APP version before entering OTA mode |
+ * | AGILINK_OTA_VERSION_BOOTLOADER | packed software version | packed hardware version | Bootloader version after entering OTA mode |
  * | AGILINK_OTA_SUCCESS | total | total | Upgrade successful |
  * | AGILINK_OTA_ERROR | error_code | total | Error (current=OtaErrorCode or device error) |
  */
@@ -164,9 +166,25 @@ enum class AGIBOT_EXPORT OtaProgressStatus : int {
   AGILINK_OTA_SENDING_FINISH = 5,     // Sending finish request
   AGILINK_OTA_RESTARTING = 6,         // Device restarting
   AGILINK_OTA_VERIFYING = 7,          // Verifying upgrade result
+  AGILINK_OTA_VERSION_APP = 10,       // current=packed APP software version, total=packed hardware version
+  AGILINK_OTA_VERSION_BOOTLOADER = 11, // current=packed Bootloader software version, total=packed hardware version
   AGILINK_OTA_SUCCESS = 0,            // Upgrade successful
   AGILINK_OTA_ERROR = -1              // Error occurred (current_packet=error code, see OtaErrorCode)
 };
+
+/** Pack a major.minor.patch version into an OTA callback integer. */
+constexpr int PackOtaVersion(uint8_t major, uint8_t minor, uint8_t patch) {
+  return (static_cast<int>(major) << 16) |
+         (static_cast<int>(minor) << 8) |
+         static_cast<int>(patch);
+}
+
+/** Convert a version packed by PackOtaVersion() to major.minor.patch. */
+inline std::string OtaVersionToString(int packed_version) {
+  return std::to_string((packed_version >> 16) & 0xFF) + "." +
+         std::to_string((packed_version >> 8) & 0xFF) + "." +
+         std::to_string(packed_version & 0xFF);
+}
 
 /**
  * @brief OTA upgrade progress callback function type
