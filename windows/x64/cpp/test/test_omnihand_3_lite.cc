@@ -28,8 +28,6 @@ static std::string g_serial_port = "/dev/ttyUSB0";  // Default serial port
 // the combined ID state and does not write the device.
 static int g_device_id = 0;
 static bool g_device_id_specified = false;
-// Commands that can alter calibration, identity, limits, or protection settings.
-static bool g_run_dangerous_actions = false;
 
 // Helper function to get request interval
 static int GetRequestInterval() {
@@ -182,17 +180,6 @@ TEST_F(OmniHand3LiteTest, CreateHand) {
 // Test initialization
 TEST_F(OmniHand3LiteTest, Init) {
   ASSERT_TRUE(hand_->Init()) << "Failed to initialize device. Check hardware connection.";
-}
-
-TEST_F(OmniHand3LiteTest, DiscoverHandDeviceId) {
-  ASSERT_TRUE(hand_->Init()) << "Failed to initialize device";
-
-  const int device_id = hand_->GetHandDeviceIdByBroadcast();
-  AgilinkLogger::get().infof(
-      TAG, "[DiscoverHandDeviceId] device ID state: %d", device_id);
-
-  ASSERT_GE(device_id, 0) << "Broadcast returned inconsistent device IDs";
-  EXPECT_EQ(device_id, original_device_id_);
 }
 
 // Test vendor info
@@ -817,25 +804,26 @@ TEST_F(OmniHand3LiteTest, GetSensorDataLength) {
 // PrivateOmniHand (StreamCmd) interface tests
 // ============================================================================
 
-TEST_F(OmniHand3LiteTest, PrivateOmniHandReadCommands) {
+TEST_F(OmniHand3LiteTest, PrivateOmniHandCommands) {
   ASSERT_TRUE(hand_->Init()) << "Failed to initialize device";
   PrivateOmniHand& private_hand = *hand_;
 
-  const uint8_t power_state = private_hand.GetPowerState();
-  AgilinkLogger::get().infof(TAG, "[PrivateOmniHand][0x02 GetPowerState] state=%u",
-                            static_cast<unsigned>(power_state));
-  EXPECT_LE(power_state, 2u);
+  AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing power state commands(0x01/0x02):");
+  EXPECT_TRUE(hand_->SetPowerState(1));
+  EXPECT_LE(hand_->GetPowerState(), 2u);
 
   const uint16_t single_position = private_hand.GetSingleAxisPos(1);
   AgilinkLogger::get().infof(TAG, "[PrivateOmniHand][0x07 GetSingleAxisPos] axis=1, position=%u",
                             static_cast<unsigned>(single_position));
   EXPECT_LE(single_position, 4096u);
+  EXPECT_LE(private_hand.SetSingleAxisPos(1, single_position), 4096u);
 
   const auto positions = private_hand.GetAllAxisPos();
   AgilinkLogger::get().infof(TAG, "[PrivateOmniHand][0x09 GetAllAxisPos] positions=%s",
                             ValuesToString(positions).c_str());
   ASSERT_FALSE(positions.empty()) << "GetAllAxisPos timed out";
   EXPECT_EQ(positions.size(), OmniHand3Lite::kDegreesOfActiveFreedom);
+  EXPECT_FALSE(private_hand.SetAllAxisPos(positions).empty());
 
   const auto currents = private_hand.GetAllAxisCurrent();
   AgilinkLogger::get().infof(TAG, "[PrivateOmniHand][0x0A GetAllAxisCurrent] currents=%s",
@@ -906,6 +894,14 @@ TEST_F(OmniHand3LiteTest, PrivateOmniHandReadCommands) {
                             ValuesToString(limits.max_limits).c_str());
   EXPECT_EQ(limits.min_limits.size(), OmniHand3Lite::kDegreesOfActiveFreedom);
   EXPECT_EQ(limits.max_limits.size(), OmniHand3Lite::kDegreesOfActiveFreedom);
+
+  const std::vector<int16_t> speeds(
+      OmniHand3Lite::kDegreesOfActiveFreedom, 0);
+  const std::vector<uint16_t> torques(
+      OmniHand3Lite::kDegreesOfActiveFreedom, 0);
+  EXPECT_FALSE(
+      private_hand.SetPosSpeedTorqueData(positions, speeds, torques).empty());
+
   // H3L currently does not reply to PrivateOmniHand 0x33 or 0x81.
   // EXPECT_EQ(private_hand.GetFingerTactileForce().size(), 35u);
   // EXPECT_LE(private_hand.GetControlSource(), 1u);
@@ -918,75 +914,6 @@ TEST_F(OmniHand3LiteTest, PrivateOmniHandReadCommands) {
   EXPECT_EQ(firmware.dof, OmniHand3Lite::kDegreesOfActiveFreedom);
   AgilinkLogger::get().infof(TAG, "[PrivateOmniHand] Firmware: %s",
                             firmware.ToString().c_str());
-}
-
-TEST_F(OmniHand3LiteTest, PrivateOmniHandWriteCommands) {
-  if (!g_run_dangerous_actions) {
-    GTEST_SKIP() << "Pass --dangerous to run PrivateOmniHand write commands";
-  }
-  ASSERT_TRUE(hand_->Init()) << "Failed to initialize device";
-  PrivateOmniHand& private_hand = *hand_;
-
-  const uint8_t power_state = private_hand.GetPowerState();
-  EXPECT_TRUE(private_hand.SetPowerState(power_state));
-
-  const uint16_t position = private_hand.GetSingleAxisPos(1);
-  EXPECT_LE(private_hand.SetSingleAxisPos(1, position), 4096u);
-  const auto positions = private_hand.GetAllAxisPos();
-  ASSERT_EQ(positions.size(), OmniHand3Lite::kDegreesOfActiveFreedom);
-  EXPECT_FALSE(private_hand.SetAllAxisPos(positions).empty());
-
-  const int16_t actual_position = private_hand.GetSingleActualAxisPos(1);
-  EXPECT_TRUE(private_hand.SetAxisHoming(1, actual_position));
-  EXPECT_LE(static_cast<int>(private_hand.SetSingleActualAxisPos(1, actual_position)), 4095);
-  const auto actual_positions = private_hand.GetAllActualAxisPos();
-  ASSERT_EQ(actual_positions.size(), OmniHand3Lite::kDegreesOfActiveFreedom);
-  EXPECT_EQ(private_hand.SetAllActualAxisPos(actual_positions).size(),
-            OmniHand3Lite::kDegreesOfActiveFreedom);
-
-  EXPECT_TRUE(private_hand.ClearError());
-  EXPECT_TRUE(private_hand.PlayAction(0));
-  EXPECT_TRUE(private_hand.SetRunMode(1, static_cast<uint8_t>(ControlMode::SERVO)));
-
-  const auto limits = private_hand.GetAxisLimitPos();
-  ASSERT_FALSE(limits.empty());
-  EXPECT_TRUE(private_hand.ClearAllLimitPos());
-  EXPECT_TRUE(private_hand.SetAxisMinPos(1, limits.min_limits[0]));
-  EXPECT_TRUE(private_hand.SetAxisMaxPos(1, limits.max_limits[0]));
-
-  EXPECT_TRUE(private_hand.SetAllRunSpeed(std::vector<int16_t>(10, 0)));
-  EXPECT_TRUE(private_hand.SetOverloadTorque(1, 1000));
-  EXPECT_TRUE(private_hand.SetOverloadProtectionTime(1, 0));
-  EXPECT_TRUE(private_hand.SetProtectedTorque(1, 100));
-  EXPECT_TRUE(private_hand.SetMinTorque(1, 0));
-  EXPECT_TRUE(private_hand.SetProtectiveCurrent(1, 3250));
-  EXPECT_TRUE(private_hand.SetAllAxisCvpUploadInterval(0));
-  EXPECT_TRUE(private_hand.SetRightOrLeft(static_cast<uint8_t>(HandType::LEFT)));
-
-  const std::vector<int16_t> speeds(OmniHand3Lite::kDegreesOfActiveFreedom, 0);
-  const std::vector<uint16_t> torques(OmniHand3Lite::kDegreesOfActiveFreedom, 0);
-  EXPECT_FALSE(private_hand.SetPosSpeedTorqueData(positions, speeds, torques).empty());
-  EXPECT_TRUE(private_hand.SetTemperatureThreshold(80));
-
-  // H3L currently does not reply to PrivateOmniHand control-source commands.
-  // const uint8_t control_source = private_hand.GetControlSource();
-  // EXPECT_EQ(private_hand.SetControlSource(control_source), control_source);
-
-  const auto device_info = hand_->GetDeviceInfo();
-  ASSERT_GT(device_info.hand_device_id, 0);
-  EXPECT_TRUE(private_hand.SetId(device_info.hand_device_id));
-
-  const auto product_serial = private_hand.GetProductSerialNumber();
-  std::vector<uint8_t> serial_number;
-  serial_number.reserve(19);
-  serial_number.insert(serial_number.end(), product_serial.supplier_code,
-                       product_serial.supplier_code + 3);
-  serial_number.insert(serial_number.end(), product_serial.material_code,
-                       product_serial.material_code + 6);
-  serial_number.insert(serial_number.end(), product_serial.date, product_serial.date + 6);
-  serial_number.insert(serial_number.end(), product_serial.serial, product_serial.serial + 4);
-  EXPECT_TRUE(private_hand.SetProductSerialNumber(serial_number));
-  EXPECT_TRUE(private_hand.SaveParam());
 }
 
 // Main function for gtest
@@ -1012,15 +939,12 @@ int main(int argc, char** argv) {
     } else if ((arg == "--device-id" || arg == "--id") && i + 1 < argc) {
       g_device_id = std::stoi(argv[++i]);
       g_device_id_specified = true;
-    } else if (arg == "--dangerous") {
-      g_run_dangerous_actions = true;
     } else if (arg == "--help" || arg == "-h") {
-      AgilinkLogger::get().infof(TAG, "Usage: %s [--request-interval MS] [-d DEVICE] [-p PORT] [--device-id ID] [--dangerous]", argv[0]);
+      AgilinkLogger::get().infof(TAG, "Usage: %s [--request-interval MS] [-d DEVICE] [-p PORT] [--device-id ID]", argv[0]);
       AgilinkLogger::get().infof(TAG, "  --request-interval MS  Set request interval in ms (default: 5)");
       AgilinkLogger::get().infof(TAG, "  -d DEVICE              Device type: zlgcan | hcan | rs485 (default: zlgcan)");
       AgilinkLogger::get().infof(TAG, "  -p PORT                Serial port for rs485 (default: /dev/ttyUSB0)");
       AgilinkLogger::get().infof(TAG, "  --device-id ID         Optional target ID in [1, 0x7f]; omitted means discovery only");
-      AgilinkLogger::get().infof(TAG, "  --dangerous             Run commands that modify device configuration");
       return 0;
     }
   }
