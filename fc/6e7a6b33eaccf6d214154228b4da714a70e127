@@ -1,0 +1,288 @@
+doc/en/API_PYTHON_OP3.md
+  s_83fa947041b2cd::t_b81b8f7634fe8d 14,204-215,268-269,274-275
+  s_83fa947041b2cd::t_dc894b6c5e09bd 257
+  s_83fa947041b2cd::t_16bc3887018d2a 1-13,15-203,216-256,258-267,270-273,276-301
+doc/en/API_PYTHON.md
+  s_83fa947041b2cd::t_16bc3887018d2a 12,14,25,148-168
+doc/en/API_CPP_OP3.md
+  s_83fa947041b2cd::t_dc894b6c5e09bd 42
+doc/zh_cn/API_CPP_H3L.md
+  s_83fa947041b2cd::t_dc894b6c5e09bd 308
+doc/zh_cn/API_CPP_OP3.md
+  s_83fa947041b2cd::t_dc894b6c5e09bd 42
+doc/zh_cn/API_PYTHON_OP3.md
+  s_83fa947041b2cd::t_16bc3887018d2a 1-13,15-199,211-261,264-267,269-292
+  s_83fa947041b2cd::t_b81b8f7634fe8d 14,200-210,262-263,268
+doc/zh_cn/API_PYTHON.md
+  s_83fa947041b2cd::t_16bc3887018d2a 12,14,25,97-117
+doc/en/API_CPP_H3L.md
+  s_83fa947041b2cd::t_dc894b6c5e09bd 311
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.13.1",
+  "base_commit_sha": "fc6e7a6b33eaccf6d214154228b4da714a70e127",
+  "prompts": {},
+  "sessions": {
+    "s_83fa947041b2cd": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1292e-9128-77d1-9d2b-b9aeea8a6acd",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.input_tokens": "18210975",
+        "tlab.token_usage.output_tokens": "1438313",
+        "tlab.session_started_at": "2026-10-17T07:33:35Z",
+        "tlab.token_usage.cache_read_tokens": "413185310",
+        "tlab.token_usage.cache_creation_tokens": "0"
+      }
+    }
+  },
+  "changes": [
+    {
+      "new_path": "doc/en/API_PYTHON_OP3.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 301
+          }
+        ]
+      }
+    },
+    {
+      "new_path": "doc/zh_cn/API_PYTHON_OP3.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 292
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP.md",
+      "new_path": "doc/en/API_CPP.md",
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_H3L.md",
+      "new_path": "doc/en/API_CPP_H3L.md",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_O10.md",
+      "new_path": "doc/en/API_CPP_O10.md",
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 8
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_O10_UMI.md",
+      "new_path": "doc/en/API_CPP_O10_UMI.md",
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 9
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_OP3.md",
+      "new_path": "doc/en/API_CPP_OP3.md",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON.md",
+      "new_path": "doc/en/API_PYTHON.md",
+      "additions": {
+        "human": 24
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON_H3L.md",
+      "new_path": "doc/en/API_PYTHON_H3L.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON_O10.md",
+      "new_path": "doc/en/API_PYTHON_O10.md",
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 11
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON_UMI.md",
+      "new_path": "doc/en/API_PYTHON_UMI.md",
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP.md",
+      "new_path": "doc/zh_cn/API_CPP.md",
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_H3L.md",
+      "new_path": "doc/zh_cn/API_CPP_H3L.md",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_O10.md",
+      "new_path": "doc/zh_cn/API_CPP_O10.md",
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 8
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_O10_UMI.md",
+      "new_path": "doc/zh_cn/API_CPP_O10_UMI.md",
+      "deletions": {
+        "human": 3,
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 7
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_OP3.md",
+      "new_path": "doc/zh_cn/API_CPP_OP3.md",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON.md",
+      "new_path": "doc/zh_cn/API_PYTHON.md",
+      "additions": {
+        "human": 24
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON_H3L.md",
+      "new_path": "doc/zh_cn/API_PYTHON_H3L.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON_O10.md",
+      "new_path": "doc/zh_cn/API_PYTHON_O10.md",
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 11
+          }
+        ]
+      }
+    }
+  ]
+}
