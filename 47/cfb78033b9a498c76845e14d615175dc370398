@@ -1,0 +1,22 @@
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.13.1",
+  "base_commit_sha": "47cfb78033b9a498c76845e14d615175dc370398",
+  "prompts": {},
+  "changes": [
+    {
+      "new_path": "windows/x64/python/test/test_omnipicker_3.py",
+      "additions": {
+        "human": 483
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/README.md",
+      "new_path": "windows/x64/python/test/README.md",
+      "additions": {
+        "human": 9
+      }
+    }
+  ]
+}
