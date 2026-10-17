@@ -308,7 +308,7 @@ TactileSensorDataU16 GetTactileSensorDataRaw(Finger finger) const;
 std::vector<TactileSensorDataU16> GetAllTactileSensorDataRaw() const;
 ```
 
-These methods are exposed for protocol/firmware compatibility. On H3L hardware without tactile sensors they return zero, an empty string, or empty data. `GetSensorDataLength()` is deprecated; use `GetNumOfTactilePoints()`.
+These methods are exposed for protocol/firmware compatibility. On H3L hardware without tactile sensors they return zero, an empty string, or empty data.
 
 ### Debugging
 

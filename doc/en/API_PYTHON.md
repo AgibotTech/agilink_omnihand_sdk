@@ -9,8 +9,9 @@ The OmniHand SDK provides **product-specific interfaces** for the following prod
 - **OmniHand 3 Lite (H3L)**: 4 DOF lightweight dexterous hand
 - **OmniHand Dex UMI (O10 UMI)**: 10 DOF dexterous hand with UMI protocol support
 - **OmniHand 3 Ultra M (H3UM/O20)**: 20 DOF dexterous hand and kinematics solver
+- **OmniPicker 3 (OP3)**: 1 DOF gripper with stroke control and U16 tactile sensors
 
-Each product has its own interface class (`OmniHand2025`, `OmniHandPro2025`, `OmniHand3Lite`, `OmniHandDexUMI`) with product-specific factory methods and APIs. This design provides better type safety and clearer API organization compared to a unified interface with `ProductType`.
+Each product has its own interface class (`OmniHand2025`, `OmniHandPro2025`, `OmniHand3Lite`, `OmniHandDexUMI`, `OmniHand3UltraM`, `OmniPicker3`) with product-specific factory methods and APIs. This design provides better type safety and clearer API organization compared to a unified interface with `ProductType`.
 
 **Python typing note:** For **OmniHand 2025 (O10)** and **OmniHand Dex UMI**, factory methods take `hand_device_id` and `canfd_*` as Python `int`; the binding forwards them as `uint8_t` to match the C++ headers.
 
@@ -21,7 +22,7 @@ Each product has its own interface class (`OmniHand2025`, `OmniHandPro2025`, `Om
 - **[OmniHand 3 Lite (H3L) Python API](API_PYTHON_H3L.md)** - 4 DOF, tactile compatibility APIs, CAN and RS485
 - **[OmniHand Dex UMI (O10 UMI) Python API](API_PYTHON_UMI.md)** - 10 DOF, UMI protocol, active query, CAN only
 - **[OmniHand 3 Ultra M (H3UM/O20) Python API](API_PYTHON_H3UM.md)** - 20 DOF control and kinematics solver
-- **[1.1.8 to 1.1.9 migration](MIGRATION_1_1_8_TO_1_1_9.md)** - Python additions and cross-language compatibility changes
+- **[OmniPicker 3 (OP3) Python API](API_PYTHON_OP3.md)** - 1 DOF gripper, position/stroke/PT control and U16 tactile data
 
 ## Common Enumerations
 
@@ -142,6 +143,27 @@ def position_callback(positions):
     print(f"Position report: {len(positions)} values")
 
 hand.set_position_report_callback(position_callback, frequency=100)  # 100 Hz
+```
+
+### OmniPicker 3 (OP3)
+
+```python
+from omnihand import HandType, OmniPicker3, OmniPicker3Gesture
+
+picker = OmniPicker3.create_hand_by_hcan(
+    hand_type=HandType.UNKNOWN,
+    hand_device_id=OmniPicker3.kDefaultHandDeviceId,
+    canfd_device_id=0,
+    canfd_channel_id=0,
+)
+
+if not picker.init():
+    raise RuntimeError("OP3 initialization failed")
+
+picker.set_hand_gesture(
+    OmniPicker3Gesture.OMNIPICKER_3_GESTURE_HALF_OPEN
+)
+stroke = picker.mix_control_by_stroke(5000, 3000, 2000)
 ```
 
 ## Related Documentation

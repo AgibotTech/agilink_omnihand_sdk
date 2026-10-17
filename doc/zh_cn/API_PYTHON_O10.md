@@ -300,16 +300,6 @@ def get_tactile_sensor_data_raw(self, eFinger: Finger) -> TactileSensorData:
 **💡 建议：在需要获取多个传感器数据时，始终优先使用 `get_all_tactile_sensor_data_raw()`，以获得更好的性能和可靠性。**
 
 ```python
-def get_sensor_data_length(finger_index: int) -> int:
-    """用于兼容旧代码的废弃接口，返回指定传感器的触觉点数。
-    
-    Args:
-        finger_index: 手指枚举值（Finger）。
-    
-    Returns:
-        int: 触觉点数。
-    """
-
 def get_sensor_order() -> List[int]:
     """获取传感器顺序向量。
     
@@ -317,8 +307,6 @@ def get_sensor_order() -> List[int]:
         List[int]: 传感器顺序向量的引用。
     """
 ```
-
-`get_sensor_data_length()` 已废弃，请使用 `get_num_of_tactile_points()`。
 
 ## 速度控制
 

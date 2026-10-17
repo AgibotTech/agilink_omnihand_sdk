@@ -408,8 +408,6 @@ size_t GetNumOfRepliedTactileFrames(Finger finger) const;
 std::string GetSNOfTactileSensor(Finger finger) const;
 ```
 
-`GetSensorDataLength()` is deprecated; use `GetNumOfTactilePoints()` for point counts.
-
 OmniHand 2025 (O10) uses **1D tactile sensors** with the following characteristics:
 - **Data unit**: 1g
 - **Max value**: 255g
@@ -460,13 +458,6 @@ The following table compares the differences between the two approaches:
 **💡 Recommendation: Always prefer `GetAllTactileSensorDataRaw()` when retrieving data from multiple sensors for better performance and reliability.**
 
 ```cpp
-/**
- * @brief Get sensor data length for a specific finger (static method)
- * @param eFinger Finger enum value
- * @return Sensor data length in bytes
- */
-static size_t GetSensorDataLength(Finger eFinger);
-
 /**
  * @brief Get sensor order vector (static method)
  * @return Reference to sensor order vector

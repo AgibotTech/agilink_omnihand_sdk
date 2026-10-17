@@ -9,8 +9,9 @@ OmniHand SDK 为以下产品提供了**产品特定的接口**：
 - **OmniHand 3 Lite (H3L)**: 4 自由度轻量级灵巧手
 - **OmniHand Dex UMI (O10 UMI)**: 10 自由度灵巧手，支持 UMI 协议
 - **OmniHand 3 Ultra M (H3UM/O20)**: 20 自由度灵巧手及运动学求解器
+- **OmniPicker 3 (OP3)**: 1 自由度夹爪，支持行程控制和 U16 触觉传感器
 
-每个产品都有自己的接口类（`OmniHand2025`、`OmniHandPro2025`、`OmniHand3Lite`、`OmniHandDexUMI`），具有产品特定的工厂方法和 API。与使用 `ProductType` 的统一接口相比，这种设计提供了更好的类型安全性和更清晰的 API 组织。
+每个产品都有自己的接口类（`OmniHand2025`、`OmniHandPro2025`、`OmniHand3Lite`、`OmniHandDexUMI`、`OmniHand3UltraM`、`OmniPicker3`），具有产品特定的工厂方法和 API。与使用 `ProductType` 的统一接口相比，这种设计提供了更好的类型安全性和更清晰的 API 组织。
 
 **说明：** **OmniHand 2025 (O10)** 与 **OmniHand Dex UMI** 的工厂方法中，`hand_device_id` 与 `canfd_*` 在 Python 侧为 `int`，绑定层以 `uint8_t` 传入 C++，与头文件一致。
 
@@ -21,7 +22,7 @@ OmniHand SDK 为以下产品提供了**产品特定的接口**：
 - **[OmniHand 3 Lite (H3L) Python API](API_PYTHON_H3L.md)** - 4 自由度，触觉兼容接口，支持 CAN 和 RS485
 - **[OmniHand Dex UMI (O10 UMI) Python API](API_PYTHON_UMI.md)** - 10 自由度，UMI 协议，主动查询，仅支持 CAN
 - **[OmniHand 3 Ultra M (H3UM/O20) Python API](API_PYTHON_H3UM.md)** - 20 自由度控制与运动学求解器
-- **[从 1.1.8 迁移到 1.1.9](MIGRATION_1_1_8_TO_1_1_9.md)** - Python 新增接口与跨语言兼容性变化
+- **[OmniPicker 3 (OP3) Python API](API_PYTHON_OP3.md)** - 1 自由度夹爪，支持位置/行程/PT 控制和 U16 触觉数据
 
 ## 快速开始示例
 
@@ -91,6 +92,27 @@ def position_callback(positions):
     print(f"位置上报: {len(positions)} 个值")
 
 hand.set_position_report_callback(position_callback, frequency=100)  # 100 Hz
+```
+
+### OmniPicker 3（OP3）
+
+```python
+from omnihand import HandType, OmniPicker3, OmniPicker3Gesture
+
+picker = OmniPicker3.create_hand_by_hcan(
+    hand_type=HandType.UNKNOWN,
+    hand_device_id=OmniPicker3.kDefaultHandDeviceId,
+    canfd_device_id=0,
+    canfd_channel_id=0,
+)
+
+if not picker.init():
+    raise RuntimeError("OP3 初始化失败")
+
+picker.set_hand_gesture(
+    OmniPicker3Gesture.OMNIPICKER_3_GESTURE_HALF_OPEN
+)
+stroke = picker.mix_control_by_stroke(5000, 3000, 2000)
 ```
 
 

@@ -514,16 +514,6 @@ The following table compares the differences between the two approaches:
 **💡 Recommendation: Always prefer `get_all_tactile_sensor_data_raw()` when retrieving data from multiple sensors for better performance and reliability.**
 
 ```python
-def get_sensor_data_length(finger_index: int) -> int:
-    """Deprecated compatibility method for a sensor's point count.
-    
-    Args:
-        finger_index: Finger enum value (Finger).
-    
-    Returns:
-        int: Number of sensing points.
-    """
-
 def get_sensor_order() -> List[int]:
     """Get the sensor order vector.
     
@@ -531,8 +521,6 @@ def get_sensor_order() -> List[int]:
         List[int]: Reference to sensor order vector.
     """
 ```
-
-`get_sensor_data_length()` is deprecated; use `get_num_of_tactile_points()`.
 
 ## Control Mode
 

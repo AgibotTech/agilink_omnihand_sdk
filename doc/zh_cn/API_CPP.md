@@ -23,7 +23,6 @@ OmniHand SDK 为以下产品提供了**产品特定的接口**：
 - **[OmniHand Dex UMI (O10 UMI) C++ API](API_CPP_O10_UMI.md)** - 10 自由度，UMI 协议，主动查询，仅支持 CAN
 - **[OmniHand 3 Ultra M (H3UM/O20) C++ API](API_CPP_H3UM.md)** - 20 自由度，CAN FD，可选触觉 SoC
 - **[OmniPicker 3 (OP3) C++ API](API_CPP_OP3.md)** - 1 自由度夹爪；混合控制仅 `MixControlByPT`
-- **[从 1.1.8 迁移到 1.1.9](MIGRATION_1_1_8_TO_1_1_9.md)** - 删除接口、替代调用与签名变化
 
 ## 通用枚举和数据结构
 

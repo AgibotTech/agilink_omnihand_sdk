@@ -305,7 +305,7 @@ TactileSensorDataU16 GetTactileSensorDataRaw(Finger finger) const;
 std::vector<TactileSensorDataU16> GetAllTactileSensorDataRaw() const;
 ```
 
-这些方法用于协议/固件兼容；在无触觉传感器的 H3L 硬件上返回 `0`、空字符串或空数据。`GetSensorDataLength()` 已废弃；获取触觉点数请使用 `GetNumOfTactilePoints()`。
+这些方法用于协议/固件兼容；在无触觉传感器的 H3L 硬件上返回 `0`、空字符串或空数据。
 
 ### 调试功能
 

@@ -23,7 +23,6 @@ Each product has its own interface class (`OmniHand2025`, `OmniHandPro2025`, `Om
 - **[OmniHand Dex UMI (O10 UMI) C++ API](API_CPP_O10_UMI.md)** - 10 DOF, UMI protocol, active query, CAN only
 - **[OmniHand 3 Ultra M (H3UM/O20) C++ API](API_CPP_H3UM.md)** - 20 DOF, CAN FD, optional tactile SoC
 - **[OmniPicker 3 (OP3) C++ API](API_CPP_OP3.md)** - 1 DOF gripper; mixed control: `MixControlByPT` only
-- **[1.1.8 to 1.1.9 migration](MIGRATION_1_1_8_TO_1_1_9.md)** - removed APIs, replacement calls, and signature changes
 
 ## Common Enums and Data Structures
 

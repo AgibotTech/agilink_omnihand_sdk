@@ -356,14 +356,6 @@ std::vector<TactileSensorData> GetAllTactileSensorDataRaw() const;
 TactileSensorData GetTactileSensorDataRaw(Finger eFinger) const;
 
 /**
- * @brief Get sensor data length for a specific finger (static method)
- * @param eFinger Finger enum value
- * @return Sensor data length in bytes
- * @note For UMI: Returns 0 for DORSUM (UMI does not have dorsum sensor)
- */
-size_t GetSensorDataLength(Finger eFinger) const;
-
-/**
  * @brief Get sensor order vector (static method)
  * @return Reference to sensor order vector
  * @note For UMI: The returned vector includes DORSUM, but UMI devices do not have dorsum sensor.
@@ -371,8 +363,6 @@ size_t GetSensorDataLength(Finger eFinger) const;
  */
 const std::vector<Finger>& GetSensorOrder() const;
 ```
-
-`GetSensorDataLength()` is deprecated; use `GetNumOfTactilePoints()` for point counts.
 
 ## Debugging Features
 
