@@ -4,9 +4,10 @@
 """Unified hardware tests for OmniHand 3 Lite (H3L, 4 DOF).
 
 The test cases mirror the safe public-API coverage in
-``cpp/test/test_omnihand_3_lite.cc``. Calibration, homing, device-ID changes,
-parameter persistence, firmware maintenance, and other destructive operations
-are deliberately excluded.
+``cpp/test/test_omnihand_3_lite.cc``. Calibration, homing, parameter
+persistence, firmware maintenance, and other destructive operations are
+deliberately excluded. Device-ID changes run only when ``--device-id`` is
+explicitly supplied.
 
 Transport is selected with ``-d`` when this file is run directly, or with
 ``OMNIHAND_DEVICE_TYPE`` when it is run through pytest:
@@ -25,7 +26,7 @@ Environment variables:
     OMNIHAND_CHANNEL_ID, OMNIHAND_CANFD_ID, OMNIHAND_CAN_IF,
     OMNIHAND_TCP_HOST, OMNIHAND_TCP_PORT, OMNIHAND_RS485_PORT,
     OMNIHAND_BAUDRATE, OMNIHAND_FRAME_RECV_TIMEOUT,
-    OMNIHAND_HAND_DEVICE_ID, OMNIHAND_HAND_TYPE
+    OMNIHAND_TARGET_DEVICE_ID, OMNIHAND_HAND_TYPE
 """
 
 import os
@@ -69,7 +70,7 @@ TCP_PORT = 8000
 RS485_PORT = "COM5" if platform.system() == "Windows" else "/dev/ttyUSB0"
 BAUDRATE = 460800
 FRAME_RECV_TIMEOUT = 200
-HAND_DEVICE_ID = OmniHand3Lite.kDefaultHandDeviceId
+TARGET_DEVICE_ID = None
 HAND_TYPE_NAME = "left"
 
 _STR_OPTIONS = (
@@ -87,7 +88,8 @@ _INT_OPTIONS = (
     ("OMNIHAND_TCP_PORT", "--tcp-port", "TCP_PORT"),
     ("OMNIHAND_BAUDRATE", "-b", "BAUDRATE"),
     ("OMNIHAND_FRAME_RECV_TIMEOUT", "-t", "FRAME_RECV_TIMEOUT"),
-    ("OMNIHAND_HAND_DEVICE_ID", "--device-id", "HAND_DEVICE_ID"),
+    ("OMNIHAND_TARGET_DEVICE_ID", "--device-id", "TARGET_DEVICE_ID"),
+    ("OMNIHAND_TARGET_DEVICE_ID", "--id", "TARGET_DEVICE_ID"),
 )
 
 
@@ -129,7 +131,11 @@ def _apply_direct_cli():
 def _export_config_to_environment():
     """Preserve direct-run options when pytest imports this file again."""
     for env_name, _flag, attr in _STR_OPTIONS + _INT_OPTIONS:
-        os.environ[env_name] = str(globals()[attr])
+        value = globals()[attr]
+        if value is None:
+            os.environ.pop(env_name, None)
+        else:
+            os.environ[env_name] = str(value)
 
 
 _apply_environment()
@@ -142,9 +148,8 @@ if DEVICE_TYPE not in TRANSPORTS:
 if HAND_TYPE_NAME.lower() not in ("left", "right"):
     print(f"[Warning] Unknown hand type {HAND_TYPE_NAME!r}; using left")
     HAND_TYPE_NAME = "left"
-if not 1 <= HAND_DEVICE_ID <= 0x7F:
-    print(f"[Warning] Invalid hand device ID {HAND_DEVICE_ID}; using 1")
-    HAND_DEVICE_ID = OmniHand3Lite.kDefaultHandDeviceId
+if TARGET_DEVICE_ID is not None and not 1 <= TARGET_DEVICE_ID <= 0x7F:
+    raise ValueError("--device-id must be in [1, 0x7f]")
 REQUEST_INTERVAL = max(0, min(100, REQUEST_INTERVAL))
 HAND_TYPE = HandType.LEFT if HAND_TYPE_NAME.lower() == "left" else HandType.RIGHT
 
@@ -163,7 +168,7 @@ MOTION_SETTLE_SECONDS = 0.3
 def _create_hand():
     common = {
         "hand_type": HAND_TYPE,
-        "hand_device_id": HAND_DEVICE_ID,
+        "hand_device_id": 0,
     }
     if DEVICE_TYPE == "hcan":
         return OmniHand3Lite.create_hand_by_hcan(
@@ -217,7 +222,7 @@ def hand():
     instance.show_data_details(True)
     print(
         f"\n[Info] transport={DEVICE_TYPE} hand={HAND_TYPE_NAME} "
-        f"device_id={HAND_DEVICE_ID} interval={REQUEST_INTERVAL}ms "
+        f"target_device_id={TARGET_DEVICE_ID} interval={REQUEST_INTERVAL}ms "
         f"recv_timeout={FRAME_RECV_TIMEOUT}ms"
     )
     if DEVICE_TYPE in ("zlgcan", "hcan", "zlgcantcp"):
@@ -231,45 +236,36 @@ def hand():
 
 @pytest.fixture(scope="session")
 def initialized_hand(hand):
-    global HAND_DEVICE_ID
-
-    # Mirror gtest SetUp: broadcast-discover the device's actual ID before
-    # switching to unicast commands.  This handles hardware whose device ID
-    # differs from the configured default.
-    hand.set_broadcast(True)
     if not hand.init():
         pytest.fail(
             f"{DEVICE_TYPE} H3L device is not connected or initialization failed",
             pytrace=False,
         )
-    info = hand.get_device_info()
-    hand.set_broadcast(False)
 
-    discovered_id = getattr(info, "hand_device_id", None) if info is not None else None
-    if discovered_id is not None and 1 <= discovered_id <= 0x7F and discovered_id != HAND_DEVICE_ID:
-        print(
-            f"\n[Info] Broadcast-discovered device_id={discovered_id} "
-            f"(was configured as {HAND_DEVICE_ID}); recreating hand"
+    original_device_id = None
+    id_change_attempted = False
+    try:
+        original_device_id = hand.get_hand_device_id_by_broadcast()
+        assert original_device_id >= 0, (
+            "No consistent device ID responded to broadcast"
         )
-        HAND_DEVICE_ID = discovered_id
-        try:
-            unicast_hand = _create_hand()
-        except Exception as error:
-            pytest.fail(
-                f"Failed to recreate H3L with device_id={discovered_id}: {error}",
-                pytrace=False,
+        print(f"\n[Info] Discovered device ID state: {original_device_id}")
+
+        if TARGET_DEVICE_ID is not None:
+            print(
+                f"[Info] Switching device ID state: "
+                f"{original_device_id} -> {TARGET_DEVICE_ID}"
             )
-        unicast_hand.set_request_interval(REQUEST_INTERVAL)
-        unicast_hand.set_frame_recv_timeout(FRAME_RECV_TIMEOUT)
-        unicast_hand.show_data_details(True)
-        if not unicast_hand.init():
-            pytest.fail(
-                f"H3L init failed after recreating with device_id={discovered_id}",
-                pytrace=False,
-            )
-        yield unicast_hand
-    else:
+            id_change_attempted = True
+            assert hand.set_hand_device_id_by_broadcast(TARGET_DEVICE_ID)
         yield hand
+    finally:
+        if id_change_attempted:
+            print(
+                f"\n[Info] Restoring device ID state: "
+                f"{TARGET_DEVICE_ID} -> {original_device_id}"
+            )
+            assert hand.set_hand_device_id_by_broadcast(original_device_id)
 
 
 @pytest.fixture(scope="session")
@@ -349,7 +345,13 @@ def test_device_info(initialized_hand):
     assert initialized_hand.init()
     info = initialized_hand.get_device_info()
     print(f"\n[GetDeviceInfo]\n{info}")
-    assert info.hand_device_id == HAND_DEVICE_ID
+    discovered_id = initialized_hand.get_hand_device_id_by_broadcast()
+    assert discovered_id >= 0
+    expected_id = (
+        OmniHand3Lite.kDefaultHandDeviceId
+        if discovered_id == 0 else discovered_id
+    )
+    assert info.hand_device_id == expected_id
 
 
 def test_joint_names(initialized_hand):
