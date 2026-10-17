@@ -127,19 +127,19 @@ if(BUILD_OMNIHAND_3_LITE)
   add_test(NAME OmniHand3LiteTest COMMAND test_omnihand_3_lite)
 endif()
 
-# OmniHand 3 Ultra M (O20) Tests
+# OmniHand 3 Ultra M T1.3 Tests
 if(BUILD_OMNIHAND_3_ULTRA_M)
-  add_executable(test_omnihand_3_ultra_m test_omnihand_3_ultra_m.cc)
+  add_executable(test_omnihand_3_ultra_m_t1.3 test_omnihand_3_ultra_m_t1.3.cc)
   target_link_libraries(
-    test_omnihand_3_ultra_m
+    test_omnihand_3_ultra_m_t1.3
     PRIVATE
     ${OMNIHAND_TARGET}
     GTest::gtest
   )
-  set_target_properties(test_omnihand_3_ultra_m PROPERTIES
+  set_target_properties(test_omnihand_3_ultra_m_t1.3 PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${TEST_OUTPUT_DIR}"
   )
-  add_test(NAME OmniHand3UltraMTest COMMAND test_omnihand_3_ultra_m)
+  add_test(NAME OmniHand3UltraMT1P3Test COMMAND test_omnihand_3_ultra_m_t1.3)
 endif()
 
 # OmniPicker 3 (OP3) Tests
