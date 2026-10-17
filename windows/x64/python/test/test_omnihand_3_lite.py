@@ -162,7 +162,7 @@ SAFE_TORQUES = [0] * DOF
 # motion commands out; pytest reuses one session-scoped instance and otherwise
 # fires every command back-to-back, so motors get re-targeted before they can
 # physically move.  Pause after each motion command to let it settle.
-MOTION_SETTLE_SECONDS = 0.3
+MOTION_SETTLE_SECONDS = 0.5
 
 
 def _create_hand():

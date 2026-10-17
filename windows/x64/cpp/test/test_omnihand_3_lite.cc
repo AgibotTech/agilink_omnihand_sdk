@@ -246,6 +246,7 @@ TEST_F(OmniHand3LiteTest, MotorPositionControl) {
   int16_t target_pos = 4095;  // Middle position (0-4096 range)
   hand_->SetJointMotorPosi(1, target_pos);
   AgilinkLogger::get().infof(TAG, "[SetJointMotorPosi] Set Joint 1 Motor Position: %d", target_pos);
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
   auto pos = hand_->GetJointMotorPosi(1);
   AgilinkLogger::get().infof(TAG, "[GetJointMotorPosi] Joint 1 Motor Position: %d", pos);
@@ -264,6 +265,7 @@ TEST_F(OmniHand3LiteTest, MotorPositionControl) {
     }
     AgilinkLogger::get().infof(TAG, "[SetAllJointMotorPosi] returned: %s", msg.c_str());
   }
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
   // Test GetAllJointMotorPosi separately
   auto all_positions = hand_->GetAllJointMotorPosi();
@@ -382,6 +384,7 @@ TEST_F(OmniHand3LiteTest, JointAngleControl) {
   std::vector<double> angles(4, 0.0);  // 4 joints, all at 0
   hand_->SetAllActiveJointAngles(angles);
   AgilinkLogger::get().infof(TAG, "[SetAllActiveJointAngles] Called (should output warning)");
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
   // Test getting active joint angles (should output warning and return zeros)
   auto active_angles = hand_->GetAllActiveJointAngles();
