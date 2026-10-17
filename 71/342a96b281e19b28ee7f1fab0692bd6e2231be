@@ -1,0 +1,33 @@
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.13.1",
+  "base_commit_sha": "71342a96b281e19b28ee7f1fab0692bd6e2231be",
+  "prompts": {},
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_lite/O4_demo_canfd_id.cc",
+      "new_path": "windows/x64/cpp/demo/omnihand_3_lite/O4_demo_canfd_id.cc",
+      "deletions": {
+        "human": 6
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h",
+      "new_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h",
+      "additions": {
+        "human": 3
+      },
+      "deletions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_omnihand_3_lite.py",
+      "new_path": "windows/x64/python/test/test_omnihand_3_lite.py",
+      "additions": {
+        "human": 3
+      }
+    }
+  ]
+}
