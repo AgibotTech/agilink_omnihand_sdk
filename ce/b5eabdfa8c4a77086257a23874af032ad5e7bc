@@ -1,0 +1,40 @@
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.13.1",
+  "base_commit_sha": "ceb5eabdfa8c4a77086257a23874af032ad5e7bc",
+  "prompts": {},
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "additions": {
+        "human": 24
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_3_lite.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_3_lite.cc",
+      "additions": {
+        "human": 8
+      },
+      "deletions": {
+        "human": 20
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnipicker_3.cc",
+      "new_path": "windows/x64/cpp/test/test_omnipicker_3.cc",
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_omnihand_3_lite.py",
+      "new_path": "windows/x64/python/test/test_omnihand_3_lite.py",
+      "deletions": {
+        "human": 2
+      }
+    }
+  ]
+}
