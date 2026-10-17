@@ -311,6 +311,9 @@ def test_solver_round_trip_handles_reversed_motors(is_left_hand):
 
 def test_safe_api_surface():
     assert OmniHand3Lite.kDegreesOfActiveFreedom == DOF
+    assert not hasattr(
+        OmniHand3LiteGesture, "OMNI_HAND_3_LITE_GESTURE_ALL_ZERO"
+    )
     assert OmniHand3LiteGesture.OMNI_HAND_3_LITE_GESTURE_OPEN.value == 2
     assert TactileSensorDataU16 is not None
 

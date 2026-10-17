@@ -121,9 +121,6 @@ void controlSingleHand(std::unique_ptr<agilink::omnihand::OmniHand3Lite>& hand,
   AgilinkLogger::get().infof(TAG, "Setting gesture: FIST...");
   hand->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_FIST);
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-  AgilinkLogger::get().infof(TAG, "Setting gesture: Zero...");
-  hand->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_ALL_ZERO);
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   AgilinkLogger::get().infof(TAG, "Setting gesture: Open...");
   hand->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_OPEN);
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -141,9 +138,6 @@ void controlSingleHand(std::unique_ptr<agilink::omnihand::OmniHand3Lite>& hand,
     hand->SetJointMotorPosi(i + 1, 0);
     std::this_thread::sleep_for(std::chrono::milliseconds(400));
   }
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-  AgilinkLogger::get().infof(TAG, "All Joint Set To Zeros");
-  hand->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_ALL_ZERO);
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   AgilinkLogger::get().infof(TAG, "All Joint Set To Open");
   hand->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_OPEN);
