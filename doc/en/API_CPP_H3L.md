@@ -190,9 +190,8 @@ All factory methods return an instance that requires `Init()` to complete initia
 
 ```cpp
 enum class OmniHand3LiteGesture : int {
-  OMNI_HAND_3_LITE_GESTURE_ALL_ZERO = 0,  // All-zero position
-  OMNI_HAND_3_LITE_GESTURE_FIST,          // Fist
-  OMNI_HAND_3_LITE_GESTURE_OPEN,          // Open hand
+  OMNI_HAND_3_LITE_GESTURE_FIST = 1,  // Fist
+  OMNI_HAND_3_LITE_GESTURE_OPEN = 2,  // Open hand
 };
 
 void SetHandGesture(OmniHand3LiteGesture gesture);

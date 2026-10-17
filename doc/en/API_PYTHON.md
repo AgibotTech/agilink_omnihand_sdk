@@ -8,7 +8,7 @@ The OmniHand SDK provides **product-specific interfaces** for the following prod
 - **OmniHand Pro 2025 (O12)**: 12 DOF dexterous hand with 3D tactile sensors
 - **OmniHand 3 Lite (H3L)**: 4 DOF lightweight dexterous hand
 - **OmniHand Dex UMI (O10 UMI)**: 10 DOF dexterous hand with UMI protocol support
-- **OmniHand 3 Ultra M (H3UM/O20)**: 20 DOF dexterous hand and kinematics solver
+- **OmniHand 3 Ultra M (H3UM T1.3/T1.5)**: 20/21 DOF dexterous hand and kinematics solver
 - **OmniPicker 3 (OP3)**: 1 DOF gripper with stroke control and U16 tactile sensors
 
 Each product has its own interface class (`OmniHand2025`, `OmniHandPro2025`, `OmniHand3Lite`, `OmniHandDexUMI`, `OmniHand3UltraM`, `OmniPicker3`) with product-specific factory methods and APIs. This design provides better type safety and clearer API organization compared to a unified interface with `ProductType`.
@@ -21,7 +21,7 @@ Each product has its own interface class (`OmniHand2025`, `OmniHandPro2025`, `Om
 - **[OmniHand Pro 2025 (O12) Python API](API_PYTHON_O12.md)** - 12 DOF, 3D tactile sensors, CAN only
 - **[OmniHand 3 Lite (H3L) Python API](API_PYTHON_H3L.md)** - 4 DOF, tactile compatibility APIs, CAN and RS485
 - **[OmniHand Dex UMI (O10 UMI) Python API](API_PYTHON_UMI.md)** - 10 DOF, UMI protocol, active query, CAN only
-- **[OmniHand 3 Ultra M (H3UM/O20) Python API](API_PYTHON_H3UM.md)** - 20 DOF control and kinematics solver
+- **[OmniHand 3 Ultra M (H3UM T1.3/T1.5) Python API](API_PYTHON_H3UM.md)** - 20/21 DOF control and kinematics solver
 - **[OmniPicker 3 (OP3) Python API](API_PYTHON_OP3.md)** - 1 DOF gripper, position/stroke/PT control and U16 tactile data
 
 ## Common Enumerations

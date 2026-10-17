@@ -1,8 +1,13 @@
-# OmniHand 3 Ultra M (H3UM/O20) C++ API
+# OmniHand 3 Ultra M (H3UM T1.3/T1.5) C++ API
 
 ## Overview
 
-`OmniHand3UltraM` controls the 20-DOF H3UM/O20 hand through CAN FD and optionally reads five Xense finger sensors plus the palm tactile service. Motor position values are raw ticks in `[0, 4095]`; active joint angles are radians.
+`OmniHand3UltraM` controls both H3UM revisions through CAN FD. T1.3 has 20 active joints and uses the Xense tactile SoC; T1.5 has 21 active joints and obtains tactile data directly through CAN FD. Motor positions use `[0, 4096]` protocol units and active joint angles are radians.
+
+| Revision | Active joints | Default device ID | Factory prefix |
+|----------|---------------|-------------------|----------------|
+| T1.3 | 20 | 9 | `createHandBy*` / `createHandSocketCan` |
+| T1.5 | 21 | 1 | `createHandT1P5By*` / `createHandT1P5SocketCan` |
 
 ## Include Header
 
@@ -13,7 +18,7 @@ using namespace agilink::omnihand;
 
 ## Factory Methods
 
-All factories accept an optional tactile SoC endpoint after the transport parameters:
+T1.3 factories accept an optional tactile SoC endpoint after the transport parameters:
 
 ```cpp
 const std::string& tactile_soc_ip = OmniHand3UltraM::kDefaultTactileSocIp;
@@ -52,6 +57,23 @@ static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
 
 `createHandByZlgCanTcp(...)` and Linux `createHandSocketCan(...)` have the same final two tactile endpoint parameters.
 
+T1.5 uses separate factories and does not take a tactile SoC endpoint:
+
+```cpp
+createHandT1P5ByZlgcan(...);
+createHandT1P5ByZlgCanTcp(...);
+createHandT1P5ByHcan(...);
+createHandT1P5SocketCan(...);  // Linux
+```
+
+The selected revision is available at runtime:
+
+```cpp
+H3UMRevision GetRevision() const;
+std::vector<std::string> GetJointNames() const;
+uint8_t GetNumOfJointMotors() const;
+```
+
 ## Device Information and Addressing
 
 ```cpp
@@ -65,7 +87,7 @@ bool SetHandDeviceIdByBroadcast(uint8_t id);
 void SetBroadcast(bool broadcast);
 ```
 
-H3UM uses only the standard protocol. Device ID `0` is its broadcast address; the factory default unicast ID is `9`.
+H3UM uses only the standard protocol. Device ID `0` is its broadcast address. The default unicast ID is `9` for T1.3 and `1` for T1.5.
 
 ## Position and Angle Control
 
@@ -105,14 +127,16 @@ Torque is transmitted directly as a signed 16-bit current value in mA. `GetMinMa
 
 ```cpp
 bool SetAllMotor2Zero();
-bool SetMotor2Zero(unsigned char joint_motor_index);  // 1..20
+bool SetMotor2Zero(unsigned char joint_motor_index);  // revision-dependent range
 bool SetAxisHoming(uint8_t axis_index, int16_t position);
 bool SetAxisMinPos(uint8_t axis_index, int16_t min_position);
 bool SetAxisMaxPos(uint8_t axis_index, int16_t max_position);
 bool SaveParam();
 ```
 
-## Tactile Data
+## Tactile Data and T1.5 Board Temperatures
+
+T1.3 uses the Xense tactile SoC APIs:
 
 ```cpp
 bool GetFingerTactile(uint8_t finger_index, XenseFrame& frame); // 0=thumb .. 4=pinky
@@ -122,8 +146,19 @@ bool GetAllTactile(AllTactileFrame& frame);
 
 `XenseFrame::timestamp` is in nanoseconds. `PalmFrame` contains the force field, `resultant[3]`, and `timestamp` supplied by the tactile service.
 
+T1.5 uses the common raw tactile APIs and supplies resultant force for six sensors:
+
+```cpp
+TactileSensorData3DI16 GetTactileSensorDataRaw(Finger sensor) const;
+std::vector<TactileSensorData3DI16> GetAllTactileSensorDataRaw() const;
+TactileSensorResultantForce3DI16 GetTactileSensorResultantForce(Finger sensor) const;
+std::vector<TactileSensorResultantForce3DI16> GetAllTactileSensorResultantForces() const;
+int16_t GetTemperatureOfPalm() const;
+int16_t GetTemperatureOfPower() const;
+```
+
 ## Related Documentation
 
 - [C++ API index](API_CPP.md)
 - [1.1.8 to 1.1.9 migration](MIGRATION_1_1_8_TO_1_1_9.md)
-- [ROS2 API](API_ROS2.md)
+- [H3UM ROS2 interface](API_ROS2_H3UM.md)

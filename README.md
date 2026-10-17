@@ -58,7 +58,7 @@ A read-only dexterous hand using UMI protocol.
 - [OmniHand 3 Lite (H3L) C++ API](doc/en/API_CPP_H3L.md)
 - [OmniPicker 3 (OP3) C++ API](doc/en/API_CPP_OP3.md)
 - [OmniHand Dex UMI (O10 UMI) C++ API](doc/en/API_CPP_O10_UMI.md)
-- [OmniHand 3 Ultra M (H3UM/O20) C++ API](doc/en/API_CPP_H3UM.md)
+- [OmniHand 3 Ultra M (H3UM T1.3/T1.5) C++ API](doc/en/API_CPP_H3UM.md)
 
 ### Python API
 - [Python API Index](doc/en/API_PYTHON.md)
@@ -66,7 +66,7 @@ A read-only dexterous hand using UMI protocol.
 - [OmniHand Pro 2025 (O12) Python API](doc/en/API_PYTHON_O12.md)
 - [OmniHand 3 Lite (H3L) Python API](doc/en/API_PYTHON_H3L.md)
 - [OmniHand Dex UMI (O10 UMI) Python API](doc/en/API_PYTHON_UMI.md)
-- [OmniHand 3 Ultra M (H3UM/O20) Python API](doc/en/API_PYTHON_H3UM.md)
+- [OmniHand 3 Ultra M (H3UM T1.3/T1.5) Python API](doc/en/API_PYTHON_H3UM.md)
 
 ### Kinematics API
 - [OmniHand 2025 (O10) Kinematics C++](doc/en/API_KINEMATICS_CPP_O10.md)
@@ -79,6 +79,7 @@ A read-only dexterous hand using UMI protocol.
 - [OmniHand 2025 (O10) ROS2 Interface](doc/en/API_ROS2_O10.md)
 - [OmniHand Pro 2025 (O12) ROS2 Interface](doc/en/API_ROS2_O12.md)
 - [OmniHand 3 Lite (H3L) ROS2 Interface](doc/en/API_ROS2_H3L.md)
+- [OmniHand 3 Ultra M (H3UM T1.3/T1.5) ROS2 Interface](doc/en/API_ROS2_H3UM.md)
 - [OmniPicker 3 (OP3) ROS2 Interface](doc/en/API_ROS2_OP3.md)
 
 ## License

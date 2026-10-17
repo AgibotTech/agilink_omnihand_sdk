@@ -190,9 +190,8 @@ bool Init();
 
 ```cpp
 enum class OmniHand3LiteGesture : int {
-  OMNI_HAND_3_LITE_GESTURE_ALL_ZERO = 0,  // 全零位
-  OMNI_HAND_3_LITE_GESTURE_FIST,          // 握拳
-  OMNI_HAND_3_LITE_GESTURE_OPEN,          // 张开
+  OMNI_HAND_3_LITE_GESTURE_FIST = 1,  // 握拳
+  OMNI_HAND_3_LITE_GESTURE_OPEN = 2,  // 张开
 };
 
 void SetHandGesture(OmniHand3LiteGesture gesture);

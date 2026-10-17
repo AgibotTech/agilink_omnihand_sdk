@@ -188,7 +188,6 @@ def init(self) -> bool:
 
 ```python
 class OmniHand3LiteGesture(enum.IntEnum):
-    OMNI_HAND_3_LITE_GESTURE_ALL_ZERO = 0  # All-zero position
     OMNI_HAND_3_LITE_GESTURE_FIST = 1      # Fist
     OMNI_HAND_3_LITE_GESTURE_OPEN = 2      # Open hand
 
