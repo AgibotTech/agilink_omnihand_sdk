@@ -171,6 +171,30 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
 
   int GetHandDeviceIdByBroadcast() override;
 
+  // ============ Deprecated Private-Protocol Control ============
+  /**
+   * @deprecated Use SetJointMotorPosi() instead.
+   */
+  [[deprecated("Use SetJointMotorPosi() instead.")]]
+  virtual uint16_t SetSingleAxisPos(uint8_t axis_index,
+                                    uint16_t position) override = 0;
+
+  /**
+   * @deprecated Use SetAllJointMotorPosi() instead.
+   */
+  [[deprecated("Use SetAllJointMotorPosi() instead.")]]
+  virtual SetAllAxisPosResponse SetAllAxisPos(
+      const std::vector<uint16_t>& positions) override = 0;
+
+  /**
+   * @deprecated Use MixControlByPVT() instead.
+   */
+  [[deprecated("Use MixControlByPVT() instead.")]]
+  virtual SetAllAxisPosResponse SetPosSpeedTorqueData(
+      const std::vector<uint16_t>& positions,
+      const std::vector<int16_t>& speeds,
+      const std::vector<uint16_t>& torques) override = 0;
+
   // ============ Sensor Utilities ============
   // Note: O4 (OmniHand3Lite) does not support tactile sensors
   /**

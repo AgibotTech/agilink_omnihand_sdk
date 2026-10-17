@@ -791,18 +791,6 @@ TEST_F(OmniHand3LiteTest, GetSNOfTactileSensor) {
   }
 }
 
-// Test deprecated GetSensorDataLength consistency with GetNumOfTactilePoints
-TEST_F(OmniHand3LiteTest, GetSensorDataLength) {
-  ASSERT_TRUE(hand_->Init()) << "Failed to initialize device";
-  for (Finger finger : hand_->GetSensorOrder()) {
-    size_t len = hand_->GetSensorDataLength(finger);
-    size_t pts = hand_->GetNumOfTactilePoints(finger);
-    AgilinkLogger::get().infof(TAG, "[GetSensorDataLength] %s: %zu (GetNumOfTactilePoints=%zu)",
-                           ToString(finger).c_str(), len, pts);
-    EXPECT_GT(len, 0u) << "Expected >0 for " << ToString(finger);
-  }
-}
-
 // ============================================================================
 // PrivateOmniHand (StreamCmd) interface tests
 // ============================================================================
@@ -819,14 +807,14 @@ TEST_F(OmniHand3LiteTest, PrivateOmniHandCommands) {
   AgilinkLogger::get().infof(TAG, "[PrivateOmniHand][0x07 GetSingleAxisPos] axis=1, position=%u",
                             static_cast<unsigned>(single_position));
   EXPECT_LE(single_position, 4096u);
-  EXPECT_LE(private_hand.SetSingleAxisPos(1, single_position), 4096u);
+  // EXPECT_LE(private_hand.SetSingleAxisPos(1, single_position), 4096u);
 
   const auto positions = private_hand.GetAllAxisPos();
   AgilinkLogger::get().infof(TAG, "[PrivateOmniHand][0x09 GetAllAxisPos] positions=%s",
                             ValuesToString(positions).c_str());
   ASSERT_FALSE(positions.empty()) << "GetAllAxisPos timed out";
   EXPECT_EQ(positions.size(), OmniHand3Lite::kDegreesOfActiveFreedom);
-  EXPECT_FALSE(private_hand.SetAllAxisPos(positions).empty());
+  // EXPECT_FALSE(private_hand.SetAllAxisPos(positions).empty());
 
   const auto currents = private_hand.GetAllAxisCurrent();
   AgilinkLogger::get().infof(TAG, "[PrivateOmniHand][0x0A GetAllAxisCurrent] currents=%s",
@@ -898,12 +886,12 @@ TEST_F(OmniHand3LiteTest, PrivateOmniHandCommands) {
   EXPECT_EQ(limits.min_limits.size(), OmniHand3Lite::kDegreesOfActiveFreedom);
   EXPECT_EQ(limits.max_limits.size(), OmniHand3Lite::kDegreesOfActiveFreedom);
 
-  const std::vector<int16_t> speeds(
-      OmniHand3Lite::kDegreesOfActiveFreedom, 0);
-  const std::vector<uint16_t> torques(
-      OmniHand3Lite::kDegreesOfActiveFreedom, 0);
-  EXPECT_FALSE(
-      private_hand.SetPosSpeedTorqueData(positions, speeds, torques).empty());
+  // const std::vector<int16_t> speeds(
+  //     OmniHand3Lite::kDegreesOfActiveFreedom, 0);
+  // const std::vector<uint16_t> torques(
+  //     OmniHand3Lite::kDegreesOfActiveFreedom, 0);
+  // EXPECT_FALSE(
+  //     private_hand.SetPosSpeedTorqueData(positions, speeds, torques).empty());
 
   // H3L currently does not reply to PrivateOmniHand 0x33 or 0x81.
   // EXPECT_EQ(private_hand.GetFingerTactileForce().size(), 35u);

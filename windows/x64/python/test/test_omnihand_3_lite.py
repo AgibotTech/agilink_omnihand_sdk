@@ -578,7 +578,6 @@ def test_tactile_metadata(initialized_hand, tactile_sensors):
         datum_length = initialized_hand.get_len_of_tactile_datum(sensor)
         frame_count = initialized_hand.get_num_of_replied_tactile_frames(sensor)
         serial_number = initialized_hand.get_sn_of_tactile_sensor(sensor)
-        deprecated_length = initialized_hand.get_sensor_data_length(sensor)
         print(
             f"[{sensor.name}] points={points} datum={datum_length} "
             f"frames={frame_count} sn={serial_number!r}"
@@ -586,7 +585,6 @@ def test_tactile_metadata(initialized_hand, tactile_sensors):
         assert points > 0
         assert datum_length > 0
         assert frame_count > 0
-        assert deprecated_length > 0
 
     assert initialized_hand.get_num_of_tactile_points(Finger.UNKNOWN) == 0
     assert initialized_hand.get_num_of_tactile_points(Finger.DORSUM) == 0

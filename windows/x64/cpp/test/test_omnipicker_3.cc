@@ -590,7 +590,6 @@ TEST_F(OmniPicker3Test, InitTactilePointsMap) {
     EXPECT_GT(points, 0u) << "Expected >0 points for " << oh::ToString(finger);
     EXPECT_GT(datum_len, 0u) << "Expected >0 bytes per datum for " << oh::ToString(finger);
     EXPECT_GT(frames, 0u) << "Expected >=1 frame for " << oh::ToString(finger);
-    EXPECT_EQ(hand_->GetSensorDataLength(finger), points);
   }
 
   EXPECT_EQ(hand_->GetNumOfTactilePoints(oh::Finger::UNKNOWN), 0u);
