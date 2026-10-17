@@ -103,9 +103,9 @@ static int g_baudrate = 460800;
 static int g_frame_recv_timeout = 200;
 
 // Target hand device ID (--device-id). Without this option SetUp only
-// discovers the current IDs and updates the SDK caches; it does not write the
-// device. With this option SetUp switches both supported protocol IDs and
-// TearDown restores their original values independently.
+// discovers the current ID state and updates the SDK caches; it does not write
+// the device. With this option SetUp switches all supported protocol IDs and
+// TearDown restores the original combined state through the same interface.
 static int g_device_id = 0;
 static bool g_device_id_specified = false;
 
@@ -270,44 +270,19 @@ class OmniHand2025Test : public ::testing::Test {
       GTEST_SKIP() << TransportName(g_transport) << " device not available";
     }
 
-    if (!g_device_id_specified) {
-      // Discovery updates the SDK's standard/private ID caches. A return value
-      // of zero means the device uses the protocol defaults; it is success,
-      // not the broadcast ID.
-      const int discovered = hand_->GetHandDeviceIdByBroadcast();
-      if (discovered < 0) {
-        GTEST_SKIP() << "No consistent device ID responded to broadcast";
-      }
-      original_device_id_ = hand_->GetHandDeviceId();
-      AgilinkLogger::get().infof(
-          TAG, "[SetUp] Discovered device IDs (result=%d, standard cache=%u)",
-          discovered, static_cast<unsigned int>(original_device_id_));
-    } else {
-      if (g_transport == Transport::kRs485) {
-        // RS485 firmware supports only one protocol generation at a time.
-        const int discovered = hand_->GetHandDeviceIdByBroadcast();
-        if (discovered < 0) {
-          GTEST_SKIP() << "No RS485 device responded to broadcast";
-        }
-        original_device_id_ = discovered == 0
-                                  ? hand_->GetHandDeviceId()
-                                  : static_cast<uint8_t>(discovered);
-        original_private_device_id_ = original_device_id_;
-      } else {
-        original_device_id_ = hand_->GetNonPrivateHandDeviceIdByBroadcast();
-        if (original_device_id_ == agilink::omnihand::kBroadcastHandDeviceId) {
-          GTEST_SKIP() << "No standard-protocol device responded to broadcast";
-        }
-        original_private_device_id_ = hand_->GetPrivateHandDeviceIdByBroadcast();
-        ASSERT_GT(original_private_device_id_, 0u);
-        ASSERT_LT(original_private_device_id_, agilink::omnihand::kPrivateBroadcastHandDeviceId)
-            << "No private-protocol device responded to broadcast";
-      }
+    // A return value of zero means both protocols use their own defaults; it
+    // is a valid restorable state. A positive value means their IDs agree.
+    original_device_id_ = hand_->GetHandDeviceIdByBroadcast();
+    if (original_device_id_ < 0) {
+      GTEST_SKIP() << "No consistent device ID responded to broadcast";
+    }
+    AgilinkLogger::get().infof(
+        TAG, "[SetUp] Discovered device ID state: %d", original_device_id_);
 
+    if (g_device_id_specified) {
       AgilinkLogger::get().infof(
-          TAG, "[SetUp] Switching device IDs: standard=%u, private=%u -> %d",
-          static_cast<unsigned int>(original_device_id_),
-          static_cast<unsigned int>(original_private_device_id_), g_device_id);
+          TAG, "[SetUp] Switching device ID state: %d -> %d",
+          original_device_id_, g_device_id);
       device_id_change_attempted_ = true;
       ASSERT_TRUE(hand_->SetHandDeviceIdByBroadcast(static_cast<uint8_t>(g_device_id)))
           << "Failed to set the device IDs by broadcast";
@@ -317,16 +292,10 @@ class OmniHand2025Test : public ::testing::Test {
   void TearDown() override {
     if (hand_ && device_available_ && device_id_change_attempted_) {
       AgilinkLogger::get().infof(
-          TAG, "[TearDown] Restoring device IDs: %d -> standard=%d, private=%u",
-          g_device_id, static_cast<int>(original_device_id_),
-          static_cast<unsigned int>(original_private_device_id_));
-      if (g_transport == Transport::kRs485) {
-        EXPECT_TRUE(hand_->SetHandDeviceIdByBroadcast(original_device_id_));
-      } else {
-        // Restore each independent protocol ID through its own interface.
-        EXPECT_TRUE(hand_->SetId(original_private_device_id_));
-        hand_->SetDeviceId(original_device_id_);
-      }
+          TAG, "[TearDown] Restoring device ID state: %d -> %d",
+          g_device_id, original_device_id_);
+      EXPECT_TRUE(hand_->SetHandDeviceIdByBroadcast(
+          static_cast<uint8_t>(original_device_id_)));
     }
     hand_.reset();
   }
@@ -338,8 +307,7 @@ class OmniHand2025Test : public ::testing::Test {
   std::unique_ptr<agilink::omnihand::OmniHand2025> hand_;
   bool device_available_ = false;
   bool device_id_change_attempted_ = false;
-  uint8_t original_device_id_ = 0;
-  uint16_t original_private_device_id_ = 0;
+  int original_device_id_ = 0;
 };
 
 // Guards must be macros, not member functions: GTEST_SKIP() expands to
@@ -393,22 +361,12 @@ TEST_F(OmniHand2025Test, GetDeviceInfo) {
   AgilinkLogger::get().infof(TAG, "[GetDeviceInfo] Device Info:\n%s", device_info.ToString().c_str());
 
   ASSERT_NE(device_info.hand_device_id, 0) << "GetDeviceInfo timed out";
-  EXPECT_EQ(device_info.hand_device_id, static_cast<uint8_t>(hand_->GetHandDeviceId()));
-}
-
-// SetDeviceId is exercised by SetUp: it switches the device to g_device_id
-// via broadcast, and TearDown restores the ORIGINAL ID (not a hardcoded 1),
-// so the device is always left in its initial state on success.
-// This case just verifies the physical ID actually took effect.
-TEST_F(OmniHand2025Test, SetDeviceId) {
-  RequireDevice();
-
-  // SetUp already switched to g_device_id; just verify the physical ID is correct.
-  auto info = hand_->GetDeviceInfo();
-  ASSERT_NE(info.hand_device_id, 0) << "GetDeviceInfo timed out";
-  EXPECT_EQ(info.hand_device_id, static_cast<uint8_t>(hand_->GetHandDeviceId()));
-  AgilinkLogger::get().infof(TAG, "[SetDeviceId] Current device ID: %d (target: %d)",
-                             info.hand_device_id, hand_->GetHandDeviceId());
+  const int expected_id = g_device_id_specified
+                              ? g_device_id
+                              : (original_device_id_ == 0
+                                     ? agilink::omnihand::OmniHand2025::kDefaultHandDeviceId
+                                     : original_device_id_);
+  EXPECT_EQ(device_info.hand_device_id, static_cast<uint8_t>(expected_id));
 }
 
 // ============================================================================

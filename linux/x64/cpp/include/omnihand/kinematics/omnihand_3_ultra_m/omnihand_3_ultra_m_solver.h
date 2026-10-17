@@ -3,7 +3,7 @@
 
 /**
  * @file omnihand_3_ultra_m_solver.h
- * @brief Per-joint linear rad <-> motor-tick solver for O20 (h3u_m).
+ * @brief Per-joint linear rad <-> motor-tick solver for H3UM T1.3/T1.5.
  *
  * Naming: aligned with the URDF repo `h3u_m_description`, hence the `_m`
  * suffix on the directory / class. Hardware-wise this is OmniHand3UltraM
@@ -33,7 +33,7 @@ enum class H3UMRevision : uint8_t {
 namespace h3um {
 
 /**
- * @brief O20 (h3u_m) active-joint enum, in motor-index / GetJointNames() order.
+ * @brief H3UM T1.3 active-joint enum, in motor-index / GetJointNames() order.
  * @note Joint order must match OmniHand3UltraM::GetJointNames() exactly:
  *     [0..3]   pinky  (abad, mcp, pip, dip)
  *     [4..7]   ring
@@ -99,14 +99,14 @@ enum class H3UMGesture : int {
 /**
  * @class OmniHand3UltraMSolver
  * @brief Per-joint linear rad <-> actuator-input solver for OmniHand 3 Ultra
- *        (h3u_m, O20).
+ *        (H3UM T1.3/T1.5).
  *
  * Naming follows the O10 / O12 solvers:
  *   - "ActiveJointPos" : joint position in rad (vector<double>), per-joint
  *                        ROS convention (sensor_msgs::JointState::position).
  *   - "ActuatorInput"  : raw motor command, vector<int16_t> in [0, 4095].
  *                        (O10 uses int and 0-4096; O12 uses int and 0-2000.
- *                        For O20 we keep int16_t to match the SDK's
+ *                        For H3UM we keep int16_t to match the SDK's
  *                        Set/GetAllJointMotorPosi protocol type.)
  *
  * Calibration data (rad_min, rad_max, actuator_min, actuator_max) lives in the

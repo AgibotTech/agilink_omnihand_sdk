@@ -3,7 +3,7 @@
 
 /**
  * @file omnihand_3_ultra_m.h
- * @brief OmniHand 3 Ultra (O20) interface class - 20 DOF
+ * @brief OmniHand 3 Ultra M T1.3/T1.5 interface class
  * @note This is the public interface for OmniHand 3 Ultra product
  */
 
@@ -141,7 +141,7 @@ inline std::string H3UMErrorReportToString(const JointMotorErrorReport& report) 
 }
 
 /**
- * @brief OmniHand 3 Ultra (O20) interface class - 20 DOF
+ * @brief OmniHand 3 Ultra M T1.3/T1.5 interface class
  *
  * This class provides the public interface for OmniHand 3 Ultra product.
  * It supports 20 active degrees of freedom and optional Xense visual-tactile sensor.
@@ -151,13 +151,13 @@ inline std::string H3UMErrorReportToString(const JointMotorErrorReport& report) 
  *     (12-bit, unrelated to calibration register Pn7/Pn8 0.1-degree encoding).
  *   - URDF active joint angle (rad) and tick are **per-joint independent linear mappings**,
  *     with different coefficients per joint that may be reversed;
- *     O20 does not need the polynomial correction used in O10.
+ *     H3UM does not need the polynomial correction used in O10.
  *   - For actual conversion and calibration table, see
  *       kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.{h,cc}
  *     SetAll/GetAllActiveJointAngles internally forwards to OmniHand3UltraMSolver,
  *     so upper layers (including ROS2 nodes / Python bindings) only need to use rad units.
  *
- * TODO(O20): Kinematics solver (including passive joints) not yet integrated:
+ * TODO(H3UM): Kinematics solver (including passive joints) not yet integrated:
  *   SetHandGesture, and interfaces for accessing passive joints by single joint
  *   name/index are still placeholder implementations.
  */
@@ -436,7 +436,19 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
    */
   virtual bool GetAllTactile(AllTactileFrame& frame) { (void)frame; return false; }
 
-  // ============ O20 Extended API ============
+  // ============ T1.5 Extended API ============
+
+  /**
+   * @brief Gets the palm board temperature through register 0x21/0x51.
+   * @return Palm board temperature in degrees Celsius.
+   */
+  virtual int16_t GetTemperatureOfPalm() const = 0;
+
+  /**
+   * @brief Gets the power interface board temperature through register 0x21/0x52.
+   * @return Power interface board temperature in degrees Celsius.
+   */
+  virtual int16_t GetTemperatureOfPower() const = 0;
 
   // ---- IOmniHandCalibrator interface ----
 
@@ -464,7 +476,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   // Get all axes position limits (Pn7 & Pn8)
   AxisLimitPos GetAxisLimitPos() const override { return {}; }
 
-  // Clear all axis position limits (not supported on O20, always returns false)
+  // Clear all axis position limits (not supported on H3UM, always returns false)
   bool ClearAllLimitPos() override { return false; }
 
   // Pn10 (0x0A): Save parameters to flash

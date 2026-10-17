@@ -333,7 +333,6 @@ paths:
         ## O4 手势枚举 (OmniHand3LiteGesture)
         | 值 | 常量名 | 说明 |
         |----|--------|------|
-        | 0 | OMNI_HAND_3_LITE_GESTURE_ALL_ZERO | 全零位 |
         | 1 | OMNI_HAND_3_LITE_GESTURE_FIST | 握拳 |
         | 2 | OMNI_HAND_3_LITE_GESTURE_OPEN | 张开 |
 

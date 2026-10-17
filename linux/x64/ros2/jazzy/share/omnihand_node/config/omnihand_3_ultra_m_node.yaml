@@ -1,7 +1,9 @@
-# OmniHand 3 Ultra M(O20) Configuration
+# OmniHand 3 Ultra M (T1.3/T1.5) Configuration
 # use "/**" to match any namespace below this node, avoid launch changing namespace (e.g. 'h3u_m')
 # top level key mismatch with node FQN (/h3u_m/omnihand_3_ultra_m_param_reader) will cause all parameters to default to the default value.
 # connection_type: "zlgcan" | "hcan" | "socketcan" (socketcan only supported on Linux)
+# revision: "t1p3" | "t1p5"
+# hand_device_id: -1 selects the revision default (T1.3=9, T1.5=1)
 # request_interval_ms: min gap between requests, SDK default 0 = no throttling, range 0..100
 # frame_recv_timeout_ms: single-frame reply wait, SDK default 50, range 10..1000
 #
@@ -13,6 +15,7 @@
   ros__parameters:
     # zlgcan example
     # left_hand:
+    #   revision: "t1p3"
     #   hand_device_id: 9
     #   connection_type: "zlgcan"
     #   canfd_device_id: 0
@@ -22,6 +25,7 @@
     #   show_data_details: false
     #
     # right_hand:
+    #   revision: "t1p3"
     #   hand_device_id: 9
     #   connection_type: "zlgcan"
     #   canfd_device_id: 0
@@ -29,8 +33,29 @@
     #   request_interval_ms: 0
     #   frame_recv_timeout_ms: 50
     #   show_data_details: false
+    # left_hand:
+    #   revision: "t1p5"
+    #   hand_device_id: 1
+    #   connection_type: "zlgcan"
+    #   canfd_device_id: 0
+    #   canfd_channel_id: 0
+    #   request_interval_ms: 0
+    #   frame_recv_timeout_ms: 50
+    #   show_data_details: false
+    #
+    # right_hand:
+    #   revision: "t1p5"
+    #   hand_device_id: 1
+    #   connection_type: "zlgcan"
+    #   canfd_device_id: 0
+    #   canfd_channel_id: 1
+    #   request_interval_ms: 0
+    #   frame_recv_timeout_ms: 50
+    #   show_data_details: false
+
     # socketcan example
     left_hand:
+      revision: "t1p3"
       hand_device_id: 9
       connection_type: "socketcan"
       can_interface: "can0"
@@ -39,9 +64,28 @@
       show_data_details: true
 
     right_hand:
+      revision: "t1p3"
       hand_device_id: 9
       connection_type: "socketcan"
       can_interface: "can1"
       request_interval_ms: 0
       frame_recv_timeout_ms: 50
       show_data_details: true
+
+    # left_hand:
+    #   revision: "t1p5"
+    #   hand_device_id: 1
+    #   connection_type: "socketcan"
+    #   can_interface: "can0"
+    #   request_interval_ms: 0
+    #   frame_recv_timeout_ms: 50
+    #   show_data_details: true
+
+    # right_hand:
+    #   revision: "t1p5"
+    #   hand_device_id: 1
+    #   connection_type: "socketcan"
+    #   can_interface: "can1"
+    #   request_interval_ms: 0
+    #   frame_recv_timeout_ms: 50
+    #   show_data_details: true
