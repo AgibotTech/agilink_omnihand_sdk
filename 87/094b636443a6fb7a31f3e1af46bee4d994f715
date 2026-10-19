@@ -1,0 +1,392 @@
+doc/zh_cn/API_SERVER.md
+  s_83fa947041b2cd::t_aa7533b255371e 86
+  s_83fa947041b2cd::t_1d4a847ed559b9 83
+  s_83fa947041b2cd::t_95885fd643f1d9 96-104,114-116,195-196
+  s_83fa947041b2cd::t_4941f49a21905d 118-122
+  s_83fa947041b2cd::t_32e44d9a956028 181
+  s_83fa947041b2cd::t_3c6e6175faf44f 131-139
+  s_83fa947041b2cd::t_e1d0aab4669521 194,197-200,206-208,210-211
+  s_83fa947041b2cd::t_aaca6d2a736670 158,161-162,164,166,168-177,180,182,184-187
+  s_83fa947041b2cd::t_c82f71da7ce3c5 160,165
+  s_83fa947041b2cd::t_573eb9d24100ac 167,212
+  s_83fa947041b2cd::t_ede5e9bea5825d 1-8,10,12-30,34-71,80,95,124,126,128-129,140-152,155-157,190,192,202-204,213,215
+  s_83fa947041b2cd::t_da9b7d3a165a6f 85
+  s_83fa947041b2cd::t_37aeb8371a85f1 105-111
+  s_83fa947041b2cd::t_0b6265d39fba05 9,11,31-33,72-79,82,88-89,91-94
+doc/en/API_SERVER_WS.md
+  s_83fa947041b2cd::t_37aeb8371a85f1 91-97,115-120
+  s_83fa947041b2cd::t_0cd6859cb61fee 12,16,18-19,22-24,27,29-30
+  s_83fa947041b2cd::t_6f44e9392f2ac3 339-340,345-346,348,358-359,362,370,373
+  s_83fa947041b2cd::t_95885fd643f1d9 34,39-41,47-50,57-60,62-63,66-80,86,89-90,98,101-104,110-114,125
+doc/en/API_SERVER_REST.md
+  s_83fa947041b2cd::t_0cd6859cb61fee 15,17-19,22-24,27-28,311
+doc/en/API_SERVER.md
+  s_83fa947041b2cd::t_1d4a847ed559b9 85
+  s_83fa947041b2cd::t_e1d0aab4669521 204,207-210,217-219,221-222
+  s_83fa947041b2cd::t_0b6265d39fba05 10,12,33-35,74-81,84,90-91,93-97
+  s_83fa947041b2cd::t_ede5e9bea5825d 1-9,11,13-32,36-73,82,98,131,133-134,136-137,148-160,163-165,199,201-202,211,213-215,224,226-227
+  s_83fa947041b2cd::t_3c6e6175faf44f 139-147
+  s_83fa947041b2cd::t_aaca6d2a736670 166,169-170,172,174,176-185,188-189,191,193-196
+  s_83fa947041b2cd::t_da9b7d3a165a6f 87
+  s_83fa947041b2cd::t_aa7533b255371e 88
+  s_83fa947041b2cd::t_37aeb8371a85f1 109-115
+  s_83fa947041b2cd::t_c82f71da7ce3c5 168,173
+  s_83fa947041b2cd::t_95885fd643f1d9 99-108,118-121,205-206
+  s_83fa947041b2cd::t_4941f49a21905d 123-129
+  s_83fa947041b2cd::t_573eb9d24100ac 175,223
+  s_83fa947041b2cd::t_32e44d9a956028 190
+doc/zh_cn/API_SERVER_WS.md
+  s_83fa947041b2cd::t_607cc4eb2c4666 107-117,122
+  s_83fa947041b2cd::t_e2be381848bae6 11,15,17,20-22,25,27
+  s_83fa947041b2cd::t_5b5f74f6b3f958 31,36-38,44-47,54-57,59-60,63-77,83,86-95,98-100
+  s_83fa947041b2cd::t_6f44e9392f2ac3 335-336,341-342,344,354-355,358,366,369
+  s_83fa947041b2cd::t_0480738a2471e5 101
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.13.1",
+  "base_commit_sha": "87094b636443a6fb7a31f3e1af46bee4d994f715",
+  "prompts": {},
+  "sessions": {
+    "s_83fa947041b2cd": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1292e-9128-77d1-9d2b-b9aeea8a6acd",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.input_tokens": "21442725",
+        "tlab.token_usage.output_tokens": "1800333",
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.token_usage.cache_read_tokens": "514459761",
+        "tlab.session_started_at": "2026-10-19T02:21:36Z"
+      }
+    }
+  },
+  "changes": [
+    {
+      "new_path": "windows/x64/cpp/include/omnihand_client/client_types.h",
+      "additions": {
+        "human": 36
+      }
+    },
+    {
+      "new_path": "windows/x64/cpp/include/omnihand_client/rest_client.h",
+      "additions": {
+        "human": 55
+      }
+    },
+    {
+      "new_path": "windows/x64/cpp/include/omnihand_client/value.h",
+      "additions": {
+        "human": 19
+      }
+    },
+    {
+      "new_path": "windows/x64/cpp/include/omnihand_client/websocket_client.h",
+      "additions": {
+        "human": 69
+      }
+    },
+    {
+      "new_path": "windows/x64/cpp/include/omnihand_server/server.h",
+      "additions": {
+        "human": 60
+      }
+    },
+    {
+      "new_path": "windows/x64/python/test/test_omnihand_server.py",
+      "additions": {
+        "human": 72
+      }
+    },
+    {
+      "old_path": "doc/en/API_SERVER.md",
+      "new_path": "doc/en/API_SERVER.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 201
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 61
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_SERVER_REST.md",
+      "new_path": "doc/en/API_SERVER_REST.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 10
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 53
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_SERVER_WS.md",
+      "new_path": "doc/en/API_SERVER_WS.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 76
+          }
+        ]
+      },
+      "deletions": {
+        "human": 6,
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 174
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_SERVER.md",
+      "new_path": "doc/zh_cn/API_SERVER.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 189
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 61
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_SERVER_WS.md",
+      "new_path": "doc/zh_cn/API_SERVER_WS.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 74
+          }
+        ]
+      },
+      "deletions": {
+        "human": 6,
+        "ai": [
+          {
+            "session_id": "s_83fa947041b2cd",
+            "lines": 172
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/adapter/hand_device.h",
+      "deletions": {
+        "human": 42
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/adapter/sdk_hand_device_factory.h",
+      "deletions": {
+        "human": 27
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/app/crow_server.h",
+      "deletions": {
+        "human": 55
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/handler/http_response.h",
+      "deletions": {
+        "human": 25
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/handler/rest_handler.h",
+      "deletions": {
+        "human": 43
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/handler/ws_handler.h",
+      "deletions": {
+        "human": 52
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/protocol/data_value.h",
+      "new_path": "windows/x64/cpp/include/omnihand_web/data_value.h",
+      "additions": {
+        "human": 5
+      },
+      "deletions": {
+        "human": 7
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/protocol/json_codec.h",
+      "deletions": {
+        "human": 25
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/protocol/messages.h",
+      "deletions": {
+        "human": 68
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/router/rest_router.h",
+      "deletions": {
+        "human": 20
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/router/static_file_router.h",
+      "deletions": {
+        "human": 16
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/router/ws_router.h",
+      "deletions": {
+        "human": 20
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/service/hand_service.h",
+      "deletions": {
+        "human": 62
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/service/types.h",
+      "deletions": {
+        "human": 178
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/share/cmake/omnihand/Findomnihand.cmake",
+      "new_path": "windows/x64/cpp/share/cmake/omnihand/Findomnihand.cmake",
+      "additions": {
+        "human": 63
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "additions": {
+        "human": 6
+      },
+      "deletions": {
+        "human": 5
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_server.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_server.cc",
+      "additions": {
+        "human": 117
+      },
+      "deletions": {
+        "human": 339
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/server/demo_rest_client.py",
+      "new_path": "windows/x64/python/demo/server/demo_rest_client.py",
+      "additions": {
+        "human": 32
+      },
+      "deletions": {
+        "human": 104
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/server/demo_ws_client.py",
+      "new_path": "windows/x64/python/demo/server/demo_ws_client.py",
+      "additions": {
+        "human": 32
+      },
+      "deletions": {
+        "human": 90
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/server/conftest.py",
+      "deletions": {
+        "human": 16
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/server/test_app.py",
+      "deletions": {
+        "human": 67
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/server/test_routes.py",
+      "deletions": {
+        "human": 166
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/server/test_schemas.py",
+      "deletions": {
+        "human": 192
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/server/test_sdk_resolver.py",
+      "deletions": {
+        "human": 105
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/server/test_ws.py",
+      "deletions": {
+        "human": 38
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_rest_client.py",
+      "deletions": {
+        "human": 85
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_ws_client.py",
+      "deletions": {
+        "human": 80
+      }
+    }
+  ]
+}
