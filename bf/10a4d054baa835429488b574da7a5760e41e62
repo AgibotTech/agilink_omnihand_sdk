@@ -1,0 +1,138 @@
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.13.1",
+  "base_commit_sha": "bf10a4d054baa835429488b574da7a5760e41e62",
+  "prompts": {},
+  "changes": [
+    {
+      "new_path": "windows/x64/python/demo/lingchu/hand_receive_data/README.md",
+      "additions": {
+        "human": 78
+      }
+    },
+    {
+      "new_path": "windows/x64/python/demo/lingchu/hand_receive_data/genie_msgs_pb/__init__.py",
+      "additions": {
+        "human": 5
+      }
+    },
+    {
+      "new_path": "windows/x64/python/demo/lingchu/hand_receive_data/genie_msgs_pb/dynamic_util.py",
+      "additions": {
+        "human": 13
+      }
+    },
+    {
+      "new_path": "windows/x64/python/demo/lingchu/hand_receive_data/genie_msgs_pb/msg/__init__.py",
+      "additions": {
+        "human": 1
+      }
+    },
+    {
+      "new_path": "windows/x64/python/demo/lingchu/hand_receive_data/udp_receive_control.py",
+      "additions": {
+        "human": 254
+      }
+    },
+    {
+      "new_path": "windows/x64/python/demo/lingchu/hand_receive_data/udp_receive_tcp_control.py",
+      "additions": {
+        "human": 317
+      }
+    },
+    {
+      "new_path": "windows/x64/python/test/server/conftest.py",
+      "additions": {
+        "human": 16
+      }
+    },
+    {
+      "new_path": "windows/x64/python/test/server/test_app.py",
+      "additions": {
+        "human": 67
+      }
+    },
+    {
+      "new_path": "windows/x64/python/test/server/test_routes.py",
+      "additions": {
+        "human": 166
+      }
+    },
+    {
+      "new_path": "windows/x64/python/test/server/test_schemas.py",
+      "additions": {
+        "human": 192
+      }
+    },
+    {
+      "new_path": "windows/x64/python/test/server/test_sdk_resolver.py",
+      "additions": {
+        "human": 105
+      }
+    },
+    {
+      "new_path": "windows/x64/python/test/server/test_ws.py",
+      "additions": {
+        "human": 38
+      }
+    },
+    {
+      "new_path": "windows/x64/python/test/test_omnihand_3_ultra_m_t1_3.py",
+      "additions": {
+        "human": 273
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/demo/CMakeLists.txt",
+      "additions": {
+        "human": 7
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/share/cmake/omnihand/Findomnihand.cmake",
+      "new_path": "windows/x64/cpp/share/cmake/omnihand/Findomnihand.cmake",
+      "additions": {
+        "human": 45
+      },
+      "deletions": {
+        "human": 31
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "additions": {
+        "human": 8
+      },
+      "deletions": {
+        "human": 5
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_3_ultra_m.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc",
+      "additions": {
+        "human": 24
+      },
+      "deletions": {
+        "human": 24
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/README.md",
+      "new_path": "windows/x64/python/test/README.md",
+      "additions": {
+        "human": 6
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/README_zh_cn.md",
+      "new_path": "windows/x64/python/test/README_zh_cn.md",
+      "additions": {
+        "human": 6
+      }
+    }
+  ]
+}
