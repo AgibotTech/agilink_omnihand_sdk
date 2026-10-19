@@ -1,88 +1,227 @@
-# OmniHand Server Interface API
+# OmniHand Server
 
-The OmniHand SDK exposes every hand device through two network protocols:
-**WebSocket** (for real-time streaming and RPC) and **REST** (for simple request-response control).
-Both protocols carry JSON payloads and use the same session model.
+The SDK provides one native server implementation that exposes REST and
+WebSocket on the same port. The standalone executable, embedded C++ API, and
+Python binding all use this implementation and therefore share the same routes,
+session store, and protocol behavior.
 
-## Architecture
+## Design
 
+The public C++ surface separates hosting from remote access:
+
+- `omnihand_client` — lightweight remote client without hardware SDK dependencies;
+- `omnihand_server` — embeddable static library;
+- `omnihand_server/server.h` — `ServerOptions` and `OmniHandServer`;
+- `omnihand_server` executable — command-line host built from the same library.
+
+Crow, ASIO, routers, handlers, JSON codecs, and SDK device adapters are private
+implementation details. They are neither included by the public header nor
+installed as public server headers.
+
+```text
+Application / Python binding
+            |
+   OmniHandServer (Pimpl)
+            |
+ REST + WebSocket transport
+            |
+ shared session/device service
+            |
+        libomnihand
 ```
-                 ┌─────────────────────────────────┐
-                 │        omnihand process          │
-                 │  HandService (session store)     │
-                 │  ┌────────────┐ ┌─────────────┐ │
-                 │  │HandWsServer│ │HandRestServer│ │
-                 │  └─────┬──────┘ └──────┬───────┘ │
-                 └────────┼───────────────┼─────────┘
-                          │               │
-          ┌───────────────┼───────────────┼───────────────┐
-          │               │               │               │
-   C++ HandWsClient  Python WS       requests/curl    Web browser
-   (websockets lib)  (websockets)    HTTP client      (index.html)
-```
 
-A single `HandService` can be shared between both servers so that a hand created
-via WebSocket is also visible and controllable via REST.
+Remote applications link `omnihand_client` instead. They do not link
+`omnihand`, CAN drivers, Crow, or the Server implementation.
 
-## Protocol Selection
+`Start()` waits until the listening socket is ready. `Stop()` is idempotent and
+waits for server workers to finish. `Wait()` supports process-style blocking.
+A port value of `0` lets the operating system select an available port; retrieve
+the selected value through `Port()`/`server.port` after startup.
 
-| Protocol | Best for |
-|----------|----------|
-| WebSocket | Real-time joint position streaming, subscriptions, low-latency RPC |
-| REST | Simple scripting, integration with standard HTTP tooling, stateless clients |
+## Standalone executable
 
-Both protocols are functionally equivalent for single-shot method calls.
-
-## Quick Start
-
-### 1. Start the server
-
-**C++ binary (standalone):**
 ```bash
-# WebSocket only
-./omnihand_ws_server 127.0.0.1 8765
-
-# REST only
-./omnihand_rest_server 127.0.0.1 8000
-
-# Both sharing one session store (recommended)
-./omnihand_server 127.0.0.1 8765 8000
+omnihand_server --host 0.0.0.0 --port 8000 --publish-interval-ms 100
 ```
 
-**Python (embedded server):**
+REST is available below `/v1`, WebSocket at `/ws`, health at `/health`, and the
+packaged OpenAPI page at `/docs/` when frontend assets can be located.
+
+## Embedded C++
+
+```cmake
+list(APPEND CMAKE_MODULE_PATH "/usr/local/share/cmake/omnihand")
+find_package(omnihand REQUIRED)
+
+add_executable(my_server main.cpp)
+target_link_libraries(my_server PRIVATE omnihand_server)
+```
+
+On Windows, use `C:/omnihand/share/cmake/omnihand` for the default installation.
+
+```cpp
+#include "omnihand_server/server.h"
+
+int main() {
+  agilink::omnihand::server::ServerOptions options;
+  options.host = "127.0.0.1";
+  options.port = 8000;
+
+  agilink::omnihand::server::OmniHandServer server(options);
+  server.Start();
+  server.Wait();
+}
+```
+
+## C++ client
+
+```cmake
+find_package(omnihand REQUIRED)
+add_executable(my_client main.cpp)
+target_link_libraries(my_client PRIVATE omnihand_client)
+```
+
+```cpp
+#include "omnihand_client/rest_client.h"
+
+using agilink::omnihand::client::OmniHandRestClient;
+OmniHandRestClient client("127.0.0.1", 8000);
+
+auto products = client.ListProductTypes();
+auto methods = client.MethodsForProduct("omnihand_2025");
+```
+
+`CreateHand()`, `DescribeHand()`, `Methods()`, `Call()`, and `RemoveHand()`
+cover remote device sessions and generic SDK calls. Parameters and results use
+the standard-library-only `Value` type. `OmniHandClientError` preserves the
+HTTP status and structured error response for assertions in gtest.
+
+The same library also provides a persistent synchronous WebSocket client for
+commands and stream subscriptions:
+
+```cpp
+#include "omnihand_client/websocket_client.h"
+
+using agilink::omnihand::client::OmniHandWebSocketClient;
+OmniHandWebSocketClient websocket("127.0.0.1", 8000);
+
+auto hands = websocket.ListHands();
+if (!hands.Empty()) {
+  const int hand_id = static_cast<int>(
+      hands.AsArray().front().At("hand_id").AsInt());
+  websocket.Subscribe(hand_id, {"state", "tactile"});
+  auto event = websocket.NextEvent();
+  websocket.Unsubscribe(hand_id, {"state", "tactile"});
+}
+```
+
+`OmniHandWebSocketClient` performs the RFC 6455 handshake and framing, matches
+responses by request ID, handles Ping/Pong, and queues events that arrive while
+a command is waiting for its response. Its transport dependencies remain
+private behind Pimpl.
+
+REST and WebSocket clients connected to the same Server share one hand session
+and one underlying SDK object per `hand_id`. Create the hand once, then reuse
+the returned `hand_id` from either protocol. SDK calls, including subscription
+polls, are serialized per hand. Concurrent create requests for the same
+connection are also serialized and return the existing session. Do not run two
+Server processes, or a Server and a direct SDK owner, against the same physical
+CAN/serial endpoint.
+
+## Embedded Python
+
+Python is intentionally a thin lifecycle binding; it does not reimplement the
+REST/WebSocket routes.
+
 ```python
-from omnihand.websocket import OmniHandWsServer
-from omnihand.restful import OmniHandRestServer
+from omnihand import OmniHandServer, ServerOptions
 
-ws  = OmniHandWsServer(bind_host="127.0.0.1", port=8765)
-rest = OmniHandRestServer(bind_host="127.0.0.1", port=8000,
-                           shared_service=ws.service)
-ws.start()
-rest.start()
-input("Press Enter to stop.")
-rest.stop()
-ws.stop()
+# Binds 0.0.0.0:8000 by default. Passing a port changes only the port.
+server = OmniHandServer(9000)
 ```
 
-### 2. Connect a client
+Use `ServerOptions` for advanced settings:
 
-Choose the client type that fits your use case:
+```python
+from omnihand import OmniHandServer, ServerOptions
 
-| Client | How to run |
-|--------|-----------|
-| C++ WebSocket | `./demo_omnihand_ws_client --host 127.0.0.1 --port 8765 -d zlgcan` |
-| C++ REST | `./demo_omnihand_rest_client --host 127.0.0.1 --port 8000 -d zlgcan` |
-| Python WebSocket | `python python/demo/server/demo_ws_client.py --host 127.0.0.1 --port 8765 -d zlgcan` |
-| Python REST | `python python/demo/server/demo_rest_client.py --host 127.0.0.1 --port 8000 -d zlgcan` |
-| Web browser | Open `python/demo/server/index.html` (edit `configs/host.toml` to set host) |
-| curl | `curl http://127.0.0.1:8000/health` |
+options = ServerOptions()
+options.host = "127.0.0.1"
+options.port = 8000
 
-## Protocol Documentation
+server = OmniHandServer(options)
+server.start()
+try:
+    server.wait()
+finally:
+    server.stop()
+```
 
-- [WebSocket API](API_SERVER_WS.md) — JSON message types, server/client C++ and Python APIs, streaming subscriptions
-- [REST API](API_SERVER_REST.md) — HTTP endpoints, request/response schemas, server/client APIs
+The same server can be started from the command line:
 
-## Related Documentation
+```bash
+python -m omnihand_server --host 127.0.0.1 --port 8000
+```
 
-- [C++ API Reference](API_CPP.md)
-- [Python API Reference](API_PYTHON.md)
+## Python client
+
+`OmniHandRestClient` is the public synchronous REST client. It exposes server and
+session operations while keeping SDK calls generic, so a newly registered
+server method does not require another client wrapper.
+
+```python
+from omnihand_client import OmniHandRestClient
+
+client = OmniHandRestClient("127.0.0.1", 8000)
+hand = client.create_hand(
+    "omnihand_2025",
+    "hcan",
+    {"hand_device_id": 1, "canfd_device_id": 0, "canfd_channel_id": 0},
+)
+try:
+    positions = hand.call("get_all_joint_positions")
+    hand.call("set_all_joint_positions", vec_posi=[2048] * 10)
+finally:
+    hand.close()
+```
+
+`OmniHandWebSocketClient` provides asynchronous commands and stream
+subscriptions. Install its lightweight optional transport dependency with
+`pip install omnihand[client]`.
+
+```python
+async with client.websocket() as websocket:
+    hands = await websocket.list_hands()
+    await websocket.subscribe(hand_id, ["state", "tactile"])
+    event = await websocket.next_event()
+```
+
+## Test strategy
+
+Server compatibility is tested through public behavior rather than private Crow
+router types:
+
+1. Start either the C++ executable or the Python native-server entry point.
+2. `test_omnihand_server` links only `omnihand_client` and covers both
+   `OmniHandRestClient` and `OmniHandWebSocketClient`; the pytest uses only
+   `omnihand_client`. Both test the same external Server and print exact startup
+   commands when they begin or cannot connect.
+3. The Python test does not implement HTTP or WebSocket framing itself.
+4. Hardware-dependent hand creation and motion remain integration tests and are
+   run separately with a connected device.
+
+```bash
+cmake -S . -B build -DBUILD_CPP_TESTS=ON
+cmake --build build --target test_omnihand_server --parallel
+
+# Terminal 1: choose one
+omnihand_server --host 127.0.0.1 --port 8000
+python -m omnihand_server --host 127.0.0.1 --port 8000
+
+# Terminal 2
+ctest --test-dir build -R OmniHandServerTest --output-on-failure
+python -m pytest python/test/test_omnihand_server.py -v
+```
+
+See [REST API](API_SERVER_REST.md) and [WebSocket API](API_SERVER_WS.md) for the
+wire protocol.

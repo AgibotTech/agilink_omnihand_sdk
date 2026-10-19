@@ -2,6 +2,10 @@
 # AGILINK OmniHand SDK is licensed under Mulan PSL v2
 
 cmake_minimum_required(VERSION 3.22)
+project(omnihand_tests LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Option to enable/disable tests
 option(BUILD_CPP_TESTS "Build C++ unit tests" ON)
@@ -163,15 +167,12 @@ if(BUILD_OMNI_PICKER_3)
   add_test(NAME OmniPicker3Test COMMAND test_omnipicker_3)
 endif()
 
-# OmniHand Server tests use a fake IHandDeviceFactory and need no hardware.
+# OmniHand Client tests exercise an externally started Server over public APIs.
 add_executable(test_omnihand_server test_omnihand_server.cc)
 target_link_libraries(
   test_omnihand_server
   PRIVATE
-  omnihand_server_core
-  omnihand_server_crow
-  omnihand_server_json_codec
-  GTest::gtest
+  omnihand_client
   GTest::gtest_main
 )
 set_target_properties(test_omnihand_server PROPERTIES
