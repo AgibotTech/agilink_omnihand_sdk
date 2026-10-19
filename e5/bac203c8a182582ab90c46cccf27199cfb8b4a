@@ -1,0 +1,278 @@
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.13.1",
+  "base_commit_sha": "e5bac203c8a182582ab90c46cccf27199cfb8b4a",
+  "prompts": {},
+  "changes": [
+    {
+      "new_path": "windows/x64/cpp/include/omnihand_client/client_types.h",
+      "additions": {
+        "human": 36
+      }
+    },
+    {
+      "new_path": "windows/x64/cpp/include/omnihand_client/rest_client.h",
+      "additions": {
+        "human": 55
+      }
+    },
+    {
+      "new_path": "windows/x64/cpp/include/omnihand_client/value.h",
+      "additions": {
+        "human": 19
+      }
+    },
+    {
+      "new_path": "windows/x64/cpp/include/omnihand_client/websocket_client.h",
+      "additions": {
+        "human": 69
+      }
+    },
+    {
+      "new_path": "windows/x64/cpp/include/omnihand_server/server.h",
+      "additions": {
+        "human": 60
+      }
+    },
+    {
+      "new_path": "windows/x64/python/test/test_omnihand_server.py",
+      "additions": {
+        "human": 72
+      }
+    },
+    {
+      "old_path": "doc/en/API_SERVER.md",
+      "new_path": "doc/en/API_SERVER.md",
+      "additions": {
+        "human": 201
+      },
+      "deletions": {
+        "human": 62
+      }
+    },
+    {
+      "old_path": "doc/en/API_SERVER_REST.md",
+      "new_path": "doc/en/API_SERVER_REST.md",
+      "additions": {
+        "human": 10
+      },
+      "deletions": {
+        "human": 53
+      }
+    },
+    {
+      "old_path": "doc/en/API_SERVER_WS.md",
+      "new_path": "doc/en/API_SERVER_WS.md",
+      "additions": {
+        "human": 76
+      },
+      "deletions": {
+        "human": 180
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_SERVER.md",
+      "new_path": "doc/zh_cn/API_SERVER.md",
+      "additions": {
+        "human": 189
+      },
+      "deletions": {
+        "human": 62
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_SERVER_WS.md",
+      "new_path": "doc/zh_cn/API_SERVER_WS.md",
+      "additions": {
+        "human": 74
+      },
+      "deletions": {
+        "human": 178
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/adapter/hand_device.h",
+      "deletions": {
+        "human": 42
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/adapter/sdk_hand_device_factory.h",
+      "deletions": {
+        "human": 27
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/app/crow_server.h",
+      "deletions": {
+        "human": 55
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/handler/http_response.h",
+      "deletions": {
+        "human": 25
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/handler/rest_handler.h",
+      "deletions": {
+        "human": 43
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/handler/ws_handler.h",
+      "deletions": {
+        "human": 52
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/protocol/data_value.h",
+      "new_path": "windows/x64/cpp/include/omnihand_web/data_value.h",
+      "additions": {
+        "human": 5
+      },
+      "deletions": {
+        "human": 7
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/protocol/json_codec.h",
+      "deletions": {
+        "human": 25
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/protocol/messages.h",
+      "deletions": {
+        "human": 68
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/router/rest_router.h",
+      "deletions": {
+        "human": 20
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/router/static_file_router.h",
+      "deletions": {
+        "human": 16
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/router/ws_router.h",
+      "deletions": {
+        "human": 20
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/service/hand_service.h",
+      "deletions": {
+        "human": 62
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/service/types.h",
+      "deletions": {
+        "human": 178
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/share/cmake/omnihand/Findomnihand.cmake",
+      "new_path": "windows/x64/cpp/share/cmake/omnihand/Findomnihand.cmake",
+      "additions": {
+        "human": 63
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "additions": {
+        "human": 6
+      },
+      "deletions": {
+        "human": 5
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_server.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_server.cc",
+      "additions": {
+        "human": 117
+      },
+      "deletions": {
+        "human": 339
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/server/demo_rest_client.py",
+      "new_path": "windows/x64/python/demo/server/demo_rest_client.py",
+      "additions": {
+        "human": 32
+      },
+      "deletions": {
+        "human": 104
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/server/demo_ws_client.py",
+      "new_path": "windows/x64/python/demo/server/demo_ws_client.py",
+      "additions": {
+        "human": 32
+      },
+      "deletions": {
+        "human": 90
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/server/conftest.py",
+      "deletions": {
+        "human": 16
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/server/test_app.py",
+      "deletions": {
+        "human": 67
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/server/test_routes.py",
+      "deletions": {
+        "human": 166
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/server/test_schemas.py",
+      "deletions": {
+        "human": 192
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/server/test_sdk_resolver.py",
+      "deletions": {
+        "human": 105
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/server/test_ws.py",
+      "deletions": {
+        "human": 38
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_rest_client.py",
+      "deletions": {
+        "human": 85
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_ws_client.py",
+      "deletions": {
+        "human": 80
+      }
+    }
+  ]
+}
