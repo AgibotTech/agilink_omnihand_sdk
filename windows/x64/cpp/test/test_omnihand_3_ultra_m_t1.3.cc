@@ -13,7 +13,7 @@
 
 using agilink::AgilinkLogger;
 
-static constexpr const char* TAG = "OmniHand3UltraMTest";
+static constexpr const char* TAG = "OmniHand3UltraMT1P3Test";
 
 static int g_request_interval = 5;
 static std::string g_device_type = "zlgcan";
@@ -37,7 +37,7 @@ static std::string ValuesToString(const std::vector<T>& values) {
   return stream.str();
 }
 
-class OmniHand3UltraMTest : public ::testing::Test {
+class OmniHand3UltraMT1P3Test : public ::testing::Test {
  protected:
   void SetUp() override {
     std::string device_type = GetDeviceType();
@@ -70,15 +70,15 @@ class OmniHand3UltraMTest : public ::testing::Test {
   std::unique_ptr<agilink::omnihand::OmniHand3UltraM> hand_;
 };
 
-TEST_F(OmniHand3UltraMTest, CreateHand) {
+TEST_F(OmniHand3UltraMT1P3Test, CreateHand) {
   EXPECT_NE(hand_, nullptr);
 }
 
-TEST_F(OmniHand3UltraMTest, Init) {
+TEST_F(OmniHand3UltraMT1P3Test, Init) {
   bool init_result = hand_->Init();
 }
 
-TEST_F(OmniHand3UltraMTest, GetVendorInfo) {
+TEST_F(OmniHand3UltraMT1P3Test, GetVendorInfo) {
   if (hand_->Init()) {
     auto vendor_info = hand_->GetVendorInfo();
     AgilinkLogger::get().infof(TAG, "[GetVendorInfo] %s", vendor_info.ToString().c_str());
@@ -95,7 +95,7 @@ TEST_F(OmniHand3UltraMTest, GetVendorInfo) {
   }
 }
 
-TEST_F(OmniHand3UltraMTest, GetDeviceInfo) {
+TEST_F(OmniHand3UltraMT1P3Test, GetDeviceInfo) {
   if (hand_->Init()) {
     auto device_info = hand_->GetDeviceInfo();
     AgilinkLogger::get().infof(TAG, "[GetDeviceInfo] %s", device_info.ToString().c_str());
@@ -105,7 +105,7 @@ TEST_F(OmniHand3UltraMTest, GetDeviceInfo) {
   }
 }
 
-TEST_F(OmniHand3UltraMTest, GetNonPrivateHandDeviceIdByBroadcast) {
+TEST_F(OmniHand3UltraMT1P3Test, GetNonPrivateHandDeviceIdByBroadcast) {
   if (!hand_->Init()) return;
 
   const uint8_t device_id = hand_->GetNonPrivateHandDeviceIdByBroadcast();
@@ -113,7 +113,7 @@ TEST_F(OmniHand3UltraMTest, GetNonPrivateHandDeviceIdByBroadcast) {
   EXPECT_EQ(hand_->GetHandDeviceId(), device_id);
 }
 
-TEST_F(OmniHand3UltraMTest, MixControlRejectsInvalidArguments) {
+TEST_F(OmniHand3UltraMT1P3Test, MixControlRejectsInvalidArguments) {
   constexpr size_t kDof = agilink::omnihand::OmniHand3UltraM::kT1P3DegreesOfActiveFreedom;
   const std::vector<int16_t> valid(kDof, 0);
   const std::vector<int16_t> short_values(kDof - 1, 0);
@@ -127,7 +127,7 @@ TEST_F(OmniHand3UltraMTest, MixControlRejectsInvalidArguments) {
   EXPECT_EQ(invalid_pvt.ctrl_mode_, 0);
 }
 
-// TEST_F(OmniHand3UltraMTest, SetDeviceId) {
+// TEST_F(OmniHand3UltraMT1P3Test, SetDeviceId) {
 //   auto current_device_info = hand_->GetDeviceInfo();
 //   unsigned char current_id = current_device_info.hand_device_id;
 //   if (current_id == 0) return;
@@ -147,7 +147,7 @@ TEST_F(OmniHand3UltraMTest, MixControlRejectsInvalidArguments) {
 //   EXPECT_EQ(device_info1.hand_device_id, 9);
 // }
 
-TEST_F(OmniHand3UltraMTest, GestureDance) {
+TEST_F(OmniHand3UltraMT1P3Test, GestureDance) {
   if (!hand_->Init()) return;
 
   constexpr size_t MOTOR_TOTAL_COUNT = 20;
@@ -175,12 +175,12 @@ TEST_F(OmniHand3UltraMTest, GestureDance) {
     std::this_thread::sleep_for(std::chrono::milliseconds(2000));
   }
 
-  // Repeat one safe single-axis transition using axis 2 (SDK index 1).
-  constexpr uint8_t SINGLE_AXIS_INDEX = 1;
-  const int16_t single_axis_positions[] = {512, 4096};
-  for (const int16_t position : single_axis_positions) {
-    const auto feedback = hand_->SetJointMotorPosi(SINGLE_AXIS_INDEX, position);
-    AgilinkLogger::get().infof(TAG, "[GestureDance] Axis 2 -> %d (feedback=%d)",
+  // Repeat one safe single-joint transition using joint 4 (SDK index 4).
+  constexpr uint8_t SINGLE_JOINT_INDEX = 4;
+  const int16_t single_joint_positions[] = {512, 4096};
+  for (const int16_t position : single_joint_positions) {
+    const auto feedback = hand_->SetJointMotorPosi(SINGLE_JOINT_INDEX, position);
+    AgilinkLogger::get().infof(TAG, "[GestureDance] Joint 4 -> %d (feedback=%d)",
                               static_cast<int>(position), static_cast<int>(feedback));
     std::this_thread::sleep_for(std::chrono::milliseconds(2000));
   }
@@ -192,7 +192,7 @@ TEST_F(OmniHand3UltraMTest, GestureDance) {
   AgilinkLogger::get().infof(TAG, "[GestureDance] Done!");
 }
 
-TEST_F(OmniHand3UltraMTest, ControlMode) {
+TEST_F(OmniHand3UltraMT1P3Test, ControlMode) {
   if (hand_->Init()) {
     auto current_modes = hand_->GetAllControlMode();
     if (current_modes.empty() || current_modes.size() != 20) {
@@ -206,7 +206,7 @@ TEST_F(OmniHand3UltraMTest, ControlMode) {
   }
 }
 
-TEST_F(OmniHand3UltraMTest, ErrorReport) {
+TEST_F(OmniHand3UltraMT1P3Test, ErrorReport) {
   if (hand_->Init()) {
     auto error_reports = hand_->GetAllErrorReport();
     if (error_reports.empty()) return;
@@ -222,7 +222,7 @@ TEST_F(OmniHand3UltraMTest, ErrorReport) {
   }
 }
 
-TEST_F(OmniHand3UltraMTest, ClearErrorReport) {
+TEST_F(OmniHand3UltraMT1P3Test, ClearErrorReport) {
   if (hand_->Init()) {
     hand_->ClearAllErrorReport();
     AgilinkLogger::get().infof(TAG, "[ClearAllErrorReport] Done");
@@ -232,7 +232,7 @@ TEST_F(OmniHand3UltraMTest, ClearErrorReport) {
   }
 }
 
-TEST_F(OmniHand3UltraMTest, TemperatureReport) {
+TEST_F(OmniHand3UltraMT1P3Test, TemperatureReport) {
   if (hand_->Init()) {
     auto temp_reports = hand_->GetAllTemperatureReport();
     if (temp_reports.empty()) return;
@@ -247,7 +247,7 @@ TEST_F(OmniHand3UltraMTest, TemperatureReport) {
   }
 }
 
-TEST_F(OmniHand3UltraMTest, CurrentReport) {
+TEST_F(OmniHand3UltraMT1P3Test, CurrentReport) {
   if (hand_->Init()) {
     auto current_reports = hand_->GetAllCurrentReport();
     if (current_reports.empty()) return;
@@ -262,7 +262,7 @@ TEST_F(OmniHand3UltraMTest, CurrentReport) {
   }
 }
 
-TEST_F(OmniHand3UltraMTest, GetAllJointMotorVelo) {
+TEST_F(OmniHand3UltraMT1P3Test, GetAllJointMotorVelo) {
   if (hand_->Init()) {
     auto current_velocities = hand_->GetAllJointMotorVelo();
     if (current_velocities.empty() || current_velocities.size() != 20) {
@@ -276,7 +276,7 @@ TEST_F(OmniHand3UltraMTest, GetAllJointMotorVelo) {
   }
 }
 
-TEST_F(OmniHand3UltraMTest, AxisLimitPos) {
+TEST_F(OmniHand3UltraMT1P3Test, AxisLimitPos) {
   if (hand_->Init()) {
     auto limits = hand_->GetAxisLimitPos();
     if (limits.empty()) {
@@ -292,7 +292,7 @@ TEST_F(OmniHand3UltraMTest, AxisLimitPos) {
   }
 }
 
-TEST_F(OmniHand3UltraMTest, ActualAxisPos) {
+TEST_F(OmniHand3UltraMT1P3Test, ActualAxisPos) {
   if (hand_->Init()) {
     auto actual_pos = hand_->GetAllActualAxisPos();
     if (actual_pos.empty()) {
