@@ -5,6 +5,9 @@ cmake_minimum_required(VERSION 3.22)
 
 # Option to enable/disable tests
 option(BUILD_CPP_TESTS "Build C++ unit tests" ON)
+option(BUILD_OMNIHAND_3_LITE "Build OmniHand 3 Lite tests" ON)
+option(BUILD_OMNIHAND_3_ULTRA_M "Build OmniHand 3 Ultra M tests" ON)
+option(BUILD_OMNI_PICKER_3 "Build OmniPicker 3 tests" ON)
 
 if(NOT BUILD_CPP_TESTS)
   return()
