@@ -1,0 +1,91 @@
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.13.1",
+  "base_commit_sha": "bad7a7305627ce924a5cd52ad8fce35479160c1f",
+  "prompts": {},
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_2025/omnihand_2025_solver.h",
+      "new_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_2025/omnihand_2025_solver.h",
+      "additions": {
+        "human": 5
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h",
+      "new_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h",
+      "additions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h",
+      "new_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h",
+      "additions": {
+        "human": 10
+      },
+      "deletions": {
+        "human": 5
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand.h",
+      "additions": {
+        "human": 14
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_2025.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_2025.h",
+      "additions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "additions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/yudie/Omnihand_o10_yudie.py",
+      "new_path": "windows/x64/python/demo/yudie/Omnihand_o10_yudie.py",
+      "additions": {
+        "human": 18
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/yudie/main.py",
+      "new_path": "windows/x64/python/demo/yudie/main.py",
+      "additions": {
+        "human": 26
+      },
+      "deletions": {
+        "human": 10
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/yudie/o10_hand_service.py",
+      "new_path": "windows/x64/python/demo/yudie/o10_hand_service.py",
+      "additions": {
+        "human": 16
+      },
+      "deletions": {
+        "human": 3
+      }
+    }
+  ]
+}
