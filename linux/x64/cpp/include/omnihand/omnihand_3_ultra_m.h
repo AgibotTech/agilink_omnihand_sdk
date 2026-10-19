@@ -383,6 +383,10 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   std::vector<double> GetAllJointAnglesFromMotorPositions(
       const std::vector<int16_t>& motor_positions) const override;
 
+  std::vector<double> ConvertActiveJointAngles(
+      const std::vector<double>& angles, HandType source_hand,
+      HandType target_hand) const override;
+
   H3UMRevision GetRevision() const {
     return revision_;
   }

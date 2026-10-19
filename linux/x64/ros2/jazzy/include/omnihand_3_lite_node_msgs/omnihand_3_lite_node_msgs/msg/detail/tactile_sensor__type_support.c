@@ -5,9 +5,9 @@
 #include <string.h>
 
 #include "omnihand_3_lite_node_msgs/msg/detail/tactile_sensor__type_support.h"
-#include "omnihand_3_lite_node_msgs/msg/detail/tactile_sensor__functions.h"
-#include "rosidl_typesupport_interface/macros.h"
 #include "omnihand_3_lite_node_msgs/msg/detail/tactile_sensor__struct.h"
+#include "rosidl_typesupport_interface/macros.h"
+#include "omnihand_3_lite_node_msgs/msg/detail/tactile_sensor__functions.h"
 
 #ifdef __cplusplus
 extern "C"

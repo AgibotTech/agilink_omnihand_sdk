@@ -69,6 +69,9 @@ class AGIBOT_EXPORT OmniHand3LiteSolver {
   int16_t SingleActiveJointPos2ActuatorInput(std::size_t joint_index, double rad) const;
   std::vector<double> ActuatorInput2ActiveJointPos(const std::vector<int16_t>& actuator_input) const;
   std::vector<int16_t> ActiveJointPos2ActuatorInput(const std::vector<double>& active_joint_pos) const;
+  static std::vector<double> ConvertActiveJointAngles(
+      const std::vector<double>& active_joint_pos, bool source_is_left,
+      bool target_is_left);
 
  private:
   bool is_left_hand_;

@@ -1,5 +1,5 @@
-#ifndef AGILINK_OMNIHAND_SERVER_PROTOCOL_DATA_VALUE_H
-#define AGILINK_OMNIHAND_SERVER_PROTOCOL_DATA_VALUE_H
+#ifndef AGILINK_OMNIHAND_WEB_DATA_VALUE_H
+#define AGILINK_OMNIHAND_WEB_DATA_VALUE_H
 
 #include <cstdint>
 #include <initializer_list>
@@ -12,8 +12,7 @@
 
 namespace agilink {
 namespace omnihand {
-namespace server {
-namespace protocol {
+namespace web {
 
 class DataValue {
  public:
@@ -104,9 +103,8 @@ class DataValue {
   Storage value_;
 };
 
-}  // namespace protocol
-}  // namespace server
+}  // namespace web
 }  // namespace omnihand
 }  // namespace agilink
 
-#endif  // AGILINK_OMNIHAND_SERVER_PROTOCOL_DATA_VALUE_H
+#endif  // AGILINK_OMNIHAND_WEB_DATA_VALUE_H

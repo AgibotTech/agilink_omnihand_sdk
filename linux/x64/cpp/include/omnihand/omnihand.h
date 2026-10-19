@@ -316,6 +316,20 @@ class AGIBOT_EXPORT OmniHand {
    *         - OmniHand Pro 2025 (O12): 12 values
    */
   virtual std::vector<double> GetAllActiveJointAngles() const { return {}; }
+
+  /**
+   * @brief Converts active-joint angles between left- and right-hand coordinate
+   *        conventions without communicating with the device.
+   * @param angles Active-joint angles in radians, ordered as GetJointNames().
+   * @param source_hand Hand convention used by @p angles.
+   * @param target_hand Desired hand convention.
+   * @return Converted angles. Unsupported products or invalid input return an
+   *         empty vector; converting between identical known hand types returns
+   *         the input unchanged.
+   */
+  virtual std::vector<double> ConvertActiveJointAngles(
+      const std::vector<double>& angles, HandType source_hand,
+      HandType target_hand) const;
   
   /**
    * @brief Gets joint angles of all joints (including active and passive joints).

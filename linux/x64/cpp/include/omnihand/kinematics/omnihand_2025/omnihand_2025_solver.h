@@ -179,6 +179,11 @@ class AGIBOT_EXPORT OmniHand2025Solver {
   std::vector<double>
   ActuatorInput2ActiveJointPos(const std::vector<int> &actuator_input);
 
+  /** Convert active-joint angles between O10 left/right conventions. */
+  static std::vector<double> ConvertActiveJointAngles(
+      const std::vector<double>& active_joint_pos, bool source_is_left,
+      bool target_is_left);
+
   /**
    * @brief Get all joint positions (active + passive)
    * @param active_joint_pos Current active joint positions
