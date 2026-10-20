@@ -63,6 +63,13 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
       uint8_t canfd_channel_id = 0,
       CommunicationLogOptions log_options = {});
 
+  static std::unique_ptr<OmniHand3Lite> createHandMByZlgcan(
+      HandType hand_type,
+      uint8_t hand_device_id,
+      uint8_t canfd_device_id,
+      uint8_t canfd_channel_id = 0,
+      CommunicationLogOptions log_options = {});
+
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by serial number
    * @param hand_type Hand type (left/right)
@@ -74,6 +81,13 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
    * @return A unique pointer to OmniHand3Lite instance, or nullptr if device not found
    */
   static std::unique_ptr<OmniHand3Lite> createHandByZlgcan(
+      HandType hand_type,
+      uint8_t hand_device_id,
+      const std::string& usbcanfd_serial_number,
+      uint8_t canfd_channel_id = 0,
+      CommunicationLogOptions log_options = {});
+
+  static std::unique_ptr<OmniHand3Lite> createHandMByZlgcan(
       HandType hand_type,
       uint8_t hand_device_id,
       const std::string& usbcanfd_serial_number,
@@ -98,6 +112,14 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
       uint16_t tcp_port,
       uint8_t canfd_channel_id = 0,
       CommunicationLogOptions log_options = {});
+
+  static std::unique_ptr<OmniHand3Lite> createHandMByZlgCanTcp(
+      HandType hand_type,
+      uint8_t hand_device_id,
+      const std::string& tcp_host,
+      uint16_t tcp_port,
+      uint8_t canfd_channel_id = 0,
+      CommunicationLogOptions log_options = {});
 #endif  // OMNIHAND_ZLG_TCP_SUPPORTED
 
 #ifdef __linux__
@@ -109,6 +131,12 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
    * @return A unique pointer to OmniHand3Lite instance
    */
   static std::unique_ptr<OmniHand3Lite> createHandSocketCan(
+      HandType hand_type,
+      uint8_t hand_device_id,
+      const std::string& can_interface = "can0",
+      CommunicationLogOptions log_options = {});
+
+  static std::unique_ptr<OmniHand3Lite> createHandMSocketCan(
       HandType hand_type,
       uint8_t hand_device_id,
       const std::string& can_interface = "can0",
@@ -132,6 +160,13 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
       uint8_t canfd_channel_id = 0,
       CommunicationLogOptions log_options = {});
 
+  static std::unique_ptr<OmniHand3Lite> createHandMByHcan(
+      HandType hand_type,
+      uint8_t hand_device_id,
+      uint8_t canfd_device_id,
+      uint8_t canfd_channel_id = 0,
+      CommunicationLogOptions log_options = {});
+
   /**
    * @brief Factory method - HCAN USB CANFD communication (by serial number)
    * @param hand_type Hand type (left/right)
@@ -143,6 +178,13 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
    * @return A unique pointer to OmniHand3Lite instance, or nullptr if device not found
    */
   static std::unique_ptr<OmniHand3Lite> createHandByHcan(
+      HandType hand_type,
+      uint8_t hand_device_id,
+      const std::string& hcan_serial_number,
+      uint8_t canfd_channel_id = 0,
+      CommunicationLogOptions log_options = {});
+
+  static std::unique_ptr<OmniHand3Lite> createHandMByHcan(
       HandType hand_type,
       uint8_t hand_device_id,
       const std::string& hcan_serial_number,
@@ -164,6 +206,15 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
       const std::string& serial_port,
       uint32_t baud_rate = 460800,
       CommunicationLogOptions log_options = {});
+
+  static std::unique_ptr<OmniHand3Lite> createHandMByRs485(
+      HandType hand_type,
+      uint8_t hand_device_id,
+      const std::string& serial_port,
+      uint32_t baud_rate = 460800,
+      CommunicationLogOptions log_options = {});
+
+  h3l::H3LModel GetModel() const { return model_; }
 
   virtual uint8_t GetDefaultNonPrivateHandDeviceId() const = 0;
 
@@ -280,15 +331,20 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
    * @param hand_type Hand type (left/right)
    * @note Product type is fixed to ProductType::OMNIHAND_3_LITE for this class
    */
-  void Reset(unsigned char device_id, HandType hand_type) {
+  void Reset(unsigned char device_id, HandType hand_type,
+             h3l::H3LModel model = h3l::H3LModel::H3L_S) {
     OmniHand::Reset(ProductType::OMNIHAND_3_LITE, device_id, hand_type);
-    solver_ = std::make_unique<h3l::OmniHand3LiteSolver>(hand_type_ == HandType::LEFT);
+    model_ = model;
+    solver_ = std::make_unique<h3l::OmniHand3LiteSolver>(
+        hand_type_ == HandType::LEFT, model_);
   }
 
   void OnHandTypeChanged() override {
-    solver_ = std::make_unique<h3l::OmniHand3LiteSolver>(hand_type_ == HandType::LEFT);
+    solver_ = std::make_unique<h3l::OmniHand3LiteSolver>(
+        hand_type_ == HandType::LEFT, model_);
   }
 
+  h3l::H3LModel model_ = h3l::H3LModel::H3L_S;
   std::unique_ptr<h3l::OmniHand3LiteSolver> solver_;
   static constexpr Int16Bound kActualMotorPositionBound = {0, 4095};
   static constexpr Int16Range kMixCtrlVelocityRange = {0, 23767, 8000}; // unit: rpm
