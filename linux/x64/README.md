@@ -22,6 +22,7 @@ source ros2/setup.bash
 When using a non-default installation prefix, also run:
 
 ```bash
+export PATH="<prefix>/bin:${PATH}"
 export LD_LIBRARY_PATH="<prefix>/lib:${LD_LIBRARY_PATH:-}"
 ```
 

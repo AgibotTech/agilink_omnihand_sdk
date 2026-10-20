@@ -25,6 +25,7 @@ if not exist "%INSTALL_DIR%" mkdir "%INSTALL_DIR%"
 xcopy /E /I /Y "%SCRIPT_DIR%cpp\include" "%INSTALL_DIR%\include" >nul
 xcopy /E /I /Y "%SCRIPT_DIR%cpp\lib" "%INSTALL_DIR%\lib" >nul
 xcopy /E /I /Y "%SCRIPT_DIR%cpp\bin" "%INSTALL_DIR%\bin" >nul
+xcopy /E /I /Y "%SCRIPT_DIR%frontend" "%INSTALL_DIR%\share\omnihand\frontend" >nul
 if exist "%SCRIPT_DIR%cpp\share\cmake\omnihand" (
     xcopy /E /I /Y "%SCRIPT_DIR%cpp\share\cmake\omnihand" "%INSTALL_DIR%\share\cmake\omnihand" >nul
 )

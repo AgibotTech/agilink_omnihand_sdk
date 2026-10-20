@@ -38,34 +38,41 @@ Server 实现。
 ## 独立运行
 
 ```bash
-omnihand_server --host 0.0.0.0 --port 8000 --publish-interval-ms 100
+omnihand_server --port 8000
 ```
 
 REST 位于 `/v1`，WebSocket 位于 `/ws`，健康检查位于 `/health`。能够找到前端
 资源时，OpenAPI 页面位于 `/docs/`。
 
+## 网页前端
+
+启动 Server 后，在浏览器打开：
+
+- 示例页面：<http://127.0.0.1:8000/>
+- OpenAPI：<http://127.0.0.1:8000/docs/>
+
+示例页面通过同一个 REST 和 WebSocket 服务创建设备、调用方法并查看订阅数据。
+SDK 安装包和 Python wheel 均包含前端资源。
+
 ## C++ 嵌入
 
 ```cmake
-list(APPEND CMAKE_MODULE_PATH "/usr/local/share/cmake/omnihand")
+if(WIN32)
+  list(APPEND CMAKE_MODULE_PATH "C:/omnihand/share/cmake/omnihand")
+else()
+  list(APPEND CMAKE_MODULE_PATH "/usr/local/share/cmake/omnihand")
+endif()
 find_package(omnihand REQUIRED)
 
 add_executable(my_server main.cpp)
 target_link_libraries(my_server PRIVATE omnihand_server)
 ```
 
-Windows 默认安装路径对应
-`C:/omnihand/share/cmake/omnihand`。
-
 ```cpp
 #include "omnihand_server/server.h"
 
 int main() {
-  agilink::omnihand::server::ServerOptions options;
-  options.host = "127.0.0.1";
-  options.port = 8000;
-
-  agilink::omnihand::server::OmniHandServer server(options);
+  agilink::omnihand::server::OmniHandServer server(8000);
   server.Start();
   server.Wait();
 }
@@ -126,22 +133,9 @@ Server 与直接使用 SDK 的程序，同时打开同一个 CAN/串口端点。
 Python 只封装原生 Server 的生命周期，不再重新实现一套 REST/WebSocket 路由。
 
 ```python
-from omnihand import OmniHandServer, ServerOptions
+from omnihand import OmniHandServer
 
-# 默认监听 0.0.0.0:8000；传入端口即可修改监听端口。
-server = OmniHandServer(9000)
-```
-
-需要修改其他高级设置时使用 `ServerOptions`：
-
-```python
-from omnihand import OmniHandServer, ServerOptions
-
-options = ServerOptions()
-options.host = "127.0.0.1"
-options.port = 8000
-
-server = OmniHandServer(options)
+server = OmniHandServer(8000)
 server.start()
 try:
     server.wait()
@@ -152,7 +146,7 @@ finally:
 也可以从命令行启动同一个原生 Server：
 
 ```bash
-python -m omnihand_server --host 127.0.0.1 --port 8000
+python -m omnihand_server --port 8000
 ```
 
 ## Python Client
@@ -204,8 +198,8 @@ cmake -S . -B build -DBUILD_CPP_TESTS=ON
 cmake --build build --target test_omnihand_server --parallel
 
 # 终端1：任选一个
-omnihand_server --host 127.0.0.1 --port 8000
-python -m omnihand_server --host 127.0.0.1 --port 8000
+omnihand_server --port 8000
+python -m omnihand_server --port 8000
 
 # 终端2
 ctest --test-dir build -R OmniHandServerTest --output-on-failure

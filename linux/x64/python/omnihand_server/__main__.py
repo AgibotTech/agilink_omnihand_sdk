@@ -1,6 +1,7 @@
 """Command-line entry point for the native OmniHand server."""
 
 import argparse
+from pathlib import Path
 
 from . import OmniHandServer, ServerOptions
 
@@ -19,7 +20,7 @@ def main() -> None:
     options.port = args.port
     options.publish_interval_ms = args.publish_interval_ms
     options.log_level = args.log_level
-    options.static_file_root = args.static_file_root
+    options.static_file_root = args.static_file_root or str(Path(__file__).resolve().parent)
 
     server = OmniHandServer(options)
     server.start()

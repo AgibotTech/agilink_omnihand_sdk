@@ -41,33 +41,42 @@ the selected value through `Port()`/`server.port` after startup.
 ## Standalone executable
 
 ```bash
-omnihand_server --host 0.0.0.0 --port 8000 --publish-interval-ms 100
+omnihand_server --port 8000
 ```
 
 REST is available below `/v1`, WebSocket at `/ws`, health at `/health`, and the
 packaged OpenAPI page at `/docs/` when frontend assets can be located.
 
+## Web frontend
+
+After starting the Server, open:
+
+- Demo UI: <http://127.0.0.1:8000/>
+- OpenAPI: <http://127.0.0.1:8000/docs/>
+
+The Demo UI uses the same REST and WebSocket endpoints to create a hand, call
+methods, and view subscribed data. Frontend assets are included by the SDK
+installer and Python wheel.
+
 ## Embedded C++
 
 ```cmake
-list(APPEND CMAKE_MODULE_PATH "/usr/local/share/cmake/omnihand")
+if(WIN32)
+  list(APPEND CMAKE_MODULE_PATH "C:/omnihand/share/cmake/omnihand")
+else()
+  list(APPEND CMAKE_MODULE_PATH "/usr/local/share/cmake/omnihand")
+endif()
 find_package(omnihand REQUIRED)
 
 add_executable(my_server main.cpp)
 target_link_libraries(my_server PRIVATE omnihand_server)
 ```
 
-On Windows, use `C:/omnihand/share/cmake/omnihand` for the default installation.
-
 ```cpp
 #include "omnihand_server/server.h"
 
 int main() {
-  agilink::omnihand::server::ServerOptions options;
-  options.host = "127.0.0.1";
-  options.port = 8000;
-
-  agilink::omnihand::server::OmniHandServer server(options);
+  agilink::omnihand::server::OmniHandServer server(8000);
   server.Start();
   server.Wait();
 }
@@ -134,22 +143,9 @@ Python is intentionally a thin lifecycle binding; it does not reimplement the
 REST/WebSocket routes.
 
 ```python
-from omnihand import OmniHandServer, ServerOptions
+from omnihand import OmniHandServer
 
-# Binds 0.0.0.0:8000 by default. Passing a port changes only the port.
-server = OmniHandServer(9000)
-```
-
-Use `ServerOptions` for advanced settings:
-
-```python
-from omnihand import OmniHandServer, ServerOptions
-
-options = ServerOptions()
-options.host = "127.0.0.1"
-options.port = 8000
-
-server = OmniHandServer(options)
+server = OmniHandServer(8000)
 server.start()
 try:
     server.wait()
@@ -160,7 +156,7 @@ finally:
 The same server can be started from the command line:
 
 ```bash
-python -m omnihand_server --host 127.0.0.1 --port 8000
+python -m omnihand_server --port 8000
 ```
 
 ## Python client
@@ -215,8 +211,8 @@ cmake -S . -B build -DBUILD_CPP_TESTS=ON
 cmake --build build --target test_omnihand_server --parallel
 
 # Terminal 1: choose one
-omnihand_server --host 127.0.0.1 --port 8000
-python -m omnihand_server --host 127.0.0.1 --port 8000
+omnihand_server --port 8000
+python -m omnihand_server --port 8000
 
 # Terminal 2
 ctest --test-dir build -R OmniHandServerTest --output-on-failure

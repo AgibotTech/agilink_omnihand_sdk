@@ -21,6 +21,7 @@ source ros2/setup.bash
 如果将 SDK 安装到非默认前缀，还需要：
 
 ```bash
+export PATH="<prefix>/bin:${PATH}"
 export LD_LIBRARY_PATH="<prefix>/lib:${LD_LIBRARY_PATH:-}"
 ```
 
