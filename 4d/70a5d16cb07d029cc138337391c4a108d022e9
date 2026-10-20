@@ -1,0 +1,75 @@
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.13.1",
+  "base_commit_sha": "4d70a5d16cb07d029cc138337391c4a108d022e9",
+  "prompts": {},
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_2025/omnihand_2025_solver.h",
+      "new_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_2025/omnihand_2025_solver.h",
+      "additions": {
+        "human": 5
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h",
+      "new_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h",
+      "additions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h",
+      "new_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h",
+      "additions": {
+        "human": 6
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_pro_2025/omnihand_pro_2025_solver.h",
+      "new_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_pro_2025/omnihand_pro_2025_solver.h",
+      "additions": {
+        "human": 13
+      },
+      "deletions": {
+        "human": 10
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand.h",
+      "additions": {
+        "human": 5
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_2025.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_2025.h",
+      "additions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "additions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_pro_2025.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_pro_2025.h",
+      "additions": {
+        "human": 8
+      }
+    }
+  ]
+}
