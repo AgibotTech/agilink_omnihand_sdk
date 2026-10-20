@@ -248,10 +248,13 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
     return kMixCtrlTorqueRange;
   }
 
-  static constexpr FloatBound GetMinMaxActivateJointAngle(uint8_t joint_motor_index, HandType hand_type) {
+  static constexpr FloatBound GetMinMaxActivateJointAngle(
+      uint8_t joint_motor_index, HandType hand_type,
+      h3l::H3LModel model = h3l::H3LModel::H3L_S) {
     if (joint_motor_index <= 0 || joint_motor_index > kDegreesOfActiveFreedom) return {};
     return h3l::OmniHand3LiteSolver::GetActivateJointAngleRange(
-        static_cast<h3l::H3LActivateJoint>(joint_motor_index - 1), hand_type == HandType::LEFT);
+        static_cast<h3l::H3LActivateJoint>(joint_motor_index - 1),
+        hand_type == HandType::LEFT, model);
   }
 
   // ============ Gesture Control ============
