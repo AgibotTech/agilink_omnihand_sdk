@@ -317,6 +317,14 @@ class AGIBOT_EXPORT OmniHandPro2025 : public OmniHand, public IControlMode {
   std::vector<double> GetAllJointAnglesFromMotorPositions(
       const std::vector<int16_t>& motor_positions) const override;
 
+  std::vector<double> ConvertActiveJointAngles(
+      const std::vector<double>& angles, HandType source_hand,
+      HandType target_hand) const override;
+
+  std::vector<int16_t> ConvertJointMotorPositions(
+      const std::vector<int16_t>& positions, HandType source_hand,
+      HandType target_hand) const override;
+
   /**
    * @brief Returns the min/max motor position range (unit: motor ticks) for a joint motor.
    * @param joint_motor_index Joint motor index (1-12)

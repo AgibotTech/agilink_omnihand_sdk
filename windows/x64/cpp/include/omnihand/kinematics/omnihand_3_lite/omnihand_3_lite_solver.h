@@ -84,6 +84,9 @@ class AGIBOT_EXPORT OmniHand3LiteSolver {
   static std::vector<double> ConvertActiveJointAngles(
       const std::vector<double>& active_joint_pos, bool source_is_left,
       bool target_is_left);
+  std::vector<int16_t> ConvertJointMotorPositions(
+      const std::vector<int16_t>& positions, bool source_is_left,
+      bool target_is_left) const;
   H3LModel GetModel() const { return model_; }
 
   using JointMotorCalibTable =

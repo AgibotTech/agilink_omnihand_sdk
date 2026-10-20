@@ -192,6 +192,11 @@ class AGIBOT_EXPORT OmniHand3UltraMSolver {
       const std::vector<double>& active_joint_pos, bool source_is_left,
       bool target_is_left) const;
 
+  /** Convert motor positions between H3UM left/right hands. */
+  std::vector<int16_t> ConvertJointMotorPositions(
+      const std::vector<int16_t>& positions, bool source_is_left,
+      bool target_is_left) const;
+
   /**
    * @brief Single-joint conversion by index (for joint-name / index access APIs).
    * @param joint_index Range [0, 20); out-of-range indices are clamped.
@@ -209,6 +214,7 @@ class AGIBOT_EXPORT OmniHand3UltraMSolver {
 
  private:
   bool is_left_hand_;
+  H3UMRevision revision_;
   std::size_t active_joint_count_;
   const JointMotorCalib* table_;  // Points to either kLeft or kRight.
 

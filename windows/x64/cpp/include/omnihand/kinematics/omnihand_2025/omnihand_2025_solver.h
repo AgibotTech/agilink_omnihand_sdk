@@ -184,6 +184,11 @@ class AGIBOT_EXPORT OmniHand2025Solver {
       const std::vector<double>& active_joint_pos, bool source_is_left,
       bool target_is_left);
 
+  /** Convert motor positions between O10 left/right hands. */
+  static std::vector<int16_t> ConvertJointMotorPositions(
+      const std::vector<int16_t>& positions, bool source_is_left,
+      bool target_is_left);
+
   /**
    * @brief Get all joint positions (active + passive)
    * @param active_joint_pos Current active joint positions
