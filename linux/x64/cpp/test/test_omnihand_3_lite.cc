@@ -126,6 +126,7 @@ class OmniHand3LiteTest : public ::testing::Test {
 
     int request_interval = GetRequestInterval();
     hand_->SetRequestInterval(request_interval);
+    hand_->SetFrameRecvTimeout(100);
     AgilinkLogger::get().infof(TAG, "Using frame recv timeout: %d ms", hand_->GetFrameRecvTimeout());
     hand_->ShowDataDetails(true);
     if (request_interval != 0) {

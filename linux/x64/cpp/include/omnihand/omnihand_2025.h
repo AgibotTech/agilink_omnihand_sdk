@@ -233,6 +233,10 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
       const std::vector<double>& angles, HandType source_hand,
       HandType target_hand) const override;
 
+  std::vector<int16_t> ConvertJointMotorPositions(
+      const std::vector<int16_t>& positions, HandType source_hand,
+      HandType target_hand) const override;
+
   static constexpr Int16Bound GetMinMaxMotorPosition(uint8_t joint_motor_index) {
     (void)joint_motor_index;
     return o10::OmniHand2025Solver::GetMotorPositionRange();

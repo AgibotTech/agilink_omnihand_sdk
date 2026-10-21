@@ -3,7 +3,7 @@
 
 /**
  * @file omnihand_3_lite_solver.h
- * @brief Simple hand-gesture solver for OmniHand 3 Lite (H3L, 4-DOF).
+ * @brief Joint-angle solver for OmniHand 3 Lite S/M (H3L, 4-DOF).
  *
  * Motors 1 and 4 are reversed between left and right hands.
  * Preset gesture positions are defined for the right hand; the solver
@@ -13,6 +13,7 @@
 #ifndef AGILINK_OMNIHAND_3_LITE_SOLVER_H
 #define AGILINK_OMNIHAND_3_LITE_SOLVER_H
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <exception>
@@ -24,6 +25,11 @@
 namespace agilink {
 namespace omnihand {
 namespace h3l {
+enum class H3LModel : uint8_t {
+  H3L_S = 0,
+  H3L_M = 1,
+};
+
 enum class H3LActivateJoint {
   H3L_ACTIVATE_JOINT_MRP_PIP = 0,
   H3L_ACTIVATE_JOINT_INDEX_PIP,
@@ -49,17 +55,23 @@ class AGIBOT_EXPORT OmniHand3LiteSolver {
     int16_t actuator_max;  // Actuator input that corresponds to rad_max.
   };
   explicit OmniHand3LiteSolver(bool is_left_hand);
+  OmniHand3LiteSolver(bool is_left_hand, H3LModel model);
   ~OmniHand3LiteSolver() = default;
   std::vector<int> SetHandGesture(OmniHand3LiteGesture gesture) const;
   static constexpr Int16Bound GetMotorPositionRange() {
     return {kActuatorInputMin, kActuatorInputMax};
   }
 
-  static constexpr FloatBound GetActivateJointAngleRange(H3LActivateJoint joint_index, bool is_left_hand) {
+  static constexpr FloatBound GetActivateJointAngleRange(
+      H3LActivateJoint joint_index, bool is_left_hand,
+      H3LModel model = H3LModel::H3L_S) {
+    (void)is_left_hand;
     if (joint_index == H3LActivateJoint::H3L_ACTIVATE_JOINT_COUNT) {
       return {};
     }
-    const JointMotorCalib& calib = (is_left_hand ? kLeft : kRight)[static_cast<std::size_t>(joint_index)];
+    const JointMotorCalib& calib =
+        GetCalibrationTable(is_left_hand, model)
+            [static_cast<std::size_t>(joint_index)];
     return FloatBound{
       static_cast<float>(calib.rad_min),
       static_cast<float>(calib.rad_max)
@@ -72,22 +84,56 @@ class AGIBOT_EXPORT OmniHand3LiteSolver {
   static std::vector<double> ConvertActiveJointAngles(
       const std::vector<double>& active_joint_pos, bool source_is_left,
       bool target_is_left);
+  std::vector<int16_t> ConvertJointMotorPositions(
+      const std::vector<int16_t>& positions, bool source_is_left,
+      bool target_is_left) const;
+  H3LModel GetModel() const { return model_; }
+
+  using JointMotorCalibTable =
+      std::array<JointMotorCalib, kActiveJointCount>;
+
+  // Active-joint order: MRP/index PIP, thumb PIP, thumb ABAD/rolling.
+  // URDF limits are conservatively rounded inward to six decimal places:
+  // lower limits use ceil and upper limits use floor.
+  // Each entry is {rad_min, rad_max, actuator_at_rad_min,
+  // actuator_at_rad_max}, so the complete linear mapping stays together.
+  inline static constexpr JointMotorCalibTable kH3LSRight = {{
+      {0.000000, 1.396263, kActuatorInputMax, kActuatorInputMin},
+      {0.000000, 1.396263, kActuatorInputMax, kActuatorInputMin},
+      {0.000000, 1.169370, kActuatorInputMax, kActuatorInputMin},
+      {-0.767944, 0.802851, kActuatorInputMax, kActuatorInputMin},
+  }};
+  inline static constexpr JointMotorCalibTable kH3LSLeft = {{
+      {0.000000, 1.396263, kActuatorInputMin, kActuatorInputMax},
+      {0.000000, 1.396263, kActuatorInputMax, kActuatorInputMin},
+      {0.000000, 1.169370, kActuatorInputMin, kActuatorInputMax},
+      {-0.767944, 0.802851, kActuatorInputMin, kActuatorInputMax},
+  }};
+  inline static constexpr JointMotorCalibTable kH3LMRight = {{
+      {0.000000, 1.570796, kActuatorInputMax, kActuatorInputMin},
+      {0.000000, 1.570796, kActuatorInputMax, kActuatorInputMin},
+      {0.000000, 0.907571, kActuatorInputMax, kActuatorInputMin},
+      {0.000000, 1.570796, kActuatorInputMax, kActuatorInputMin},
+  }};
+  inline static constexpr JointMotorCalibTable kH3LMLeft = {{
+      {0.000000, 1.570796, kActuatorInputMin, kActuatorInputMax},
+      {0.000000, 1.570796, kActuatorInputMax, kActuatorInputMin},
+      {0.000000, 0.907571, kActuatorInputMin, kActuatorInputMax},
+      {0.000000, 1.570796, kActuatorInputMin, kActuatorInputMax},
+  }};
 
  private:
+  static constexpr const JointMotorCalibTable& GetCalibrationTable(
+      bool is_left_hand, H3LModel model) {
+    if (model == H3LModel::H3L_M) {
+      return is_left_hand ? kH3LMLeft : kH3LMRight;
+    }
+    return is_left_hand ? kH3LSLeft : kH3LSRight;
+  }
+
   bool is_left_hand_;
-  const JointMotorCalib* table_;  // Points to either kLeft or kRight.
-  static constexpr JointMotorCalib kRight[kActiveJointCount] = {
-      {0, 1.58, kActuatorInputMax, kActuatorInputMin},
-      {0, 1.58, kActuatorInputMax, kActuatorInputMin},
-      {0.01, 1.59, kActuatorInputMax, kActuatorInputMin},
-      {-0.01, 1.58, kActuatorInputMax, kActuatorInputMin},
-  };
-  static constexpr JointMotorCalib kLeft[kActiveJointCount] = {
-      {0, 1.58, kActuatorInputMin, kActuatorInputMax},
-      {0, 1.58, kActuatorInputMax, kActuatorInputMin},
-      {0.01, 1.59, kActuatorInputMin, kActuatorInputMax},
-      {-0.01, 1.58, kActuatorInputMin, kActuatorInputMax},
-  };
+  H3LModel model_;
+  const JointMotorCalibTable* table_;
 };
 }  // namespace h3l
 }  // namespace omnihand

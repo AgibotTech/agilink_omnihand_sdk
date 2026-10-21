@@ -47,6 +47,7 @@ except ImportError:
 
 from omnihand import (
     Finger,
+    H3LModel,
     HandType,
     MixControlMode,
     MixCtrl,
@@ -299,14 +300,49 @@ def _validate_mix_result(result, feedback_count, frame_count, operation):
 
 # Hardware-independent API checks
 
+@pytest.mark.parametrize("model", [H3LModel.H3L_S, H3LModel.H3L_M])
 @pytest.mark.parametrize("is_left_hand", [False, True])
-def test_solver_round_trip_handles_reversed_motors(is_left_hand):
-    solver = OmniHand3LiteSolver(is_left_hand)
+def test_solver_round_trip_handles_reversed_motors(is_left_hand, model):
+    solver = OmniHand3LiteSolver(is_left_hand, model)
     actuator_input = [0, 1024, 2048, 4096]
     angles = solver.actuator_input_to_active_joint_pos(actuator_input)
     assert len(angles) == DOF
     recovered = solver.active_joint_pos_to_actuator_input(angles)
     assert recovered == pytest.approx(actuator_input, abs=1)
+
+
+@pytest.mark.parametrize(
+    ("model", "expected"),
+    [
+        (
+            H3LModel.H3L_S,
+            [
+                (0.000000, 1.396263),
+                (0.000000, 1.396263),
+                (0.000000, 1.169370),
+                (-0.767944, 0.802851),
+            ],
+        ),
+        (
+            H3LModel.H3L_M,
+            [
+                (0.000000, 1.570796),
+                (0.000000, 1.570796),
+                (0.000000, 0.907571),
+                (0.000000, 1.570796),
+            ],
+        ),
+    ],
+)
+def test_solver_model_angle_ranges_use_inward_rounded_urdf_limits(
+    model, expected
+):
+    solver = OmniHand3LiteSolver(False, model)
+    assert solver.get_model() == model
+    for joint_index, (lower, upper) in enumerate(expected):
+        bounds = solver.get_active_joint_angle_range(joint_index, model)
+        assert bounds.min_value == pytest.approx(lower, abs=1e-7)
+        assert bounds.max_value == pytest.approx(upper, abs=1e-7)
 
 
 def test_safe_api_surface():

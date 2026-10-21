@@ -387,6 +387,10 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
       const std::vector<double>& angles, HandType source_hand,
       HandType target_hand) const override;
 
+  std::vector<int16_t> ConvertJointMotorPositions(
+      const std::vector<int16_t>& positions, HandType source_hand,
+      HandType target_hand) const override;
+
   H3UMRevision GetRevision() const {
     return revision_;
   }
