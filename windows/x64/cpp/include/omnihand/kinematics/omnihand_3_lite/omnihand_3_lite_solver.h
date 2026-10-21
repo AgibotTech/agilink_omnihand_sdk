@@ -106,7 +106,7 @@ class AGIBOT_EXPORT OmniHand3LiteSolver {
   inline static constexpr JointMotorCalibTable kH3LSLeft = {{
       {0.000000, 1.396263, kActuatorInputMin, kActuatorInputMax},
       {0.000000, 1.396263, kActuatorInputMax, kActuatorInputMin},
-      {0.000000, 1.169370, kActuatorInputMin, kActuatorInputMax},
+      {0.000000, 1.169370, kActuatorInputMax, kActuatorInputMin},
       {-0.767944, 0.802851, kActuatorInputMin, kActuatorInputMax},
   }};
   inline static constexpr JointMotorCalibTable kH3LMRight = {{
@@ -118,7 +118,7 @@ class AGIBOT_EXPORT OmniHand3LiteSolver {
   inline static constexpr JointMotorCalibTable kH3LMLeft = {{
       {0.000000, 1.570796, kActuatorInputMin, kActuatorInputMax},
       {0.000000, 1.570796, kActuatorInputMax, kActuatorInputMin},
-      {0.000000, 0.907571, kActuatorInputMin, kActuatorInputMax},
+      {0.000000, 0.907571, kActuatorInputMax, kActuatorInputMin},
       {0.000000, 1.570796, kActuatorInputMin, kActuatorInputMax},
   }};
 
