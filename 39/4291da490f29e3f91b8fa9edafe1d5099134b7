@@ -1,0 +1,26 @@
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.13.1",
+  "base_commit_sha": "394291da490f29e3f91b8fa9edafe1d5099134b7",
+  "prompts": {},
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h",
+      "new_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_3_lite.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_3_lite.cc",
+      "additions": {
+        "human": 1
+      }
+    }
+  ]
+}
