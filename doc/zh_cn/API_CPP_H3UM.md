@@ -103,6 +103,85 @@ std::vector<double> GetAllActiveJointAngles() const;
 
 手支持 CSP（`ControlMode::POSITION`，值为 `0`）和 PP（`ControlMode::PROFILE_POSITION`，值为 `7`）。CSP/PP 与“仅位置”或“位置+力矩”的控制类型相互独立。
 
+### CSP 连续控制
+
+```cpp
+bool StartCsp(double max_velocity_ticks_per_second);
+bool SetCspTarget(const std::vector<int16_t>& positions);
+void StopCsp();
+bool IsCspRunning() const;
+```
+
+`StartCsp` 使用当前位置启动固定 500 Hz 后台发送，将请求间隔设为 `2 ms`，并按 `max_velocity_ticks_per_second` 限制位置变化。该参数是 motor tick/s，不是发送频率。调用者只需在目标变化时调用 `SetCspTarget`。`StopCsp` 恢复启动前的控制模式和请求间隔。
+
+```cpp
+if (hand->StartCsp(1000.0)) {
+  hand->SetCspTarget(target_positions);
+  // ...持续更新目标...
+  hand->StopCsp();
+}
+```
+
+### CSP 动作序列
+
+```cpp
+struct CspSequence {
+  std::vector<uint32_t> timestamps_ms;
+  // 按行展开：point_count * joint_count。
+  std::vector<int16_t> positions;
+};
+
+bool PlaySequence(CspSequence&& sequence);
+void StopSequence();
+bool IsSequencePlaying() const;
+```
+
+当前位置是 `0 ms` 的隐式起点，SDK按时间戳线性插值并以500 Hz发送。播放结束后持续保持最后一点，直到调用 `StopSequence()`。
+
+```cpp
+CspSequence sequence;
+sequence.timestamps_ms = {500, 1200};
+sequence.positions.reserve(2 * pose_a.size());
+sequence.positions.insert(sequence.positions.end(), pose_a.begin(), pose_a.end());
+sequence.positions.insert(sequence.positions.end(), pose_b.begin(), pose_b.end());
+hand->PlaySequence(std::move(sequence));
+```
+
+两块连续数组避免大轨迹为每个点单独分配内存。通过 `std::move` 将数据交给异步播放器，不产生额外复制。如果显式提供 `0 ms` 点，其位置必须与设备当前位置一致。
+
+已有动作容器（例如 toolbox 的 `std::vector<SeqStep>`）可直接通过数据源播放，无需转成连续数组：
+
+```cpp
+bool PlaySequence(CspSequenceSource source);
+```
+
+数据源持有原容器的 `shared_ptr` 和静态读取函数。读取函数将第 `index` 步的位置写入 SDK 提供的缓冲区，并返回从上一目标到本步目标的 `duration_ms`；第 0 步从设备当前位置开始。除第 0 步可为 `0 ms` 外，持续时间必须大于 0。
+
+以下读取函数可定义为 toolbox `ControlPanelBackend` 的静态成员；`SeqStep` 是已有类型：
+
+```cpp
+static bool ReadCspPoint(const void* data, size_t index,
+                         uint32_t& duration_ms, int16_t* positions,
+                         size_t joint_count) {
+  const auto& steps = *static_cast<const std::vector<SeqStep>*>(data);
+  const auto& step = steps.at(index);
+  if (step.positions.size() != joint_count || step.delay_ms <= 0) {
+    return false;
+  }
+  duration_ms = static_cast<uint32_t>(step.delay_ms);
+  for (size_t j = 0; j < joint_count; ++j) {
+    positions[j] = static_cast<int16_t>(step.positions[j]);
+  }
+  return true;
+}
+
+// stepsCopy 是已有播放数据的 shared_ptr，无需再打包关节数组。
+CspSequenceSource source{stepsCopy, stepsCopy->size(), &ReadCspPoint};
+bool started = hand->PlaySequence(std::move(source));
+```
+
+SDK 在启动时校验数据，播放时只缓存相邻两步。读取函数应只读内存；播放期间原数据保持不变，未解析的动作/手势需提前解析，`none` 步骤需由上层明确处理。SDK 持有数据所有者直到 `StopSequence()`，停止后释放自己的引用。
+
 ## 混合控制
 
 ```cpp

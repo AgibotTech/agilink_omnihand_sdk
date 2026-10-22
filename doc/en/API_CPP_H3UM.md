@@ -103,6 +103,72 @@ std::vector<double> GetAllActiveJointAngles() const;
 
 The hand supports CSP (`ControlMode::POSITION`, value `0`) and PP (`ControlMode::PROFILE_POSITION`, value `7`). Control mode is independent of whether position-only or position+torque commands are used.
 
+### Continuous CSP Control
+
+```cpp
+bool StartCsp(double max_velocity_ticks_per_second);
+bool SetCspTarget(const std::vector<int16_t>& positions);
+void StopCsp();
+bool IsCspRunning() const;
+```
+
+`StartCsp` starts a fixed 500 Hz background stream from the current position, sets the request interval to `2 ms`, and limits motion by `max_velocity_ticks_per_second`. This parameter is measured in motor ticks per second; it is not the send frequency. Callers only update changed targets through `SetCspTarget`. `StopCsp` restores the previous control modes and request interval.
+
+```cpp
+if (hand->StartCsp(1000.0)) {
+  hand->SetCspTarget(target_positions);
+  // ...update the target as needed...
+  hand->StopCsp();
+}
+```
+
+### CSP Sequence Playback
+
+```cpp
+struct CspSequence {
+  std::vector<uint32_t> timestamps_ms;
+  // Row-major: point_count * joint_count.
+  std::vector<int16_t> positions;
+};
+
+bool PlaySequence(CspSequence&& sequence);
+void StopSequence();
+bool IsSequencePlaying() const;
+```
+
+The current position is the implicit point at `0 ms`. The SDK linearly interpolates timestamped points and sends them at 500 Hz. After playback, it keeps sending the final point until `StopSequence()` is called.
+
+```cpp
+CspSequence sequence;
+sequence.timestamps_ms = {500, 1200};
+sequence.positions.reserve(2 * pose_a.size());
+sequence.positions.insert(sequence.positions.end(), pose_a.begin(), pose_a.end());
+sequence.positions.insert(sequence.positions.end(), pose_b.begin(), pose_b.end());
+hand->PlaySequence(std::move(sequence));
+```
+
+The two contiguous arrays avoid one allocation per point for large trajectories. Pass the sequence with `std::move` to transfer its storage to the asynchronous player without copying. An explicit point at `0 ms` must match the current device position.
+
+An existing action container can be used directly through a source:
+
+```cpp
+bool PlaySequence(CspSequenceSource source);
+
+struct CspSequenceSource {
+  using ReadPoint = bool (*)(const void*, size_t index,
+                            uint32_t& duration_ms, int16_t* positions,
+                            size_t joint_count);
+  std::shared_ptr<const void> data;
+  size_t point_count;
+  ReadPoint read_point;
+};
+
+CspSequenceSource source{existing_steps, existing_steps->size(), &ReadCspPoint};
+bool started = hand->PlaySequence(std::move(source));
+```
+
+The static reader writes one point into the SDK-provided buffer and returns the duration from the previous target to this target. Point 0 starts from the current device position. Durations must be positive, except point 0 may have zero duration if it matches the current position. The SDK validates points before starting and caches only two adjacent points during playback. The reader must access memory without blocking, and the source data must remain unchanged. Resolve action/gesture references and handle non-position steps before playback. The SDK retains the shared owner until `StopSequence()` releases its reference.
+
 ## Mixed Control
 
 ```cpp
