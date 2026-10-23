@@ -1,0 +1,138 @@
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.13.1",
+  "base_commit_sha": "3df932ef1751d5ff54506ecf4f587e7afec6d6cd",
+  "prompts": {},
+  "changes": [
+    {
+      "new_path": "windows/x64/cpp/test/test_omnihand_3_lite_gestures.cc",
+      "additions": {
+        "human": 192
+      }
+    },
+    {
+      "new_path": "windows/x64/cpp/test/test_omnihand_3_lite_solver.cc",
+      "additions": {
+        "human": 98
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_lite/O4_demo_canfd_id.cc",
+      "new_path": "windows/x64/cpp/demo/omnihand_3_lite/O4_demo_canfd_id.cc",
+      "additions": {
+        "human": 6
+      },
+      "deletions": {
+        "human": 6
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_lite/O4_demo_canfd_serial.cc",
+      "new_path": "windows/x64/cpp/demo/omnihand_3_lite/O4_demo_canfd_serial.cc",
+      "additions": {
+        "human": 12
+      },
+      "deletions": {
+        "human": 12
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h",
+      "new_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h",
+      "additions": {
+        "human": 50
+      },
+      "deletions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "additions": {
+        "human": 6
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "additions": {
+        "human": 9
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_3_lite.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_3_lite.cc",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_3_lite/demo_canfd_id.py",
+      "new_path": "windows/x64/python/demo/omnihand_3_lite/demo_canfd_id.py",
+      "additions": {
+        "human": 8
+      },
+      "deletions": {
+        "human": 8
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_3_lite/demo_canfd_serial.py",
+      "new_path": "windows/x64/python/demo/omnihand_3_lite/demo_canfd_serial.py",
+      "additions": {
+        "human": 8
+      },
+      "deletions": {
+        "human": 8
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_3_lite/demo_set_motor.py",
+      "new_path": "windows/x64/python/demo/omnihand_3_lite/demo_set_motor.py",
+      "additions": {
+        "human": 8
+      },
+      "deletions": {
+        "human": 8
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_3_lite/demo_socketcan.py",
+      "new_path": "windows/x64/python/demo/omnihand_3_lite/demo_socketcan.py",
+      "additions": {
+        "human": 8
+      },
+      "deletions": {
+        "human": 8
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_3_lite/demo_zlgcan_tcp.py",
+      "new_path": "windows/x64/python/demo/omnihand_3_lite/demo_zlgcan_tcp.py",
+      "additions": {
+        "human": 8
+      },
+      "deletions": {
+        "human": 8
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_omnihand_3_lite.py",
+      "new_path": "windows/x64/python/test/test_omnihand_3_lite.py",
+      "additions": {
+        "human": 62
+      },
+      "deletions": {
+        "human": 3
+      }
+    }
+  ]
+}
