@@ -422,8 +422,8 @@ TEST_F(OmniHand3LiteTest, JointAngleControl) {
 TEST_F(OmniHand3LiteTest, SetHandGesture) {
   ASSERT_TRUE(hand_->Init()) << "Failed to initialize device";
 
-  hand_->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_FIST);
-  AgilinkLogger::get().infof(TAG, "[SetHandGesture] FIST gesture set");
+  hand_->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_OK);
+  AgilinkLogger::get().infof(TAG, "[SetHandGesture] OK gesture set");
 }
 
 // // Test velocity control (requires hardware)

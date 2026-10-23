@@ -6,8 +6,8 @@
  * @brief Joint-angle solver for OmniHand 3 Lite S/M (H3L, 4-DOF).
  *
  * Motors 1 and 4 are reversed between left and right hands.
- * Preset gesture positions are defined for the right hand; the solver
- * mirrors motors 0 and 3 when is_left_hand_ == true.
+ * H3L-S angle presets use the same angles for both hands, except BOW/WAVE.
+ * The calibration tables handle left/right motor direction differences.
  */
 
 #ifndef AGILINK_OMNIHAND_3_LITE_SOLVER_H
@@ -38,8 +38,24 @@ enum class H3LActivateJoint {
   H3L_ACTIVATE_JOINT_COUNT
 };
 enum class OmniHand3LiteGesture : int {
-  OMNI_HAND_3_LITE_GESTURE_FIST = 1,
-  OMNI_HAND_3_LITE_GESTURE_OPEN = 2,
+  OMNI_HAND_3_LITE_GESTURE_OPEN = 0,
+  OMNI_HAND_3_LITE_GESTURE_OK,
+  OMNI_HAND_3_LITE_GESTURE_ONE_HANDED_FINGER_HEART,
+  OMNI_HAND_3_LITE_GESTURE_LIKE,
+  OMNI_HAND_3_LITE_GESTURE_SIDE_FIST,
+  OMNI_HAND_3_LITE_GESTURE_FRONT_FIST,
+  OMNI_HAND_3_LITE_GESTURE_PRAYER,
+  OMNI_HAND_3_LITE_GESTURE_HAND_HEART1,
+  OMNI_HAND_3_LITE_GESTURE_HAND_HEART2,
+  OMNI_HAND_3_LITE_GESTURE_HAND_HEART3,
+  OMNI_HAND_3_LITE_GESTURE_POINT,
+  OMNI_HAND_3_LITE_GESTURE_BOW,
+  OMNI_HAND_3_LITE_GESTURE_WAVE,
+  OMNI_HAND_3_LITE_GESTURE_NUM1,
+  OMNI_HAND_3_LITE_GESTURE_NUM3,
+  OMNI_HAND_3_LITE_GESTURE_NUM4,
+  OMNI_HAND_3_LITE_GESTURE_NUM7,
+  OMNI_HAND_3_LITE_GESTURE_NUM8,
 };
 
 class AGIBOT_EXPORT OmniHand3LiteSolver {
@@ -57,6 +73,7 @@ class AGIBOT_EXPORT OmniHand3LiteSolver {
   explicit OmniHand3LiteSolver(bool is_left_hand);
   OmniHand3LiteSolver(bool is_left_hand, H3LModel model);
   ~OmniHand3LiteSolver() = default;
+  // Return actuator inputs; unsupported gestures return an empty vector.
   std::vector<int> SetHandGesture(OmniHand3LiteGesture gesture) const;
   static constexpr Int16Bound GetMotorPositionRange() {
     return {kActuatorInputMin, kActuatorInputMax};
@@ -88,6 +105,35 @@ class AGIBOT_EXPORT OmniHand3LiteSolver {
       const std::vector<int16_t>& positions, bool source_is_left,
       bool target_is_left) const;
   H3LModel GetModel() const { return model_; }
+
+  using GestureAngles = std::array<double, kActiveJointCount>;
+  // H3L-S right-hand angles (rad), in OmniHand3LiteGesture order.
+  // Three-decimal endpoint values are rounded inward to stay within limits.
+  // The number of presets is inferred from the initializer.
+  inline static constexpr GestureAngles kH3LSGestureAngles[] = {
+      {0.000, 0.000, 0.000, -0.767},   // Open
+      {0.000, 0.830, 0.523, 0.546},    // OK
+      {1.396, 1.025, 0.570, 0.120},    // One-handed finger heart
+      {1.396, 1.396, 0.000, -0.767},   // Like
+      {1.396, 1.396, 0.655, -0.242},   // Side fist
+      {1.396, 1.396, 0.000, 0.802},    // Front fist
+      {0.000, 0.000, 0.827, -0.767},   // Prayer
+      {1.151, 1.069, 0.807, -0.767},   // Two-hand heart 1
+      {0.783, 0.694, 0.000, 0.802},    // Two-hand heart 2
+      {0.000, 0.000, 0.456, 0.802},    // Two-hand heart 3
+      {1.396, 0.000, 0.827, -0.767},   // Point
+      {1.396, 1.396, 0.655, -0.242},   // Bow
+      {1.396, 1.396, 0.655, -0.242},   // Wave
+      {1.396, 0.000, 0.733, 0.396},    // Digit 1
+      {0.000, 0.830, 0.523, 0.546},    // Digit 3
+      {0.000, 0.000, 1.055, 0.802},    // Digit 4
+      {0.957, 0.885, 0.441, 0.592},    // Digit 7
+      {1.396, 0.000, 0.000, -0.767},   // Digit 8
+  };
+  inline static constexpr GestureAngles kH3LSLeftBowAngles =
+      {0.392, 0.357, 0.791, -0.767};
+  inline static constexpr GestureAngles kH3LSLeftWaveAngles =
+      {0.000, 0.000, 1.169, -0.767};
 
   using JointMotorCalibTable =
       std::array<JointMotorCalib, kActiveJointCount>;
