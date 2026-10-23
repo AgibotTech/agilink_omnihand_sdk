@@ -188,3 +188,25 @@ set_target_properties(test_omnihand_server PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY "${TEST_OUTPUT_DIR}"
 )
 add_test(NAME OmniHandServerTest COMMAND test_omnihand_server)
+
+# Internal OTA tests use recording transports and never open hardware.
+if(TARGET serial)
+  add_executable(test_ota_addressing
+    internal/test_can_ota_addressing.cc
+    internal/test_serial_ota_addressing.cc
+    ../src/omnihand/impl/can_ota_upgrader.cc
+    ../src/omnihand/impl/serial_ota_upgrader.cc
+    ../src/can/can_bus_device.cc
+    ../src/serial/serial_device.cc)
+  get_target_property(_ota_serial_source_dir serial SOURCE_DIR)
+  target_include_directories(test_ota_addressing PRIVATE
+    ../src "${_ota_serial_source_dir}/include")
+  target_link_libraries(test_ota_addressing PRIVATE
+    omnihand serial agilink_logger GTest::gtest_main)
+  if(WIN32)
+    target_compile_options(test_ota_addressing PRIVATE /utf-8)
+  endif()
+  set_target_properties(test_ota_addressing PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${TEST_OUTPUT_DIR}")
+  add_test(NAME OtaAddressingTest COMMAND test_ota_addressing)
+endif()
