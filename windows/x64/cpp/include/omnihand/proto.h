@@ -500,11 +500,11 @@ struct AGIBOT_EXPORT DeviceInfo {
 
 /**
  * @brief Mixed control parameters
- * @note joint_index_ is 0-based (0 .. DOF-1), unlike SetJointMotorPosi etc. (1-based).
+ * @note API replies use 1-based joint_index_; request indexing is handled by each protocol encoder.
  * @note Default constructor ensures bit-fields are automatically initialized to 0 for safer usage
  */
 struct AGIBOT_EXPORT MixCtrl {
-  unsigned char joint_index_ : 5;  // mix-control joint id, 0-based
+  unsigned char joint_index_ : 5;  // 1-based in replies; request indexing is protocol-specific
   unsigned char ctrl_mode_ : 3;
   std::optional<short> tgt_posi_;
   std::optional<short> tgt_velo_;
