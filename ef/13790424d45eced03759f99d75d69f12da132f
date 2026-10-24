@@ -1,0 +1,49 @@
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.13.1",
+  "base_commit_sha": "ef13790424d45eced03759f99d75d69f12da132f",
+  "prompts": {},
+  "changes": [
+    {
+      "new_path": "windows/x64/frontend/configs/config.json",
+      "additions": {
+        "human": 3
+      }
+    },
+    {
+      "new_path": "windows/x64/frontend/docs/index.html",
+      "additions": {
+        "human": 23
+      }
+    },
+    {
+      "new_path": "windows/x64/frontend/docs/openapi.yml",
+      "additions": {
+        "human": 836
+      }
+    },
+    {
+      "new_path": "windows/x64/frontend/index.html",
+      "additions": {
+        "human": 397
+      }
+    },
+    {
+      "new_path": "windows/x64/frontend/scripts/client.js",
+      "additions": {
+        "human": 1068
+      }
+    },
+    {
+      "old_path": "windows/x64/install.bat",
+      "new_path": "windows/x64/install.bat",
+      "additions": {
+        "human": 67
+      },
+      "deletions": {
+        "human": 15
+      }
+    }
+  ]
+}
