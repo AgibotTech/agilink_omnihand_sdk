@@ -1,0 +1,36 @@
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.13.1",
+  "base_commit_sha": "c35d63b7978ec52105b7a252d558daa071a6968e",
+  "prompts": {},
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand.h",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/proto.h",
+      "new_path": "windows/x64/cpp/include/omnihand/proto.h",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "deletions": {
+        "human": 22
+      }
+    }
+  ]
+}
