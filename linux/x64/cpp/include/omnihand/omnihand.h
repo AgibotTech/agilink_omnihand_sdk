@@ -414,7 +414,7 @@ class AGIBOT_EXPORT OmniHand {
 
   /**
    * @brief 0x14: Position + torque mixed control (MixControlMode::POSITION_TORQUE).
-   * @param positions Target position per joint; array[i] maps to mix-control joint id i (0-based).
+   * @param positions Target position per joint; array[i] maps to motor index i + 1.
    * @param torques Target torque/current per joint (product-specific unit).
    * @return CAN write-reply echo (empty if unsupported or failed).
    */
@@ -431,7 +431,7 @@ class AGIBOT_EXPORT OmniHand {
 
   /**
    * @brief 0x14: Velocity + torque mixed control (MixControlMode::VELOCITY_TORQUE).
-   * @param velocities Target velocity per joint; array[i] maps to mix-control joint id i (0-based).
+   * @param velocities Target velocity per joint; array[i] maps to motor index i + 1.
    * @param torques Target torque/current per joint.
    */
   virtual std::vector<MixCtrl> MixControlByPV(const std::vector<int16_t>& velocities,

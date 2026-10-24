@@ -333,8 +333,24 @@ paths:
         ## O4 手势枚举 (OmniHand3LiteGesture)
         | 值 | 常量名 | 说明 |
         |----|--------|------|
-        | 1 | OMNI_HAND_3_LITE_GESTURE_FIST | 握拳 |
-        | 2 | OMNI_HAND_3_LITE_GESTURE_OPEN | 张开 |
+        | 0 | OMNI_HAND_3_LITE_GESTURE_OPEN | 张开 |
+        | 1 | OMNI_HAND_3_LITE_GESTURE_OK | OK |
+        | 2 | OMNI_HAND_3_LITE_GESTURE_ONE_HANDED_FINGER_HEART | 比心 |
+        | 3 | OMNI_HAND_3_LITE_GESTURE_LIKE | 点赞 |
+        | 4 | OMNI_HAND_3_LITE_GESTURE_SIDE_FIST | 侧握拳 |
+        | 5 | OMNI_HAND_3_LITE_GESTURE_FRONT_FIST | 正握拳 |
+        | 6 | OMNI_HAND_3_LITE_GESTURE_PRAYER | 祈祷 |
+        | 7 | OMNI_HAND_3_LITE_GESTURE_HAND_HEART1 | 双手比心1 |
+        | 8 | OMNI_HAND_3_LITE_GESTURE_HAND_HEART2 | 双手比心2 |
+        | 9 | OMNI_HAND_3_LITE_GESTURE_HAND_HEART3 | 双手比心3 |
+        | 10 | OMNI_HAND_3_LITE_GESTURE_POINT | 指向 |
+        | 11 | OMNI_HAND_3_LITE_GESTURE_BOW | 作揖 |
+        | 12 | OMNI_HAND_3_LITE_GESTURE_WAVE | 告别 |
+        | 13 | OMNI_HAND_3_LITE_GESTURE_NUM1 | 数字1 |
+        | 14 | OMNI_HAND_3_LITE_GESTURE_NUM3 | 数字3 |
+        | 15 | OMNI_HAND_3_LITE_GESTURE_NUM4 | 数字4 |
+        | 16 | OMNI_HAND_3_LITE_GESTURE_NUM7 | 数字7 |
+        | 17 | OMNI_HAND_3_LITE_GESTURE_NUM8 | 数字8 |
 
         ## Finger (手指) 枚举
         | 值 | 常量名 |

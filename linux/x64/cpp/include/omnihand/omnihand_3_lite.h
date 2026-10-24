@@ -12,6 +12,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 #include "i_tactile_sensor_1d_u16.h"
@@ -314,7 +315,8 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
 
   // ============ Gesture Control ============
   /**
-   * @brief Sets the hand to a predefined gesture (typed API).
+   * @brief Sets a preset, inserting a 200 ms thumb-open transition after a
+   *        different non-OPEN preset. The first preset is sent directly.
    */
   void SetHandGesture(h3l::OmniHand3LiteGesture gesture);
 
@@ -335,17 +337,20 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
              h3l::H3LModel model = h3l::H3LModel::H3L_S) {
     OmniHand::Reset(ProductType::OMNIHAND_3_LITE, device_id, hand_type);
     model_ = model;
+    previous_gesture_.reset();
     solver_ = std::make_unique<h3l::OmniHand3LiteSolver>(
         hand_type_ == HandType::LEFT, model_);
   }
 
   void OnHandTypeChanged() override {
+    previous_gesture_.reset();
     solver_ = std::make_unique<h3l::OmniHand3LiteSolver>(
         hand_type_ == HandType::LEFT, model_);
   }
 
   h3l::H3LModel model_ = h3l::H3LModel::H3L_S;
   std::unique_ptr<h3l::OmniHand3LiteSolver> solver_;
+  std::optional<h3l::OmniHand3LiteGesture> previous_gesture_;
   static constexpr Int16Bound kActualMotorPositionBound = {0, 4095};
   static constexpr Int16Range kMixCtrlVelocityRange = {0, 23767, 8000}; // unit: rpm
   static constexpr Int16Range kMixCtrlTorqueRange = {0, 1000, 300}; // unit: mA

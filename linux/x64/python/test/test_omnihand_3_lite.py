@@ -300,6 +300,63 @@ def _validate_mix_result(result, feedback_count, frame_count, operation):
 
 # Hardware-independent API checks
 
+H3LS_GESTURES = [
+    ("OPEN", [0.000, 0.000, 0.000, -0.767]),
+    ("OK", [0.000, 0.830, 0.523, 0.546]),
+    ("ONE_HANDED_FINGER_HEART", [1.396, 1.025, 0.570, 0.120]),
+    ("LIKE", [1.396, 1.396, 0.000, -0.767]),
+    ("SIDE_FIST", [1.396, 1.396, 0.655, -0.242]),
+    ("FRONT_FIST", [1.396, 1.396, 0.000, 0.802]),
+    ("PRAYER", [0.000, 0.000, 0.827, -0.767]),
+    ("HAND_HEART1", [1.151, 1.069, 0.807, -0.767]),
+    ("HAND_HEART2", [0.783, 0.694, 0.000, 0.802]),
+    ("HAND_HEART3", [0.000, 0.000, 0.456, 0.802]),
+    ("POINT", [1.396, 0.000, 0.827, -0.767]),
+    ("BOW", [1.396, 1.396, 0.655, -0.242]),
+    ("WAVE", [1.396, 1.396, 0.655, -0.242]),
+    ("NUM1", [1.396, 0.000, 0.733, 0.396]),
+    ("NUM3", [0.000, 0.830, 0.523, 0.546]),
+    ("NUM4", [0.000, 0.000, 1.055, 0.802]),
+    ("NUM7", [0.957, 0.885, 0.441, 0.592]),
+    ("NUM8", [1.396, 0.000, 0.000, -0.767]),
+]
+
+
+@pytest.mark.parametrize("name, right_angles", H3LS_GESTURES)
+@pytest.mark.parametrize("is_left_hand", [False, True])
+def test_solver_h3ls_gesture_angles(name, right_angles, is_left_hand):
+    solver = OmniHand3LiteSolver(is_left_hand, H3LModel.H3L_S)
+    gesture = getattr(OmniHand3LiteGesture, f"OMNI_HAND_3_LITE_GESTURE_{name}")
+    angles = right_angles
+    if is_left_hand and name == "BOW":
+        angles = [0.392, 0.357, 0.791, -0.767]
+    elif is_left_hand and name == "WAVE":
+        angles = [0.000, 0.000, 1.169, -0.767]
+    positions = solver.set_hand_gesture(gesture)
+    assert positions == solver.active_joint_pos_to_actuator_input(angles)
+    assert len(positions) == DOF
+    assert all(0 <= position <= 4096 for position in positions)
+    recovered = solver.actuator_input_to_active_joint_pos(positions)
+    for joint, angle in enumerate(angles):
+        bounds = solver.get_active_joint_angle_range(joint, H3LModel.H3L_S)
+        assert bounds.min_value <= angle <= bounds.max_value
+        clamped = max(bounds.min_value, min(bounds.max_value, angle))
+        assert recovered[joint] == pytest.approx(clamped, abs=0.0004)
+
+
+@pytest.mark.parametrize("name, right_angles", H3LS_GESTURES)
+@pytest.mark.parametrize("is_left_hand", [False, True])
+def test_solver_h3lm_does_not_use_h3ls_gestures(name, right_angles, is_left_hand):
+    solver = OmniHand3LiteSolver(is_left_hand, H3LModel.H3L_M)
+    gesture = getattr(OmniHand3LiteGesture, f"OMNI_HAND_3_LITE_GESTURE_{name}")
+    assert solver.set_hand_gesture(gesture) == []
+
+
+def test_h3ls_gesture_enum_values():
+    for value, (name, _angles) in enumerate(H3LS_GESTURES):
+        gesture = getattr(OmniHand3LiteGesture, f"OMNI_HAND_3_LITE_GESTURE_{name}")
+        assert gesture.value == value
+
 @pytest.mark.parametrize("model", [H3LModel.H3L_S, H3LModel.H3L_M])
 @pytest.mark.parametrize("is_left_hand", [False, True])
 def test_solver_round_trip_handles_reversed_motors(is_left_hand, model):
@@ -350,7 +407,9 @@ def test_safe_api_surface():
     assert not hasattr(
         OmniHand3LiteGesture, "OMNI_HAND_3_LITE_GESTURE_ALL_ZERO"
     )
-    assert OmniHand3LiteGesture.OMNI_HAND_3_LITE_GESTURE_OPEN.value == 2
+    assert not hasattr(OmniHand3LiteGesture, "OMNI_HAND_3_LITE_GESTURE_FIST")
+    assert OmniHand3LiteGesture.OMNI_HAND_3_LITE_GESTURE_OPEN.value == 0
+    assert OmniHand3LiteGesture.OMNI_HAND_3_LITE_GESTURE_OK.value == 1
     assert TactileSensorDataU16 is not None
 
     for destructive_name in (
@@ -470,9 +529,9 @@ def test_joint_angle_control(initialized_hand):
 def test_hand_gesture(initialized_hand):
     assert initialized_hand.init()
 
-    gesture = OmniHand3LiteGesture.OMNI_HAND_3_LITE_GESTURE_FIST
+    gesture = OmniHand3LiteGesture.OMNI_HAND_3_LITE_GESTURE_OK
     initialized_hand.set_hand_gesture(gesture)
-    print(f"\n[SetHandGesture] FIST gesture set")
+    print(f"\n[SetHandGesture] OK gesture set")
     time.sleep(MOTION_SETTLE_SECONDS)
 
 
