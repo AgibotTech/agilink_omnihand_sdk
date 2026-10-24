@@ -1,6 +1,11 @@
 @echo off
 REM Omnihand 2025 SDK Windows Install Script
 setlocal enabledelayedexpansion
+call :install_sdk %*
+set "INSTALL_EXIT_CODE=!errorlevel!"
+endlocal & exit /b %INSTALL_EXIT_CODE%
+
+:install_sdk
 
 set "SCRIPT_DIR=%~dp0"
 set "INSTALL_DIR=C:\omnihand"
@@ -22,15 +27,31 @@ echo.
 
 REM Install C++ SDK
 if not exist "%INSTALL_DIR%" mkdir "%INSTALL_DIR%"
-xcopy /E /I /Y "%SCRIPT_DIR%cpp\include" "%INSTALL_DIR%\include" >nul
-xcopy /E /I /Y "%SCRIPT_DIR%cpp\lib" "%INSTALL_DIR%\lib" >nul
-xcopy /E /I /Y "%SCRIPT_DIR%cpp\bin" "%INSTALL_DIR%\bin" >nul
+for %%d in (include lib bin) do (
+    xcopy /E /I /Y "%SCRIPT_DIR%cpp\%%d" "%INSTALL_DIR%\%%d" >nul
+    if errorlevel 1 (
+        echo [FAIL] Could not install cpp\%%d to %INSTALL_DIR%\%%d
+        exit /b 1
+    )
+)
 xcopy /E /I /Y "%SCRIPT_DIR%frontend" "%INSTALL_DIR%\share\omnihand\frontend" >nul
+if errorlevel 1 (
+    echo [FAIL] Could not install frontend. Check that the release package contains frontend\index.html.
+    exit /b 1
+)
 if exist "%SCRIPT_DIR%cpp\share\cmake\omnihand" (
     xcopy /E /I /Y "%SCRIPT_DIR%cpp\share\cmake\omnihand" "%INSTALL_DIR%\share\cmake\omnihand" >nul
+    if errorlevel 1 (
+        echo [FAIL] Could not install the CMake package.
+        exit /b 1
+    )
 )
 if exist "%SCRIPT_DIR%cpp\cmake" (
     xcopy /E /I /Y "%SCRIPT_DIR%cpp\cmake" "%INSTALL_DIR%\cmake" >nul
+    if errorlevel 1 (
+        echo [FAIL] Could not install CMake helper files.
+        exit /b 1
+    )
 )
 echo [OK] C++ SDK installed to %INSTALL_DIR%
 echo.
@@ -103,7 +124,25 @@ if defined PYTHON_CMD (
 
     REM Detect environment type (conda/venv/system) for pip args
     set "PIP_EXTRA_ARGS="
-    for /f "delims=" %%r in ('"!PYTHON_CMD!" -c "import sys,os; in_conda=('CONDA_PREFIX' in os.environ and os.environ['CONDA_PREFIX']!='') or 'conda' in sys.executable.lower(); in_venv=('VIRTUAL_ENV' in os.environ and os.environ['VIRTUAL_ENV']!='') or sys.prefix!=sys.base_prefix; print('conda' if in_conda else ('venv' if in_venv else 'system'))" 2^>nul') do set "PY_ENV_TYPE=%%r"
+    REM Read a file instead of nesting a quoted Python command inside CMD /C.
+    set "PY_ENV_TYPE="
+    set "PY_VER="
+    set "PYTHON_INFO_FILE=%TEMP%\omnihand-install-python-!RANDOM!-!RANDOM!.txt"
+    "!PYTHON_CMD!" -c "import sys,os; in_conda=bool(os.environ.get('CONDA_PREFIX')) or 'conda' in sys.executable.lower(); in_venv=bool(os.environ.get('VIRTUAL_ENV')) or not (sys.prefix == sys.base_prefix); print('ENV:'+('conda' if in_conda else ('venv' if in_venv else 'system'))); print('VER:'+str(sys.version_info.major)+str(sys.version_info.minor))" > "!PYTHON_INFO_FILE!"
+    if errorlevel 1 (
+        if exist "!PYTHON_INFO_FILE!" del /q "!PYTHON_INFO_FILE!"
+        echo [FAIL] Could not query Python: !PYTHON_CMD!
+        exit /b 1
+    )
+    for /f "usebackq tokens=1,* delims=:" %%k in ("!PYTHON_INFO_FILE!") do (
+        if "%%k"=="ENV" set "PY_ENV_TYPE=%%l"
+        if "%%k"=="VER" set "PY_VER=%%l"
+    )
+    del /q "!PYTHON_INFO_FILE!"
+    if not defined PY_ENV_TYPE (
+        echo [FAIL] Could not detect the Python environment: !PYTHON_CMD!
+        exit /b 1
+    )
     if "!PY_ENV_TYPE!"=="system" (
         echo [INFO] System Python detected - installing with --user
         set "PIP_EXTRA_ARGS=--user"
@@ -111,38 +150,51 @@ if defined PYTHON_CMD (
         echo [INFO] !PY_ENV_TYPE! Python detected - installing to environment
     )
 
-    set "PY_VER="
-    for /f "delims=" %%v in ('"!PYTHON_CMD!" -c "import sys; print(str(sys.version_info.major)+str(sys.version_info.minor))" 2^>nul') do set "PY_VER=%%v"
     if defined PY_VER (
         set "WHL_MATCH="
-        for %%f in ("%SCRIPT_DIR%python\*-cp!PY_VER!-cp!PY_VER!-*.whl") do (
+        set "INSTALLED="
+        for %%f in ("%SCRIPT_DIR%python\*-cp!PY_VER!-cp!PY_VER!-*.whl") do if exist "%%f" (
             set "WHL_MATCH=1"
             echo Installing %%~nxf ^(Python !PY_VER!^) ...
             "!PYTHON_CMD!" -m pip install "%%f" --force-reinstall --no-deps !PIP_EXTRA_ARGS! --quiet
-            if !errorlevel! equ 0 (echo [OK] Installed: %%~nxf) else (echo [FAIL] %%~nxf)
+            if !errorlevel! equ 0 (
+                set "INSTALLED=%%~nxf"
+                echo [OK] Installed: %%~nxf
+            ) else (
+                echo [FAIL] %%~nxf
+                exit /b 1
+            )
         )
         if defined WHL_MATCH (
             echo [OK] Python package installed for Python !PY_VER!
         ) else (
             echo [WARN] No wheel for Python !PY_VER! - trying all wheels...
             set "INSTALLED="
-            for %%f in ("%SCRIPT_DIR%python\*.whl") do (
-                "!PYTHON_CMD!" -m pip install "%%f" --force-reinstall --no-deps !PIP_EXTRA_ARGS! --quiet 2>nul
-                if !errorlevel! equ 0 set "INSTALLED=%%~nxf"
+            for %%f in ("%SCRIPT_DIR%python\*.whl") do if exist "%%f" (
+                if not defined INSTALLED (
+                    "!PYTHON_CMD!" -m pip install "%%f" --force-reinstall --no-deps !PIP_EXTRA_ARGS! --quiet 2>nul
+                    if !errorlevel! equ 0 set "INSTALLED=%%~nxf"
+                )
             )
-            if defined INSTALLED (echo [OK] Installed: !INSTALLED!) else (echo [FAIL] No compatible wheel found)
+            if defined INSTALLED (echo [OK] Installed: !INSTALLED!) else (
+                echo [FAIL] No compatible wheel found
+                exit /b 1
+            )
         )
     ) else (
         echo [WARN] Could not detect Python version - trying each wheel until one succeeds...
         set "INSTALLED="
-        for %%f in ("%SCRIPT_DIR%python\*.whl") do (
+        for %%f in ("%SCRIPT_DIR%python\*.whl") do if exist "%%f" (
             if not defined INSTALLED (
                 echo Trying %%~nxf ...
                 "!PYTHON_CMD!" -m pip install "%%f" --force-reinstall --no-deps !PIP_EXTRA_ARGS! --quiet 2>nul
                 if !errorlevel! equ 0 set "INSTALLED=%%~nxf"
             )
         )
-        if defined INSTALLED (echo [OK] Installed: !INSTALLED!) else (echo [FAIL] No compatible wheel found)
+        if defined INSTALLED (echo [OK] Installed: !INSTALLED!) else (
+            echo [FAIL] No compatible wheel found
+            exit /b 1
+        )
     )
 ) else (
     echo [SKIP] Python not found. Install Python 3.10+ and run:
@@ -172,4 +224,4 @@ echo CMAKE_PREFIX_PATH: C:\omnihand has been added to system environment.
 echo Restart the terminal or IDE before running CMake.
 echo.
 pause
-endlocal
+exit /b 0
