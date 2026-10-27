@@ -1,0 +1,28 @@
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.13.1",
+  "base_commit_sha": "30cf9d01c6d8c89ff9e318e881e943799ff5cca9",
+  "prompts": {},
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "deletions": {
+        "human": 9
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_3_lite_gestures.cc",
+      "deletions": {
+        "human": 192
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_3_lite_solver.cc",
+      "deletions": {
+        "human": 98
+      }
+    }
+  ]
+}
