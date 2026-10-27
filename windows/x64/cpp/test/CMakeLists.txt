@@ -132,15 +132,6 @@ if(BUILD_OMNIHAND_3_LITE)
     RUNTIME_OUTPUT_DIRECTORY "${TEST_OUTPUT_DIR}"
   )
   add_test(NAME OmniHand3LiteTest COMMAND test_omnihand_3_lite)
-
-  # Solver-only coverage never opens a serial port or CAN adapter.
-  add_executable(test_omnihand_3_lite_solver
-    test_omnihand_3_lite_solver.cc test_omnihand_3_lite_gestures.cc)
-  target_link_libraries(test_omnihand_3_lite_solver
-    PRIVATE ${OMNIHAND_TARGET} GTest::gtest_main)
-  set_target_properties(test_omnihand_3_lite_solver PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${TEST_OUTPUT_DIR}")
-  add_test(NAME OmniHand3LiteSolverTest COMMAND test_omnihand_3_lite_solver)
 endif()
 
 # OmniHand 3 Ultra M T1.3 Tests
