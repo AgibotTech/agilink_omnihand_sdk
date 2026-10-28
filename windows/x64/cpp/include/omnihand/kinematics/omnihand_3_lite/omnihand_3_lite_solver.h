@@ -108,52 +108,53 @@ class AGIBOT_EXPORT OmniHand3LiteSolver {
 
   using GestureAngles = std::array<double, kActiveJointCount>;
   // H3L-S right-hand angles (rad), in OmniHand3LiteGesture order.
-  // Three-decimal endpoint values are rounded inward to stay within limits.
+  // Endpoint values are rounded inward to stay within limits.
+  // Presets preserve motor targets under the shared H3L-S angle convention.
   // The number of presets is inferred from the initializer.
   inline static constexpr GestureAngles kH3LSGestureAngles[] = {
-      {0.000, 0.000, 0.000, -0.767},   // Open
-      {0.000, 0.830, 0.523, 0.546},    // OK
-      {1.396, 1.025, 0.570, 0.120},    // One-handed finger heart
-      {1.396, 1.396, 0.000, -0.767},   // Like
-      {1.396, 1.396, 0.655, -0.242},   // Side fist
-      {1.396, 1.396, 0.000, 0.802},    // Front fist
-      {0.000, 0.000, 0.827, -0.767},   // Prayer
-      {1.151, 1.069, 0.807, -0.767},   // Two-hand heart 1
-      {0.783, 0.694, 0.000, 0.802},    // Two-hand heart 2
-      {0.000, 0.000, 0.456, 0.802},    // Two-hand heart 3
-      {1.396, 0.000, 0.827, -0.767},   // Point
-      {1.396, 1.396, 0.655, -0.242},   // Bow
-      {1.396, 1.396, 0.655, -0.242},   // Wave
-      {1.396, 0.000, 0.733, 0.396},    // Digit 1
-      {0.000, 0.830, 0.523, 0.546},    // Digit 3
-      {0.000, 0.000, 1.055, 0.802},    // Digit 4
-      {0.957, 0.885, 0.441, 0.592},    // Digit 7
-      {1.396, 0.000, 0.000, -0.767},   // Digit 8
+      {0.000000, 0.000000, 0.000000, 0.000944},  // Open
+      {0.000000, 0.830000, 0.523001, 1.313945},  // OK
+      {1.396000, 1.025000, 0.570001, 0.887945},  // One-handed finger heart
+      {1.396000, 1.396000, 0.000000, 0.000944},  // Like
+      {1.396000, 1.396000, 0.655001, 0.525945},  // Side fist
+      {1.396000, 1.396000, 0.000000, 1.569945},  // Front fist
+      {0.000000, 0.000000, 0.827000, 0.000944},  // Prayer
+      {1.151000, 1.069000, 0.807001, 0.000944},  // Two-hand heart 1
+      {0.783000, 0.694000, 0.000000, 1.569945},  // Two-hand heart 2
+      {0.000000, 0.000000, 0.456001, 1.569945},  // Two-hand heart 3
+      {1.396000, 0.000000, 0.827000, 0.000944},  // Point
+      {1.396000, 1.396000, 0.655001, 0.525945},  // Bow
+      {1.396000, 1.396000, 0.655001, 0.525945},  // Wave
+      {1.396000, 0.000000, 0.733001, 1.163945},  // Digit 1
+      {0.000000, 0.830000, 0.523001, 1.313945},  // Digit 3
+      {0.000000, 0.000000, 1.055001, 1.569945},  // Digit 4
+      {0.957000, 0.885000, 0.441000, 1.359945},  // Digit 7
+      {1.396000, 0.000000, 0.000000, 0.000944},  // Digit 8
   };
   inline static constexpr GestureAngles kH3LSLeftBowAngles =
-      {0.392, 0.357, 0.791, -0.767};
+      {0.392000, 0.357000, 0.791001, 0.000944};
   inline static constexpr GestureAngles kH3LSLeftWaveAngles =
-      {0.000, 0.000, 1.169, -0.767};
+      {0.000000, 0.000000, 1.169001, 0.000944};
 
   using JointMotorCalibTable =
       std::array<JointMotorCalib, kActiveJointCount>;
 
   // Active-joint order: MRP/index PIP, thumb PIP, thumb ABAD/rolling.
-  // URDF limits are conservatively rounded inward to six decimal places:
-  // lower limits use ceil and upper limits use floor.
+  // Six-decimal URDF limits are used directly.
+  // Higher-precision limits are rounded inward (ceil lower, floor upper).
   // Each entry is {rad_min, rad_max, actuator_at_rad_min,
   // actuator_at_rad_max}, so the complete linear mapping stays together.
   inline static constexpr JointMotorCalibTable kH3LSRight = {{
       {0.000000, 1.396263, kActuatorInputMax, kActuatorInputMin},
       {0.000000, 1.396263, kActuatorInputMax, kActuatorInputMin},
-      {0.000000, 1.169370, kActuatorInputMax, kActuatorInputMin},
-      {-0.767944, 0.802851, kActuatorInputMax, kActuatorInputMin},
+      {0.000000, 1.169371, kActuatorInputMax, kActuatorInputMin},
+      {0.000000, 1.570796, kActuatorInputMax, kActuatorInputMin},
   }};
   inline static constexpr JointMotorCalibTable kH3LSLeft = {{
       {0.000000, 1.396263, kActuatorInputMin, kActuatorInputMax},
       {0.000000, 1.396263, kActuatorInputMax, kActuatorInputMin},
-      {0.000000, 1.169370, kActuatorInputMax, kActuatorInputMin},
-      {-0.767944, 0.802851, kActuatorInputMin, kActuatorInputMax},
+      {0.000000, 1.169371, kActuatorInputMax, kActuatorInputMin},
+      {0.000000, 1.570796, kActuatorInputMin, kActuatorInputMax},
   }};
   inline static constexpr JointMotorCalibTable kH3LMRight = {{
       {0.000000, 1.570796, kActuatorInputMax, kActuatorInputMin},
