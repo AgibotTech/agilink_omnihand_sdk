@@ -411,11 +411,11 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   }
 
   // ============ Gesture Control ============
-  void SetHandGesture(h3um::H3UMGesture gesture);
+  std::vector<int16_t> SetHandGesture(h3um::H3UMGesture gesture);
 
   std::vector<int16_t> GetHandGesture(h3um::H3UMGesture gesture);
 
-  void SetHandGesture(int gesture_num = 1) override;
+  std::vector<int16_t> SetHandGesture(int gesture_num = 1) override;
 
   std::vector<int16_t> GetHandGesture(int gesture_num) override;
 

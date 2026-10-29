@@ -255,7 +255,7 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
   /**
    * @brief Sets the gripper to a predefined gesture (typed API).
    */
-  void SetHandGesture(OmniPicker3Gesture gesture);
+  std::vector<int16_t> SetHandGesture(OmniPicker3Gesture gesture);
 
   /**
    * @brief Returns gesture target motor position by typed gesture.
@@ -266,7 +266,7 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
    * @brief Sets the gripper to a predefined gesture by numeric ID.
    * @param gesture_num Gesture number (default: 1 = HALF_OPEN)
    */
-  void SetHandGesture(int gesture_num = 1) override;
+  std::vector<int16_t> SetHandGesture(int gesture_num = 1) override;
 
   std::vector<int16_t> GetHandGesture(int gesture_num) override;
 

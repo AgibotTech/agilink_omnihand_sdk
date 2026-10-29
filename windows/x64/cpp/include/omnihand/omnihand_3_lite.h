@@ -318,11 +318,11 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
    * @brief Sets a preset, inserting a 200 ms thumb-open transition after a
    *        different non-OPEN preset. The first preset is sent directly.
    */
-  void SetHandGesture(h3l::OmniHand3LiteGesture gesture);
+  std::vector<int16_t> SetHandGesture(h3l::OmniHand3LiteGesture gesture);
 
   std::vector<int16_t> GetHandGesture(h3l::OmniHand3LiteGesture gesture);
 
-  void SetHandGesture(int gesture_num) override;
+  std::vector<int16_t> SetHandGesture(int gesture_num) override;
 
   std::vector<int16_t> GetHandGesture(int gesture_num) override;
 
