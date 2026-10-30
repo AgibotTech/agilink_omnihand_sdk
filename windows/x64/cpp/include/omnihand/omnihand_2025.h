@@ -34,6 +34,8 @@ namespace omnihand {
  */
 class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, public IO10TactileSensor1D{
  public:
+  TimestampedResult<std::vector<TactileSensorData>> GetAllTactileSensorDataWithTimestamp() const;
+
   // Constants
   static constexpr unsigned char kDegreesOfActiveFreedom = 10;  // DoA
   static constexpr unsigned char kDegreesOfPassiveFreedom = 6;  // DoP

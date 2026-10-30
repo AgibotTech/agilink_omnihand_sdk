@@ -2,6 +2,7 @@
 // AGILINK OmniHand SDK is licensed under Mulan PSL v2.
 
 #include <gtest/gtest.h>
+#include "timestamp_test_utils.h"
 #include <memory>
 #include <vector>
 #include <string>
@@ -22,6 +23,7 @@ static constexpr const char* TAG = "OmniHand3LiteTest";
 static int g_request_interval = 5;  // Default: 5ms
 // Global variable to store device type from command line argument
 static std::string g_device_type = "zlgcan";  // Default: zlgcan
+static bool g_model_m = false;  // --model m selects the Lite M solver.
 // Global variables for RS-485 serial connection
 static std::string g_serial_port = "/dev/ttyUSB0";  // Default serial port
 // Optional target hand device ID. Without --device-id, SetUp only discovers
@@ -99,25 +101,23 @@ class OmniHand3LiteTest : public ::testing::Test {
     // Create hand instance for testing based on device type
     std::string device_type = GetDeviceType();
     if (device_type == "hcan") {
-      hand_ = OmniHand3Lite::createHandByHcan(
-          HandType::LEFT,
-          kUseProtocolDefaultIds,
-          0,   // canfd_device_id
-          0    // canfd_channel_id
-      );
+      hand_ = g_model_m ? OmniHand3Lite::createHandMByHcan(
+          HandType::LEFT, kUseProtocolDefaultIds, 0, 0) :
+          OmniHand3Lite::createHandByHcan(
+          HandType::LEFT, kUseProtocolDefaultIds, 0, 0);
     } else if (device_type == "rs485") {
-      hand_ = OmniHand3Lite::createHandByRs485(
+      hand_ = g_model_m ? OmniHand3Lite::createHandMByRs485(
+          HandType::LEFT, kUseProtocolDefaultIds, g_serial_port) :
+          OmniHand3Lite::createHandByRs485(
           HandType::LEFT,
           kUseProtocolDefaultIds,
           g_serial_port   // serial port path
       );
     } else {  // default: zlgcan
-      hand_ = OmniHand3Lite::createHandByZlgcan(
-          HandType::LEFT,
-          kUseProtocolDefaultIds,
-          0,   // canfd_device_id
-          0    // canfd_channel_id
-      );
+      hand_ = g_model_m ? OmniHand3Lite::createHandMByZlgcan(
+          HandType::LEFT, kUseProtocolDefaultIds, 0, 0) :
+          OmniHand3Lite::createHandByZlgcan(
+          HandType::LEFT, kUseProtocolDefaultIds, 0, 0);
     }
 
     if (!hand_ || !hand_->Init()) {
@@ -174,6 +174,164 @@ class OmniHand3LiteTest : public ::testing::Test {
 };
 
 // Test factory method
+// Timestamped feedback tests. Controls hold the measured pose.
+TEST_F(OmniHand3LiteTest, GetAllJointMotorPosiWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+  for (const auto position : sample.value) { EXPECT_GE(position, 0); EXPECT_LE(position, 4096); }
+}
+
+TEST_F(OmniHand3LiteTest, GetAllErrorReportWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllErrorReportWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllErrorReportWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+}
+
+TEST_F(OmniHand3LiteTest, GetAllTemperatureReportWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllTemperatureReportWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTemperatureReportWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+}
+
+TEST_F(OmniHand3LiteTest, GetAllCurrentReportWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllCurrentReportWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllCurrentReportWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+}
+
+TEST_F(OmniHand3LiteTest, GetJointMotorPosiWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetJointMotorPosiWithTimestamp(1);
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetJointMotorPosiWithTimestamp", TAG));
+  EXPECT_GE(sample.value, 0); EXPECT_LE(sample.value, 4096);
+}
+
+TEST_F(OmniHand3LiteTest, SetJointMotorPosiWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4096); }
+  const auto sample = hand_->SetJointMotorPosiWithTimestamp(1, measured.value.front());
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "SetJointMotorPosiWithTimestamp", TAG));
+  EXPECT_GE(sample.value, 0); EXPECT_LE(sample.value, 4096);
+}
+
+TEST_F(OmniHand3LiteTest, SetAllJointMotorPosiWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4096); }
+  const auto sample = hand_->SetAllJointMotorPosiWithTimestamp(measured.value);
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "SetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), measured.value.size());
+}
+
+TEST_F(OmniHand3LiteTest, GetAllActiveJointAnglesWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllActiveJointAnglesWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllActiveJointAnglesWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+  for (const auto angle : sample.value) EXPECT_TRUE(std::isfinite(angle));
+}
+
+TEST_F(OmniHand3LiteTest, SetAllActiveJointAnglesWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllActiveJointAnglesWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllActiveJointAnglesWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto angle : measured.value) ASSERT_TRUE(std::isfinite(angle));
+  const auto sample = hand_->SetAllActiveJointAnglesWithTimestamp(measured.value);
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "SetAllActiveJointAnglesWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), measured.value.size());
+  for (const auto angle : sample.value) EXPECT_TRUE(std::isfinite(angle));
+}
+
+TEST_F(OmniHand3LiteTest, MixControlByPTAllWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4096); }
+  const auto sample = hand_->MixControlByPTWithTimestamp(measured.value, std::vector<int16_t>(measured.value.size(), 0));
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPTAllWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), measured.value.size());
+  for (const auto& feedback : sample.value) {
+    EXPECT_TRUE(feedback.tgt_posi_.has_value());
+    EXPECT_TRUE(feedback.tgt_torque_.has_value());
+  }
+}
+
+TEST_F(OmniHand3LiteTest, MixControlByPTSingleWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4096); }
+  const auto sample = hand_->MixControlByPTWithTimestamp(1, measured.value.front(), 0);
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPTSingleWithTimestamp", TAG));
+  EXPECT_EQ(sample.value.joint_index_, 1);
+  EXPECT_TRUE(sample.value.tgt_posi_.has_value());
+  EXPECT_TRUE(sample.value.tgt_torque_.has_value());
+}
+
+TEST_F(OmniHand3LiteTest, MixControlByPVTAllWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4096); }
+  const auto sample = hand_->MixControlByPVTWithTimestamp(measured.value, std::vector<int16_t>(measured.value.size(), 50), std::vector<int16_t>(measured.value.size(), 0));
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPVTAllWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), measured.value.size());
+  for (const auto& feedback : sample.value) {
+    EXPECT_TRUE(feedback.tgt_posi_.has_value());
+    EXPECT_TRUE(feedback.tgt_torque_.has_value());
+    EXPECT_TRUE(feedback.tgt_velo_.has_value());
+  }
+}
+
+TEST_F(OmniHand3LiteTest, MixControlByPVTSingleWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4096); }
+  const auto sample = hand_->MixControlByPVTWithTimestamp(1, measured.value.front(), 50, 0);
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPVTSingleWithTimestamp", TAG));
+  EXPECT_EQ(sample.value.joint_index_, 1);
+  EXPECT_TRUE(sample.value.tgt_posi_.has_value());
+  EXPECT_TRUE(sample.value.tgt_torque_.has_value());
+  EXPECT_TRUE(sample.value.tgt_velo_.has_value());
+}
+
+TEST_F(OmniHand3LiteTest, GetAllTactileSensorDataRawWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  if (!hand_->InitTactilePointsMap()) GTEST_SKIP() << "Tactile sensors unavailable";
+  const auto sample = hand_->GetAllTactileSensorDataRawWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTactileSensorDataRawWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetSensorOrder().size());
+  for (const auto& sensor : sample.value) EXPECT_FALSE(sensor.data_.empty());
+}
+
+TEST_F(OmniHand3LiteTest, GetTactileSensorDataWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  if (!hand_->InitTactilePointsMap()) GTEST_SKIP() << "Tactile sensors unavailable";
+  const auto sensors = hand_->GetSensorOrder();
+  ASSERT_FALSE(sensors.empty());
+  const auto sample = hand_->GetTactileSensorDataWithTimestamp(sensors.front());
+  if (sample.value.data_.empty() && sample.timestamp_us == 0)
+    GTEST_SKIP() << "Processed tactile feedback unsupported by this firmware";
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetTactileSensorDataWithTimestamp", TAG));
+  EXPECT_FALSE(sample.value.data_.empty());
+}
+
 TEST_F(OmniHand3LiteTest, CreateHand) {
   EXPECT_NE(hand_, nullptr);
 }
@@ -926,13 +1084,21 @@ int main(int argc, char** argv) {
                                 device_arg.c_str());
         return 1;
       }
+    } else if (arg == "--model" && i + 1 < argc) {
+      const std::string model = argv[++i];
+      if (model != "s" && model != "m") {
+        AgilinkLogger::get().errorf(TAG, "--model must be s or m");
+        return 1;
+      }
+      g_model_m = model == "m";
     } else if ((arg == "-p" || arg == "--port") && i + 1 < argc) {
       g_serial_port = argv[++i];
     } else if ((arg == "--device-id" || arg == "--id") && i + 1 < argc) {
       g_device_id = std::stoi(argv[++i]);
       g_device_id_specified = true;
     } else if (arg == "--help" || arg == "-h") {
-      AgilinkLogger::get().infof(TAG, "Usage: %s [--request-interval MS] [-d DEVICE] [-p PORT] [--device-id ID]", argv[0]);
+      AgilinkLogger::get().infof(TAG, "Usage: %s [--request-interval MS] [-d DEVICE] [-p PORT] [--device-id ID] [--model s|m]", argv[0]);
+      AgilinkLogger::get().infof(TAG, "  --model s|m           Lite model for timestamp tests (default: s)");
       AgilinkLogger::get().infof(TAG, "  --request-interval MS  Set request interval in ms (default: 5)");
       AgilinkLogger::get().infof(TAG, "  -d DEVICE              Device type: zlgcan | hcan | rs485 (default: zlgcan)");
       AgilinkLogger::get().infof(TAG, "  -p PORT                Serial port for rs485 (default: /dev/ttyUSB0)");

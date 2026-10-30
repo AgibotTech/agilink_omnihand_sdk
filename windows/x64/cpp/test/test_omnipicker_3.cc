@@ -28,6 +28,7 @@
  */
 
 #include <gtest/gtest.h>
+#include "timestamp_test_utils.h"
 
 #include <algorithm>
 #include <cctype>
@@ -196,6 +197,101 @@ class OmniPicker3Test : public ::testing::Test {
 // ============================================================================
 // Basic Connection
 // ============================================================================
+
+// Timestamped feedback tests. Controls hold the measured pose.
+TEST_F(OmniPicker3Test, GetAllJointMotorPosiWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+  for (const auto position : sample.value) { EXPECT_GE(position, 0); EXPECT_LE(position, 4095); }
+}
+
+TEST_F(OmniPicker3Test, GetAllErrorReportWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllErrorReportWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllErrorReportWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+}
+
+TEST_F(OmniPicker3Test, GetAllTemperatureReportWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllTemperatureReportWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTemperatureReportWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+}
+
+TEST_F(OmniPicker3Test, GetAllCurrentReportWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllCurrentReportWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllCurrentReportWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+}
+
+TEST_F(OmniPicker3Test, GetJointMotorPosiWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetJointMotorPosiWithTimestamp(1);
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetJointMotorPosiWithTimestamp", TAG));
+  EXPECT_GE(sample.value, 0); EXPECT_LE(sample.value, 4095);
+}
+
+TEST_F(OmniPicker3Test, SetJointMotorPosiWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4095); }
+  const auto sample = hand_->SetJointMotorPosiWithTimestamp(1, measured.value.front());
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "SetJointMotorPosiWithTimestamp", TAG));
+  EXPECT_GE(sample.value, 0); EXPECT_LE(sample.value, 4095);
+}
+
+TEST_F(OmniPicker3Test, SetAllJointMotorPosiWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4095); }
+  const auto sample = hand_->SetAllJointMotorPosiWithTimestamp(measured.value);
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "SetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), measured.value.size());
+}
+
+TEST_F(OmniPicker3Test, MixControlByPTAllWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4095); }
+  const auto sample = hand_->MixControlByPTWithTimestamp(measured.value, std::vector<int16_t>(measured.value.size(), 0));
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPTAllWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), measured.value.size());
+  for (const auto& feedback : sample.value) {
+    EXPECT_TRUE(feedback.tgt_posi_.has_value());
+    EXPECT_TRUE(feedback.tgt_torque_.has_value());
+  }
+}
+
+TEST_F(OmniPicker3Test, GetAllTactileSensorDataRawWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  if (!hand_->InitTactilePointsMap()) GTEST_SKIP() << "Tactile sensors unavailable";
+  const auto sample = hand_->GetAllTactileSensorDataRawWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTactileSensorDataRawWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetSensorOrder().size());
+  for (const auto& sensor : sample.value) EXPECT_FALSE(sensor.data_.empty());
+}
+
+TEST_F(OmniPicker3Test, GetTactileSensorDataWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  if (!hand_->InitTactilePointsMap()) GTEST_SKIP() << "Tactile sensors unavailable";
+  const auto sensors = hand_->GetSensorOrder();
+  ASSERT_FALSE(sensors.empty());
+  const auto sample = hand_->GetTactileSensorDataWithTimestamp(sensors.front());
+  if (sample.value.data_.empty() && sample.timestamp_us == 0)
+    GTEST_SKIP() << "Processed tactile feedback unsupported by this firmware";
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetTactileSensorDataWithTimestamp", TAG));
+  EXPECT_FALSE(sample.value.data_.empty());
+}
 
 TEST_F(OmniPicker3Test, CreateHand) {
   ASSERT_TRUE(device_available_) << "OP3 hand object failed to initialize";

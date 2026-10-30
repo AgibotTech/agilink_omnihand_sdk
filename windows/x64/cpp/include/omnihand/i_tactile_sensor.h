@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "omnihand/proto.h"
+#include "omnihand/utils.h"
 
 namespace agilink {
 namespace omnihand {

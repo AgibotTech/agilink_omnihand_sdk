@@ -33,6 +33,8 @@ namespace omnihand {
  */
 class AGIBOT_EXPORT OmniHandPro2025 : public OmniHand, public IControlMode {
  public:
+  TimestampedResult<TactileSensor3DData> GetTactileSensor3DDataWithTimestamp(Finger finger) const;
+
   // Constants
   static constexpr unsigned char kDegreesOfActiveFreedom = 12;  // DoA
   static constexpr unsigned char kDegreesOfPassiveFreedom = 7;  // DoP

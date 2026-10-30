@@ -46,6 +46,23 @@ struct AGIBOT_EXPORT CommunicationLogOptions {
  */
 class AGIBOT_EXPORT OmniHand {
  public:
+  // Timestamped counterparts share the existing virtual implementations.
+  // These methods are nonvirtual to preserve the existing public ABI.
+  TimestampedResult<int16_t> SetJointMotorPosiWithTimestamp(unsigned char index, int16_t position);
+  TimestampedResult<int16_t> GetJointMotorPosiWithTimestamp(unsigned char index) const;
+  TimestampedResult<std::vector<int16_t>> SetAllJointMotorPosiWithTimestamp(const std::vector<int16_t>& positions);
+  TimestampedResult<std::vector<int16_t>> GetAllJointMotorPosiWithTimestamp() const;
+  TimestampedResult<std::vector<int16_t>> GetAllTemperatureReportWithTimestamp() const;
+  TimestampedResult<std::vector<int16_t>> GetAllCurrentReportWithTimestamp() const;
+  TimestampedResult<std::vector<JointMotorErrorReport>> GetAllErrorReportWithTimestamp() const;
+  TimestampedResult<MixCtrl> MixControlByPTWithTimestamp(uint8_t index, int16_t position, int16_t torque);
+  TimestampedResult<std::vector<MixCtrl>> MixControlByPTWithTimestamp(const std::vector<int16_t>& positions, const std::vector<int16_t>& torques);
+  TimestampedResult<MixCtrl> MixControlByPVTWithTimestamp(uint8_t index, int16_t position, int16_t velocity, int16_t torque);
+  TimestampedResult<std::vector<MixCtrl>> MixControlByPVTWithTimestamp(const std::vector<int16_t>& positions, const std::vector<int16_t>& velocities, const std::vector<int16_t>& torques);
+  TimestampedResult<std::vector<double>> SetAllActiveJointAnglesWithTimestamp(const std::vector<double>& angles);
+  TimestampedResult<std::vector<double>> GetAllActiveJointAnglesWithTimestamp() const;
+  TimestampedResult<std::vector<double>> GetAllJointAnglesWithTimestamp() const;
+
   /**
    * @brief Gets product type.
    * @return Product type enum value， see @ref ProductType
