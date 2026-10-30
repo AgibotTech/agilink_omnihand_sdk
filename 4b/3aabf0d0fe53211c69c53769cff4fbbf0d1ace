@@ -1,0 +1,41 @@
+windows/x64/cpp/include/omnihand/omnihand.h
+  h_b60f00b173c94b 55
+windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  h_b60f00b173c94b 425-429,453-455
+windows/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc
+  h_b60f00b173c94b 108-184
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "4b3aabf0d0fe53211c69c53769cff4fbbf0d1ace",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand.h",
+      "additions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "human": 8
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc",
+      "additions": {
+        "human": 77
+      }
+    }
+  ]
+}
