@@ -1,0 +1,172 @@
+windows/x64/cpp/include/omnihand/i_o10_tactile_sensor_1d.h
+  h_b60f00b173c94b 36-37
+windows/x64/cpp/include/omnihand/i_tactile_sensor.h
+  h_b60f00b173c94b 12
+windows/x64/cpp/include/omnihand/i_tactile_sensor_1d_u16.h
+  h_b60f00b173c94b 21-23
+windows/x64/cpp/include/omnihand/i_tactile_sensor_3d_i16.h
+  h_b60f00b173c94b 47-49
+windows/x64/cpp/include/omnihand/omnihand.h
+  h_b60f00b173c94b 49-65
+windows/x64/cpp/include/omnihand/omnihand_2025.h
+  h_b60f00b173c94b 37-38
+windows/x64/cpp/include/omnihand/omnihand_pro_2025.h
+  h_b60f00b173c94b 36-37
+windows/x64/cpp/include/omnihand/utils.h
+  h_b60f00b173c94b 14-32
+windows/x64/cpp/test/README.md
+  h_b60f00b173c94b 29-39
+windows/x64/cpp/test/README_zh_cn.md
+  h_b60f00b173c94b 104-114
+windows/x64/cpp/test/test_omnihand_2025.cc
+  h_b60f00b173c94b 55,57,65-67,144-166,455-633
+windows/x64/cpp/test/test_omnihand_3_lite.cc
+  h_b60f00b173c94b 5,26,104-107,109-111,117-120,177-334,1087-1093,1100-1101
+windows/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc
+  h_b60f00b173c94b 5,22-23,48-52,56-60,64-68,85-245,521-540,542-544
+windows/x64/cpp/test/test_omnihand_dex_umi.cc
+  h_b60f00b173c94b 5,56-96
+windows/x64/cpp/test/test_omnihand_pro_2025.cc
+  h_b60f00b173c94b 5,79-252
+windows/x64/cpp/test/test_omnipicker_3.cc
+  h_b60f00b173c94b 31,201-295
+windows/x64/cpp/test/timestamp_test_utils.h
+  h_b60f00b173c94b 1-51
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "0eb2512a7c398f83472adfae046152322d561a13",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "new_path": "windows/x64/cpp/test/timestamp_test_utils.h",
+      "additions": {
+        "human": 51
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/i_o10_tactile_sensor_1d.h",
+      "new_path": "windows/x64/cpp/include/omnihand/i_o10_tactile_sensor_1d.h",
+      "additions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/i_tactile_sensor.h",
+      "new_path": "windows/x64/cpp/include/omnihand/i_tactile_sensor.h",
+      "additions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/i_tactile_sensor_1d_u16.h",
+      "new_path": "windows/x64/cpp/include/omnihand/i_tactile_sensor_1d_u16.h",
+      "additions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/i_tactile_sensor_3d_i16.h",
+      "new_path": "windows/x64/cpp/include/omnihand/i_tactile_sensor_3d_i16.h",
+      "additions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand.h",
+      "additions": {
+        "human": 17
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_2025.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_2025.h",
+      "additions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_pro_2025.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_pro_2025.h",
+      "additions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/utils.h",
+      "new_path": "windows/x64/cpp/include/omnihand/utils.h",
+      "additions": {
+        "human": 19
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/README.md",
+      "new_path": "windows/x64/cpp/test/README.md",
+      "additions": {
+        "human": 11
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/README_zh_cn.md",
+      "new_path": "windows/x64/cpp/test/README_zh_cn.md",
+      "additions": {
+        "human": 11
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_2025.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_2025.cc",
+      "additions": {
+        "human": 207
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_3_lite.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_3_lite.cc",
+      "additions": {
+        "human": 180
+      },
+      "deletions": {
+        "human": 14
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc",
+      "additions": {
+        "human": 202
+      },
+      "deletions": {
+        "human": 7
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_dex_umi.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_dex_umi.cc",
+      "additions": {
+        "human": 42
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_pro_2025.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_pro_2025.cc",
+      "additions": {
+        "human": 175
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnipicker_3.cc",
+      "new_path": "windows/x64/cpp/test/test_omnipicker_3.cc",
+      "additions": {
+        "human": 96
+      }
+    }
+  ]
+}
