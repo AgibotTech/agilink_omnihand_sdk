@@ -34,6 +34,8 @@ namespace omnihand {
  */
 class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, public IO10TactileSensor1D{
  public:
+  TimestampedResult<std::vector<TactileSensorData>> GetAllTactileSensorDataWithTimestamp() const;
+
   // Constants
   static constexpr unsigned char kDegreesOfActiveFreedom = 10;  // DoA
   static constexpr unsigned char kDegreesOfPassiveFreedom = 6;  // DoP
@@ -270,7 +272,7 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
   /**
    * @brief Sets the hand to a predefined gesture (typed API).
    */
-  void SetHandGesture(o10::OmniHand2025Gesture gesture);
+  std::vector<int16_t> SetHandGesture(o10::OmniHand2025Gesture gesture);
 
   std::vector<int16_t> GetHandGesture(o10::OmniHand2025Gesture gesture);
 
@@ -278,7 +280,7 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
    * @brief Same gestures as o10::OmniHand2025Gesture: 0 = PAPER … 16 = CLASPING;
    *        17 = RESET (all active joints zero). Default 1 = FIST1.
    */
-  void SetHandGesture(int gesture_num = 1) override;
+  std::vector<int16_t> SetHandGesture(int gesture_num = 1) override;
 
   /**
    * @brief Returns motor positions for a gesture without sending to device.

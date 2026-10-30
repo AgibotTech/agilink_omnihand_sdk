@@ -2,6 +2,7 @@
 // AGILINK OmniHand SDK is licensed under Mulan PSL v2.
 
 #include <gtest/gtest.h>
+#include "timestamp_test_utils.h"
 #include "agilink_logger.h"
 #include "omnihand/omnihand_3_ultra_m.h"
 #include <chrono>
@@ -18,6 +19,8 @@ static constexpr const char* TAG = "OmniHand3UltraMT1P3Test";
 static int g_request_interval = 5;
 static std::string g_device_type = "zlgcan";
 static std::string g_can_interface = "can0";
+static bool g_revision_t1p5 = false;
+static uint8_t g_device_id = 9;  // Preserve the existing T1.3 test default.
 
 static int GetRequestInterval() {
   return g_request_interval;
@@ -42,18 +45,27 @@ class OmniHand3UltraMT1P3Test : public ::testing::Test {
   void SetUp() override {
     std::string device_type = GetDeviceType();
     if (device_type == "hcan") {
-      hand_ = agilink::omnihand::OmniHand3UltraM::createHandByHcan(
-          agilink::omnihand::HandType::LEFT, 9, 0, 0);
+      hand_ = g_revision_t1p5 ?
+          agilink::omnihand::OmniHand3UltraM::createHandT1P5ByHcan(
+              agilink::omnihand::HandType::LEFT, g_device_id, 0, 0) :
+          agilink::omnihand::OmniHand3UltraM::createHandByHcan(
+              agilink::omnihand::HandType::LEFT, g_device_id, 0, 0);
       AgilinkLogger::get().infof(TAG, "Using HCAN device");
 #ifdef __linux__
     } else if (device_type == "socketcan") {
-      hand_ = agilink::omnihand::OmniHand3UltraM::createHandSocketCan(
-          agilink::omnihand::HandType::LEFT, 9, g_can_interface);
+      hand_ = g_revision_t1p5 ?
+          agilink::omnihand::OmniHand3UltraM::createHandT1P5SocketCan(
+              agilink::omnihand::HandType::LEFT, g_device_id, g_can_interface) :
+          agilink::omnihand::OmniHand3UltraM::createHandSocketCan(
+              agilink::omnihand::HandType::LEFT, g_device_id, g_can_interface);
       AgilinkLogger::get().infof(TAG, "Using SocketCAN device (%s)", g_can_interface.c_str());
 #endif
     } else {
-      hand_ = agilink::omnihand::OmniHand3UltraM::createHandByZlgcan(
-          agilink::omnihand::HandType::LEFT, 9, 0, 0);
+      hand_ = g_revision_t1p5 ?
+          agilink::omnihand::OmniHand3UltraM::createHandT1P5ByZlgcan(
+              agilink::omnihand::HandType::LEFT, g_device_id, 0, 0) :
+          agilink::omnihand::OmniHand3UltraM::createHandByZlgcan(
+              agilink::omnihand::HandType::LEFT, g_device_id, 0, 0);
       AgilinkLogger::get().infof(TAG, "Using ZLG CAN device");
     }
     int request_interval = GetRequestInterval();
@@ -69,6 +81,167 @@ class OmniHand3UltraMT1P3Test : public ::testing::Test {
 
   std::unique_ptr<agilink::omnihand::OmniHand3UltraM> hand_;
 };
+
+// Timestamped feedback tests. Controls hold the measured pose.
+TEST_F(OmniHand3UltraMT1P3Test, GetAllJointMotorPosiWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+  for (const auto position : sample.value) { EXPECT_GE(position, 0); EXPECT_LE(position, 4095); }
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, GetAllErrorReportWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllErrorReportWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllErrorReportWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, GetAllTemperatureReportWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllTemperatureReportWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTemperatureReportWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, GetAllCurrentReportWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllCurrentReportWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllCurrentReportWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, GetJointMotorPosiWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetJointMotorPosiWithTimestamp(1);
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetJointMotorPosiWithTimestamp", TAG));
+  EXPECT_GE(sample.value, 0); EXPECT_LE(sample.value, 4095);
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, SetJointMotorPosiWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4095); }
+  const auto sample = hand_->SetJointMotorPosiWithTimestamp(1, measured.value.front());
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "SetJointMotorPosiWithTimestamp", TAG));
+  EXPECT_GE(sample.value, 0); EXPECT_LE(sample.value, 4095);
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, SetAllJointMotorPosiWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4095); }
+  const auto sample = hand_->SetAllJointMotorPosiWithTimestamp(measured.value);
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "SetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), measured.value.size());
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, GetAllActiveJointAnglesWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllActiveJointAnglesWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllActiveJointAnglesWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+  for (const auto angle : sample.value) EXPECT_TRUE(std::isfinite(angle));
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, GetAllJointAnglesWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllJointAnglesWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllJointAnglesWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetJointNames().size());
+  for (const auto angle : sample.value) EXPECT_TRUE(std::isfinite(angle));
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, SetAllActiveJointAnglesWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllActiveJointAnglesWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllActiveJointAnglesWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto angle : measured.value) ASSERT_TRUE(std::isfinite(angle));
+  const auto sample = hand_->SetAllActiveJointAnglesWithTimestamp(measured.value);
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "SetAllActiveJointAnglesWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), measured.value.size());
+  for (const auto angle : sample.value) EXPECT_TRUE(std::isfinite(angle));
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, MixControlByPTAllWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4095); }
+  const auto sample = hand_->MixControlByPTWithTimestamp(measured.value, std::vector<int16_t>(measured.value.size(), 0));
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPTAllWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), measured.value.size());
+  for (const auto& feedback : sample.value) {
+    EXPECT_TRUE(feedback.tgt_posi_.has_value());
+    EXPECT_TRUE(feedback.tgt_torque_.has_value());
+  }
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, MixControlByPTSingleWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4095); }
+  const auto sample = hand_->MixControlByPTWithTimestamp(1, measured.value.front(), 0);
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPTSingleWithTimestamp", TAG));
+  EXPECT_EQ(sample.value.joint_index_, 1);
+  EXPECT_TRUE(sample.value.tgt_posi_.has_value());
+  EXPECT_TRUE(sample.value.tgt_torque_.has_value());
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, MixControlByPVTAllWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4095); }
+  const auto sample = hand_->MixControlByPVTWithTimestamp(measured.value, std::vector<int16_t>(measured.value.size(), 50), std::vector<int16_t>(measured.value.size(), 0));
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPVTAllWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), measured.value.size());
+  for (const auto& feedback : sample.value) {
+    EXPECT_TRUE(feedback.tgt_posi_.has_value());
+    EXPECT_TRUE(feedback.tgt_torque_.has_value());
+    EXPECT_TRUE(feedback.tgt_velo_.has_value());
+  }
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, MixControlByPVTSingleWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4095); }
+  const auto sample = hand_->MixControlByPVTWithTimestamp(1, measured.value.front(), 50, 0);
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPVTSingleWithTimestamp", TAG));
+  EXPECT_EQ(sample.value.joint_index_, 1);
+  EXPECT_TRUE(sample.value.tgt_posi_.has_value());
+  EXPECT_TRUE(sample.value.tgt_torque_.has_value());
+  EXPECT_TRUE(sample.value.tgt_velo_.has_value());
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, GetAllTactileSensorDataRawWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  if (!hand_->InitTactilePointsMap()) GTEST_SKIP() << "Tactile sensors unavailable";
+  const auto sample = hand_->GetAllTactileSensorDataRawWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTactileSensorDataRawWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetSensorOrder().size());
+  for (const auto& sensor : sample.value) EXPECT_FALSE(sensor.points.empty());
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, GetAllTactileSensorResultantForcesWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllTactileSensorResultantForcesWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTactileSensorResultantForcesWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetSensorOrder().size());
+}
 
 TEST_F(OmniHand3UltraMT1P3Test, CreateHand) {
   EXPECT_NE(hand_, nullptr);
@@ -345,8 +518,30 @@ int main(int argc, char** argv) {
       g_can_interface = argv[i + 1];
       ++i;
       continue;
+    } else if (arg == "--revision" && i + 1 < argc) {
+      const std::string revision = argv[++i];
+      if (revision != "1.3" && revision != "1.5") {
+        AgilinkLogger::get().errorf(TAG, "--revision must be 1.3 or 1.5");
+        return 1;
+      }
+      g_revision_t1p5 = revision == "1.5";
+      continue;
+    } else if (arg == "--device-id" && i + 1 < argc) {
+      try {
+        size_t consumed = 0;
+        const std::string value = argv[++i];
+        const int id = std::stoi(value, &consumed);
+        if (consumed != value.size() || id < 1 || id > 0x7f) return 1;
+        g_device_id = static_cast<uint8_t>(id);
+      } catch (const std::exception&) {
+        AgilinkLogger::get().errorf(TAG, "--device-id must be an integer in [1, 127]");
+        return 1;
+      }
+      continue;
     } else if (arg == "--help" || arg == "-h") {
-      AgilinkLogger::get().infof(TAG, "Usage: %s [-f INTERVAL] [-d DEVICE] [-c CAN_INTERFACE]", argv[0]);
+      AgilinkLogger::get().infof(TAG, "Usage: %s [-f INTERVAL] [-d DEVICE] [-c CAN_INTERFACE] [--revision 1.3|1.5] [--device-id ID]", argv[0]);
+      AgilinkLogger::get().infof(TAG, "  --revision        Revision for timestamp tests (default: 1.3)");
+      AgilinkLogger::get().infof(TAG, "  --device-id       Target hand ID (1-127, default: 9); does not write the device ID");
       AgilinkLogger::get().infof(TAG, "  -f INTERVAL       Set CAN request interval (0-100ms, default: 5ms)");
       AgilinkLogger::get().infof(TAG, "  -d DEVICE         Set CAN device type (zlgcan, hcan or socketcan, default: zlgcan)");
       AgilinkLogger::get().infof(TAG, "  -c CAN_INTERFACE  Set SocketCAN interface name (default: can0)");

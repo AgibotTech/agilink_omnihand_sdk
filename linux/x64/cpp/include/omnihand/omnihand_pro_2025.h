@@ -33,6 +33,8 @@ namespace omnihand {
  */
 class AGIBOT_EXPORT OmniHandPro2025 : public OmniHand, public IControlMode {
  public:
+  TimestampedResult<TactileSensor3DData> GetTactileSensor3DDataWithTimestamp(Finger finger) const;
+
   // Constants
   static constexpr unsigned char kDegreesOfActiveFreedom = 12;  // DoA
   static constexpr unsigned char kDegreesOfPassiveFreedom = 7;  // DoP
@@ -398,9 +400,9 @@ class AGIBOT_EXPORT OmniHandPro2025 : public OmniHand, public IControlMode {
    * @brief Sets the hand to a predefined gesture.
    * @param gesture_num Gesture number (ignored for O12, only one FIST type supported)
    */
-  void SetHandGesture(o12::OmniHandPro2025Gesture gesture);
+  std::vector<int16_t> SetHandGesture(o12::OmniHandPro2025Gesture gesture);
 
-  void SetHandGesture(int gesture_num) override;
+  std::vector<int16_t> SetHandGesture(int gesture_num) override;
 
   std::vector<int16_t> GetHandGesture(o12::OmniHandPro2025Gesture gesture);
 
