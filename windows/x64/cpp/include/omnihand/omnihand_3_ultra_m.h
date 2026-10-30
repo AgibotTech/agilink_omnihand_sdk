@@ -422,6 +422,11 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   const std::vector<Finger>& GetSensorOrder() const override;
 
   // ============ Xense Tactile Sensing ============
+  // Cached frames retain their first SDK host receive time; vendor clocks are unchanged.
+  TimestampedResult<bool> GetFingerTactileWithTimestamp(uint8_t finger_index, XenseFrame& frame);
+  TimestampedResult<bool> GetPalmTactileWithTimestamp(PalmFrame& frame);
+  TimestampedResult<bool> GetAllTactileWithTimestamp(AllTactileFrame& frame);
+
   /**
    * @brief Get tactile data for a specific finger
    * @param finger_index 0=thumb, 1=index, 2=middle, 3=ring, 4=pinky
@@ -445,6 +450,9 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   virtual bool GetAllTactile(AllTactileFrame& frame) { (void)frame; return false; }
 
   // ============ T1.5 Extended API ============
+  TimestampedResult<int16_t> GetTemperatureOfPalmWithTimestamp() const;
+  TimestampedResult<int16_t> GetTemperatureOfPowerWithTimestamp() const;
+
 
   /**
    * @brief Gets the palm board temperature through register 0x21/0x51.
