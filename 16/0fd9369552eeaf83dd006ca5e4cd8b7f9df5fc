@@ -1,0 +1,57 @@
+windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  h_b60f00b173c94b 21,167,422-445
+windows/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc
+  h_b60f00b173c94b 310-326,331-333
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "160fd9369552eeaf83dd006ca5e4cd8b7f9df5fc",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "human": 26
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "deletions": {
+        "human": 21
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_can_log_timestamps.cc",
+      "deletions": {
+        "human": 191
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_h3um_motor_diagnostics.cc",
+      "deletions": {
+        "human": 75
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc",
+      "additions": {
+        "human": 20
+      },
+      "deletions": {
+        "human": 5
+      }
+    }
+  ]
+}
