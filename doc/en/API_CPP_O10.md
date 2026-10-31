@@ -11,6 +11,10 @@
 - Supports CAN (ZLG USB CANFD) and RS485 communication
 - Supports SocketCAN (Linux only)
 
+## Motor Layout
+
+![O10 Motor Layout](../pic/hand_o10_motors.jpg)
+
 ## Include Header
 
 ```cpp

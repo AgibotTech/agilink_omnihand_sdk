@@ -566,7 +566,15 @@ TEST_F(OmniHand2025Test, MixControlByPTAllWithTimestamp) {
 
 TEST_F(OmniHand2025Test, MixControlByPTSingleWithTimestamp) {
   RequireDevice();
-  if (IsUsbOrRs485Transport()) GTEST_SKIP() << "Single-axis mixed feedback is CAN-only in the current O10 serial implementation";
+  if (IsUsbOrRs485Transport()) {
+    const auto firmware = hand_->GetFwVersion();
+    ASSERT_EQ(firmware.dof, 10);
+    const auto version = firmware.software_version;
+    if (!(version > agilink::omnihand::Version(1, 2, 15) &&
+          version < agilink::omnihand::Version(15, 0, 0))) {
+      GTEST_SKIP() << "Private serial protocol has no single-joint mixed-control command";
+    }
+  }
   const auto position = hand_->GetJointMotorPosi(1);
   ASSERT_GE(position, 0); ASSERT_LE(position, 4096);
   const auto sample = hand_->MixControlByPTWithTimestamp(1, position, 0);
@@ -595,7 +603,15 @@ TEST_F(OmniHand2025Test, MixControlByPVTAllWithTimestamp) {
 
 TEST_F(OmniHand2025Test, MixControlByPVTSingleWithTimestamp) {
   RequireDevice();
-  if (IsUsbOrRs485Transport()) GTEST_SKIP() << "Single-axis mixed feedback is CAN-only in the current O10 serial implementation";
+  if (IsUsbOrRs485Transport()) {
+    const auto firmware = hand_->GetFwVersion();
+    ASSERT_EQ(firmware.dof, 10);
+    const auto version = firmware.software_version;
+    if (!(version > agilink::omnihand::Version(1, 2, 15) &&
+          version < agilink::omnihand::Version(15, 0, 0))) {
+      GTEST_SKIP() << "Private serial protocol has no single-joint mixed-control command";
+    }
+  }
   const auto position = hand_->GetJointMotorPosi(1);
   ASSERT_GE(position, 0); ASSERT_LE(position, 4096);
   const auto sample = hand_->MixControlByPVTWithTimestamp(1, position, 50, 0);

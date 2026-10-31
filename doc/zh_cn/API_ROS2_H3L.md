@@ -8,6 +8,10 @@ H3L ROS2 节点提供 4 自由度灵巧手的统一 Topic 接口，遵循 [ROS2 
 
 > **重要**：H3L 无完整运动学求解器（不支持角度控制），`JointState.position` 携带的是**电机 ticks**（int16，范围 0–4096），**非弧度**。节点内部做 double ↔ int16 透明转换。手势控制可通过 SDK 的 `SetHandGesture()` API 使用。
 
+## 电机分布
+
+![H3L 电机分布](../pic/hand_h3l_motors.png)
+
 ## ROS2 Topics
 
 所有 Topic 前缀为 `/h3l/<side>/`，其中 `<side>` 为 `left` 或 `right`。

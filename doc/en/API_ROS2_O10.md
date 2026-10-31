@@ -6,6 +6,10 @@
 
 The O10 ROS2 node provides a unified topic interface for the 10 DOF dexterous hand, following the [Unified ROS2 Interface Specification](API_ROS2.md).
 
+## Motor Layout
+
+![O10 Motor Layout](../pic/hand_o10_motors.jpg)
+
 ## ROS2 Topics
 
 All topics are prefixed with `/o10/<side>/`, where `<side>` is `left` or `right`.

@@ -6,6 +6,10 @@
 
 The O12 ROS2 node provides a unified topic interface for the 12 DOF dexterous hand, following the [Unified ROS2 Interface Specification](API_ROS2.md).
 
+## Motor Layout
+
+![O12 Motor Layout](../pic/hand_o12_motors.jpg)
+
 ## ROS2 Topics
 
 All topics are prefixed with `/o12/<side>/`, where `<side>` is `left` or `right`.

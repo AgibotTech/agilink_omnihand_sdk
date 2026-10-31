@@ -11,6 +11,10 @@
 - 支持 CAN（ZLG USB CANFD）和 RS485 通信
 - 支持 SocketCAN（仅 Linux）
 
+## 电机分布
+
+![O10 电机分布](../pic/hand_o10_motors.jpg)
+
 ## 导入
 
 ```python

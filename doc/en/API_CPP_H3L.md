@@ -13,6 +13,10 @@
 - **No tactile sensors** on the documented H3L hardware; U16 tactile methods remain as protocol/firmware compatibility APIs
 - **No kinematics solver**: angle-based control is unavailable (`SetAllActiveJointAngles` is a stub). Use motor position control (`SetAllJointMotorPosi` / `SetAllJointMotorPosi`) instead.
 
+## Motor Layout
+
+![H3L Motor Layout](../pic/hand_h3l_motors.png)
+
 ## Include Header
 
 ```cpp

@@ -17,19 +17,11 @@ AGILINK OmniHand SDK 支持以下产品型号：
 
 ![](doc/pic/hand_o10.jpg)
 
-对应的控制电机如下图所示：
-
-![](doc/pic/hand_o10_motors.jpg)
-
 **OmniHand Pro 2025 专业款 (O12)**
 
 12 自由度专业灵巧手，具有精确操作和灵活控制能力。配备触觉传感器和多种控制模式（位置控制、力矩控制、混合控制），适用于研究教育、娱乐商业演出、展览引导、工业场景等多种应用。
 
 ![](doc/pic/hand_o12.jpg)
-
-对应的控制电机如下图所示：
-
-![](doc/pic/hand_o12_motors.jpg)
 
 **OmniHand 3 Lite (H3L)**
 

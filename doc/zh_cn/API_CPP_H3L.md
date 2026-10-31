@@ -13,6 +13,10 @@
 - 文档所述 H3L 硬件**无触觉传感器**；U16 触觉方法作为协议/固件兼容接口保留
 - **无运动学求解器**：不支持角度控制（`SetAllActiveJointAngles` 为桩实现）。请使用电机位置控制（`SetAllJointMotorPosi` / `SetAllJointMotorPosi`）
 
+## 电机分布
+
+![H3L 电机分布](../pic/hand_h3l_motors.png)
+
 ## 包含头文件
 
 ```cpp

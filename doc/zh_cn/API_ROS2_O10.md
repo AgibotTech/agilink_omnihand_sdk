@@ -6,6 +6,10 @@
 
 O10 ROS2 节点提供 10 自由度灵巧手的统一 Topic 接口，遵循 [ROS2 接口统一规范](API_ROS2.md)。
 
+## 电机分布
+
+![O10 电机分布](../pic/hand_o10_motors.jpg)
+
 ## ROS2 Topics
 
 所有 Topic 前缀为 `/o10/<side>/`，其中 `<side>` 为 `left` 或 `right`。

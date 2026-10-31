@@ -18,6 +18,10 @@
 Calibration, zero-point, parameter-persistence, and firmware-maintenance APIs
 are intentionally not exposed by the H3L Python interface.
 
+## Motor Layout
+
+![H3L Motor Layout](../pic/hand_h3l_motors.png)
+
 ## Import
 
 ```python

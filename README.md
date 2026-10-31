@@ -17,19 +17,11 @@ The AGILINK OmniHand SDK supports the following product models:
 
 ![](doc/pic/hand_o10.jpg)
 
-The corresponding control motors are shown in the following image:
-
-![](doc/pic/hand_o10_motors.jpg)
-
 **OmniHand Pro 2025 专业款 (O12)**
 
  A 12-degree-of-freedom professional dexterous hand featuring precise operation and flexible control capabilities. It is equipped with tactile sensors and multiple control modes (position control, torque control, hybrid control), making it suitable for a wide range of applications including research and education, entertainment and commercial performances, exhibition guidance, and industrial scenarios.
 
 ![](doc/pic/hand_o12.jpg)
-
-The corresponding control motors are shown in the following image:
-
-![](doc/pic/hand_o12_motors.jpg)
 
 **OmniHand 3 Lite (H3L)**
 

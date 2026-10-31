@@ -13,6 +13,10 @@
 - Supports voltage command control
 - Supports temperature and current report period settings
 
+## Motor Layout
+
+![O12 Motor Layout](../pic/hand_o12_motors.jpg)
+
 ## Include Header
 
 ```cpp
