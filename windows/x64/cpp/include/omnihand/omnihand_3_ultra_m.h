@@ -450,6 +450,20 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   virtual bool GetAllTactile(AllTactileFrame& frame) { (void)frame; return false; }
 
   // ============ T1.5 Extended API ============
+  /**
+   * @brief Reads one motor's detailed diagnostic state through register 0x81.
+   * @param joint_motor_index Motor index, 1~21; 0 (all motors) is not supported.
+   * @param info Output in protocol units; cleared on failure.
+   * @return true for a complete reply; false for an invalid index, unsupported
+   *         revision, communication failure, or a reply shorter than 28 bytes.
+   */
+  virtual bool GetMotorDiagnosticInfo(uint8_t joint_motor_index,
+                                      H3UMMotorDiagnosticInfo& info) const {
+    (void)joint_motor_index;
+    info = {};
+    return false;
+  }
+
   TimestampedResult<int16_t> GetTemperatureOfPalmWithTimestamp() const;
   TimestampedResult<int16_t> GetTemperatureOfPowerWithTimestamp() const;
 

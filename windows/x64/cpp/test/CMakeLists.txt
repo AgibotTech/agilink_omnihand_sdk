@@ -77,6 +77,17 @@ else()
   set(TEST_OUTPUT_DIR "${CMAKE_BINARY_DIR}/bin/omnihand/test")
 endif()
 
+if(NOT CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+  # Exercise logging with a fake transport; never opens CAN hardware.
+  add_executable(test_can_log_timestamps test_can_log_timestamps.cc
+    ../src/can/can_bus_device.cc ../src/omnihand/impl/receive_timestamp.cc)
+  target_link_libraries(test_can_log_timestamps
+    PRIVATE ${OMNIHAND_TARGET} GTest::gtest_main)
+  set_target_properties(test_can_log_timestamps PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${TEST_OUTPUT_DIR}")
+  add_test(NAME CanLogTimestamps COMMAND test_can_log_timestamps)
+endif()
+
 # OmniHand 2025 (O10) Tests - Combined USB/CANFD (legacy)
 add_executable(test_omnihand_2025 test_omnihand_2025.cc)
 target_link_libraries(
@@ -136,6 +147,16 @@ endif()
 
 # OmniHand 3 Ultra M T1.3 Tests
 if(BUILD_OMNIHAND_3_ULTRA_M)
+  # Protocol-only tests: no adapter or hand connection required.
+  if(NOT CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+    add_executable(test_h3um_motor_diagnostics test_h3um_motor_diagnostics.cc)
+    target_link_libraries(test_h3um_motor_diagnostics
+      PRIVATE omnihand GTest::gtest_main)
+    set_target_properties(test_h3um_motor_diagnostics PROPERTIES
+      RUNTIME_OUTPUT_DIRECTORY "${TEST_OUTPUT_DIR}")
+    add_test(NAME H3UMMotorDiagnostics COMMAND test_h3um_motor_diagnostics)
+  endif()
+
   add_executable(test_omnihand_3_ultra_m_t1.3 test_omnihand_3_ultra_m_t1.3.cc)
   target_link_libraries(
     test_omnihand_3_ultra_m_t1.3
