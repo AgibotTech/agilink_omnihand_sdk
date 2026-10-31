@@ -18,6 +18,7 @@
 #include "omnihand/i_control_mode.h"
 #include "omnihand/i_omnihand_calibrator.h"
 #include "omnihand/i_tactile_sensor_3d_i16.h"
+#include "omnihand/i_tactile_sensor_1d_u16.h"
 #include "omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h"
 #include "omnihand/omnihand.h"
 #include "omnihand/proto.h"
@@ -163,8 +164,7 @@ inline std::string H3UMErrorReportToString(const JointMotorErrorReport& report) 
  */
 class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
                                       public IControlMode,
-                                      public IOmniHandCalibrator,
-                                      public ITactileSensor3DI16 {
+                                      public IOmniHandCalibrator {
  public:
   // Constants
   static constexpr unsigned char kT1P3DegreesOfActiveFreedom = 20;
@@ -419,7 +419,30 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 
   std::vector<int16_t> GetHandGesture(int gesture_num) override;
 
-  const std::vector<Finger>& GetSensorOrder() const override;
+  // Borrowed interfaces live as long as this hand; unsupported dimensions return nullptr.
+  ITactileSensor1DU16* GetTactileSensor1D() {
+    return dynamic_cast<ITactileSensor1DU16*>(this);
+  }
+  const ITactileSensor1DU16* GetTactileSensor1D() const {
+    return dynamic_cast<const ITactileSensor1DU16*>(this);
+  }
+  ITactileSensor3DI16* GetTactileSensor3D() {
+    return dynamic_cast<ITactileSensor3DI16*>(this);
+  }
+  const ITactileSensor3DI16* GetTactileSensor3D() const {
+    return dynamic_cast<const ITactileSensor3DI16*>(this);
+  }
+
+  // T1.3 exposes XYZ data; T1.5 exposes scalar pressure in grams.
+  // InitTactilePointsMap() refreshes point counts from device metadata.
+  virtual size_t GetNumOfTactileSensors() const = 0;
+  virtual size_t GetNumOfTactilePoints(Finger sensor) const = 0;
+  virtual bool InitTactilePointsMap() = 0;
+  virtual size_t GetLenOfTactileDatum(Finger sensor) const = 0;
+  virtual size_t GetNumOfRepliedTactileFrames(Finger sensor) const = 0;
+  virtual std::string GetSNOfTactileSensor(Finger sensor) const = 0;
+  virtual size_t GetSensorDataLength(Finger sensor) const = 0;
+  virtual const std::vector<Finger>& GetSensorOrder() const;
 
   // ============ Xense Tactile Sensing ============
   // Cached frames retain their first SDK host receive time; vendor clocks are unchanged.

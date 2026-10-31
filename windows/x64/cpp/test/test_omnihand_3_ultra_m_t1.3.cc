@@ -307,15 +307,30 @@ TEST_F(OmniHand3UltraMT1P3Test, MixControlByPVTSingleWithTimestamp) {
 TEST_F(OmniHand3UltraMT1P3Test, GetAllTactileSensorDataRawWithTimestamp) {
   if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
   if (!hand_->InitTactilePointsMap()) GTEST_SKIP() << "Tactile sensors unavailable";
-  const auto sample = hand_->GetAllTactileSensorDataRawWithTimestamp();
-  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTactileSensorDataRawWithTimestamp", TAG));
-  ASSERT_EQ(sample.value.size(), hand_->GetSensorOrder().size());
-  for (const auto& sensor : sample.value) EXPECT_FALSE(sensor.points.empty());
+  if (auto* scalar_tactile = hand_->GetTactileSensor1D()) {
+    const auto sample = scalar_tactile->GetAllTactileSensorDataRawWithTimestamp();
+    ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTactileSensorDataRawWithTimestamp", TAG));
+    ASSERT_EQ(sample.value.size(), hand_->GetSensorOrder().size());
+    for (const auto& sensor : sample.value) {
+      EXPECT_EQ(sensor.data_.size(), scalar_tactile->GetNumOfTactilePoints(sensor.sensor_id_));
+    }
+  } else {
+    auto* tactile = hand_->GetTactileSensor3D();
+    ASSERT_NE(tactile, nullptr);
+    const auto sample = tactile->GetAllTactileSensorDataRawWithTimestamp();
+    ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTactileSensorDataRawWithTimestamp", TAG));
+    ASSERT_EQ(sample.value.size(), hand_->GetSensorOrder().size());
+    for (const auto& sensor : sample.value) {
+      EXPECT_EQ(sensor.points.size(), tactile->GetNumOfTactilePoints(sensor.sensor_id));
+    }
+  }
 }
 
 TEST_F(OmniHand3UltraMT1P3Test, GetAllTactileSensorResultantForcesWithTimestamp) {
   if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
-  const auto sample = hand_->GetAllTactileSensorResultantForcesWithTimestamp();
+  auto* tactile = hand_->GetTactileSensor3D();
+  if (!tactile) GTEST_SKIP() << "3D resultant forces require T1.3";
+  const auto sample = tactile->GetAllTactileSensorResultantForcesWithTimestamp();
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTactileSensorResultantForcesWithTimestamp", TAG));
   ASSERT_EQ(sample.value.size(), hand_->GetSensorOrder().size());
 }
