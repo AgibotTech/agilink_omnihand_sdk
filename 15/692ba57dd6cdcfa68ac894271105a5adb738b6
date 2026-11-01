@@ -1,0 +1,38 @@
+windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  h_b60f00b173c94b 481
+windows/x64/cpp/include/omnihand/proto.h
+  h_b60f00b173c94b 295-296,304-309,311-312
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "15692ba57dd6cdcfa68ac894271105a5adb738b6",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/proto.h",
+      "new_path": "windows/x64/cpp/include/omnihand/proto.h",
+      "additions": {
+        "human": 10
+      },
+      "deletions": {
+        "human": 8
+      }
+    }
+  ]
+}
