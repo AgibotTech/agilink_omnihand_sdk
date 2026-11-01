@@ -105,6 +105,83 @@ TEST_F(OmniHand3UltraMT1P3Test, GetAllTemperatureReportWithTimestamp) {
   ASSERT_EQ(sample.value.size(), hand_->GetDoA());
 }
 
+TEST_F(OmniHand3UltraMT1P3Test, GetTemperatureOfPalmWithTimestamp) {
+  if (!hand_ || !hand_->Init()) {
+    GTEST_SKIP() << "Device not available";
+  }
+  if (hand_->GetRevision() != agilink::omnihand::H3UMRevision::T1P5) {
+    GTEST_SKIP() << "Board temperature requires T1.5";
+  }
+  const auto sample = hand_->GetTemperatureOfPalmWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(
+      sample.timestamp_us, "GetTemperatureOfPalmWithTimestamp", TAG));
+  AgilinkLogger::get().infof(TAG, "[GetTemperatureOfPalmWithTimestamp] temperature=%d", sample.value);
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, GetTemperatureOfPowerWithTimestamp) {
+  if (!hand_ || !hand_->Init()) {
+    GTEST_SKIP() << "Device not available";
+  }
+  if (hand_->GetRevision() != agilink::omnihand::H3UMRevision::T1P5) {
+    GTEST_SKIP() << "Board temperature requires T1.5";
+  }
+  const auto sample = hand_->GetTemperatureOfPowerWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(
+      sample.timestamp_us, "GetTemperatureOfPowerWithTimestamp", TAG));
+  AgilinkLogger::get().infof(TAG, "[GetTemperatureOfPowerWithTimestamp] temperature=%d", sample.value);
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, GetFingerTactileWithTimestamp) {
+  if (!hand_ || !hand_->Init()) {
+    GTEST_SKIP() << "Device not available";
+  }
+  for (uint8_t index = 0; index < 5; ++index) {
+    agilink::omnihand::XenseFrame frame;
+    const auto sample = hand_->GetFingerTactileWithTimestamp(index, frame);
+    if (!sample.value) {
+      GTEST_SKIP() << "Xense tactile sensor unavailable";
+    }
+    ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(
+        sample.timestamp_us, "GetFingerTactileWithTimestamp", TAG));
+    const uint64_t source_timestamp = frame.timestamp;
+    const auto cached = hand_->GetFingerTactileWithTimestamp(index, frame);
+    if (cached.value && source_timestamp != 0 && source_timestamp == frame.timestamp) {
+      EXPECT_EQ(cached.timestamp_us, sample.timestamp_us);
+    }
+  }
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, GetPalmTactileWithTimestamp) {
+  if (!hand_ || !hand_->Init()) {
+    GTEST_SKIP() << "Device not available";
+  }
+  agilink::omnihand::PalmFrame frame;
+  const auto sample = hand_->GetPalmTactileWithTimestamp(frame);
+  if (!sample.value || frame.force.empty()) {
+    GTEST_SKIP() << "Palm tactile sensor unavailable";
+  }
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(
+      sample.timestamp_us, "GetPalmTactileWithTimestamp", TAG));
+  const double source_timestamp = frame.timestamp;
+  const auto cached = hand_->GetPalmTactileWithTimestamp(frame);
+  if (cached.value && source_timestamp != 0 && source_timestamp == frame.timestamp) {
+    EXPECT_EQ(cached.timestamp_us, sample.timestamp_us);
+  }
+}
+
+TEST_F(OmniHand3UltraMT1P3Test, GetAllTactileWithTimestamp) {
+  if (!hand_ || !hand_->Init()) {
+    GTEST_SKIP() << "Device not available";
+  }
+  agilink::omnihand::AllTactileFrame frame;
+  const auto sample = hand_->GetAllTactileWithTimestamp(frame);
+  if (!sample.value) {
+    GTEST_SKIP() << "Tactile sensors unavailable";
+  }
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(
+      sample.timestamp_us, "GetAllTactileWithTimestamp", TAG));
+}
+
 TEST_F(OmniHand3UltraMT1P3Test, GetAllCurrentReportWithTimestamp) {
   if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
   const auto sample = hand_->GetAllCurrentReportWithTimestamp();
@@ -230,15 +307,30 @@ TEST_F(OmniHand3UltraMT1P3Test, MixControlByPVTSingleWithTimestamp) {
 TEST_F(OmniHand3UltraMT1P3Test, GetAllTactileSensorDataRawWithTimestamp) {
   if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
   if (!hand_->InitTactilePointsMap()) GTEST_SKIP() << "Tactile sensors unavailable";
-  const auto sample = hand_->GetAllTactileSensorDataRawWithTimestamp();
-  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTactileSensorDataRawWithTimestamp", TAG));
-  ASSERT_EQ(sample.value.size(), hand_->GetSensorOrder().size());
-  for (const auto& sensor : sample.value) EXPECT_FALSE(sensor.points.empty());
+  if (auto* scalar_tactile = hand_->GetTactileSensor1D()) {
+    const auto sample = scalar_tactile->GetAllTactileSensorDataRawWithTimestamp();
+    ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTactileSensorDataRawWithTimestamp", TAG));
+    ASSERT_EQ(sample.value.size(), hand_->GetSensorOrder().size());
+    for (const auto& sensor : sample.value) {
+      EXPECT_EQ(sensor.data_.size(), scalar_tactile->GetNumOfTactilePoints(sensor.sensor_id_));
+    }
+  } else {
+    auto* tactile = hand_->GetTactileSensor3D();
+    ASSERT_NE(tactile, nullptr);
+    const auto sample = tactile->GetAllTactileSensorDataRawWithTimestamp();
+    ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTactileSensorDataRawWithTimestamp", TAG));
+    ASSERT_EQ(sample.value.size(), hand_->GetSensorOrder().size());
+    for (const auto& sensor : sample.value) {
+      EXPECT_EQ(sensor.points.size(), tactile->GetNumOfTactilePoints(sensor.sensor_id));
+    }
+  }
 }
 
 TEST_F(OmniHand3UltraMT1P3Test, GetAllTactileSensorResultantForcesWithTimestamp) {
   if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
-  const auto sample = hand_->GetAllTactileSensorResultantForcesWithTimestamp();
+  auto* tactile = hand_->GetTactileSensor3D();
+  if (!tactile) GTEST_SKIP() << "3D resultant forces require T1.3";
+  const auto sample = tactile->GetAllTactileSensorResultantForcesWithTimestamp();
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTactileSensorResultantForcesWithTimestamp", TAG));
   ASSERT_EQ(sample.value.size(), hand_->GetSensorOrder().size());
 }

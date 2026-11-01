@@ -52,6 +52,7 @@ class AGIBOT_EXPORT OmniHand {
   TimestampedResult<int16_t> GetJointMotorPosiWithTimestamp(unsigned char index) const;
   TimestampedResult<std::vector<int16_t>> SetAllJointMotorPosiWithTimestamp(const std::vector<int16_t>& positions);
   TimestampedResult<std::vector<int16_t>> GetAllJointMotorPosiWithTimestamp() const;
+  TimestampedResult<std::vector<int16_t>> SetHandGestureWithTimestamp(int gesture_num = 1);
   TimestampedResult<std::vector<int16_t>> GetAllTemperatureReportWithTimestamp() const;
   TimestampedResult<std::vector<int16_t>> GetAllCurrentReportWithTimestamp() const;
   TimestampedResult<std::vector<JointMotorErrorReport>> GetAllErrorReportWithTimestamp() const;
