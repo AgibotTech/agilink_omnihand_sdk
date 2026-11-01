@@ -478,7 +478,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
    * @param joint_motor_index Motor index, 1~21; 0 (all motors) is not supported.
    * @param info Output in protocol units; cleared on failure.
    * @return true for a complete reply; false for an invalid index, unsupported
-   *         revision, communication failure, or a reply shorter than 28 bytes.
+   *         revision, communication failure, or a reply shorter than 31 bytes.
    */
   virtual bool GetMotorDiagnosticInfo(uint8_t joint_motor_index,
                                       H3UMMotorDiagnosticInfo& info) const {

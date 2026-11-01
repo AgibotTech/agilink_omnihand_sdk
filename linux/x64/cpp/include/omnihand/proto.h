@@ -292,8 +292,8 @@ struct AGIBOT_EXPORT JointDetailInfo {
  * @note Fields retain the protocol's raw units; status bit meanings are firmware-defined.
  */
 struct AGIBOT_EXPORT H3UMMotorDiagnosticInfo {
-  uint16_t motor_inside_location{};   // 0~4095
-  uint16_t motor_outside_location{};  // 0~4095
+  uint16_t motor_real_inside_location{};   // 0~4095
+  uint16_t motor_real_outside_location{};  // 0~4095
   int16_t motor_real_current{};       // mA
   uint16_t motor_real_voltage{};      // mV
   int16_t motor_real_speed{};         // 0.1 degree/s
@@ -301,13 +301,15 @@ struct AGIBOT_EXPORT H3UMMotorDiagnosticInfo {
   uint32_t motor_real_status{};       // Raw 32-bit status mask
   int16_t motor_target_current{};     // mA
   int16_t motor_target_speed{};       // 0.1 degree/s
-  uint16_t pp_cmd_tx_count{};
-  uint16_t pp_cmd_rx_count{};
-  uint16_t csp_cmd_tx_count{};
-  uint16_t csp_cmd_rx_count{};
+  int16_t motor_target_location{};    // Raw firmware units
+  uint16_t motor_tx_count{};
+  uint16_t motor_rx_count{};
+  uint16_t broadcast_tx_count{};
+  uint16_t broadcast_rx_count{};
+  uint8_t motor_mode{};
 };
-static_assert(sizeof(H3UMMotorDiagnosticInfo) == 28,
-              "H3UM motor diagnostic payload must be 28 bytes");
+static_assert(sizeof(H3UMMotorDiagnosticInfo) == 31,
+              "H3UM motor diagnostic payload must be 31 bytes");
 
 /**
  * @brief data structure for 3D tactile sensor data (O12 only)
