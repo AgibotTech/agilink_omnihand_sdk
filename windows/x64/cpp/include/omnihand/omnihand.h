@@ -664,7 +664,7 @@ class AGIBOT_EXPORT OmniHand {
   // ============ Firmware Update (OTA) ============
   /**
    * @brief Updates firmware via OTA (Over-The-Air) upgrade
-   * @param file_name Path to the firmware binary file
+   * @param file_name UTF-8 encoded path to the firmware binary file
    * @param progress_callback Optional callback for progress (current_packet, total_packets, status)
    * @note Default implementation reports AGILINK_OTA_NOT_SUPPORTED. Products that support OTA override this.
    */
