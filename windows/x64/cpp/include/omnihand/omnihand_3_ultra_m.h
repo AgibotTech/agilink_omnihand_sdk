@@ -473,6 +473,12 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   virtual bool GetAllTactile(AllTactileFrame& frame) { (void)frame; return false; }
 
   // ============ T1.5 Extended API ============
+  // Read register 0x28 for motor indices 1~21; returns empty on failure or unsupported revision.
+  virtual std::string GetMotorVersion(uint8_t joint_motor_index) const {
+    (void)joint_motor_index;
+    return {};
+  }
+
   /**
    * @brief Reads one motor's detailed diagnostic state through register 0x81.
    * @param joint_motor_index Motor index, 1~21; 0 (all motors) is not supported.
