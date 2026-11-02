@@ -1,0 +1,40 @@
+windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  s_6a3c853268126a::t_29c52a4eaa5f21 476-481
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "335ada411025adb6eddf132e1b133abad9425f39",
+  "prompts": {},
+  "sessions": {
+    "s_6a3c853268126a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18cfa-7d27-77f2-8ba2-5144fe9a2959",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.output_tokens": "871895",
+        "tlab.token_usage.input_tokens": "7074180",
+        "tlab.session_started_at": "2026-10-30T13:23:22Z",
+        "tlab.token_usage.cache_read_tokens": "276499189",
+        "tlab.token_usage.cache_creation_tokens": "0"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_6a3c853268126a",
+            "lines": 6
+          }
+        ]
+      }
+    }
+  ]
+}
