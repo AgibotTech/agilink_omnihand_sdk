@@ -1,0 +1,67 @@
+windows/x64/python/test/test_omnihand_3_lite.py
+  s_6a3c853268126a::t_46a4dc42f24938 29-32,71,74,78,82,85,89,157-158,163-164,169,175,181,186,193,198,205,207,215-216,222,235-242,244-245,257,265,267,269,278-279,293,298-299,349,368,395,427-429,432-436,456,458-498
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "4c67ce75eb802fdad29a9715c7fe04a86c96605e",
+  "prompts": {},
+  "sessions": {
+    "s_6a3c853268126a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18cfa-7d27-77f2-8ba2-5144fe9a2959",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.output_tokens": "1192065",
+        "tlab.token_usage.cache_read_tokens": "343011964",
+        "tlab.session_started_at": "2026-10-30T13:23:22Z",
+        "tlab.token_usage.input_tokens": "8728422",
+        "tlab.token_usage.cache_creation_tokens": "0"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_3_lite.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_3_lite.cc",
+      "additions": {
+        "human": 12
+      },
+      "deletions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/README.md",
+      "new_path": "windows/x64/python/test/README.md",
+      "additions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/README_zh_cn.md",
+      "new_path": "windows/x64/python/test/README_zh_cn.md",
+      "additions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_omnihand_3_lite.py",
+      "new_path": "windows/x64/python/test/test_omnihand_3_lite.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_6a3c853268126a",
+            "lines": 97
+          }
+        ]
+      },
+      "deletions": {
+        "human": 308
+      }
+    }
+  ]
+}
