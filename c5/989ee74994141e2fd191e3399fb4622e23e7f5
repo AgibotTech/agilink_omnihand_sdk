@@ -1,0 +1,38 @@
+windows/x64/cpp/test/test_omnipicker_3.cc
+  h_b60f00b173c94b 25,107-108,268-269,605
+windows/x64/python/test/test_omnipicker_3.py
+  h_b60f00b173c94b 421-422
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "c5989ee74994141e2fd191e3399fb4622e23e7f5",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/test/test_omnipicker_3.cc",
+      "new_path": "windows/x64/cpp/test/test_omnipicker_3.cc",
+      "additions": {
+        "human": 6
+      },
+      "deletions": {
+        "human": 41
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_omnipicker_3.py",
+      "new_path": "windows/x64/python/test/test_omnipicker_3.py",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 13
+      }
+    }
+  ]
+}
