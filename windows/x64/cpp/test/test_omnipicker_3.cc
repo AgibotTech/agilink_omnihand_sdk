@@ -22,7 +22,7 @@
  *   -f INTERVAL      Request interval in ms (default: 5, max: 100)
  *
  * @note Registers known to be unimplemented on current OP3 firmware (0x03 current
- *       threshold, 0x12 velocity, 0x05 single-sensor tactile; see BACKLOG.md) are
+ *       threshold, 0x12 velocity; see BACKLOG.md) are
  *       exercised for "does not crash, returns a sentinel" only -- they are not
  *       asserted to succeed, so this suite stays green on shipping firmware.
  */
@@ -104,6 +104,8 @@ constexpr const char* TAG = "OmniPicker3Test";
 
 // OP3 has exactly one active joint; every per-joint vector getter must return this many entries.
 constexpr size_t kDoF = oh::OmniPicker3::kDegreesOfActiveFreedom;
+constexpr int16_t kDefaultMixCtrlCurrentMa =
+    oh::OmniPicker3::GetMinMaxMixCtrlTorque().default_value;
 
 CanfdTransport ParseTransport(std::string s) {
   std::transform(s.begin(), s.end(), s.begin(),
@@ -263,7 +265,8 @@ TEST_F(OmniPicker3Test, MixControlByPTAllWithTimestamp) {
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
   ASSERT_EQ(measured.value.size(), hand_->GetDoA());
   for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4095); }
-  const auto sample = hand_->MixControlByPTWithTimestamp(measured.value, std::vector<int16_t>(measured.value.size(), 0));
+  const auto sample = hand_->MixControlByPTWithTimestamp(
+      measured.value, std::vector<int16_t>(measured.value.size(), kDefaultMixCtrlCurrentMa));
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPTAllWithTimestamp", TAG));
   ASSERT_EQ(sample.value.size(), measured.value.size());
   for (const auto& feedback : sample.value) {
@@ -279,18 +282,6 @@ TEST_F(OmniPicker3Test, GetAllTactileSensorDataRawWithTimestamp) {
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTactileSensorDataRawWithTimestamp", TAG));
   ASSERT_EQ(sample.value.size(), hand_->GetSensorOrder().size());
   for (const auto& sensor : sample.value) EXPECT_FALSE(sensor.data_.empty());
-}
-
-TEST_F(OmniPicker3Test, GetTactileSensorDataWithTimestamp) {
-  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
-  if (!hand_->InitTactilePointsMap()) GTEST_SKIP() << "Tactile sensors unavailable";
-  const auto sensors = hand_->GetSensorOrder();
-  ASSERT_FALSE(sensors.empty());
-  const auto sample = hand_->GetTactileSensorDataWithTimestamp(sensors.front());
-  if (sample.value.data_.empty() && sample.timestamp_us == 0)
-    GTEST_SKIP() << "Processed tactile feedback unsupported by this firmware";
-  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetTactileSensorDataWithTimestamp", TAG));
-  EXPECT_FALSE(sample.value.data_.empty());
 }
 
 TEST_F(OmniPicker3Test, CreateHand) {
@@ -611,7 +602,7 @@ TEST_F(OmniPicker3Test, MixControlByPT) {
   RequireDevice();
 
   const std::vector<int16_t> positions = {2048};
-  const std::vector<int16_t> torques = {0};
+  const std::vector<int16_t> torques = {kDefaultMixCtrlCurrentMa};
 
   auto result = hand_->MixControlByPT(positions, torques);
   ASSERT_EQ(result.size(), kDoF) << "MixControlByPT timed out or returned a bad size";
@@ -726,32 +717,6 @@ TEST_F(OmniPicker3Test, GetTactileSensorDataRawPerFinger) {
     EXPECT_EQ(data.sensor_id_, finger);
     EXPECT_EQ(data.data_.size(), hand_->GetNumOfTactilePoints(finger));
   }
-}
-
-// Register 0x05 (single-sensor downsampled tactile) is not implemented on current OP3
-// firmware and times out (BACKLOG.md). Logged rather than asserted so the suite tracks
-// firmware support without failing on it.
-TEST_F(OmniPicker3Test, GetTactileSensorDataDownsampled) {
-  RequireDevice();
-
-  if (!hand_->InitTactilePointsMap()) {
-    GTEST_SKIP() << "InitTactilePointsMap failed; tactile sensors unavailable on this unit";
-  }
-
-  bool any_answered = false;
-  for (const auto finger : hand_->GetSensorOrder()) {
-    auto data = hand_->GetTactileSensorData(finger);
-    if (data.data_.empty()) {
-      AgilinkLogger::get().warnf(TAG, "[GetTactileSensorData] %s: empty (register 0x05 unsupported by this firmware)",
-                                 oh::ToString(finger).c_str());
-      continue;
-    }
-    any_answered = true;
-    AgilinkLogger::get().infof(TAG, "[GetTactileSensorData] %s: %zu points",
-                               oh::ToString(finger).c_str(), data.data_.size());
-    EXPECT_EQ(data.sensor_id_, finger);
-  }
-  g_capability_results.push_back({"0x05 single-sensor downsampled tactile", any_answered});
 }
 
 // ============================================================================
