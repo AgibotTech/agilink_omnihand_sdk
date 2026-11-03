@@ -28,6 +28,14 @@ enum class OmniPicker3Gesture : int {
 };
 
 /**
+ * @brief Production-test stroke calibration parameters (register 0x80, sub 0x07).
+ */
+struct AGIBOT_EXPORT StrokeCalib {
+  float k_{};  // payload bytes 4..7
+  float s_{};  // payload bytes 0..3
+};
+
+/**
  * @brief OmniPicker 3 interface class - 1 DOF gripper
  *
  * This class provides the public interface for OmniPicker 3 product.
@@ -253,6 +261,21 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
       std::optional<uint16_t> iq_limit_ma = std::nullopt);
 
   /**
+   * @brief 0x80/0x07: writes the production-test stroke calibration K and S.
+   * @return true only if the device replied to the write and a read-back matches the written values;
+   *         false for NaN/Inf input, no reply, an unreadable read-back, or a mismatch.
+   * @warning Overwrites factory calibration data on the device. Takes effect immediately and is
+   *          persisted, so avoid calling it repeatedly (e.g. in loops or CI) to spare flash endurance.
+   */
+  virtual bool SetProductionStrokeCalib(const StrokeCalib& calib);
+
+  /**
+   * @brief 0x80/0x07: reads the production-test stroke calibration K and S.
+   * @return The parameters, or std::nullopt on no reply or a reply that is not 8 bytes.
+   */
+  virtual std::optional<StrokeCalib> GetProductionStrokeCalib() const;
+
+  /**
    * @brief Sets the gripper to a predefined gesture (typed API).
    */
   std::vector<int16_t> SetHandGesture(OmniPicker3Gesture gesture);
@@ -271,6 +294,16 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
   std::vector<int16_t> GetHandGesture(int gesture_num) override;
 
  protected:
+  // Transport hooks for 0x80/0x07; the encode/verify logic lives once in the base class.
+  // Appended after the public virtuals so the vtable order of existing slots is unchanged.
+  static constexpr size_t kStrokeCalibPayloadLen = 8;
+  // The firmware silently drops a write when |K| is below this, so the SDK rejects it first.
+  static constexpr float kStrokeCalibMinAbsK = 1.0f;
+  // Sends the write frame; true once the device replied (the ack format is not specified).
+  virtual bool WriteStrokeCalibRaw(const uint8_t* data, size_t len);
+  // Sends the read frame; returns the reply payload verbatim, nullopt on no reply.
+  virtual std::optional<std::vector<uint8_t>> ReadStrokeCalibRaw() const;
+
   /**
    * @brief Initialize base class members
    * @param device_id Device ID
