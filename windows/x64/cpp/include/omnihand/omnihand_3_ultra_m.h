@@ -11,6 +11,7 @@
 #define AGILINK_OMNIHAND_3_ULTRA_M_H
 
 #include <cstdint>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -26,6 +27,26 @@
 
 namespace agilink {
 namespace omnihand {
+
+inline const std::map<Finger, size_t> kH3UMT1P3TactilePointCounts = {
+    {Finger::ALL_FINGERS, 102},
+    {Finger::THUMB, 15},
+    {Finger::INDEX, 15},
+    {Finger::MIDDLE, 15},
+    {Finger::RING, 15},
+    {Finger::LITTLE, 15},
+    {Finger::PALM, 27},
+};
+
+inline const std::map<Finger, size_t> kH3UMT1P5TactilePointCounts = {
+    {Finger::ALL_FINGERS, 188},
+    {Finger::THUMB, 30},
+    {Finger::INDEX, 30},
+    {Finger::MIDDLE, 30},
+    {Finger::RING, 30},
+    {Finger::LITTLE, 30},
+    {Finger::PALM, 38},
+};
 
 // ============================================
 // Xense Visual-Tactile Sensor Interface
@@ -435,6 +456,10 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 
   // T1.3 exposes XYZ data; T1.5 exposes scalar pressure in grams.
   // InitTactilePointsMap() refreshes point counts from device metadata.
+  // T1.5: 1 = Jingzhigan, 2 = HuaweiKe; 0 = unknown or unsupported.
+  virtual uint8_t GetTactileSensorType() const {
+    return 0;
+  }
   virtual size_t GetNumOfTactileSensors() const = 0;
   virtual size_t GetNumOfTactilePoints(Finger sensor) const = 0;
   virtual bool InitTactilePointsMap() = 0;
@@ -568,6 +593,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
    */
   std::unique_ptr<h3um::OmniHand3UltraMSolver> joint_motor_solver_;
   H3UMRevision revision_{H3UMRevision::T1P3};
+  std::map<Finger, size_t> tactile_points_map_;
   static constexpr Int16Bound kActualMotorPositionBound = {-1800, 1800};
   static constexpr Int16Range kMixCtrlTorqueRange = {0, 10000, 1000};  // unit: mA
 };
