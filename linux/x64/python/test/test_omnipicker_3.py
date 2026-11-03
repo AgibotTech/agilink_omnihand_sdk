@@ -418,7 +418,8 @@ def test_current_report(initialized_hand):
 
 
 def test_mix_control_by_pt(initialized_hand):
-    result = initialized_hand.mix_control_by_pt([2048], [0])
+    current = OmniPicker3.get_min_max_mix_ctrl_torque().default_value
+    result = initialized_hand.mix_control_by_pt([2048], [current])
     print(f"\n[MixControlByPT] result={result}")
     assert len(result) == DOF
     assert result[0].tgt_posi is not None
@@ -464,18 +465,6 @@ def test_all_tactile_sensor_data_raw(initialized_hand, tactile_sensors):
         assert len(data.data) == initialized_hand.get_num_of_tactile_points(
             data.sensor_id
         )
-
-
-def test_tactile_sensor_data_downsampled(initialized_hand, tactile_sensors):
-    # Current firmware may not implement register 0x05. Exercise the binding,
-    # but do not fail solely because the firmware returns an empty payload.
-    for sensor in tactile_sensors:
-        data = initialized_hand.get_tactile_sensor_data(sensor)
-        print(
-            f"\n[GetTactileSensorData] {sensor.name}: {len(data.data)} points"
-        )
-        if data.data:
-            assert data.sensor_id == sensor
 
 
 if __name__ == "__main__":

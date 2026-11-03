@@ -63,6 +63,9 @@ python test_omnihand_3_lite.py -d rs485 -P COM7 -b 460800
 OMNIHAND_DEVICE_TYPE=hcan pytest -v test_omnihand_3_lite.py
 OMNIHAND_DEVICE_TYPE=rs485 OMNIHAND_RS485_PORT=/dev/ttyUSB0 pytest -v test_omnihand_3_lite.py
 
+# H3L defaults match gtest: fresh device per case, 5 ms interval, 100 ms timeout
+python3 test_omnihand_3_lite.py -d hcan --request-interval 5 --model s
+
 # H3UM T1.3 tests (t1_3 keeps the pytest module name import-safe)
 pytest -sv test_omnihand_3_ultra_m_t1_3.py
 python3 test_omnihand_3_ultra_m_t1_3.py -d hcan -c 0 -i 0

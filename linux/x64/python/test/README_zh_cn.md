@@ -57,6 +57,9 @@ pytest -v test_omnihand_3_lite.py
 # H3L 测试（直接使用 Python）
 python3 test_omnihand_3_lite.py
 
+# H3L 默认与 gtest 一致：每项重新创建设备，请求间隔 5 ms、接收超时 100 ms
+python3 test_omnihand_3_lite.py -d hcan --request-interval 5 --model s
+
 # H3UM T1.3 测试（pytest 文件名使用 t1_3，避免模块名中的点号）
 pytest -sv test_omnihand_3_ultra_m_t1_3.py
 python3 test_omnihand_3_ultra_m_t1_3.py -d hcan -c 0 -i 0

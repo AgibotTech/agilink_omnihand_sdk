@@ -15,6 +15,10 @@
 using agilink::AgilinkLogger;
 
 static constexpr const char* TAG = "OmniHand3UltraMT1P3Test";
+constexpr auto kMotorPositionRange =
+    agilink::omnihand::OmniHand3UltraM::GetMinMaxMotorPosition(1);
+constexpr int16_t kDefaultMixCtrlCurrentMa =
+    agilink::omnihand::OmniHand3UltraM::GetMinMaxDefaultMixCtrlTorque(1).default_value;
 
 static int g_request_interval = 5;
 static std::string g_device_type = "zlgcan";
@@ -88,7 +92,10 @@ TEST_F(OmniHand3UltraMT1P3Test, GetAllJointMotorPosiWithTimestamp) {
   const auto sample = hand_->GetAllJointMotorPosiWithTimestamp();
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
   ASSERT_EQ(sample.value.size(), hand_->GetDoA());
-  for (const auto position : sample.value) { EXPECT_GE(position, 0); EXPECT_LE(position, 4095); }
+  for (size_t i = 0; i < sample.value.size(); ++i) {
+    EXPECT_GE(sample.value[i], kMotorPositionRange.min_value) << "Joint " << i + 1;
+    EXPECT_LE(sample.value[i], kMotorPositionRange.max_value) << "Joint " << i + 1;
+  }
 }
 
 TEST_F(OmniHand3UltraMT1P3Test, GetAllErrorReportWithTimestamp) {
@@ -193,7 +200,7 @@ TEST_F(OmniHand3UltraMT1P3Test, GetJointMotorPosiWithTimestamp) {
   if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
   const auto sample = hand_->GetJointMotorPosiWithTimestamp(1);
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetJointMotorPosiWithTimestamp", TAG));
-  EXPECT_GE(sample.value, 0); EXPECT_LE(sample.value, 4095);
+  EXPECT_GE(sample.value, kMotorPositionRange.min_value); EXPECT_LE(sample.value, kMotorPositionRange.max_value);
 }
 
 TEST_F(OmniHand3UltraMT1P3Test, SetJointMotorPosiWithTimestamp) {
@@ -201,10 +208,13 @@ TEST_F(OmniHand3UltraMT1P3Test, SetJointMotorPosiWithTimestamp) {
   const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
   ASSERT_EQ(measured.value.size(), hand_->GetDoA());
-  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4095); }
+  for (size_t i = 0; i < measured.value.size(); ++i) {
+    ASSERT_GE(measured.value[i], kMotorPositionRange.min_value) << "Joint " << i + 1;
+    ASSERT_LE(measured.value[i], kMotorPositionRange.max_value) << "Joint " << i + 1;
+  }
   const auto sample = hand_->SetJointMotorPosiWithTimestamp(1, measured.value.front());
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "SetJointMotorPosiWithTimestamp", TAG));
-  EXPECT_GE(sample.value, 0); EXPECT_LE(sample.value, 4095);
+  EXPECT_GE(sample.value, kMotorPositionRange.min_value); EXPECT_LE(sample.value, kMotorPositionRange.max_value);
 }
 
 TEST_F(OmniHand3UltraMT1P3Test, SetAllJointMotorPosiWithTimestamp) {
@@ -212,7 +222,10 @@ TEST_F(OmniHand3UltraMT1P3Test, SetAllJointMotorPosiWithTimestamp) {
   const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
   ASSERT_EQ(measured.value.size(), hand_->GetDoA());
-  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4095); }
+  for (size_t i = 0; i < measured.value.size(); ++i) {
+    ASSERT_GE(measured.value[i], kMotorPositionRange.min_value) << "Joint " << i + 1;
+    ASSERT_LE(measured.value[i], kMotorPositionRange.max_value) << "Joint " << i + 1;
+  }
   const auto sample = hand_->SetAllJointMotorPosiWithTimestamp(measured.value);
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "SetAllJointMotorPosiWithTimestamp", TAG));
   ASSERT_EQ(sample.value.size(), measured.value.size());
@@ -251,8 +264,12 @@ TEST_F(OmniHand3UltraMT1P3Test, MixControlByPTAllWithTimestamp) {
   const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
   ASSERT_EQ(measured.value.size(), hand_->GetDoA());
-  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4095); }
-  const auto sample = hand_->MixControlByPTWithTimestamp(measured.value, std::vector<int16_t>(measured.value.size(), 0));
+  for (size_t i = 0; i < measured.value.size(); ++i) {
+    ASSERT_GE(measured.value[i], kMotorPositionRange.min_value) << "Joint " << i + 1;
+    ASSERT_LE(measured.value[i], kMotorPositionRange.max_value) << "Joint " << i + 1;
+  }
+  const auto sample = hand_->MixControlByPTWithTimestamp(
+      measured.value, std::vector<int16_t>(measured.value.size(), kDefaultMixCtrlCurrentMa));
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPTAllWithTimestamp", TAG));
   ASSERT_EQ(sample.value.size(), measured.value.size());
   for (const auto& feedback : sample.value) {
@@ -266,8 +283,11 @@ TEST_F(OmniHand3UltraMT1P3Test, MixControlByPTSingleWithTimestamp) {
   const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
   ASSERT_EQ(measured.value.size(), hand_->GetDoA());
-  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4095); }
-  const auto sample = hand_->MixControlByPTWithTimestamp(1, measured.value.front(), 0);
+  for (size_t i = 0; i < measured.value.size(); ++i) {
+    ASSERT_GE(measured.value[i], kMotorPositionRange.min_value) << "Joint " << i + 1;
+    ASSERT_LE(measured.value[i], kMotorPositionRange.max_value) << "Joint " << i + 1;
+  }
+  const auto sample = hand_->MixControlByPTWithTimestamp(1, measured.value.front(), kDefaultMixCtrlCurrentMa);
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPTSingleWithTimestamp", TAG));
   EXPECT_EQ(sample.value.joint_index_, 1);
   EXPECT_TRUE(sample.value.tgt_posi_.has_value());
@@ -279,8 +299,13 @@ TEST_F(OmniHand3UltraMT1P3Test, MixControlByPVTAllWithTimestamp) {
   const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
   ASSERT_EQ(measured.value.size(), hand_->GetDoA());
-  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4095); }
-  const auto sample = hand_->MixControlByPVTWithTimestamp(measured.value, std::vector<int16_t>(measured.value.size(), 50), std::vector<int16_t>(measured.value.size(), 0));
+  for (size_t i = 0; i < measured.value.size(); ++i) {
+    ASSERT_GE(measured.value[i], kMotorPositionRange.min_value) << "Joint " << i + 1;
+    ASSERT_LE(measured.value[i], kMotorPositionRange.max_value) << "Joint " << i + 1;
+  }
+  const auto sample = hand_->MixControlByPVTWithTimestamp(
+      measured.value, std::vector<int16_t>(measured.value.size(), 50),
+      std::vector<int16_t>(measured.value.size(), kDefaultMixCtrlCurrentMa));
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPVTAllWithTimestamp", TAG));
   ASSERT_EQ(sample.value.size(), measured.value.size());
   for (const auto& feedback : sample.value) {
@@ -295,8 +320,11 @@ TEST_F(OmniHand3UltraMT1P3Test, MixControlByPVTSingleWithTimestamp) {
   const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
   ASSERT_EQ(measured.value.size(), hand_->GetDoA());
-  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 4095); }
-  const auto sample = hand_->MixControlByPVTWithTimestamp(1, measured.value.front(), 50, 0);
+  for (size_t i = 0; i < measured.value.size(); ++i) {
+    ASSERT_GE(measured.value[i], kMotorPositionRange.min_value) << "Joint " << i + 1;
+    ASSERT_LE(measured.value[i], kMotorPositionRange.max_value) << "Joint " << i + 1;
+  }
+  const auto sample = hand_->MixControlByPVTWithTimestamp(1, measured.value.front(), 50, kDefaultMixCtrlCurrentMa);
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPVTSingleWithTimestamp", TAG));
   EXPECT_EQ(sample.value.joint_index_, 1);
   EXPECT_TRUE(sample.value.tgt_posi_.has_value());
