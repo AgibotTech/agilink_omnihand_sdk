@@ -1,0 +1,30 @@
+windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  h_b60f00b173c94b 14,31-50,459-462,596
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "c36212ecc44ccb33b2718efec6a108379f2f08cf",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/i_tactile_sensor_3d_i16.h",
+      "new_path": "windows/x64/cpp/include/omnihand/i_tactile_sensor_3d_i16.h",
+      "deletions": {
+        "human": 11
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "human": 26
+      }
+    }
+  ]
+}
