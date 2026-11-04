@@ -1,0 +1,47 @@
+windows/x64/README.md
+  h_b60f00b173c94b 1
+windows/x64/README_zh_cn.md
+  h_b60f00b173c94b 1
+windows/x64/cpp/include/omnihand/omnipicker_3.h
+  h_b60f00b173c94b 30-37,263-277,297-306
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "db034a30e1fd58a2d6aa105a2efd7bdd555100c3",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/README.md",
+      "new_path": "windows/x64/README.md",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "windows/x64/README_zh_cn.md",
+      "new_path": "windows/x64/README_zh_cn.md",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnipicker_3.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnipicker_3.h",
+      "additions": {
+        "human": 33
+      }
+    }
+  ]
+}
