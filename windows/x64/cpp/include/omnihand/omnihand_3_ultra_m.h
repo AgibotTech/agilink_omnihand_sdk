@@ -190,6 +190,8 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   // Constants
   static constexpr unsigned char kT1P3DegreesOfActiveFreedom = 20;
   static constexpr unsigned char kT1P5DegreesOfActiveFreedom = 21;
+  static constexpr Int16Range kT1P3MixCtrlTorqueRange = {0, 10000, 1000};  // mA
+  static constexpr Int16Range kT1P5MixCtrlTorqueRange = {0, 2000, 1900};  // mA
   static constexpr uint8_t kDegreesOfPassiveFreedom = 0; // DoP
   static constexpr uint8_t kT1P3DefaultHandDeviceId = 9u;
   static constexpr uint8_t kT1P5DefaultHandDeviceId = 1u;
@@ -427,8 +429,11 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   }
 
   static constexpr Int16Range GetMinMaxDefaultMixCtrlTorque(uint8_t joint_motor_index) {
-    if (joint_motor_index == 0 || joint_motor_index > kT1P5DegreesOfActiveFreedom) return {0, 0, 0};
-    return kMixCtrlTorqueRange;
+    if (joint_motor_index == 0 ||
+        joint_motor_index > kT1P5DegreesOfActiveFreedom) {
+      return {0, 0, 0};
+    }
+    return kT1P3MixCtrlTorqueRange;
   }
 
   // ============ Gesture Control ============
@@ -595,7 +600,6 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   H3UMRevision revision_{H3UMRevision::T1P3};
   std::map<Finger, size_t> tactile_points_map_;
   static constexpr Int16Bound kActualMotorPositionBound = {-1800, 1800};
-  static constexpr Int16Range kMixCtrlTorqueRange = {0, 10000, 1000};  // unit: mA
 };
 
 }  // namespace omnihand
