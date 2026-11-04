@@ -630,34 +630,47 @@ class AGIBOT_EXPORT OmniHand {
 
   // ============ Frame Reception Timeout Control ============
   /**
-   * @brief Set frame reception timeout
-   * @param milliseconds Timeout for receiving a single frame in milliseconds (range: 10-1000ms, default: 50ms)
-   * @note This timeout applies to both single-frame and multi-frame reception
-   * @note For multi-frame reception, this timeout applies to each frame individually
-   * @note Only applies to CAN communication. RS485 communication is not affected.
-   * @note Serial port communication (RS485) does not support this interface.
-   *       RS485 implementation does nothing (no-op).
+   * @brief Set the synchronous wait timeout for a matching protocol reply frame
+   * @param milliseconds Reply frame wait timeout (clamped to 10-1000ms, default: 50ms)
+   * @note Applies to CAN and serial communication (USB/RS485). Waiting starts
+   *       after sending; waiting for other queued requests is not included.
+   * @note For multi-frame replies, each expected frame has its own wait timeout.
+   * @note This does not configure low-level driver reads or the polling period.
+   *       Serial reads retain their internal 2ms timeout; a read may return
+   *       partial bytes, which are buffered until a protocol frame is complete.
    */
   virtual void SetFrameRecvTimeout(int milliseconds) = 0;
 
   /**
-   * @brief Get current frame reception timeout setting
-   * @return Frame reception timeout in milliseconds
-   * @note Serial port communication (RS485) always returns 0 (not applicable).
+   * @brief Get the synchronous reply frame wait timeout
+   * @return Reply frame wait timeout in milliseconds for CAN or USB/RS485
    */
   virtual int GetFrameRecvTimeout() const = 0;
 
-  // ============ Frame Send Timeout Control (CAN only) ============
+  // ============ Frame Send Timeout Control ============
   /**
-   * @brief Set frame send timeout (ZLG device tx_timeout)
-   * @param milliseconds Timeout for send in milliseconds (0 = driver default, typically no limit; 1-10000ms recommended, e.g. 100ms)
-   * @note Only applies to ZLG CAN FD. Reduces send blocking and request timeout when buffer is busy. RS485/USB do nothing.
+   * @brief Set backend send/write timeout independently of reply reception timeout
+   * @param milliseconds Timeout in milliseconds (1-10000ms). Nonpositive values
+   *       log a warning and use the backend default; values above 10000ms are clamped.
+   * @note USB/RS485: timeout for each underlying serial write. Default: 20ms.
+   *       Nonpositive values log a warning and use the default; values above 10000ms
+   *       are clamped to 10000ms. Short writes may require multiple writes.
+   *       Serial read timeout and reply reception timeout are not changed.
+   * @note ZLG CAN FD (USB/network): device tx_timeout, default 20ms.
+   *       HCAN: CANFD_Transmit timeout, default 100ms. If a ZLG driver rejects
+   *       the setting, a warning is logged and the previous setting is retained.
+   * @note SocketCAN: deadline for submitting one complete frame to the kernel,
+   *       including retries after temporary resource exhaustion. Default: 20ms;
+   *       nonpositive values log a warning and use the default. Remains nonblocking.
+   * @note Successful sending does not guarantee device reply or CAN bus delivery.
    */
   virtual void SetFrameSendTimeout(int milliseconds) = 0;
 
   /**
    * @brief Get current frame send timeout setting
-   * @return Frame send timeout in milliseconds (0 = not set / not applicable)
+   * @return Configured timeout in milliseconds, including the backend default
+   *         when no explicit setting has been made.
+   *         Unsupported backends return 0.
    */
   virtual int GetFrameSendTimeout() const = 0;
 

@@ -17,8 +17,6 @@ using agilink::AgilinkLogger;
 static constexpr const char* TAG = "OmniHand3UltraMT1P3Test";
 constexpr auto kMotorPositionRange =
     agilink::omnihand::OmniHand3UltraM::GetMinMaxMotorPosition(1);
-constexpr int16_t kDefaultMixCtrlCurrentMa =
-    agilink::omnihand::OmniHand3UltraM::GetMinMaxDefaultMixCtrlTorque(1).default_value;
 
 static int g_request_interval = 5;
 static std::string g_device_type = "zlgcan";
@@ -74,6 +72,10 @@ class OmniHand3UltraMT1P3Test : public ::testing::Test {
     }
     int request_interval = GetRequestInterval();
     hand_->SetRequestInterval(request_interval);
+    if (hand_->GetRevision() == agilink::omnihand::H3UMRevision::T1P5) {
+      mix_ctrl_current_ma_ =
+          agilink::omnihand::OmniHand3UltraM::kT1P5MixCtrlTorqueRange.default_value;
+    }
     if (request_interval != 0) {
       AgilinkLogger::get().infof(TAG, "Using request interval: %d ms", request_interval);
     }
@@ -84,6 +86,8 @@ class OmniHand3UltraMT1P3Test : public ::testing::Test {
   }
 
   std::unique_ptr<agilink::omnihand::OmniHand3UltraM> hand_;
+  int16_t mix_ctrl_current_ma_ =
+      agilink::omnihand::OmniHand3UltraM::kT1P3MixCtrlTorqueRange.default_value;
 };
 
 // Timestamped feedback tests. Controls hold the measured pose.
@@ -269,7 +273,7 @@ TEST_F(OmniHand3UltraMT1P3Test, MixControlByPTAllWithTimestamp) {
     ASSERT_LE(measured.value[i], kMotorPositionRange.max_value) << "Joint " << i + 1;
   }
   const auto sample = hand_->MixControlByPTWithTimestamp(
-      measured.value, std::vector<int16_t>(measured.value.size(), kDefaultMixCtrlCurrentMa));
+      measured.value, std::vector<int16_t>(measured.value.size(), mix_ctrl_current_ma_));
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPTAllWithTimestamp", TAG));
   ASSERT_EQ(sample.value.size(), measured.value.size());
   for (const auto& feedback : sample.value) {
@@ -287,7 +291,8 @@ TEST_F(OmniHand3UltraMT1P3Test, MixControlByPTSingleWithTimestamp) {
     ASSERT_GE(measured.value[i], kMotorPositionRange.min_value) << "Joint " << i + 1;
     ASSERT_LE(measured.value[i], kMotorPositionRange.max_value) << "Joint " << i + 1;
   }
-  const auto sample = hand_->MixControlByPTWithTimestamp(1, measured.value.front(), kDefaultMixCtrlCurrentMa);
+  const auto sample = hand_->MixControlByPTWithTimestamp(
+      1, measured.value.front(), mix_ctrl_current_ma_);
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPTSingleWithTimestamp", TAG));
   EXPECT_EQ(sample.value.joint_index_, 1);
   EXPECT_TRUE(sample.value.tgt_posi_.has_value());
@@ -305,7 +310,7 @@ TEST_F(OmniHand3UltraMT1P3Test, MixControlByPVTAllWithTimestamp) {
   }
   const auto sample = hand_->MixControlByPVTWithTimestamp(
       measured.value, std::vector<int16_t>(measured.value.size(), 50),
-      std::vector<int16_t>(measured.value.size(), kDefaultMixCtrlCurrentMa));
+      std::vector<int16_t>(measured.value.size(), mix_ctrl_current_ma_));
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPVTAllWithTimestamp", TAG));
   ASSERT_EQ(sample.value.size(), measured.value.size());
   for (const auto& feedback : sample.value) {
@@ -324,7 +329,8 @@ TEST_F(OmniHand3UltraMT1P3Test, MixControlByPVTSingleWithTimestamp) {
     ASSERT_GE(measured.value[i], kMotorPositionRange.min_value) << "Joint " << i + 1;
     ASSERT_LE(measured.value[i], kMotorPositionRange.max_value) << "Joint " << i + 1;
   }
-  const auto sample = hand_->MixControlByPVTWithTimestamp(1, measured.value.front(), 50, kDefaultMixCtrlCurrentMa);
+  const auto sample = hand_->MixControlByPVTWithTimestamp(
+      1, measured.value.front(), 50, mix_ctrl_current_ma_);
   ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPVTSingleWithTimestamp", TAG));
   EXPECT_EQ(sample.value.joint_index_, 1);
   EXPECT_TRUE(sample.value.tgt_posi_.has_value());
