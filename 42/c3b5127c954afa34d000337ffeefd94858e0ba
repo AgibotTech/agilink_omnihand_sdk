@@ -1,0 +1,72 @@
+README.md
+  s_6a3c853268126a::t_30c52b159cf791 12
+README_zh_cn.md
+  s_6a3c853268126a::t_30c52b159cf791 12
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "42c3b5127c954afa34d000337ffeefd94858e0ba",
+  "prompts": {},
+  "sessions": {
+    "s_6a3c853268126a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18cfa-7d27-77f2-8ba2-5144fe9a2959",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.input_tokens": "10402987",
+        "tlab.token_usage.output_tokens": "1449160",
+        "tlab.token_usage.cache_read_tokens": "397817130",
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.session_started_at": "2026-11-05T03:47:08Z"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "README.md",
+      "new_path": "README.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_6a3c853268126a",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_6a3c853268126a",
+            "lines": 24
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "README_zh_cn.md",
+      "new_path": "README_zh_cn.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_6a3c853268126a",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_6a3c853268126a",
+            "lines": 24
+          }
+        ]
+      }
+    }
+  ]
+}
