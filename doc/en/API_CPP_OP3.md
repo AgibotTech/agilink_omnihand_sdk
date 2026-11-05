@@ -39,7 +39,7 @@ JointDetailInfo GetJointDetailInfo(uint8_t joint_index) const;
 
 ## Tactile Metadata
 
-`ITactileSensor1DU16` provides sensor count, point count, datum size, returned-frame count, sensor serial number, sensor order, and raw tactile frames. `GetSensorDataLength()` is deprecated; use `GetNumOfTactilePoints()` for point counts.
+`ITactileSensor1DU16` provides sensor count, point count, datum size, returned-frame count, sensor serial number, sensor order, and raw tactile frames.
 
 ## Mixed Control
 

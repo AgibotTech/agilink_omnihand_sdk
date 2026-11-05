@@ -265,14 +265,6 @@ std::vector<TactileSensorData> GetAllTactileSensorDataRaw() const;
 TactileSensorData GetTactileSensorDataRaw(Finger eFinger) const;
 
 /**
- * @brief 获取特定手指的传感器数据长度（静态方法）
- * @param eFinger 手指枚举值
- * @return 传感器数据长度（字节）
- * @note 对于 UMI：DORSUM 返回 0（UMI 没有手背传感器）
- */
-size_t GetSensorDataLength(Finger eFinger) const;
-
-/**
  * @brief 获取传感器顺序向量（静态方法）
  * @return 传感器顺序向量的引用
  * @note 对于 UMI：返回的向量包含 DORSUM，但 UMI 设备没有手背传感器。
@@ -280,8 +272,6 @@ size_t GetSensorDataLength(Finger eFinger) const;
  */
 const std::vector<Finger>& GetSensorOrder() const;
 ```
-
-`GetSensorDataLength()` 已废弃；获取触觉点数请使用 `GetNumOfTactilePoints()`。
 
 ## DeviceInfo 的 UMI 特定字段
 

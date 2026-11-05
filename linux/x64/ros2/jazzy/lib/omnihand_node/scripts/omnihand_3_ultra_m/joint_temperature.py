@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 @Description: Periodically trigger temperature query and display results
-              for OmniHand3UltraM (O20).
+              for OmniHand3UltraM T1.3/T1.5.
 
 Topic:
   pub: /<product>/<side>/joint_temperature_cmd    (std_msgs/Empty)

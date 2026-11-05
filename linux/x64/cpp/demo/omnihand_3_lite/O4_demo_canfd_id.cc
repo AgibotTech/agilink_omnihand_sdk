@@ -118,14 +118,11 @@ void controlSingleHand(std::unique_ptr<agilink::omnihand::OmniHand3Lite>& hand,
   // ============ Gesture Control Demo ============
   AgilinkLogger::get().infof(TAG, "\n=== Gesture Control ===");
 
-  AgilinkLogger::get().infof(TAG, "Setting gesture: FIST...");
-  hand->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_FIST);
+  AgilinkLogger::get().infof(TAG, "Setting gesture: SIDE_FIST...");
+  hand->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_SIDE_FIST);
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-  AgilinkLogger::get().infof(TAG, "Setting gesture: Zero...");
-  hand->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_ALL_ZERO);
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-  AgilinkLogger::get().infof(TAG, "Setting gesture: Open...");
-  hand->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_OPEN);
+  AgilinkLogger::get().infof(TAG, "Setting gesture: PRAYER...");
+  hand->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_PRAYER);
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   // ============ Motor Control Demo ==============
   AgilinkLogger::get().infof(TAG, "\n=== Motor Control Test ===");
@@ -142,11 +139,8 @@ void controlSingleHand(std::unique_ptr<agilink::omnihand::OmniHand3Lite>& hand,
     std::this_thread::sleep_for(std::chrono::milliseconds(400));
   }
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-  AgilinkLogger::get().infof(TAG, "All Joint Set To Zeros");
-  hand->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_ALL_ZERO);
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-  AgilinkLogger::get().infof(TAG, "All Joint Set To Open");
-  hand->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_OPEN);
+  AgilinkLogger::get().infof(TAG, "Setting gesture: PRAYER");
+  hand->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_PRAYER);
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   auto joints = hand->GetAllActiveJointAngles();
   container_print(joints);

@@ -2,6 +2,7 @@
 // AGILINK OmniHand SDK is licensed under Mulan PSL v2.
 
 #include <gtest/gtest.h>
+#include "timestamp_test_utils.h"
 #include <algorithm>
 #include <chrono>
 #include <cstdint>
@@ -74,6 +75,185 @@ class OmniHandPro2025Test : public ::testing::Test {
 
   std::unique_ptr<agilink::omnihand::OmniHandPro2025> hand_;
 };
+
+// Timestamped feedback tests. Controls hold the measured pose.
+TEST_F(OmniHandPro2025Test, GetAllJointMotorPosiWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+  for (const auto position : sample.value) { EXPECT_GE(position, 0); EXPECT_LE(position, 2000); }
+}
+
+TEST_F(OmniHandPro2025Test, GetAllErrorReportWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllErrorReportWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllErrorReportWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+}
+
+TEST_F(OmniHandPro2025Test, GetJointMotorPosiWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetJointMotorPosiWithTimestamp(1);
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetJointMotorPosiWithTimestamp", TAG));
+  EXPECT_GE(sample.value, 0); EXPECT_LE(sample.value, 2000);
+}
+
+TEST_F(OmniHandPro2025Test, SetJointMotorPosiWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 2000); }
+  const auto sample = hand_->SetJointMotorPosiWithTimestamp(1, measured.value.front());
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "SetJointMotorPosiWithTimestamp", TAG));
+  EXPECT_GE(sample.value, 0); EXPECT_LE(sample.value, 2000);
+}
+
+TEST_F(OmniHandPro2025Test, SetAllJointMotorPosiWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 2000); }
+  const auto sample = hand_->SetAllJointMotorPosiWithTimestamp(measured.value);
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "SetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), measured.value.size());
+}
+
+TEST_F(OmniHandPro2025Test, GetAllActiveJointAnglesWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllActiveJointAnglesWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllActiveJointAnglesWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+  for (const auto angle : sample.value) EXPECT_TRUE(std::isfinite(angle));
+}
+
+TEST_F(OmniHandPro2025Test, GetAllJointAnglesWithTimestamp) {
+  if (!hand_ || !hand_->Init()) {
+    GTEST_SKIP() << "Device not available";
+  }
+  const auto sample = hand_->GetAllJointAnglesWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(
+      sample.timestamp_us, "GetAllJointAnglesWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA() + hand_->GetDoP());
+  for (const auto angle : sample.value) {
+    EXPECT_TRUE(std::isfinite(angle));
+  }
+}
+
+TEST_F(OmniHandPro2025Test, SetAllActiveJointAnglesWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllActiveJointAnglesWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllActiveJointAnglesWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto angle : measured.value) ASSERT_TRUE(std::isfinite(angle));
+  const auto sample = hand_->SetAllActiveJointAnglesWithTimestamp(measured.value);
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "SetAllActiveJointAnglesWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), measured.value.size());
+  for (const auto angle : sample.value) EXPECT_TRUE(std::isfinite(angle));
+}
+
+TEST_F(OmniHandPro2025Test, MixControlByPTAllWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 2000); }
+  const auto sample = hand_->MixControlByPTWithTimestamp(measured.value, std::vector<int16_t>(measured.value.size(), 0));
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPTAllWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), measured.value.size());
+  for (const auto& feedback : sample.value) {
+    EXPECT_TRUE(feedback.tgt_posi_.has_value());
+    EXPECT_TRUE(feedback.tgt_torque_.has_value());
+  }
+}
+
+TEST_F(OmniHandPro2025Test, MixControlByPTSingleWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto measured = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(measured.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(measured.value.size(), hand_->GetDoA());
+  for (const auto position : measured.value) { ASSERT_GE(position, 0); ASSERT_LE(position, 2000); }
+  const auto sample = hand_->MixControlByPTWithTimestamp(1, measured.value.front(), 0);
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPTSingleWithTimestamp", TAG));
+  EXPECT_EQ(sample.value.joint_index_, 1);
+  EXPECT_TRUE(sample.value.tgt_posi_.has_value());
+  EXPECT_TRUE(sample.value.tgt_torque_.has_value());
+}
+
+TEST_F(OmniHandPro2025Test, GetTactileSensor3DDataWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetTactileSensor3DDataWithTimestamp(agilink::omnihand::Finger::THUMB);
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetTactileSensor3DDataWithTimestamp", TAG));
+  EXPECT_LE(sample.value.online_state, 1);
+}
+
+// Report periods are reset even if an assertion ends a test early.
+class O12ReportPeriodGuard {
+ public:
+  O12ReportPeriodGuard(agilink::omnihand::OmniHandPro2025& hand, bool current)
+      : hand_(hand), current_(current) {
+    SetPeriod(100);
+  }
+  ~O12ReportPeriodGuard() { Stop(); }
+  void Stop() {
+    if (active_) { SetPeriod(0); active_ = false; }
+  }
+ private:
+  void SetPeriod(uint16_t period) {
+    const std::vector<uint16_t> periods(hand_.GetDoA(), period);
+    if (current_) hand_.SetAllCurrentReportPeriod(periods);
+    else hand_.SetAllTemperReportPeriod(periods);
+  }
+  agilink::omnihand::OmniHandPro2025& hand_;
+  bool current_;
+  bool active_ = true;
+};
+
+TEST_F(OmniHandPro2025Test, GetAllTemperatureReportWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto initial = hand_->GetAllTemperatureReportWithTimestamp();
+  O12ReportPeriodGuard reporting(*hand_, false);
+  auto sample = initial;
+  const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+  do {
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    sample = hand_->GetAllTemperatureReportWithTimestamp();
+  } while (sample.timestamp_us <= initial.timestamp_us && std::chrono::steady_clock::now() < deadline);
+  ASSERT_GT(sample.timestamp_us, initial.timestamp_us) << "No new temperature report received";
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTemperatureReportWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+  reporting.Stop();
+  std::this_thread::sleep_for(std::chrono::milliseconds(200));  // Drain queued reports.
+  const auto cached = hand_->GetAllTemperatureReportWithTimestamp();
+  std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  const auto repeated = hand_->GetAllTemperatureReportWithTimestamp();
+  EXPECT_EQ(repeated.timestamp_us, cached.timestamp_us);
+  EXPECT_EQ(repeated.value, cached.value);
+}
+
+TEST_F(OmniHandPro2025Test, GetAllCurrentReportWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto initial = hand_->GetAllCurrentReportWithTimestamp();
+  O12ReportPeriodGuard reporting(*hand_, true);
+  auto sample = initial;
+  const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+  do {
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    sample = hand_->GetAllCurrentReportWithTimestamp();
+  } while (sample.timestamp_us <= initial.timestamp_us && std::chrono::steady_clock::now() < deadline);
+  ASSERT_GT(sample.timestamp_us, initial.timestamp_us) << "No new current report received";
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllCurrentReportWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+  reporting.Stop();
+  std::this_thread::sleep_for(std::chrono::milliseconds(200));
+  const auto cached = hand_->GetAllCurrentReportWithTimestamp();
+  std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  const auto repeated = hand_->GetAllCurrentReportWithTimestamp();
+  EXPECT_EQ(repeated.timestamp_us, cached.timestamp_us);
+  EXPECT_EQ(repeated.value, cached.value);
+}
 
 // Test factory method
 TEST_F(OmniHandPro2025Test, CreateHand) {

@@ -11,6 +11,10 @@
 - 支持 CAN（ZLG USB CANFD）和 RS485 通信
 - 支持 SocketCAN（仅 Linux）
 
+## 电机分布
+
+![O10 电机分布](../pic/hand_o10_motors.jpg)
+
 ## 包含头文件
 
 ```cpp
@@ -416,8 +420,6 @@ size_t GetNumOfRepliedTactileFrames(Finger finger) const;
 std::string GetSNOfTactileSensor(Finger finger) const;
 ```
 
-`GetSensorDataLength()` 已废弃；获取触觉点数请使用 `GetNumOfTactilePoints()`。
-
 OmniHand 2025 (O10) 使用 **1D 触觉传感器），具有以下特性：
 - **数据单位**：1g
 - **最大值**：255g
@@ -468,13 +470,6 @@ TactileSensorData GetTactileSensorDataRaw(Finger eFinger) const;
 **💡 建议：在需要获取多个传感器数据时，始终优先使用 `GetAllTactileSensorDataRaw()`，以获得更好的性能和可靠性。*
 
 ```cpp
-/**
- * @brief 获取特定手指的传感器数据长度（静态方法）
- * @param eFinger 手指枚举）
- * @return 传感器数据长度（字节）
- */
-static size_t GetSensorDataLength(Finger eFinger);
-
 /**
  * @brief 获取传感器顺序向量（静态方法）
  * @return 传感器顺序向量的引用

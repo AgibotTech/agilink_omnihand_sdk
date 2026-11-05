@@ -101,3 +101,14 @@ O10 和 O12 测试程序支持 `-f FREQ` 参数来设置 CAN 请求频率：
 ## 更多信息
 
 - [English Documentation](README.md)
+## 时间戳接口测试
+
+时间戳测试放在 O10、O12、UMI、H3L、H3UM、OP3 各自原有测试程序中。
+连接对应设备后，用过滤器只执行时间戳接口测试，例如：
+
+```sh
+test_omnihand_2025 -d hcan --gtest_filter="*WithTimestamp*"
+```
+
+日期日志统一显示 `2026-10-30 14:43:42.123456`，不重复打印 Unix 微秒整数。
+各型号命令、无硬件日期格式测试和时间语义见 [C++ 反馈接收时间戳](../TIMESTAMPED_FEEDBACK.md#验证)。

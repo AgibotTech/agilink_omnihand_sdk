@@ -9,39 +9,7 @@
 
 ## Overview
 
-The AGILINK OmniHand SDK supports the following product models:
-
-**OmniHand 2025 灵动款 (O10)**
-
- A compact, high-DOF interactive dexterous hand featuring `10 active + 6 passive degrees of freedom`. Weighing only 500g, it utilizes CANFD communication interfaces and is equipped with `400+ tactile points and 0.1N array resolution, with maximum fingertip force of 5N`. It's suitable for various humanoid robots and robotic arms. Its compact, lightweight design and rich tactile interaction capabilities make it valuable for interactive services, research, education, and light-duty operations.
-
-![](doc/pic/hand_o10.jpg)
-
-The corresponding control motors are shown in the following image:
-
-![](doc/pic/hand_o10_motors.jpg)
-
-**OmniHand Pro 2025 专业款 (O12)**
-
- A 12-degree-of-freedom professional dexterous hand featuring precise operation and flexible control capabilities. It is equipped with tactile sensors and multiple control modes (position control, torque control, hybrid control), making it suitable for a wide range of applications including research and education, entertainment and commercial performances, exhibition guidance, and industrial scenarios.
-
-![](doc/pic/hand_o12.jpg)
-
-The corresponding control motors are shown in the following image:
-
-![](doc/pic/hand_o12_motors.jpg)
-
-**OmniHand 3 Lite (H3L)**
-
-A 4-degree-of-freedom lightweight dexterous hand designed for cost-sensitive and space-constrained applications. It uses CAN communication and exposes raw tactile streaming through its ROS2 node.
-
-**OmniPicker 3 (OP3)**
-
-A 1-degree-of-freedom gripper with CAN/RS485 connectivity, stroke and gentle-grip control, and two-region tactile sensing. A dedicated ROS2 node and message package are included on Linux.
-
-**OmniHand Dex UMI (O10 UMI)**
-
-A read-only dexterous hand using UMI protocol.
+![AGILINK product introduction](doc/pic/agilink_introduction_en_2.png)
 
 ## Platform-Specific Documentation
 
@@ -58,7 +26,7 @@ A read-only dexterous hand using UMI protocol.
 - [OmniHand 3 Lite (H3L) C++ API](doc/en/API_CPP_H3L.md)
 - [OmniPicker 3 (OP3) C++ API](doc/en/API_CPP_OP3.md)
 - [OmniHand Dex UMI (O10 UMI) C++ API](doc/en/API_CPP_O10_UMI.md)
-- [OmniHand 3 Ultra M (H3UM/O20) C++ API](doc/en/API_CPP_H3UM.md)
+- [OmniHand 3 Ultra M (H3UM T1.3/T1.5) C++ API](doc/en/API_CPP_H3UM.md)
 
 ### Python API
 - [Python API Index](doc/en/API_PYTHON.md)
@@ -66,7 +34,7 @@ A read-only dexterous hand using UMI protocol.
 - [OmniHand Pro 2025 (O12) Python API](doc/en/API_PYTHON_O12.md)
 - [OmniHand 3 Lite (H3L) Python API](doc/en/API_PYTHON_H3L.md)
 - [OmniHand Dex UMI (O10 UMI) Python API](doc/en/API_PYTHON_UMI.md)
-- [OmniHand 3 Ultra M (H3UM/O20) Python API](doc/en/API_PYTHON_H3UM.md)
+- [OmniHand 3 Ultra M (H3UM T1.3/T1.5) Python API](doc/en/API_PYTHON_H3UM.md)
 
 ### Kinematics API
 - [OmniHand 2025 (O10) Kinematics C++](doc/en/API_KINEMATICS_CPP_O10.md)
@@ -79,6 +47,7 @@ A read-only dexterous hand using UMI protocol.
 - [OmniHand 2025 (O10) ROS2 Interface](doc/en/API_ROS2_O10.md)
 - [OmniHand Pro 2025 (O12) ROS2 Interface](doc/en/API_ROS2_O12.md)
 - [OmniHand 3 Lite (H3L) ROS2 Interface](doc/en/API_ROS2_H3L.md)
+- [OmniHand 3 Ultra M (H3UM T1.3/T1.5) ROS2 Interface](doc/en/API_ROS2_H3UM.md)
 - [OmniPicker 3 (OP3) ROS2 Interface](doc/en/API_ROS2_OP3.md)
 
 ## License

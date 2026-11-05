@@ -7,14 +7,12 @@ from sensor_msgs.msg import JointState
 NUM_JOINTS = 4
 
 # Motor tick per joint [axis_1, axis_2, axis_3, axis_4], range 0~4095.
-# From OmniHand3LiteSolver::SetHandGesture (OPEN / FIST); left/right listed separately.
+# Raw motor tick examples, independent of the SDK gesture enum.
 POSE_OPEN = {
-  # OMNI_HAND_3_LITE_GESTURE_OPEN
     'right': [4095, 4095, 4095, 4095],
     'left': [0, 4095, 4095, 0],
 }
 POSE_CLOSE = {
-  # OMNI_HAND_3_LITE_GESTURE_FIST
     'right': [1500, 1500, 2900, 400],
     'left': [2595, 1500, 2900, 3695],
 }

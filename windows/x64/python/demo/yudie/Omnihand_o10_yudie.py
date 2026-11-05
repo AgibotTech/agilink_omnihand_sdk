@@ -27,9 +27,24 @@ def init_hand(hand_type: str = "right", device_type: str = "zlgcan"):
         right_hand.show_data_details(True)
         return left_hand, right_hand
 
-def set_hand_position(hand: OmniHand2025, positions: list):
+def set_hand_position(
+    hand: OmniHand2025,
+    positions: list,
+    glove_type: str | None = None,
+    hand_type: str | None = None,
+):
     """
-    Set hand positions
+    Set hand positions. Cross-hand control is converted by the SDK.
     """
-    hand.set_all_active_joint_angles(positions)
+    target_positions = positions
+    if glove_type is not None and hand_type is not None and glove_type != hand_type:
+        source = HandType.LEFT if glove_type == "left" else HandType.RIGHT
+        target = HandType.LEFT if hand_type == "left" else HandType.RIGHT
+        target_positions = hand.convert_active_joint_angles(
+            positions, source, target
+        )
+        if not target_positions:
+            raise ValueError("failed to convert O10 active-joint angles")
+
+    hand.set_all_active_joint_angles(target_positions)
     print("get active joint angles:", hand.get_all_active_joint_angles())

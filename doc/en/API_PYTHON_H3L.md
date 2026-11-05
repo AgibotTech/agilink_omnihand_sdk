@@ -18,6 +18,10 @@
 Calibration, zero-point, parameter-persistence, and firmware-maintenance APIs
 are intentionally not exposed by the H3L Python interface.
 
+## Motor Layout
+
+![H3L Motor Layout](../pic/hand_h3l_motors.png)
+
 ## Import
 
 ```python
@@ -188,7 +192,6 @@ def init(self) -> bool:
 
 ```python
 class OmniHand3LiteGesture(enum.IntEnum):
-    OMNI_HAND_3_LITE_GESTURE_ALL_ZERO = 0  # All-zero position
     OMNI_HAND_3_LITE_GESTURE_FIST = 1      # Fist
     OMNI_HAND_3_LITE_GESTURE_OPEN = 2      # Open hand
 
@@ -431,7 +434,6 @@ def init_tactile_points_map(self) -> bool: ...
 def get_len_of_tactile_datum(self, finger_index: int) -> int: ...
 def get_num_of_replied_tactile_frames(self, finger_index: int) -> int: ...
 def get_sn_of_tactile_sensor(self, finger_index: int) -> str: ...
-def get_sensor_data_length(self, finger_index: int) -> int: ...  # deprecated alias
 def get_sensor_order(self) -> List[Finger]: ...
 def get_tactile_sensor_data(
     self, finger_index: int

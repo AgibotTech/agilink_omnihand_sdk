@@ -11,6 +11,25 @@
 namespace agilink {
 namespace omnihand {
 
+/**
+ * Existing feedback value plus receive metadata. No extra device request.
+ * timestamp_us is the latest receive time contributing to value, in Unix
+ * microseconds (not measurement time or request-send time). For multiple
+ * contributing replies it is the receive time of the last arriving frame.
+ * Multi-frame/sensor data need not be sampled simultaneously.
+ * Cached getters keep their original receive times. Zero means no timestamp
+ * is available; it must not be treated as a new sample. Check value for errors
+ * exactly as with the original API; a timestamp alone does not imply success.
+ * The SDK aligns receive clocks internally and uses a fixed host wall-clock
+ * offset; later clock corrections do not shift curve points. Adapter alignment
+ * is approximate and does not imply microsecond synchronization across devices.
+ */
+template <typename T>
+struct TimestampedResult {
+  T value{};
+  int64_t timestamp_us = 0;
+};
+
 constexpr uint8_t kBroadcastHandDeviceId = 0x00;
 constexpr uint16_t kPrivateBroadcastHandDeviceId = 0x7FF;
 

@@ -33,6 +33,8 @@ struct AGIBOT_EXPORT TactileSensorData {
  */
 class AGIBOT_EXPORT IO10TactileSensor1D : public ITactileSensor {
  public:
+  TimestampedResult<std::vector<TactileSensorData>> GetAllTactileSensorDataRawWithTimestamp() const;
+
   /**
    * @brief Gets 1D tactile sensor raw data for a single sensor.
    * @param finger Finger/palm enum value

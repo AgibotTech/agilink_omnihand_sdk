@@ -39,7 +39,7 @@ JointDetailInfo GetJointDetailInfo(uint8_t joint_index) const;
 
 ## 触觉元数据
 
-`ITactileSensor1DU16` 提供传感器数量、触觉点数、单点数据长度、回复帧数、传感器序列号、传感器顺序和原始触觉帧。`GetSensorDataLength()` 已废弃；获取触觉点数请使用 `GetNumOfTactilePoints()`。
+`ITactileSensor1DU16` 提供传感器数量、触觉点数、单点数据长度、回复帧数、传感器序列号、传感器顺序和原始触觉帧。
 
 ## 混合控制
 

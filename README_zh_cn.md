@@ -9,39 +9,7 @@
 
 ## 产品概述
 
-AGILINK OmniHand SDK 支持以下产品型号：
-
-**OmniHand 2025 灵动款 (O10)**
-
-紧凑型高自由度交互灵巧手，具有 `10 个主动 + 6 个被动自由度`。重量仅 500g，采用 CANFD 通信接口，配备 `400+ 触觉点，0.1N 阵列分辨率，最大指尖力 5N`。适用于各种人形机器人和机械臂。其紧凑轻量化的设计和丰富的触觉交互能力，使其在交互服务、研究教育、轻量作业等领域具有重要价值。
-
-![](doc/pic/hand_o10.jpg)
-
-对应的控制电机如下图所示：
-
-![](doc/pic/hand_o10_motors.jpg)
-
-**OmniHand Pro 2025 专业款 (O12)**
-
-12 自由度专业灵巧手，具有精确操作和灵活控制能力。配备触觉传感器和多种控制模式（位置控制、力矩控制、混合控制），适用于研究教育、娱乐商业演出、展览引导、工业场景等多种应用。
-
-![](doc/pic/hand_o12.jpg)
-
-对应的控制电机如下图所示：
-
-![](doc/pic/hand_o12_motors.jpg)
-
-**OmniHand 3 Lite (H3L)**
-
-4 自由度轻量级灵巧手，面向成本与空间敏感场景。支持 CAN 通信，ROS2 节点支持原始触觉数据流。
-
-**OmniPicker 3 (OP3)**
-
-1 自由度夹爪，支持 CAN/RS485、行程控制、温柔夹持和双区域触觉；Linux 发布包包含专用 ROS2 节点及消息包。
-
-**OmniHand Dex UMI (O10 UMI)**
-
-使用 UMI 协议的只读灵巧手。
+![AGILINK 产品介绍](doc/pic/agilink_introduction_cn_2.png)
 
 ## 平台文档
 
@@ -58,7 +26,7 @@ AGILINK OmniHand SDK 支持以下产品型号：
 - [OmniHand 3 Lite (H3L) C++ API](doc/zh_cn/API_CPP_H3L.md)
 - [OmniPicker 3 (OP3) C++ API](doc/zh_cn/API_CPP_OP3.md)
 - [OmniHand Dex UMI (O10 UMI) C++ API](doc/zh_cn/API_CPP_O10_UMI.md)
-- [OmniHand 3 Ultra M (H3UM/O20) C++ API](doc/zh_cn/API_CPP_H3UM.md)
+- [OmniHand 3 Ultra M（H3UM T1.3/T1.5）C++ API](doc/zh_cn/API_CPP_H3UM.md)
 
 ### Python API
 - [Python API 索引](doc/zh_cn/API_PYTHON.md)
@@ -66,7 +34,7 @@ AGILINK OmniHand SDK 支持以下产品型号：
 - [OmniHand Pro 2025 (O12) Python API](doc/zh_cn/API_PYTHON_O12.md)
 - [OmniHand 3 Lite (H3L) Python API](doc/zh_cn/API_PYTHON_H3L.md)
 - [OmniHand Dex UMI (O10 UMI) Python API](doc/zh_cn/API_PYTHON_UMI.md)
-- [OmniHand 3 Ultra M (H3UM/O20) Python API](doc/zh_cn/API_PYTHON_H3UM.md)
+- [OmniHand 3 Ultra M（H3UM T1.3/T1.5）Python API](doc/zh_cn/API_PYTHON_H3UM.md)
 
 ### 运动学 API
 - [OmniHand 2025 (O10) 运动学 C++](doc/zh_cn/API_KINEMATICS_CPP_O10.md)
@@ -79,6 +47,7 @@ AGILINK OmniHand SDK 支持以下产品型号：
 - [OmniHand 2025 (O10) ROS2 接口](doc/zh_cn/API_ROS2_O10.md)
 - [OmniHand Pro 2025 (O12) ROS2 接口](doc/zh_cn/API_ROS2_O12.md)
 - [OmniHand 3 Lite (H3L) ROS2 接口](doc/zh_cn/API_ROS2_H3L.md)
+- [OmniHand 3 Ultra M（H3UM T1.3/T1.5）ROS2 接口](doc/zh_cn/API_ROS2_H3UM.md)
 - [OmniPicker 3 (OP3) ROS2 接口](doc/zh_cn/API_ROS2_OP3.md)
 
 ## 许可证

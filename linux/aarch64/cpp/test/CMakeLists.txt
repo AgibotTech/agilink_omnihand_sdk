@@ -2,9 +2,16 @@
 # AGILINK OmniHand SDK is licensed under Mulan PSL v2
 
 cmake_minimum_required(VERSION 3.22)
+project(omnihand_tests LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Option to enable/disable tests
 option(BUILD_CPP_TESTS "Build C++ unit tests" ON)
+option(BUILD_OMNIHAND_3_LITE "Build OmniHand 3 Lite tests" ON)
+option(BUILD_OMNIHAND_3_ULTRA_M "Build OmniHand 3 Ultra M tests" ON)
+option(BUILD_OMNI_PICKER_3 "Build OmniPicker 3 tests" ON)
 
 if(NOT BUILD_CPP_TESTS)
   return()
@@ -127,19 +134,19 @@ if(BUILD_OMNIHAND_3_LITE)
   add_test(NAME OmniHand3LiteTest COMMAND test_omnihand_3_lite)
 endif()
 
-# OmniHand 3 Ultra M (O20) Tests
+# OmniHand 3 Ultra M T1.3 Tests
 if(BUILD_OMNIHAND_3_ULTRA_M)
-  add_executable(test_omnihand_3_ultra_m test_omnihand_3_ultra_m.cc)
+  add_executable(test_omnihand_3_ultra_m_t1.3 test_omnihand_3_ultra_m_t1.3.cc)
   target_link_libraries(
-    test_omnihand_3_ultra_m
+    test_omnihand_3_ultra_m_t1.3
     PRIVATE
     ${OMNIHAND_TARGET}
     GTest::gtest
   )
-  set_target_properties(test_omnihand_3_ultra_m PROPERTIES
+  set_target_properties(test_omnihand_3_ultra_m_t1.3 PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${TEST_OUTPUT_DIR}"
   )
-  add_test(NAME OmniHand3UltraMTest COMMAND test_omnihand_3_ultra_m)
+  add_test(NAME OmniHand3UltraMT1P3Test COMMAND test_omnihand_3_ultra_m_t1.3)
 endif()
 
 # OmniPicker 3 (OP3) Tests
@@ -160,15 +167,12 @@ if(BUILD_OMNI_PICKER_3)
   add_test(NAME OmniPicker3Test COMMAND test_omnipicker_3)
 endif()
 
-# OmniHand Server tests use a fake IHandDeviceFactory and need no hardware.
+# OmniHand Client tests exercise an externally started Server over public APIs.
 add_executable(test_omnihand_server test_omnihand_server.cc)
 target_link_libraries(
   test_omnihand_server
   PRIVATE
-  omnihand_server_core
-  omnihand_server_crow
-  omnihand_server_json_codec
-  GTest::gtest
+  omnihand_client
   GTest::gtest_main
 )
 set_target_properties(test_omnihand_server PROPERTIES

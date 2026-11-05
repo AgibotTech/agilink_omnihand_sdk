@@ -9,7 +9,7 @@ The OmniHand SDK provides ROS2 interfaces for five product models:
 - **OmniHand 2025 (O10)**: 10 DOF dexterous hand
 - **OmniHand Pro 2025 (O12)**: 12 DOF dexterous hand
 - **OmniHand 3 Lite (H3L)**: 4 DOF lightweight dexterous hand
-- **OmniHand 3 Ultra M (H3U_M / O20)**: 20 DOF dexterous hand
+- **OmniHand 3 Ultra M (H3UM T1.3/T1.5)**: 20/21 DOF dexterous hand
 - **OmniPicker 3 (OP3)**: 1 DOF gripper
 
 All products share the `/<product>/<side>/...` naming convention. OP3 uses gripper-specific stroke, gentle-grip, and tactile messages; see its product page for details.
@@ -19,6 +19,7 @@ All products share the `/<product>/<side>/...` naming convention. OP3 uses gripp
 - **[OmniHand 2025 (O10) ROS2 Interface](API_ROS2_O10.md)** - 10 DOF
 - **[OmniHand Pro 2025 (O12) ROS2 Interface](API_ROS2_O12.md)** - 12 DOF
 - **[OmniHand 3 Lite (H3L) ROS2 Interface](API_ROS2_H3L.md)** - 4 DOF
+- **[OmniHand 3 Ultra M (H3UM T1.3/T1.5) ROS2 Interface](API_ROS2_H3UM.md)** - 20/21 DOF
 - **[OmniPicker 3 (OP3) ROS2 Interface](API_ROS2_OP3.md)** - 1 DOF gripper
 
 ## Unified Topic Specification

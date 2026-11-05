@@ -8,6 +8,10 @@ The H3L ROS2 node provides a unified topic interface for the 4 DOF dexterous han
 
 > **Important**: H3L has no full kinematics solver for angle-based control. `JointState.position` carries **motor ticks** (int16, range 0-4096), **NOT radians**. The node performs double ↔ int16 transparent conversion internally. Gesture control is available via the SDK's `SetHandGesture()` API.
 
+## Motor Layout
+
+![H3L Motor Layout](../pic/hand_h3l_motors.png)
+
 ## ROS2 Topics
 
 All topics are prefixed with `/h3l/<side>/`, where `<side>` is `left` or `right`.

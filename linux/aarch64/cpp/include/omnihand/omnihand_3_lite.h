@@ -12,6 +12,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 #include "i_tactile_sensor_1d_u16.h"
@@ -63,6 +64,13 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
       uint8_t canfd_channel_id = 0,
       CommunicationLogOptions log_options = {});
 
+  static std::unique_ptr<OmniHand3Lite> createHandMByZlgcan(
+      HandType hand_type,
+      uint8_t hand_device_id,
+      uint8_t canfd_device_id,
+      uint8_t canfd_channel_id = 0,
+      CommunicationLogOptions log_options = {});
+
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by serial number
    * @param hand_type Hand type (left/right)
@@ -74,6 +82,13 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
    * @return A unique pointer to OmniHand3Lite instance, or nullptr if device not found
    */
   static std::unique_ptr<OmniHand3Lite> createHandByZlgcan(
+      HandType hand_type,
+      uint8_t hand_device_id,
+      const std::string& usbcanfd_serial_number,
+      uint8_t canfd_channel_id = 0,
+      CommunicationLogOptions log_options = {});
+
+  static std::unique_ptr<OmniHand3Lite> createHandMByZlgcan(
       HandType hand_type,
       uint8_t hand_device_id,
       const std::string& usbcanfd_serial_number,
@@ -98,6 +113,14 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
       uint16_t tcp_port,
       uint8_t canfd_channel_id = 0,
       CommunicationLogOptions log_options = {});
+
+  static std::unique_ptr<OmniHand3Lite> createHandMByZlgCanTcp(
+      HandType hand_type,
+      uint8_t hand_device_id,
+      const std::string& tcp_host,
+      uint16_t tcp_port,
+      uint8_t canfd_channel_id = 0,
+      CommunicationLogOptions log_options = {});
 #endif  // OMNIHAND_ZLG_TCP_SUPPORTED
 
 #ifdef __linux__
@@ -109,6 +132,12 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
    * @return A unique pointer to OmniHand3Lite instance
    */
   static std::unique_ptr<OmniHand3Lite> createHandSocketCan(
+      HandType hand_type,
+      uint8_t hand_device_id,
+      const std::string& can_interface = "can0",
+      CommunicationLogOptions log_options = {});
+
+  static std::unique_ptr<OmniHand3Lite> createHandMSocketCan(
       HandType hand_type,
       uint8_t hand_device_id,
       const std::string& can_interface = "can0",
@@ -132,6 +161,13 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
       uint8_t canfd_channel_id = 0,
       CommunicationLogOptions log_options = {});
 
+  static std::unique_ptr<OmniHand3Lite> createHandMByHcan(
+      HandType hand_type,
+      uint8_t hand_device_id,
+      uint8_t canfd_device_id,
+      uint8_t canfd_channel_id = 0,
+      CommunicationLogOptions log_options = {});
+
   /**
    * @brief Factory method - HCAN USB CANFD communication (by serial number)
    * @param hand_type Hand type (left/right)
@@ -143,6 +179,13 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
    * @return A unique pointer to OmniHand3Lite instance, or nullptr if device not found
    */
   static std::unique_ptr<OmniHand3Lite> createHandByHcan(
+      HandType hand_type,
+      uint8_t hand_device_id,
+      const std::string& hcan_serial_number,
+      uint8_t canfd_channel_id = 0,
+      CommunicationLogOptions log_options = {});
+
+  static std::unique_ptr<OmniHand3Lite> createHandMByHcan(
       HandType hand_type,
       uint8_t hand_device_id,
       const std::string& hcan_serial_number,
@@ -165,11 +208,44 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
       uint32_t baud_rate = 460800,
       CommunicationLogOptions log_options = {});
 
+  static std::unique_ptr<OmniHand3Lite> createHandMByRs485(
+      HandType hand_type,
+      uint8_t hand_device_id,
+      const std::string& serial_port,
+      uint32_t baud_rate = 460800,
+      CommunicationLogOptions log_options = {});
+
+  h3l::H3LModel GetModel() const { return model_; }
+
   virtual uint8_t GetDefaultNonPrivateHandDeviceId() const = 0;
 
   virtual uint16_t GetDefaultPrivateHandDeviceId() const = 0;
 
   int GetHandDeviceIdByBroadcast() override;
+
+  // ============ Deprecated Private-Protocol Control ============
+  /**
+   * @deprecated Use SetJointMotorPosi() instead.
+   */
+  [[deprecated("Use SetJointMotorPosi() instead.")]]
+  virtual uint16_t SetSingleAxisPos(uint8_t axis_index,
+                                    uint16_t position) override = 0;
+
+  /**
+   * @deprecated Use SetAllJointMotorPosi() instead.
+   */
+  [[deprecated("Use SetAllJointMotorPosi() instead.")]]
+  virtual SetAllAxisPosResponse SetAllAxisPos(
+      const std::vector<uint16_t>& positions) override = 0;
+
+  /**
+   * @deprecated Use MixControlByPVT() instead.
+   */
+  [[deprecated("Use MixControlByPVT() instead.")]]
+  virtual SetAllAxisPosResponse SetPosSpeedTorqueData(
+      const std::vector<uint16_t>& positions,
+      const std::vector<int16_t>& speeds,
+      const std::vector<uint16_t>& torques) override = 0;
 
   // ============ Sensor Utilities ============
   // Note: O4 (OmniHand3Lite) does not support tactile sensors
@@ -200,6 +276,14 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
     return kDegreesOfPassiveFreedom;
   }
 
+  std::vector<double> ConvertActiveJointAngles(
+      const std::vector<double>& angles, HandType source_hand,
+      HandType target_hand) const override;
+
+  std::vector<int16_t> ConvertJointMotorPositions(
+      const std::vector<int16_t>& positions, HandType source_hand,
+      HandType target_hand) const override;
+
   static constexpr Int16Bound GetMinMaxMotorPosition(uint8_t joint_motor_index) {
     (void)joint_motor_index;
     return h3l::OmniHand3LiteSolver::GetMotorPositionRange();
@@ -220,21 +304,25 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
     return kMixCtrlTorqueRange;
   }
 
-  static constexpr FloatBound GetMinMaxActivateJointAngle(uint8_t joint_motor_index, HandType hand_type) {
+  static constexpr FloatBound GetMinMaxActivateJointAngle(
+      uint8_t joint_motor_index, HandType hand_type,
+      h3l::H3LModel model = h3l::H3LModel::H3L_S) {
     if (joint_motor_index <= 0 || joint_motor_index > kDegreesOfActiveFreedom) return {};
     return h3l::OmniHand3LiteSolver::GetActivateJointAngleRange(
-        static_cast<h3l::H3LActivateJoint>(joint_motor_index - 1), hand_type == HandType::LEFT);
+        static_cast<h3l::H3LActivateJoint>(joint_motor_index - 1),
+        hand_type == HandType::LEFT, model);
   }
 
   // ============ Gesture Control ============
   /**
-   * @brief Sets the hand to a predefined gesture (typed API).
+   * @brief Sets a preset, inserting a 200 ms thumb-open transition after a
+   *        different non-OPEN preset. The first preset is sent directly.
    */
-  void SetHandGesture(h3l::OmniHand3LiteGesture gesture);
+  std::vector<int16_t> SetHandGesture(h3l::OmniHand3LiteGesture gesture);
 
   std::vector<int16_t> GetHandGesture(h3l::OmniHand3LiteGesture gesture);
 
-  void SetHandGesture(int gesture_num) override;
+  std::vector<int16_t> SetHandGesture(int gesture_num) override;
 
   std::vector<int16_t> GetHandGesture(int gesture_num) override;
 
@@ -245,16 +333,24 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
    * @param hand_type Hand type (left/right)
    * @note Product type is fixed to ProductType::OMNIHAND_3_LITE for this class
    */
-  void Reset(unsigned char device_id, HandType hand_type) {
+  void Reset(unsigned char device_id, HandType hand_type,
+             h3l::H3LModel model = h3l::H3LModel::H3L_S) {
     OmniHand::Reset(ProductType::OMNIHAND_3_LITE, device_id, hand_type);
-    solver_ = std::make_unique<h3l::OmniHand3LiteSolver>(hand_type_ == HandType::LEFT);
+    model_ = model;
+    previous_gesture_.reset();
+    solver_ = std::make_unique<h3l::OmniHand3LiteSolver>(
+        hand_type_ == HandType::LEFT, model_);
   }
 
   void OnHandTypeChanged() override {
-    solver_ = std::make_unique<h3l::OmniHand3LiteSolver>(hand_type_ == HandType::LEFT);
+    previous_gesture_.reset();
+    solver_ = std::make_unique<h3l::OmniHand3LiteSolver>(
+        hand_type_ == HandType::LEFT, model_);
   }
 
+  h3l::H3LModel model_ = h3l::H3LModel::H3L_S;
   std::unique_ptr<h3l::OmniHand3LiteSolver> solver_;
+  std::optional<h3l::OmniHand3LiteGesture> previous_gesture_;
   static constexpr Int16Bound kActualMotorPositionBound = {0, 4095};
   static constexpr Int16Range kMixCtrlVelocityRange = {0, 23767, 8000}; // unit: rpm
   static constexpr Int16Range kMixCtrlTorqueRange = {0, 1000, 300}; // unit: mA
