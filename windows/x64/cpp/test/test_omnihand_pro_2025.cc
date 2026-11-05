@@ -130,11 +130,16 @@ TEST_F(OmniHandPro2025Test, GetAllActiveJointAnglesWithTimestamp) {
 }
 
 TEST_F(OmniHandPro2025Test, GetAllJointAnglesWithTimestamp) {
-  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  if (!hand_ || !hand_->Init()) {
+    GTEST_SKIP() << "Device not available";
+  }
   const auto sample = hand_->GetAllJointAnglesWithTimestamp();
-  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllJointAnglesWithTimestamp", TAG));
-  ASSERT_EQ(sample.value.size(), hand_->GetJointNames().size());
-  for (const auto angle : sample.value) EXPECT_TRUE(std::isfinite(angle));
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(
+      sample.timestamp_us, "GetAllJointAnglesWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA() + hand_->GetDoP());
+  for (const auto angle : sample.value) {
+    EXPECT_TRUE(std::isfinite(angle));
+  }
 }
 
 TEST_F(OmniHandPro2025Test, SetAllActiveJointAnglesWithTimestamp) {
