@@ -19,6 +19,8 @@ Common options:
                  (default: zlgcan)
   -f INTERVAL    Request interval ms. CAN default 5 (max 100), USB/RS485
                  default 500 (max 500). 0 disables interval limiting.
+  --device-id ID Optional target hand ID in [1, 0x7f] (alias: --id). When
+                 omitted, only discover/cache current IDs; no ID is written.
 
 CAN options (zlgcan / hcan / socketcan / zlgcantcp):
   -c CHANNEL     CAN channel index (zlgcan/hcan/zlgcantcp), default 0
@@ -37,7 +39,7 @@ Environment variables (take priority over defaults, work with pytest):
   OMNIHAND_DEVICE_TYPE, OMNIHAND_REQUEST_INTERVAL, OMNIHAND_CHANNEL_ID,
   OMNIHAND_CANFD_ID, OMNIHAND_CAN_IF, OMNIHAND_TCP_HOST, OMNIHAND_TCP_PORT,
   OMNIHAND_USB_PORT, OMNIHAND_RS485_PORT, OMNIHAND_BAUDRATE,
-  OMNIHAND_FRAME_RECV_TIMEOUT
+  OMNIHAND_FRAME_RECV_TIMEOUT, OMNIHAND_TARGET_DEVICE_ID
 
 Examples:
   python3 test_omnihand_2025.py -d zlgcan -c 0 -i 0
@@ -88,6 +90,7 @@ else:
     RS485_PORT = "/dev/ttyUSB0"
 BAUDRATE = 460800
 FRAME_RECV_TIMEOUT = 200
+TARGET_DEVICE_ID = None
 
 # (env var, CLI flag, module attribute)
 _STR_OPTIONS = (
@@ -104,6 +107,8 @@ _INT_OPTIONS = (
     ("OMNIHAND_BAUDRATE", "-b", "BAUDRATE"),
     ("OMNIHAND_FRAME_RECV_TIMEOUT", "-t", "FRAME_RECV_TIMEOUT"),
     ("OMNIHAND_REQUEST_INTERVAL", "-f", "REQUEST_INTERVAL"),
+    ("OMNIHAND_TARGET_DEVICE_ID", "--device-id", "TARGET_DEVICE_ID"),
+    ("OMNIHAND_TARGET_DEVICE_ID", "--id", "TARGET_DEVICE_ID"),
 )
 
 
@@ -149,6 +154,8 @@ if DEVICE_TYPE not in TRANSPORTS:
           f"got: {DEVICE_TYPE}; using zlgcan")
     DEVICE_TYPE = "zlgcan"
 _apply_cli_args()
+if TARGET_DEVICE_ID is not None and not 1 <= TARGET_DEVICE_ID <= 0x7F:
+    raise ValueError("--device-id must be in [1, 0x7f]")
 
 
 def is_serial_transport():
@@ -178,20 +185,20 @@ def hand():
     if DEVICE_TYPE == "hcan":
         h = OmniHand2025.create_hand_by_hcan(
             hand_type=HandType.LEFT,
-            hand_device_id=OmniHand2025.kDefaultHandDeviceId,
+            hand_device_id=0,
             canfd_device_id=CANFD_ID,
             canfd_channel_id=CHANNEL_ID,
         )
     elif DEVICE_TYPE == "socketcan":
         h = OmniHand2025.create_hand_socketcan(
             hand_type=HandType.LEFT,
-            hand_device_id=OmniHand2025.kDefaultHandDeviceId,
-            can_if=CAN_IF,
+            hand_device_id=0,
+            can_interface=CAN_IF,
         )
     elif DEVICE_TYPE == "zlgcantcp":
         h = OmniHand2025.create_hand_by_zlgcan_tcp(
             hand_type=HandType.LEFT,
-            hand_device_id=OmniHand2025.kDefaultHandDeviceId,
+            hand_device_id=0,
             host=TCP_HOST,
             port=TCP_PORT,
             canfd_channel_id=CHANNEL_ID,
@@ -202,29 +209,29 @@ def hand():
             if DEVICE_TYPE == "usb":
                 h = OmniHand2025.create_hand_by_usb(
                     hand_type=HandType.LEFT,
-                    hand_device_id=OmniHand2025.kDefaultHandDeviceId,
+                    hand_device_id=0,
                     uart_port=port,
                     baudrate=BAUDRATE,
                 )
             else:
                 h = OmniHand2025.create_hand_by_rs485(
                     hand_type=HandType.LEFT,
-                    hand_device_id=OmniHand2025.kDefaultHandDeviceId,
+                    hand_device_id=0,
                     uart_port=port,
                     baudrate=BAUDRATE,
                 )
         except Exception as e:
-            pytest.skip(f"Failed to open {DEVICE_TYPE} port {port}: {e}")
-            return
-        h.set_frame_recv_timeout(FRAME_RECV_TIMEOUT)
+            pytest.fail(f"Failed to open {DEVICE_TYPE} port {port}: {e}",
+                        pytrace=False)
     else:  # zlgcan (default)
         h = OmniHand2025.create_hand_by_zlgcan(
             hand_type=HandType.LEFT,
-            hand_device_id=OmniHand2025.kDefaultHandDeviceId,
+            hand_device_id=0,
             canfd_device_id=CANFD_ID,
             canfd_channel_id=CHANNEL_ID,
         )
     h.set_request_interval(effective_request_interval())
+    h.set_frame_recv_timeout(FRAME_RECV_TIMEOUT)
     h.show_data_details(True)
     print(f"\n[Info] transport={DEVICE_TYPE} channel={CHANNEL_ID} canfd_id={CANFD_ID} "
           f"interval={effective_request_interval()}ms")
@@ -236,10 +243,34 @@ def hand():
 
 @pytest.fixture(scope="session")
 def initialized_hand(hand):
-    """Skip the whole session if device is unreachable."""
+    """Initialize, discover IDs, and optionally perform an explicit ID test."""
     if not hand.init():
-        pytest.skip(f"{DEVICE_TYPE} device not available")
-    yield hand
+        pytest.fail(f"{DEVICE_TYPE} device not available", pytrace=False)
+
+    original_device_id = None
+    id_change_attempted = False
+    try:
+        original_device_id = hand.get_hand_device_id_by_broadcast()
+        assert original_device_id >= 0, (
+            "No consistent device ID responded to broadcast"
+        )
+        print(f"\n[Info] Discovered device ID state: {original_device_id}")
+
+        if TARGET_DEVICE_ID is not None:
+            print(
+                f"[Info] Switching device ID state: "
+                f"{original_device_id} -> {TARGET_DEVICE_ID}"
+            )
+            id_change_attempted = True
+            assert hand.set_hand_device_id_by_broadcast(TARGET_DEVICE_ID)
+        yield hand
+    finally:
+        if id_change_attempted:
+            print(
+                f"\n[Info] Restoring device ID state: "
+                f"{TARGET_DEVICE_ID} -> {original_device_id}"
+            )
+            assert hand.set_hand_device_id_by_broadcast(original_device_id)
 
 
 # ---------------------------------------------------------------------------
@@ -264,38 +295,23 @@ def test_get_vendor_info(initialized_hand):
     """Test vendor info (O10 has 10 DOF)."""
     info = initialized_hand.get_vendor_info()
     print(f"\n[get_vendor_info]\n{info}")
-    if info.dof == 0:
-        pytest.skip("GetVendorInfo timeout")
+    assert info.dof != 0, "GetVendorInfo timed out"
     assert info.dof == 10
+    assert info.product_model
 
 
 def test_get_device_info(initialized_hand):
     """Test device info."""
     info = initialized_hand.get_device_info()
     print(f"\n[get_device_info]\n{info}")
-    if info.hand_device_id == 0:
-        pytest.skip("GetDeviceInfo timeout")
-    if not is_serial_transport():
-        assert info.hand_device_id == OmniHand2025.kDefaultHandDeviceId
-
-
-def test_set_device_id(initialized_hand):
-    """Test setting device ID and restoring it (may cause device inaccessibility)."""
-    if is_serial_transport():
-        pytest.skip("SetDeviceId is not exercised on the USB transport")
-    current = initialized_hand.get_device_info()
-    if current.hand_device_id == 0:
-        pytest.skip("Cannot get current device ID")
-
-    initialized_hand.set_device_id(2)
-    print("\n[set_device_id] Set to 2")
-    new_info = initialized_hand.get_device_info()
-    assert new_info.hand_device_id == 2
-
-    initialized_hand.set_device_id(OmniHand2025.kDefaultHandDeviceId)
-    print(f"[set_device_id] Reset to {OmniHand2025.kDefaultHandDeviceId}")
-    reset_info = initialized_hand.get_device_info()
-    assert reset_info.hand_device_id == OmniHand2025.kDefaultHandDeviceId
+    assert info.hand_device_id != 0, "GetDeviceInfo timed out"
+    discovered_id = initialized_hand.get_hand_device_id_by_broadcast()
+    assert discovered_id >= 0
+    expected_id = (
+        OmniHand2025.kDefaultHandDeviceId
+        if discovered_id == 0 else discovered_id
+    )
+    assert info.hand_device_id == expected_id
 
 
 # ---------------------------------------------------------------------------
@@ -308,8 +324,7 @@ def test_set_get_single_axis_pos(initialized_hand):
     print("\n[SetGetSingleAxisPos] Testing all 10 joints:")
     for joint_idx, target in enumerate(safe_pos, start=1):
         initialized_hand.set_joint_position(joint_idx, target)
-        if not is_serial_transport():
-            time.sleep(1.0)
+        time.sleep(1.0)
         pos = initialized_hand.get_joint_position(joint_idx)
         print(f"  J{joint_idx}: target={target}, get={pos}")
         assert 0 <= pos <= 4096
@@ -321,8 +336,7 @@ def test_set_get_all_axis_pos(initialized_hand):
     set_result = initialized_hand.set_all_joint_positions(positions)
     print(f"\n[SetAllJointMotorPosi] returned {len(set_result)} positions: {set_result}")
     assert len(set_result) == 10
-    if not is_serial_transport():
-        time.sleep(1.0)
+    time.sleep(1.0)
 
     get_result = initialized_hand.get_all_joint_positions()
     print(f"[GetAllJointMotorPosi] returned {len(get_result)} positions: {get_result}")
@@ -336,28 +350,39 @@ def test_set_get_all_axis_pos(initialized_hand):
 def test_get_all_current_report(initialized_hand):
     """Test current report (mA) for all joints."""
     currents = initialized_hand.get_all_current_reports()
-    if not currents:
-        pytest.skip("GetAllCurrentReport timeout")
     print("\n[GetAllCurrentReport] " + ", ".join(f"J{i + 1}:{v}mA" for i, v in enumerate(currents)))
-    assert len(currents) == 10
+    assert len(currents) == 10, "GetAllCurrentReport timed out or returned an invalid size"
+
+
+def test_get_current_report(initialized_hand):
+    """Test per-joint current queries."""
+    print("\n[GetCurrentReport] All joints:")
+    for joint in range(1, 11):
+        current = initialized_hand.get_current_report(joint)
+        print(f"  J{joint}: {current}mA")
 
 
 def test_get_all_temperature_report(initialized_hand):
     """Test temperature report for all joints (int8 range: -40 to 127 degC)."""
     temps = initialized_hand.get_all_temperature_reports()
-    if not temps:
-        pytest.skip("GetAllTemperatureReport timeout")
     print("\n[GetAllTemperatureReport] " + ", ".join(f"J{i + 1}:{v}degC" for i, v in enumerate(temps)))
-    assert len(temps) == 10
+    assert len(temps) == 10, "GetAllTemperatureReport timed out or returned an invalid size"
     for t in temps:
         assert -40 <= t <= 127
+
+
+def test_get_temperature_report(initialized_hand):
+    """Test per-joint temperature queries."""
+    print("\n[GetTemperatureReport] All joints:")
+    for joint in range(1, 11):
+        temperature = initialized_hand.get_temperature_report(joint)
+        print(f"  J{joint}: {temperature}degC")
+        assert -40 <= temperature <= 127
 
 
 def test_get_all_error_report(initialized_hand):
     """Test error report for all joints."""
     errors = initialized_hand.get_all_error_reports()
-    if not errors:
-        pytest.skip("GetAllErrorReport timeout")
     flags = (
         ("stalled", "S"),
         ("overheat", "H"),
@@ -370,16 +395,41 @@ def test_get_all_error_report(initialized_hand):
         flag_str = "".join(code for name, code in flags if getattr(e, name, False))
         parts.append(f"J{i + 1}:[{flag_str}]")
     print("\n[GetAllErrorReport] " + " ".join(parts))
-    assert len(errors) == 10
+    assert len(errors) == 10, "GetAllErrorReport timed out or returned an invalid size"
+
+
+def test_get_error_report(initialized_hand):
+    """Test per-joint error queries."""
+    print("\n[GetErrorReport] All joints:")
+    for joint in range(1, 11):
+        error = initialized_hand.get_error_report(joint)
+        flags = "".join(
+            code for name, code in (
+                ("stalled", "S"),
+                ("overheat", "H"),
+                ("over_current", "C"),
+                ("motor_except", "M"),
+                ("commu_except", "X"),
+            ) if getattr(error, name, False)
+        )
+        print(f"  J{joint}: [{flags}]")
 
 
 def test_get_all_joint_motor_velo(initialized_hand):
     """Test velocity report for all joints."""
     velos = initialized_hand.get_all_joint_velocities()
-    if not velos:
-        pytest.skip("GetAllJointMotorVelo timeout")
     print("\n[GetAllJointMotorVelo] " + ", ".join(str(v) for v in velos))
-    assert len(velos) == 10
+    assert len(velos) == 10, "GetAllJointMotorVelo timed out or returned an invalid size"
+
+
+def test_get_joint_motor_velo(initialized_hand):
+    """Test per-joint velocity queries and CAN index validation."""
+    print("\n[GetJointMotorVelo] Per joint:")
+    for joint in range(1, 11):
+        print(f"  J{joint}: velo={initialized_hand.get_joint_velocity(joint)}")
+    if not is_serial_transport():
+        assert initialized_hand.get_joint_velocity(0) == -1
+        assert initialized_hand.get_joint_velocity(11) == -1
 
 
 def test_get_all_current_threshold(initialized_hand):
@@ -413,10 +463,18 @@ def test_get_tactile_sensor_data(initialized_hand):
         assert len(data) == 25
 
 
+def test_get_all_tactile_sensor_data(initialized_hand):
+    """Test all seven downsampled tactile sensors in one call."""
+    all_data = initialized_hand.get_all_tactile_sensor_data()
+    print(f"\n[GetAllTactileSensorData] {len(all_data)} sensors:")
+    assert len(all_data) == 7
+    for sensor in all_data:
+        print(f"  {sensor.sensor_id.name}: {len(sensor.data)} bytes")
+        assert sensor.data
+
+
 def test_get_tactile_sensor_data_raw(initialized_hand):
-    """Test raw tactile data (full resolution, CAN transports only)."""
-    if is_serial_transport():
-        pytest.skip("Raw tactile data is not exercised on the USB transport")
+    """Test one raw tactile sensor (full resolution)."""
     data = initialized_hand.get_tactile_sensor_data_raw(Finger.THUMB)
     if not data.data:
         pytest.skip("Raw tactile data not supported by this firmware")
@@ -426,16 +484,14 @@ def test_get_tactile_sensor_data_raw(initialized_hand):
 
 
 def test_get_all_tactile_sensor_data_raw(initialized_hand):
-    """Test raw tactile data for all sensors (CAN transports only)."""
-    if is_serial_transport():
-        pytest.skip("Raw tactile data is not exercised on the USB transport")
+    """Test raw tactile data for all sensors."""
     all_data = initialized_hand.get_all_tactile_sensor_data_raw()
     if not all_data:
         pytest.skip("Raw tactile data not supported by this firmware")
     print(f"\n[GetAllTactileSensorDataRaw] {len(all_data)} sensors:")
     for sensor in all_data:
         print(f"  {sensor.sensor_id.name}: {len(sensor.data)} points")
-    assert len(all_data) >= 0
+    assert all_data
 
 
 # ---------------------------------------------------------------------------
@@ -447,16 +503,20 @@ def test_mix_control_by_pvt(initialized_hand):
     safe_pos = [2048, 2048, 4096, 2048, 4096, 4096, 2048, 4096, 2048, 4096]
     velocities = [50] * 10 if is_serial_transport() else [8000] * 10
     torques = [0] * 10 if is_serial_transport() else [300] * 10
-    initialized_hand.mix_control_by_pvt(safe_pos, velocities, torques)
+    result = initialized_hand.mix_control_by_pvt(safe_pos, velocities, torques)
+    assert len(result) == len(safe_pos)
     print("\n[MixControlByPVT] all 10 joints")
-    if not is_serial_transport():
-        time.sleep(1.0)
+    time.sleep(1.0)
     feedback = initialized_hand.get_all_joint_positions()
     print(f"[GetAllJointMotorPosi] {feedback}")
     assert len(feedback) == 10
 
     if not is_serial_transport():
-        initialized_hand.mix_control_by_pvt(1, safe_pos[0], 50, 0)
+        single_result = initialized_hand.mix_control_by_pvt(1, safe_pos[0], 50, 0)
+        assert single_result.tgt_posi is not None
+        assert single_result.tgt_velo is not None
+        assert single_result.tgt_torque is not None
+        assert single_result.joint_index == 1
         print(f"[MixControlByPVT] single J1 pos={safe_pos[0]} vel=50")
         time.sleep(0.5)
 
@@ -465,11 +525,15 @@ def test_mix_control_by_pt(initialized_hand):
     """Test PT mixed control for all joints and single joint."""
     safe_pos = [2048, 2048, 4096, 2048, 4096, 4096, 2048, 4096, 2048, 4096]
     torques = [0] * 10
-    initialized_hand.mix_control_by_pt(safe_pos, torques)
+    result = initialized_hand.mix_control_by_pt(safe_pos, torques)
+    assert len(result) == len(safe_pos)
     print("\n[MixControlByPT] all 10 joints")
+    time.sleep(1.0)
     if not is_serial_transport():
-        time.sleep(1.0)
-        initialized_hand.mix_control_by_pt(1, safe_pos[0], 0)
+        single_result = initialized_hand.mix_control_by_pt(1, safe_pos[0], 0)
+        assert single_result.tgt_posi is not None
+        assert single_result.tgt_torque is not None
+        assert single_result.joint_index == 1
         print(f"[MixControlByPT] single J1 pos={safe_pos[0]}")
         time.sleep(0.5)
 
@@ -483,11 +547,8 @@ def test_set_get_all_active_joint_angles(initialized_hand):
     angles = [0.0] * 10
     initialized_hand.set_all_active_joint_angles(angles)
     print("\n[SetAllActiveJointAngles] All joints -> 0.0 rad")
-    if not is_serial_transport():
-        time.sleep(1.0)
+    time.sleep(1.0)
     current = initialized_hand.get_all_active_joint_angles()
-    if not current:
-        pytest.skip("GetAllActiveJointAngles timeout")
     print(f"[GetAllActiveJointAngles] {[f'{v:.4f}' for v in current]}")
     assert len(current) == 10
 
@@ -495,8 +556,6 @@ def test_set_get_all_active_joint_angles(initialized_hand):
 def test_get_all_joint_angles(initialized_hand):
     """Test all joint angles (10 active + 6 passive)."""
     all_angles = initialized_hand.get_all_joint_angles()
-    if not all_angles:
-        pytest.skip("GetAllJointAngles timeout")
     print(f"\n[GetAllJointAngles] ({len(all_angles)} joints): {[f'{v:.4f}' for v in all_angles]}")
     assert len(all_angles) == 16
 
@@ -533,6 +592,10 @@ if __name__ == "__main__":
     os.environ["OMNIHAND_RS485_PORT"] = RS485_PORT
     os.environ["OMNIHAND_BAUDRATE"] = str(BAUDRATE)
     os.environ["OMNIHAND_FRAME_RECV_TIMEOUT"] = str(FRAME_RECV_TIMEOUT)
+    if TARGET_DEVICE_ID is not None:
+        os.environ["OMNIHAND_TARGET_DEVICE_ID"] = str(TARGET_DEVICE_ID)
+    else:
+        os.environ.pop("OMNIHAND_TARGET_DEVICE_ID", None)
 
     print("=== OmniHand 2025 Test ===")
     print(f"Transport:        {DEVICE_TYPE}")
@@ -549,6 +612,11 @@ if __name__ == "__main__":
         print(f"Baudrate:         {BAUDRATE}")
         print(f"Frame Timeout:    {FRAME_RECV_TIMEOUT} ms")
     print(f"Request Interval: {effective_request_interval()} ms")
+    print(
+        "Target Device ID: "
+        + (str(TARGET_DEVICE_ID) if TARGET_DEVICE_ID is not None
+           else "discover only")
+    )
     print("==========================")
 
     args = sys.argv[1:]

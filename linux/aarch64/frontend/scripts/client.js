@@ -26,7 +26,7 @@ const CONN_CONFIG_SCHEMA = {
     usb: [{ uart_port: 'string' }],
 };
 
-const DEFAULT_API_BASE_URL = 'http://127.0.0.1:8000';
+const DEFAULT_API_BASE_URL = window.location.origin;
 const WS_REQUEST_TIMEOUT_MS = 10000;
 const WS_STREAMS = ['state', 'diagnostics', 'tactile'];
 const WS_CHART_IDS = {

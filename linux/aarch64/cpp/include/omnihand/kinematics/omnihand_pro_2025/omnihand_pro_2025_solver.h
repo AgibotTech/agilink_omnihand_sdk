@@ -308,6 +308,15 @@ class AGIBOT_EXPORT OmniHandPro2025Solver {
   // Input motor input values should be in range 0-2000 (different from O10 which is 0-4096)
   std::vector<double> ConvertActuator2Joint(const std::vector<int> &actuator_input);
 
+  static std::vector<double> ConvertActiveJointAngles(
+      const std::vector<double>& active_joint_pos, bool source_is_left,
+      bool target_is_left);
+
+  /** Convert motor positions between O12 left/right hands. */
+  static std::vector<int16_t> ConvertJointMotorPositions(
+      const std::vector<int16_t>& positions, bool source_is_left,
+      bool target_is_left);
+
   // Convert the active joint position to motor length
   std::vector<double> ActiveJoint2MotorLength(const std::vector<double> &active_jont_pos);
 
@@ -351,16 +360,10 @@ class AGIBOT_EXPORT OmniHandPro2025Solver {
     uint8_t aj = kActuatorToActiveJoint[actuator_index];
     float mn = static_cast<float>(kActiveJointMin[aj]);
     float mx = static_cast<float>(kActiveJointMax[aj]);
-    if (is_left_hand) {
-      if (aj == ActiveJointIndexAbAd ||
-          aj == ActiveJointMiddleABAD ||
-          aj == ActiveJointThumbMCP)
-        return {-mx, -mn};
-    } else {
-      if (aj == ActiveJointThumbAbAd ||
-          aj == ActiveJointThumbMCP ||
-          aj == ActiveJointThumbPIP)
-        return {-mx, -mn};
+    if (is_left_hand &&
+        (aj == ActiveJointThumbRoll || aj == ActiveJointThumbAbAd ||
+         aj == ActiveJointIndexAbAd || aj == ActiveJointMiddleABAD)) {
+      return {-mx, -mn};
     }
     return {mn, mx};
   }

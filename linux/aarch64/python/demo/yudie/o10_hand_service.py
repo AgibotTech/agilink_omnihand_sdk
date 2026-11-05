@@ -251,13 +251,15 @@ def set_hand_position(
     positions: List[float],
     hal_host: str | None = None,
     hal_port: int | None = None,
+    glove_type: str | None = None,
 ) -> None:
     """
     Set hand position (via HAL service)
     
     Args:
         hand_type: "left" or "right"
-        positions: Joint angle list (rad, length 10)
+        positions: Joint angle list in the glove-side convention (rad, length 10)
+        glove_type: Source glove side; defaults to hand_type
         hal_host: HAL service IP (defaults to HAL_HOST)
         hal_port: HAL service port (defaults to HAL_PORT)
     
@@ -268,10 +270,21 @@ def set_hand_position(
     if len(positions) != 10:
         raise ValueError(f"expected 10 joint positions, got {len(positions)}")
     
-    # 1. Get solver instance and convert joint angles -> actuator inputs
+    # 1. Convert cross-hand angles, then convert joint angles -> actuator inputs
+    if glove_type is None:
+        glove_type = hand_type
+    if glove_type != hand_type:
+        positions = OmniHand2025Solver.convert_active_joint_angles(
+            positions,
+            source_is_left=_bool_is_left(glove_type),
+            target_is_left=_bool_is_left(hand_type),
+        )
+        if not positions:
+            raise ValueError("failed to convert O10 active-joint angles")
+
     is_left = _bool_is_left(hand_type)
     solver = _get_solver(is_left)
-    actuator_input: List[int] = solver.active_joint_angles_to_actuator_input(positions)
+    actuator_input: List[int] = solver.active_joint_pos_to_actuator_input(positions)
     
     # 2. Send command to HAL service via curl
     _send_hand_command_to_hal(hand_type, actuator_input, hal_host, hal_port)
