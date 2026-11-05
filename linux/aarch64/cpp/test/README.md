@@ -26,6 +26,17 @@ cmake --build build
 
 ## Running Tests
 
+Timestamped interfaces are tested in the existing O10, O12, UMI, H3L,
+H3UM and OP3 executables. Select them after connecting the corresponding device:
+
+```sh
+test_omnihand_2025 -d hcan --gtest_filter="*WithTimestamp*"
+```
+
+Logs print local dates with six fractional digits, e.g. `2026-10-30 14:43:42.123456`.
+See [C++ timestamped feedback](../TIMESTAMPED_FEEDBACK.md#验证) for all product commands,
+the hardware-free date-format test, and API/clock semantics.
+
 After building, run tests using CTest:
 
 ```bash

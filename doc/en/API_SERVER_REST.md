@@ -12,63 +12,20 @@ See also the OpenAPI specification at `python/docs/openapi.yml`.
 
 ---
 
-## C++ Server — `HandRestServer`
+## Server
 
-### Header
-
-```cpp
-#include "omnihand_server/restful/hand_rest_server.h"
-using namespace agilink::omnihand::service;
-```
-
-### Options
-
-```cpp
-struct Options {
-    std::string bind_host = "0.0.0.0";
-    uint16_t port = 8000;
-    HandService* shared_service = nullptr;  // nullptr = own session store
-};
-```
-
-### API
-
-```cpp
-explicit HandRestServer(Options options = {});
-~HandRestServer();
-
-void Start();
-void Stop();
-bool IsRunning() const;
-
-HandService& service();
-const HandService& service() const;
-```
-
-### Example
-
-```cpp
-HandRestServer::Options opts;
-opts.bind_host = "127.0.0.1";
-opts.port = 8000;
-
-HandRestServer server(opts);
-server.Start();
-server.Stop();
-```
-
----
-
-## Python Server — `omnihand_server`
-
-Python users can run the FastAPI-based `omnihand_server` package instead of the C++ server:
+REST and WebSocket are hosted by the same native `OmniHandServer` instance on
+one port. C++ users link `omnihand_server`; Python exposes a thin lifecycle
+binding to that same library.
 
 ```bash
-pip install fastapi uvicorn
-uvicorn omnihand_server.app.main:app --host 0.0.0.0 --port 8000
+omnihand_server --host 0.0.0.0 --port 8000
+# Equivalent Python entry point:
+python -m omnihand_server --host 0.0.0.0 --port 8000
 ```
 
-Source: `python/omnihand_server/`
+See [OmniHand Server](API_SERVER.md) for the C++ and Python embedding APIs and
+the black-box test design.
 
 ---
 
@@ -351,7 +308,7 @@ All errors return a JSON body:
 ### C++ client
 
 ```bash
-./omnihand_rest_server 127.0.0.1 8000
+./omnihand_server --host 127.0.0.1 --port 8000
 ./demo_omnihand_rest_client --host 127.0.0.1 --port 8000 -d zlgcan
 # rs485 / usb (OmniHand 2025 only):
 ./demo_omnihand_rest_client --host 127.0.0.1 --port 8000 -d rs485 --uart-port /dev/ttyUSB0

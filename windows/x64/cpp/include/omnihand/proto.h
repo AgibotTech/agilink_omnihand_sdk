@@ -288,6 +288,30 @@ struct AGIBOT_EXPORT JointDetailInfo {
 };
 
 /**
+ * @brief H3UM T1.5 motor diagnostics (0x81, sub-register = motor index).
+ * @note Fields retain the protocol's raw units; status bit meanings are firmware-defined.
+ */
+struct AGIBOT_EXPORT H3UMMotorDiagnosticInfo {
+  uint16_t motor_real_inside_location{};   // 0~4095
+  uint16_t motor_real_outside_location{};  // 0~4095
+  int16_t motor_real_current{};       // mA
+  uint16_t motor_real_voltage{};      // mV
+  int16_t motor_real_speed{};         // 0.1 degree/s
+  int16_t motor_real_temperature{};   // 0.1 degree Celsius
+  uint32_t motor_real_status{};       // Raw 32-bit status mask
+  int16_t motor_target_current{};     // mA
+  int16_t motor_target_speed{};       // 0.1 degree/s
+  int16_t motor_target_location{};    // Raw firmware units
+  uint16_t motor_tx_count{};
+  uint16_t motor_rx_count{};
+  uint16_t broadcast_tx_count{};
+  uint16_t broadcast_rx_count{};
+  uint8_t motor_mode{};
+};
+static_assert(sizeof(H3UMMotorDiagnosticInfo) == 31,
+              "H3UM motor diagnostic payload must be 31 bytes");
+
+/**
  * @brief data structure for 3D tactile sensor data (O12 only)
  */
 struct AGIBOT_EXPORT TactileSensor3DData {
@@ -500,11 +524,11 @@ struct AGIBOT_EXPORT DeviceInfo {
 
 /**
  * @brief Mixed control parameters
- * @note joint_index_ is 0-based (0 .. DOF-1), unlike SetJointMotorPosi etc. (1-based).
+ * @note API replies use 1-based joint_index_; request indexing is handled by each protocol encoder.
  * @note Default constructor ensures bit-fields are automatically initialized to 0 for safer usage
  */
 struct AGIBOT_EXPORT MixCtrl {
-  unsigned char joint_index_ : 5;  // mix-control joint id, 0-based
+  unsigned char joint_index_ : 5;  // 1-based in replies; request indexing is protocol-specific
   unsigned char ctrl_mode_ : 3;
   std::optional<short> tgt_posi_;
   std::optional<short> tgt_velo_;

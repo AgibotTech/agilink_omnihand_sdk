@@ -11,9 +11,22 @@ def main():
     parser.add_argument('--port', type=int, help='UDP port (default 7777)', default=7777)
     parser.add_argument('--hal_ip', help='HAL service IP (default 127.0.0.1)', default='127.0.0.1')
     parser.add_argument('--hal_port', type=int, help='HAL service port (default 56421)', default=56421)
-    parser.add_argument('--hand', type=str, help='Glove side: left/right (default right); both for dual', default='both')
+    parser.add_argument('--glove', choices=['left', 'right', 'both'],
+                        help='Glove side. If omitted, follows --hand')
+    parser.add_argument('--hand', choices=['left', 'right', 'both'],
+                        help='O10 side. If omitted, follows --glove')
     parser.add_argument('--user_name', type=str, help='HandDrive username (default teleop)', default='teleop')
     args, unknown = parser.parse_known_args()
+
+    if args.glove is None and args.hand is None:
+        args.glove = args.hand = 'both'
+    elif args.glove is None:
+        args.glove = args.hand
+    elif args.hand is None:
+        args.hand = args.glove
+
+    if (args.glove == 'both') != (args.hand == 'both'):
+        parser.error("--glove and --hand must both be 'both', or both select one side")
 
     # unified UDP receive
     sdk = GloveReceiver()
@@ -35,12 +48,12 @@ def main():
                     left_joints = sdk.get_finger_data_for_o10hand(args.user_name, 'left')
                     right_joints = sdk.get_finger_data_for_o10hand(args.user_name, 'right')
                     print(f"Finger Data: {left_joints} | {right_joints}")
-                    set_hand_position(left_hand, left_joints)
-                    set_hand_position(right_hand, right_joints)
+                    set_hand_position(left_hand, left_joints, 'left', 'left')
+                    set_hand_position(right_hand, right_joints, 'right', 'right')
                 else:
-                    joints = sdk.get_finger_data_for_o10hand(args.user_name, args.hand)
+                    joints = sdk.get_finger_data_for_o10hand(args.user_name, args.glove)
                     print(f"Finger Data: {joints}")
-                    set_hand_position(hand, joints)
+                    set_hand_position(hand, joints, args.glove, args.hand)
 
     elif args.mode == 'o10_hal':
         # New path: HAL service (solver + curl)
@@ -53,12 +66,15 @@ def main():
                     left_joints = sdk.get_finger_data_for_o10hand(args.user_name, 'left')
                     right_joints = sdk.get_finger_data_for_o10hand(args.user_name, 'right')
                     print(f"Finger Data: {left_joints} | {right_joints}")
-                    set_hand_position('left', left_joints, args.hal_ip, args.hal_port)
-                    set_hand_position('right', right_joints, args.hal_ip, args.hal_port)
+                    set_hand_position('left', left_joints, args.hal_ip, args.hal_port,
+                                      glove_type='left')
+                    set_hand_position('right', right_joints, args.hal_ip, args.hal_port,
+                                      glove_type='right')
                 else:
-                    joints = sdk.get_finger_data_for_o10hand(args.user_name, args.hand)
+                    joints = sdk.get_finger_data_for_o10hand(args.user_name, args.glove)
                     print(f"Finger Data: {joints}")
-                    set_hand_position(args.hand, joints, args.hal_ip, args.hal_port)
+                    set_hand_position(args.hand, joints, args.hal_ip, args.hal_port,
+                                      glove_type=args.glove)
 
     try:
         while True:

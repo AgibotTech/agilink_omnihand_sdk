@@ -5,23 +5,12 @@
 #define AGILINK_OMNIHAND_I_TACTILE_SENSOR_3D_I16_H
 
 #include <cstdint>
-#include <map>
 #include <vector>
 
 #include "omnihand/i_tactile_sensor.h"
 
 namespace agilink {
 namespace omnihand {
-
-inline const std::map<Finger, size_t> kH3UMTactilePointCounts = {
-    {Finger::ALL_FINGERS, 102},
-    {Finger::THUMB, 15},
-    {Finger::INDEX, 15},
-    {Finger::MIDDLE, 15},
-    {Finger::RING, 15},
-    {Finger::LITTLE, 15},
-    {Finger::PALM, 27},
-};
 
 struct AGIBOT_EXPORT TactilePoint3DI16 {
   int16_t x = 0;
@@ -44,6 +33,9 @@ struct AGIBOT_EXPORT TactileSensorResultantForce3DI16 {
  */
 class AGIBOT_EXPORT ITactileSensor3DI16 : public ITactileSensor {
  public:
+  TimestampedResult<std::vector<TactileSensorData3DI16>> GetAllTactileSensorDataRawWithTimestamp() const;
+  TimestampedResult<std::vector<TactileSensorResultantForce3DI16>> GetAllTactileSensorResultantForcesWithTimestamp() const;
+
   virtual TactileSensorData3DI16 GetTactileSensorDataRaw(Finger sensor) const = 0;
 
   virtual std::vector<TactileSensorData3DI16> GetAllTactileSensorDataRaw() const = 0;

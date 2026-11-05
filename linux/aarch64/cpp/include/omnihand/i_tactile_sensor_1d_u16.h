@@ -18,6 +18,9 @@ struct AGIBOT_EXPORT TactileSensorDataU16 {
 
 class AGIBOT_EXPORT ITactileSensor1DU16 : public ITactileSensor {
  public:
+  TimestampedResult<std::vector<TactileSensorDataU16>> GetAllTactileSensorDataRawWithTimestamp() const;
+  TimestampedResult<TactileSensorDataU16> GetTactileSensorDataWithTimestamp(Finger finger) const;
+
   virtual TactileSensorDataU16 GetTactileSensorData(Finger finger) const = 0;
   virtual TactileSensorDataU16 GetTactileSensorDataRaw(Finger finger) const = 0;
   virtual std::vector<TactileSensorDataU16> GetAllTactileSensorDataRaw() const = 0;

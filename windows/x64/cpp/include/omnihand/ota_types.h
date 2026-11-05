@@ -226,7 +226,7 @@ using OtaProgressCallback = std::function<void(int current_packet, int total_pac
 
 /**
  * @brief Load firmware file only and calculate packet count, without device communication
- * @param file_name Firmware file path
+ * @param file_name UTF-8 encoded firmware file path
  * @return FirmwareLoadResult containing total_packets, file_size_bytes, packets, and error_code (AGILINK_SUCCESS on success)
  * @note Consistent with the internal chunking rules of UpdateFirmware; packets are chunked into 2KB blocks with the last packet padded with 0xFF, and can be reused by the update interface
  */

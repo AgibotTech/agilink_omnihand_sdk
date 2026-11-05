@@ -13,6 +13,10 @@
 - 文档所述 H3L 硬件**无触觉传感器**；U16 触觉方法作为协议/固件兼容接口保留
 - **无运动学求解器**：不支持角度控制（`SetAllActiveJointAngles` 为桩实现）。请使用电机位置控制（`SetAllJointMotorPosi` / `SetAllJointMotorPosi`）
 
+## 电机分布
+
+![H3L 电机分布](../pic/hand_h3l_motors.png)
+
 ## 包含头文件
 
 ```cpp
@@ -190,9 +194,8 @@ bool Init();
 
 ```cpp
 enum class OmniHand3LiteGesture : int {
-  OMNI_HAND_3_LITE_GESTURE_ALL_ZERO = 0,  // 全零位
-  OMNI_HAND_3_LITE_GESTURE_FIST,          // 握拳
-  OMNI_HAND_3_LITE_GESTURE_OPEN,          // 张开
+  OMNI_HAND_3_LITE_GESTURE_FIST = 1,  // 握拳
+  OMNI_HAND_3_LITE_GESTURE_OPEN = 2,  // 张开
 };
 
 void SetHandGesture(OmniHand3LiteGesture gesture);
@@ -305,7 +308,7 @@ TactileSensorDataU16 GetTactileSensorDataRaw(Finger finger) const;
 std::vector<TactileSensorDataU16> GetAllTactileSensorDataRaw() const;
 ```
 
-这些方法用于协议/固件兼容；在无触觉传感器的 H3L 硬件上返回 `0`、空字符串或空数据。`GetSensorDataLength()` 已废弃；获取触觉点数请使用 `GetNumOfTactilePoints()`。
+这些方法用于协议/固件兼容；在无触觉传感器的 H3L 硬件上返回 `0`、空字符串或空数据。
 
 ### 调试功能
 

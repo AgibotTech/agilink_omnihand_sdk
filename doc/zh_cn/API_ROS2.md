@@ -9,7 +9,7 @@ OmniHand SDK 为五款产品提供 ROS2 接口：
 - **OmniHand 2025 (O10)**: 10 自由度灵巧手
 - **OmniHand Pro 2025 (O12)**: 12 自由度灵巧手
 - **OmniHand 3 Lite (H3L)**: 4 自由度轻量级灵巧手
-- **OmniHand 3 Ultra M (H3U_M / O20)**: 20 自由度灵巧手
+- **OmniHand 3 Ultra M（H3UM T1.3/T1.5）**：20/21 自由度灵巧手
 - **OmniPicker 3 (OP3)**: 1 自由度夹爪
 
 各产品共享 `/<product>/<side>/...` 命名规范；OP3 使用夹爪专用的行程、温柔夹持和触觉消息，具体差异见产品专页。
@@ -19,6 +19,7 @@ OmniHand SDK 为五款产品提供 ROS2 接口：
 - **[OmniHand 2025 (O10) ROS2 接口](API_ROS2_O10.md)** - 10 DOF
 - **[OmniHand Pro 2025 (O12) ROS2 接口](API_ROS2_O12.md)** - 12 DOF
 - **[OmniHand 3 Lite (H3L) ROS2 接口](API_ROS2_H3L.md)** - 4 DOF
+- **[OmniHand 3 Ultra M（H3UM T1.3/T1.5）ROS2 接口](API_ROS2_H3UM.md)** - 20/21 DOF
 - **[OmniPicker 3 (OP3) ROS2 接口](API_ROS2_OP3.md)** - 1 DOF 夹爪
 
 ## 统一 Topic 规范

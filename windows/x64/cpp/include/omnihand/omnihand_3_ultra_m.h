@@ -3,7 +3,7 @@
 
 /**
  * @file omnihand_3_ultra_m.h
- * @brief OmniHand 3 Ultra (O20) interface class - 20 DOF
+ * @brief OmniHand 3 Ultra M T1.3/T1.5 interface class
  * @note This is the public interface for OmniHand 3 Ultra product
  */
 
@@ -11,6 +11,7 @@
 #define AGILINK_OMNIHAND_3_ULTRA_M_H
 
 #include <cstdint>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -18,6 +19,7 @@
 #include "omnihand/i_control_mode.h"
 #include "omnihand/i_omnihand_calibrator.h"
 #include "omnihand/i_tactile_sensor_3d_i16.h"
+#include "omnihand/i_tactile_sensor_1d_u16.h"
 #include "omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h"
 #include "omnihand/omnihand.h"
 #include "omnihand/proto.h"
@@ -25,6 +27,26 @@
 
 namespace agilink {
 namespace omnihand {
+
+inline const std::map<Finger, size_t> kH3UMT1P3TactilePointCounts = {
+    {Finger::ALL_FINGERS, 102},
+    {Finger::THUMB, 15},
+    {Finger::INDEX, 15},
+    {Finger::MIDDLE, 15},
+    {Finger::RING, 15},
+    {Finger::LITTLE, 15},
+    {Finger::PALM, 27},
+};
+
+inline const std::map<Finger, size_t> kH3UMT1P5TactilePointCounts = {
+    {Finger::ALL_FINGERS, 188},
+    {Finger::THUMB, 30},
+    {Finger::INDEX, 30},
+    {Finger::MIDDLE, 30},
+    {Finger::RING, 30},
+    {Finger::LITTLE, 30},
+    {Finger::PALM, 38},
+};
 
 // ============================================
 // Xense Visual-Tactile Sensor Interface
@@ -141,7 +163,7 @@ inline std::string H3UMErrorReportToString(const JointMotorErrorReport& report) 
 }
 
 /**
- * @brief OmniHand 3 Ultra (O20) interface class - 20 DOF
+ * @brief OmniHand 3 Ultra M T1.3/T1.5 interface class
  *
  * This class provides the public interface for OmniHand 3 Ultra product.
  * It supports 20 active degrees of freedom and optional Xense visual-tactile sensor.
@@ -151,24 +173,25 @@ inline std::string H3UMErrorReportToString(const JointMotorErrorReport& report) 
  *     (12-bit, unrelated to calibration register Pn7/Pn8 0.1-degree encoding).
  *   - URDF active joint angle (rad) and tick are **per-joint independent linear mappings**,
  *     with different coefficients per joint that may be reversed;
- *     O20 does not need the polynomial correction used in O10.
+ *     H3UM does not need the polynomial correction used in O10.
  *   - For actual conversion and calibration table, see
  *       kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.{h,cc}
  *     SetAll/GetAllActiveJointAngles internally forwards to OmniHand3UltraMSolver,
  *     so upper layers (including ROS2 nodes / Python bindings) only need to use rad units.
  *
- * TODO(O20): Kinematics solver (including passive joints) not yet integrated:
+ * TODO(H3UM): Kinematics solver (including passive joints) not yet integrated:
  *   SetHandGesture, and interfaces for accessing passive joints by single joint
  *   name/index are still placeholder implementations.
  */
 class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
                                       public IControlMode,
-                                      public IOmniHandCalibrator,
-                                      public ITactileSensor3DI16 {
+                                      public IOmniHandCalibrator {
  public:
   // Constants
   static constexpr unsigned char kT1P3DegreesOfActiveFreedom = 20;
   static constexpr unsigned char kT1P5DegreesOfActiveFreedom = 21;
+  static constexpr Int16Range kT1P3MixCtrlTorqueRange = {0, 10000, 1000};  // mA
+  static constexpr Int16Range kT1P5MixCtrlTorqueRange = {0, 2000, 1900};  // mA
   static constexpr uint8_t kDegreesOfPassiveFreedom = 0; // DoP
   static constexpr uint8_t kT1P3DefaultHandDeviceId = 9u;
   static constexpr uint8_t kT1P5DefaultHandDeviceId = 1u;
@@ -383,6 +406,14 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   std::vector<double> GetAllJointAnglesFromMotorPositions(
       const std::vector<int16_t>& motor_positions) const override;
 
+  std::vector<double> ConvertActiveJointAngles(
+      const std::vector<double>& angles, HandType source_hand,
+      HandType target_hand) const override;
+
+  std::vector<int16_t> ConvertJointMotorPositions(
+      const std::vector<int16_t>& positions, HandType source_hand,
+      HandType target_hand) const override;
+
   H3UMRevision GetRevision() const {
     return revision_;
   }
@@ -398,22 +429,57 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   }
 
   static constexpr Int16Range GetMinMaxDefaultMixCtrlTorque(uint8_t joint_motor_index) {
-    if (joint_motor_index == 0 || joint_motor_index > kT1P5DegreesOfActiveFreedom) return {0, 0, 0};
-    return kMixCtrlTorqueRange;
+    if (joint_motor_index == 0 ||
+        joint_motor_index > kT1P5DegreesOfActiveFreedom) {
+      return {0, 0, 0};
+    }
+    return kT1P3MixCtrlTorqueRange;
   }
 
   // ============ Gesture Control ============
-  void SetHandGesture(h3um::H3UMGesture gesture);
+  std::vector<int16_t> SetHandGesture(h3um::H3UMGesture gesture);
 
   std::vector<int16_t> GetHandGesture(h3um::H3UMGesture gesture);
 
-  void SetHandGesture(int gesture_num = 1) override;
+  std::vector<int16_t> SetHandGesture(int gesture_num = 1) override;
 
   std::vector<int16_t> GetHandGesture(int gesture_num) override;
 
-  const std::vector<Finger>& GetSensorOrder() const override;
+  // Borrowed interfaces live as long as this hand; unsupported dimensions return nullptr.
+  ITactileSensor1DU16* GetTactileSensor1D() {
+    return dynamic_cast<ITactileSensor1DU16*>(this);
+  }
+  const ITactileSensor1DU16* GetTactileSensor1D() const {
+    return dynamic_cast<const ITactileSensor1DU16*>(this);
+  }
+  ITactileSensor3DI16* GetTactileSensor3D() {
+    return dynamic_cast<ITactileSensor3DI16*>(this);
+  }
+  const ITactileSensor3DI16* GetTactileSensor3D() const {
+    return dynamic_cast<const ITactileSensor3DI16*>(this);
+  }
+
+  // T1.3 exposes XYZ data; T1.5 exposes scalar pressure in grams.
+  // InitTactilePointsMap() refreshes point counts from device metadata.
+  // T1.5: 1 = Jingzhigan, 2 = HuaweiKe; 0 = unknown or unsupported.
+  virtual uint8_t GetTactileSensorType() const {
+    return 0;
+  }
+  virtual size_t GetNumOfTactileSensors() const = 0;
+  virtual size_t GetNumOfTactilePoints(Finger sensor) const = 0;
+  virtual bool InitTactilePointsMap() = 0;
+  virtual size_t GetLenOfTactileDatum(Finger sensor) const = 0;
+  virtual size_t GetNumOfRepliedTactileFrames(Finger sensor) const = 0;
+  virtual std::string GetSNOfTactileSensor(Finger sensor) const = 0;
+  virtual size_t GetSensorDataLength(Finger sensor) const = 0;
+  virtual const std::vector<Finger>& GetSensorOrder() const;
 
   // ============ Xense Tactile Sensing ============
+  // Cached frames retain their first SDK host receive time; vendor clocks are unchanged.
+  TimestampedResult<bool> GetFingerTactileWithTimestamp(uint8_t finger_index, XenseFrame& frame);
+  TimestampedResult<bool> GetPalmTactileWithTimestamp(PalmFrame& frame);
+  TimestampedResult<bool> GetAllTactileWithTimestamp(AllTactileFrame& frame);
+
   /**
    * @brief Get tactile data for a specific finger
    * @param finger_index 0=thumb, 1=index, 2=middle, 3=ring, 4=pinky
@@ -437,6 +503,29 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   virtual bool GetAllTactile(AllTactileFrame& frame) { (void)frame; return false; }
 
   // ============ T1.5 Extended API ============
+  // Read register 0x28 for motor indices 1~21; returns empty on failure or unsupported revision.
+  virtual std::string GetMotorVersion(uint8_t joint_motor_index) const {
+    (void)joint_motor_index;
+    return {};
+  }
+
+  /**
+   * @brief Reads one motor's detailed diagnostic state through register 0x81.
+   * @param joint_motor_index Motor index, 1~21; 0 (all motors) is not supported.
+   * @param info Output in protocol units; cleared on failure.
+   * @return true for a complete reply; false for an invalid index, unsupported
+   *         revision, communication failure, or a reply shorter than 31 bytes.
+   */
+  virtual bool GetMotorDiagnosticInfo(uint8_t joint_motor_index,
+                                      H3UMMotorDiagnosticInfo& info) const {
+    (void)joint_motor_index;
+    info = {};
+    return false;
+  }
+
+  TimestampedResult<int16_t> GetTemperatureOfPalmWithTimestamp() const;
+  TimestampedResult<int16_t> GetTemperatureOfPowerWithTimestamp() const;
+
 
   /**
    * @brief Gets the palm board temperature through register 0x21/0x51.
@@ -476,7 +565,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   // Get all axes position limits (Pn7 & Pn8)
   AxisLimitPos GetAxisLimitPos() const override { return {}; }
 
-  // Clear all axis position limits (not supported on O20, always returns false)
+  // Clear all axis position limits (not supported on H3UM, always returns false)
   bool ClearAllLimitPos() override { return false; }
 
   // Pn10 (0x0A): Save parameters to flash
@@ -509,8 +598,8 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
    */
   std::unique_ptr<h3um::OmniHand3UltraMSolver> joint_motor_solver_;
   H3UMRevision revision_{H3UMRevision::T1P3};
+  std::map<Finger, size_t> tactile_points_map_;
   static constexpr Int16Bound kActualMotorPositionBound = {-1800, 1800};
-  static constexpr Int16Range kMixCtrlTorqueRange = {0, 10000, 1000};  // unit: mA
 };
 
 }  // namespace omnihand

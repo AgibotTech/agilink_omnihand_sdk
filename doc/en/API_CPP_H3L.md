@@ -13,6 +13,10 @@
 - **No tactile sensors** on the documented H3L hardware; U16 tactile methods remain as protocol/firmware compatibility APIs
 - **No kinematics solver**: angle-based control is unavailable (`SetAllActiveJointAngles` is a stub). Use motor position control (`SetAllJointMotorPosi` / `SetAllJointMotorPosi`) instead.
 
+## Motor Layout
+
+![H3L Motor Layout](../pic/hand_h3l_motors.png)
+
 ## Include Header
 
 ```cpp
@@ -190,9 +194,8 @@ All factory methods return an instance that requires `Init()` to complete initia
 
 ```cpp
 enum class OmniHand3LiteGesture : int {
-  OMNI_HAND_3_LITE_GESTURE_ALL_ZERO = 0,  // All-zero position
-  OMNI_HAND_3_LITE_GESTURE_FIST,          // Fist
-  OMNI_HAND_3_LITE_GESTURE_OPEN,          // Open hand
+  OMNI_HAND_3_LITE_GESTURE_FIST = 1,  // Fist
+  OMNI_HAND_3_LITE_GESTURE_OPEN = 2,  // Open hand
 };
 
 void SetHandGesture(OmniHand3LiteGesture gesture);
@@ -308,7 +311,7 @@ TactileSensorDataU16 GetTactileSensorDataRaw(Finger finger) const;
 std::vector<TactileSensorDataU16> GetAllTactileSensorDataRaw() const;
 ```
 
-These methods are exposed for protocol/firmware compatibility. On H3L hardware without tactile sensors they return zero, an empty string, or empty data. `GetSensorDataLength()` is deprecated; use `GetNumOfTactilePoints()`.
+These methods are exposed for protocol/firmware compatibility. On H3L hardware without tactile sensors they return zero, an empty string, or empty data.
 
 ### Debugging
 

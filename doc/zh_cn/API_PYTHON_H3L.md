@@ -17,6 +17,10 @@
 
 H3L Python 接口有意不暴露标定、零点设置、参数保存和固件维护等破坏性能力。
 
+## 电机分布
+
+![H3L 电机分布](../pic/hand_h3l_motors.png)
+
 ## 导入
 
 ```python
@@ -187,7 +191,6 @@ def init(self) -> bool:
 
 ```python
 class OmniHand3LiteGesture(enum.IntEnum):
-    OMNI_HAND_3_LITE_GESTURE_ALL_ZERO = 0  # 全零位
     OMNI_HAND_3_LITE_GESTURE_FIST = 1      # 握拳
     OMNI_HAND_3_LITE_GESTURE_OPEN = 2      # 张开
 
@@ -425,7 +428,6 @@ def init_tactile_points_map(self) -> bool: ...
 def get_len_of_tactile_datum(self, finger_index: int) -> int: ...
 def get_num_of_replied_tactile_frames(self, finger_index: int) -> int: ...
 def get_sn_of_tactile_sensor(self, finger_index: int) -> str: ...
-def get_sensor_data_length(self, finger_index: int) -> int: ...  # 已弃用别名
 def get_sensor_order(self) -> List[Finger]: ...
 def get_tactile_sensor_data(
     self, finger_index: int

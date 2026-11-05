@@ -52,7 +52,9 @@
 #include <algorithm>
 #include <cctype>
 #include <chrono>
+#include <cmath>
 #include <cstdio>
+#include <ctime>
 #include <memory>
 #include <string>
 #include <thread>
@@ -60,6 +62,9 @@
 #include "omnihand/export_symbols.h"
 #include "omnihand/omnihand_2025.h"
 #include "agilink_logger.h"
+#include "timestamp_test_utils.h"
+
+using timestamp_test::FormatUnixTimestampUs;
 
 using agilink::AgilinkLogger;
 static constexpr const char* TAG = "OmniHand2025Test";
@@ -103,9 +108,9 @@ static int g_baudrate = 460800;
 static int g_frame_recv_timeout = 200;
 
 // Target hand device ID (--device-id). Without this option SetUp only
-// discovers the current IDs and updates the SDK caches; it does not write the
-// device. With this option SetUp switches both supported protocol IDs and
-// TearDown restores their original values independently.
+// discovers the current ID state and updates the SDK caches; it does not write
+// the device. With this option SetUp switches all supported protocol IDs and
+// TearDown restores the original combined state through the same interface.
 static int g_device_id = 0;
 static bool g_device_id_specified = false;
 
@@ -134,6 +139,29 @@ static int EffectiveRequestInterval() {
   int value = (g_request_interval >= 0) ? g_request_interval : fallback;
   if (value > max_val) value = max_val;
   return value;
+}
+
+static ::testing::AssertionResult ValidateAndPrintTimestamp(
+    int64_t timestamp_us, const char* operation) {
+  return timestamp_test::ValidateAndPrintTimestamp(timestamp_us, operation, TAG);
+}
+TEST(UnixTimestampFormatTest, LocalDateWithSixFractionDigits) {
+  // Known Unix second; the date is deliberately interpreted in the OS timezone.
+  constexpr int64_t second_us = 1793318400000000;
+  for (const int64_t fraction : {int64_t{1}, int64_t{123456}, int64_t{999999}}) {
+    const auto text = FormatUnixTimestampUs(second_us + fraction);
+    ASSERT_EQ(text.size(), 26u);
+    const std::string suffix = fraction == 1 ? ".000001" :
+                               fraction == 123456 ? ".123456" : ".999999";
+    EXPECT_EQ(text.substr(19), suffix);
+    EXPECT_EQ(text[4], '-'); EXPECT_EQ(text[7], '-');
+    EXPECT_EQ(text[10], ' '); EXPECT_EQ(text[13], ':'); EXPECT_EQ(text[16], ':');
+    AgilinkLogger::get().infof(TAG, "[UnixTimestampFormat] local=%s", text.c_str());
+  }
+  EXPECT_EQ(FormatUnixTimestampUs(0), "unavailable");
+  const int64_t now_us = std::chrono::duration_cast<std::chrono::microseconds>(
+      std::chrono::system_clock::now().time_since_epoch()).count();
+  ASSERT_TRUE(ValidateAndPrintTimestamp(now_us, "UnixTimestampFormat current time"));
 }
 
 static ::testing::AssertionResult ValidateMixCtrlResult(
@@ -270,44 +298,19 @@ class OmniHand2025Test : public ::testing::Test {
       GTEST_SKIP() << TransportName(g_transport) << " device not available";
     }
 
-    if (!g_device_id_specified) {
-      // Discovery updates the SDK's standard/private ID caches. A return value
-      // of zero means the device uses the protocol defaults; it is success,
-      // not the broadcast ID.
-      const int discovered = hand_->GetHandDeviceIdByBroadcast();
-      if (discovered < 0) {
-        GTEST_SKIP() << "No consistent device ID responded to broadcast";
-      }
-      original_device_id_ = hand_->GetHandDeviceId();
-      AgilinkLogger::get().infof(
-          TAG, "[SetUp] Discovered device IDs (result=%d, standard cache=%u)",
-          discovered, static_cast<unsigned int>(original_device_id_));
-    } else {
-      if (g_transport == Transport::kRs485) {
-        // RS485 firmware supports only one protocol generation at a time.
-        const int discovered = hand_->GetHandDeviceIdByBroadcast();
-        if (discovered < 0) {
-          GTEST_SKIP() << "No RS485 device responded to broadcast";
-        }
-        original_device_id_ = discovered == 0
-                                  ? hand_->GetHandDeviceId()
-                                  : static_cast<uint8_t>(discovered);
-        original_private_device_id_ = original_device_id_;
-      } else {
-        original_device_id_ = hand_->GetNonPrivateHandDeviceIdByBroadcast();
-        if (original_device_id_ == agilink::omnihand::kBroadcastHandDeviceId) {
-          GTEST_SKIP() << "No standard-protocol device responded to broadcast";
-        }
-        original_private_device_id_ = hand_->GetPrivateHandDeviceIdByBroadcast();
-        ASSERT_GT(original_private_device_id_, 0u);
-        ASSERT_LT(original_private_device_id_, agilink::omnihand::kPrivateBroadcastHandDeviceId)
-            << "No private-protocol device responded to broadcast";
-      }
+    // A return value of zero means both protocols use their own defaults; it
+    // is a valid restorable state. A positive value means their IDs agree.
+    original_device_id_ = hand_->GetHandDeviceIdByBroadcast();
+    if (original_device_id_ < 0) {
+      GTEST_SKIP() << "No consistent device ID responded to broadcast";
+    }
+    AgilinkLogger::get().infof(
+        TAG, "[SetUp] Discovered device ID state: %d", original_device_id_);
 
+    if (g_device_id_specified) {
       AgilinkLogger::get().infof(
-          TAG, "[SetUp] Switching device IDs: standard=%u, private=%u -> %d",
-          static_cast<unsigned int>(original_device_id_),
-          static_cast<unsigned int>(original_private_device_id_), g_device_id);
+          TAG, "[SetUp] Switching device ID state: %d -> %d",
+          original_device_id_, g_device_id);
       device_id_change_attempted_ = true;
       ASSERT_TRUE(hand_->SetHandDeviceIdByBroadcast(static_cast<uint8_t>(g_device_id)))
           << "Failed to set the device IDs by broadcast";
@@ -317,16 +320,10 @@ class OmniHand2025Test : public ::testing::Test {
   void TearDown() override {
     if (hand_ && device_available_ && device_id_change_attempted_) {
       AgilinkLogger::get().infof(
-          TAG, "[TearDown] Restoring device IDs: %d -> standard=%d, private=%u",
-          g_device_id, static_cast<int>(original_device_id_),
-          static_cast<unsigned int>(original_private_device_id_));
-      if (g_transport == Transport::kRs485) {
-        EXPECT_TRUE(hand_->SetHandDeviceIdByBroadcast(original_device_id_));
-      } else {
-        // Restore each independent protocol ID through its own interface.
-        EXPECT_TRUE(hand_->SetId(original_private_device_id_));
-        hand_->SetDeviceId(original_device_id_);
-      }
+          TAG, "[TearDown] Restoring device ID state: %d -> %d",
+          g_device_id, original_device_id_);
+      EXPECT_TRUE(hand_->SetHandDeviceIdByBroadcast(
+          static_cast<uint8_t>(original_device_id_)));
     }
     hand_.reset();
   }
@@ -338,8 +335,7 @@ class OmniHand2025Test : public ::testing::Test {
   std::unique_ptr<agilink::omnihand::OmniHand2025> hand_;
   bool device_available_ = false;
   bool device_id_change_attempted_ = false;
-  uint8_t original_device_id_ = 0;
-  uint16_t original_private_device_id_ = 0;
+  int original_device_id_ = 0;
 };
 
 // Guards must be macros, not member functions: GTEST_SKIP() expands to
@@ -393,22 +389,12 @@ TEST_F(OmniHand2025Test, GetDeviceInfo) {
   AgilinkLogger::get().infof(TAG, "[GetDeviceInfo] Device Info:\n%s", device_info.ToString().c_str());
 
   ASSERT_NE(device_info.hand_device_id, 0) << "GetDeviceInfo timed out";
-  EXPECT_EQ(device_info.hand_device_id, static_cast<uint8_t>(hand_->GetHandDeviceId()));
-}
-
-// SetDeviceId is exercised by SetUp: it switches the device to g_device_id
-// via broadcast, and TearDown restores the ORIGINAL ID (not a hardcoded 1),
-// so the device is always left in its initial state on success.
-// This case just verifies the physical ID actually took effect.
-TEST_F(OmniHand2025Test, SetDeviceId) {
-  RequireDevice();
-
-  // SetUp already switched to g_device_id; just verify the physical ID is correct.
-  auto info = hand_->GetDeviceInfo();
-  ASSERT_NE(info.hand_device_id, 0) << "GetDeviceInfo timed out";
-  EXPECT_EQ(info.hand_device_id, static_cast<uint8_t>(hand_->GetHandDeviceId()));
-  AgilinkLogger::get().infof(TAG, "[SetDeviceId] Current device ID: %d (target: %d)",
-                             info.hand_device_id, hand_->GetHandDeviceId());
+  const int expected_id = g_device_id_specified
+                              ? g_device_id
+                              : (original_device_id_ == 0
+                                     ? agilink::omnihand::OmniHand2025::kDefaultHandDeviceId
+                                     : original_device_id_);
+  EXPECT_EQ(device_info.hand_device_id, static_cast<uint8_t>(expected_id));
 }
 
 // ============================================================================
@@ -464,6 +450,201 @@ TEST_F(OmniHand2025Test, SetGetAllAxisPos) {
     AgilinkLogger::get().infof(TAG, "%s", msg.c_str());
   }
   EXPECT_EQ(get_result.size(), 10);
+}
+
+// Timestamped API tests can be selected with --gtest_filter='*WithTimestamp*'.
+// Position/angle controls reuse the measured pose; mixed-control tests use the
+// same torque/velocity settings as the existing tests below.
+
+TEST_F(OmniHand2025Test, GetAllJointMotorPosiWithTimestamp) {
+  RequireDevice();
+  const auto sample = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllJointMotorPosiWithTimestamp"));
+  ASSERT_EQ(sample.value.size(), 10u);
+  AgilinkLogger::get().infof(TAG, "[GetAllJointMotorPosiWithTimestamp] feedback_count=%zu", sample.value.size());
+  for (const auto position : sample.value) { EXPECT_GE(position, 0); EXPECT_LE(position, 4096); }
+}
+
+TEST_F(OmniHand2025Test, GetAllCurrentReportWithTimestamp) {
+  RequireDevice();
+  const auto sample = hand_->GetAllCurrentReportWithTimestamp();
+  ASSERT_TRUE(ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllCurrentReportWithTimestamp"));
+  ASSERT_EQ(sample.value.size(), 10u);
+  AgilinkLogger::get().infof(TAG, "[GetAllCurrentReportWithTimestamp] feedback_count=%zu", sample.value.size());
+}
+
+TEST_F(OmniHand2025Test, GetAllTemperatureReportWithTimestamp) {
+  RequireDevice();
+  const auto sample = hand_->GetAllTemperatureReportWithTimestamp();
+  ASSERT_TRUE(ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTemperatureReportWithTimestamp"));
+  ASSERT_EQ(sample.value.size(), 10u);
+  AgilinkLogger::get().infof(TAG, "[GetAllTemperatureReportWithTimestamp] feedback_count=%zu", sample.value.size());
+  for (const auto temperature : sample.value) { EXPECT_GE(temperature, -40); EXPECT_LE(temperature, 127); }
+}
+
+TEST_F(OmniHand2025Test, GetAllErrorReportWithTimestamp) {
+  RequireDevice();
+  const auto sample = hand_->GetAllErrorReportWithTimestamp();
+  ASSERT_TRUE(ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllErrorReportWithTimestamp"));
+  ASSERT_EQ(sample.value.size(), 10u);
+  AgilinkLogger::get().infof(TAG, "[GetAllErrorReportWithTimestamp] feedback_count=%zu", sample.value.size());
+}
+
+TEST_F(OmniHand2025Test, GetAllActiveJointAnglesWithTimestamp) {
+  RequireDevice();
+  const auto sample = hand_->GetAllActiveJointAnglesWithTimestamp();
+  ASSERT_TRUE(ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllActiveJointAnglesWithTimestamp"));
+  ASSERT_EQ(sample.value.size(), 10u);
+  AgilinkLogger::get().infof(TAG, "[GetAllActiveJointAnglesWithTimestamp] feedback_count=%zu", sample.value.size());
+  for (const auto angle : sample.value) EXPECT_TRUE(std::isfinite(angle));
+}
+
+TEST_F(OmniHand2025Test, GetAllJointAnglesWithTimestamp) {
+  RequireDevice();
+  const auto sample = hand_->GetAllJointAnglesWithTimestamp();
+  ASSERT_TRUE(ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllJointAnglesWithTimestamp"));
+  ASSERT_EQ(sample.value.size(), 16u);
+  AgilinkLogger::get().infof(TAG, "[GetAllJointAnglesWithTimestamp] feedback_count=%zu", sample.value.size());
+  for (const auto angle : sample.value) EXPECT_TRUE(std::isfinite(angle));
+}
+
+TEST_F(OmniHand2025Test, GetJointMotorPosiWithTimestamp) {
+  RequireDevice();
+  const auto sample = hand_->GetJointMotorPosiWithTimestamp(1);
+  ASSERT_TRUE(ValidateAndPrintTimestamp(sample.timestamp_us, "GetJointMotorPosiWithTimestamp"));
+  EXPECT_GE(sample.value, 0); EXPECT_LE(sample.value, 4096);
+  AgilinkLogger::get().infof(TAG, "[GetJointMotorPosiWithTimestamp] J1=%d", sample.value);
+}
+
+TEST_F(OmniHand2025Test, SetJointMotorPosiWithTimestamp) {
+  RequireDevice();
+  const auto position = hand_->GetJointMotorPosi(1);
+  ASSERT_GE(position, 0); ASSERT_LE(position, 4096);
+  const auto sample = hand_->SetJointMotorPosiWithTimestamp(1, position);
+  ASSERT_TRUE(ValidateAndPrintTimestamp(sample.timestamp_us, "SetJointMotorPosiWithTimestamp"));
+  EXPECT_GE(sample.value, 0); EXPECT_LE(sample.value, 4096);
+  AgilinkLogger::get().infof(TAG, "[SetJointMotorPosiWithTimestamp] J1=%d", sample.value);
+}
+
+TEST_F(OmniHand2025Test, SetAllJointMotorPosiWithTimestamp) {
+  RequireDevice();
+  const auto positions = hand_->GetAllJointMotorPosi();
+  ASSERT_EQ(positions.size(), 10u);
+  for (const auto position : positions) { ASSERT_GE(position, 0); ASSERT_LE(position, 4096); }
+  const auto sample = hand_->SetAllJointMotorPosiWithTimestamp(positions);
+  ASSERT_TRUE(ValidateAndPrintTimestamp(sample.timestamp_us, "SetAllJointMotorPosiWithTimestamp"));
+  ASSERT_EQ(sample.value.size(), positions.size());
+  for (const auto position : sample.value) { EXPECT_GE(position, 0); EXPECT_LE(position, 4096); }
+}
+
+TEST_F(OmniHand2025Test, SetAllActiveJointAnglesWithTimestamp) {
+  RequireDevice();
+  const auto angles = hand_->GetAllActiveJointAngles();
+  ASSERT_EQ(angles.size(), 10u);
+  for (const auto angle : angles) ASSERT_TRUE(std::isfinite(angle));
+  const auto sample = hand_->SetAllActiveJointAnglesWithTimestamp(angles);
+  ASSERT_TRUE(ValidateAndPrintTimestamp(sample.timestamp_us, "SetAllActiveJointAnglesWithTimestamp"));
+  ASSERT_EQ(sample.value.size(), angles.size());
+  for (const auto angle : sample.value) EXPECT_TRUE(std::isfinite(angle));
+}
+
+TEST_F(OmniHand2025Test, MixControlByPTAllWithTimestamp) {
+  RequireDevice();
+  const auto positions = hand_->GetAllJointMotorPosi();
+  ASSERT_EQ(positions.size(), 10u);
+  for (const auto position : positions) { ASSERT_GE(position, 0); ASSERT_LE(position, 4096); }
+  const std::vector<int16_t> torques(10, IsUsbOrRs485Transport() ? 0 : 300);
+  const auto sample = hand_->MixControlByPTWithTimestamp(positions, torques);
+  ASSERT_EQ(sample.value.size(), positions.size());
+  if (IsUsbOrRs485Transport() && sample.timestamp_us == 0) {
+    AgilinkLogger::get().infof(TAG, "[MixControlByPTAllWithTimestamp] received_local=unavailable (no reply)");
+    GTEST_SKIP() << "Private serial mixed control sends without a reply; returned entries are command echoes";
+  }
+  ASSERT_TRUE(ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPTAllWithTimestamp"));
+  for (const auto& feedback : sample.value) ASSERT_TRUE(feedback.tgt_posi_.has_value());
+}
+
+TEST_F(OmniHand2025Test, MixControlByPTSingleWithTimestamp) {
+  RequireDevice();
+  if (IsUsbOrRs485Transport()) {
+    const auto firmware = hand_->GetFwVersion();
+    ASSERT_EQ(firmware.dof, 10);
+    const auto version = firmware.software_version;
+    if (!(version > agilink::omnihand::Version(1, 2, 15) &&
+          version < agilink::omnihand::Version(15, 0, 0))) {
+      GTEST_SKIP() << "Private serial protocol has no single-joint mixed-control command";
+    }
+  }
+  const auto position = hand_->GetJointMotorPosi(1);
+  ASSERT_GE(position, 0); ASSERT_LE(position, 4096);
+  const auto sample = hand_->MixControlByPTWithTimestamp(1, position, 0);
+  ASSERT_TRUE(ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPTSingleWithTimestamp"));
+  ASSERT_TRUE(sample.value.tgt_posi_.has_value());
+  ASSERT_TRUE(sample.value.tgt_torque_.has_value());
+  EXPECT_EQ(sample.value.joint_index_, 1);
+}
+
+TEST_F(OmniHand2025Test, MixControlByPVTAllWithTimestamp) {
+  RequireDevice();
+  const auto positions = hand_->GetAllJointMotorPosi();
+  ASSERT_EQ(positions.size(), 10u);
+  for (const auto position : positions) { ASSERT_GE(position, 0); ASSERT_LE(position, 4096); }
+  const std::vector<int16_t> torques(10, IsUsbOrRs485Transport() ? 0 : 300);
+  const std::vector<int16_t> velocities(10, IsUsbOrRs485Transport() ? 50 : 8000);
+  const auto sample = hand_->MixControlByPVTWithTimestamp(positions, velocities, torques);
+  ASSERT_EQ(sample.value.size(), positions.size());
+  if (IsUsbOrRs485Transport() && sample.timestamp_us == 0) {
+    AgilinkLogger::get().infof(TAG, "[MixControlByPVTAllWithTimestamp] received_local=unavailable (no reply)");
+    GTEST_SKIP() << "Private serial mixed control sends without a reply; returned entries are command echoes";
+  }
+  ASSERT_TRUE(ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPVTAllWithTimestamp"));
+  for (const auto& feedback : sample.value) ASSERT_TRUE(feedback.tgt_posi_.has_value());
+}
+
+TEST_F(OmniHand2025Test, MixControlByPVTSingleWithTimestamp) {
+  RequireDevice();
+  if (IsUsbOrRs485Transport()) {
+    const auto firmware = hand_->GetFwVersion();
+    ASSERT_EQ(firmware.dof, 10);
+    const auto version = firmware.software_version;
+    if (!(version > agilink::omnihand::Version(1, 2, 15) &&
+          version < agilink::omnihand::Version(15, 0, 0))) {
+      GTEST_SKIP() << "Private serial protocol has no single-joint mixed-control command";
+    }
+  }
+  const auto position = hand_->GetJointMotorPosi(1);
+  ASSERT_GE(position, 0); ASSERT_LE(position, 4096);
+  const auto sample = hand_->MixControlByPVTWithTimestamp(1, position, 50, 0);
+  ASSERT_TRUE(ValidateAndPrintTimestamp(sample.timestamp_us, "MixControlByPVTSingleWithTimestamp"));
+  ASSERT_TRUE(sample.value.tgt_posi_.has_value());
+  ASSERT_TRUE(sample.value.tgt_velo_.has_value());
+  ASSERT_TRUE(sample.value.tgt_torque_.has_value());
+  EXPECT_EQ(sample.value.joint_index_, 1);
+}
+
+TEST_F(OmniHand2025Test, GetAllTactileSensorDataWithTimestamp) {
+  RequireDevice();
+  const auto sample = hand_->GetAllTactileSensorDataWithTimestamp();
+  ASSERT_TRUE(ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTactileSensorDataWithTimestamp"));
+  ASSERT_EQ(sample.value.size(), hand_->GetSensorOrder().size());
+  for (const auto& sensor : sample.value) {
+    EXPECT_FALSE(sensor.data_.empty());
+    AgilinkLogger::get().infof(TAG, "[GetAllTactileSensorDataWithTimestamp] %s: %zu bytes",
+        agilink::omnihand::ToString(sensor.sensor_id_).c_str(), sensor.data_.size());
+  }
+}
+
+TEST_F(OmniHand2025Test, GetAllTactileSensorDataRawWithTimestamp) {
+  RequireDevice();
+  const auto sample = hand_->GetAllTactileSensorDataRawWithTimestamp();
+  if (sample.value.empty()) GTEST_SKIP() << "Raw tactile data is unavailable on this firmware/transport";
+  ASSERT_TRUE(ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTactileSensorDataRawWithTimestamp"));
+  ASSERT_EQ(sample.value.size(), hand_->GetSensorOrder().size());
+  for (const auto& sensor : sample.value) {
+    EXPECT_FALSE(sensor.data_.empty());
+    AgilinkLogger::get().infof(TAG, "[GetAllTactileSensorDataRawWithTimestamp] %s: %zu bytes",
+        agilink::omnihand::ToString(sensor.sensor_id_).c_str(), sensor.data_.size());
+  }
 }
 
 // TEST_F(OmniHand2025Test, PositionControlWithStatus) {

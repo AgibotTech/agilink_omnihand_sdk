@@ -9,202 +9,120 @@ client→server). The server sends unmasked frames.
 Every request includes a `request_id` field. The server echoes it back in the response so the
 client can match responses to requests.
 
-**Default port:** `8765`
+**Default port:** `8000` (shared with REST)
 
 ---
 
-## C++ Server — `HandWsServer`
+## Server
 
-### Header
-
-```cpp
-#include "omnihand_server/websocket/hand_ws_server.h"
-using namespace agilink::omnihand::service;
-```
-
-### Options
-
-```cpp
-struct Options {
-    std::string bind_host = "0.0.0.0";
-    uint16_t port = 8765;
-    int default_publish_interval_ms = 100;
-};
-```
-
-### API
-
-```cpp
-// Constructors
-HandWsServer(Options options = {});
-HandWsServer(Options options, HandService* shared_service);
-
-void Start();         // Start accepting connections (non-blocking)
-void Stop();          // Stop server and join threads
-bool IsRunning() const;
-
-HandService& service();         // Access the session store
-const HandService& service() const;
-```
-
-### Example — standalone
-
-```cpp
-HandWsServer::Options opts;
-opts.bind_host = "127.0.0.1";
-opts.port = 8765;
-
-HandWsServer server(opts);
-server.Start();
-// ... server runs in background threads ...
-server.Stop();
-```
-
-### Example — shared session with REST
-
-```cpp
-HandWsServer ws_server(ws_opts);
-HandRestServer::Options rest_opts;
-rest_opts.shared_service = &ws_server.service();
-HandRestServer rest_server(rest_opts);
-
-ws_server.Start();
-rest_server.Start();
-```
-
----
-
-## Python Server — `omnihand_server`
-
-Python users can run the FastAPI-based `omnihand_server` package, which exposes both WebSocket
-and REST on a single port:
+REST and WebSocket are hosted by the same native `OmniHandServer` instance and
+share one session store.
 
 ```bash
-pip install fastapi uvicorn
-uvicorn omnihand_server.app.main:app --host 0.0.0.0 --port 8765
+omnihand_server --host 0.0.0.0 --port 8000
+# Equivalent Python entry point:
+python -m omnihand_server --host 0.0.0.0 --port 8000
 ```
 
-**WebSocket endpoint:** `ws://host:8765/ws`
+**WebSocket endpoint:** `ws://host:8000/ws`
 
-Both the C++ and Python servers accept the same message types. Either short names
-(`list`, `create`, `remove`, `call`) or long aliases (`list_hands`, `create_hand`,
-`remove_hand`, `call_method`) work with both servers.
+See [OmniHand Server](API_SERVER.md) for the C++ and Python embedding APIs and
+the black-box test design.
 
 ---
 
-## C++ Client — `HandWsClient`
+## C++ Client — `OmniHandWebSocketClient`
 
 ### Header
 
 ```cpp
-#include "omnihand_server/websocket/hand_ws_client.h"
-using namespace agilink::omnihand::service;
+#include "omnihand_client/websocket_client.h"
+
+using agilink::omnihand::client::OmniHandWebSocketClient;
 ```
 
 ### Options
 
 ```cpp
-struct Options {
-    std::string host = "localhost";
-    uint16_t port = 8765;
-    int connect_timeout_ms = 5000;
-    int recv_timeout_ms = 10000;
+struct OmniHandClientOptions {
+  std::string host = "127.0.0.1";
+  std::uint16_t port = 8000;
+  int timeout_ms = 10000;
 };
 ```
 
 ### API
 
 ```cpp
-explicit HandWsClient(Options options = {});
-~HandWsClient();
-// Non-copyable
+OmniHandWebSocketClient();
+OmniHandWebSocketClient(std::string host, std::uint16_t port = 8000,
+                        int timeout_ms = 10000);
+explicit OmniHandWebSocketClient(OmniHandClientOptions options);
 
-void Connect();        // Throws std::runtime_error on failure
-void Disconnect();
+void Connect();
+void Close();
 bool IsConnected() const;
 
-// Low-level: send any JSON request, return full response envelope
-nlohmann::json Request(const nlohmann::json& msg);
-
-// High-level helpers (throw on server-side error):
-nlohmann::json CreateHand(const nlohmann::json& spec);
-nlohmann::json RemoveHand(int hand_id);
-nlohmann::json ListHands();
-nlohmann::json DescribeMethods(int hand_id);
-nlohmann::json DescribeMethodsByProductType(const std::string& product_type);
-nlohmann::json CallMethod(int hand_id, const std::string& method,
-                           const nlohmann::json& params = {});
+Value Request(const std::string& type, Value fields = Value::EmptyObject());
+Value ListHands();
+Value CreateHand(const std::string& product_type,
+                 const std::string& connection_type,
+                 Value connection_config = Value::EmptyObject(),
+                 const std::string& hand_side = "left");
+Value DescribeHand(int hand_id);
+Value RemoveHand(int hand_id);
+Value Methods(int hand_id);
+Value MethodsForProduct(const std::string& product_type);
+Value Call(int hand_id, const std::string& method,
+           Value params = Value::EmptyObject());
+Value Subscribe(int hand_id, const std::vector<std::string>& streams);
+Value Unsubscribe(int hand_id, const std::vector<std::string>& streams);
+Value NextEvent(int timeout_ms = -1);
 ```
 
 ### Example
 
 ```cpp
-HandWsClient client({"127.0.0.1", 8765});
+OmniHandWebSocketClient client("127.0.0.1", 8000);
 client.Connect();
 
-// List hands
-auto hands = client.ListHands();  // JSON array
-
-// Create hand
-auto created = client.CreateHand({
-    {"product_type", "omnihand_2025"},
-    {"conn_method",  "zlgcan"},
-    {"hand_side",    "left"},
-    {"conn_config",  {{"canfd_device_id", 0}, {"canfd_channel_id", 0}}}
-});
-int hand_id = created["hand_id"].get<int>();
-
-// Call method
-auto positions = client.CallMethod(hand_id, "get_all_joint_positions");
-
-client.RemoveHand(hand_id);
-client.Disconnect();
+auto hands = client.ListHands();
+auto methods = client.MethodsForProduct("omnihand_2025");
+if (!hands.Empty()) {
+  const int hand_id = static_cast<int>(
+      hands.AsArray().front().At("hand_id").AsInt());
+  client.Subscribe(hand_id, {"state", "tactile"});
+  auto event = client.NextEvent();
+  client.Unsubscribe(hand_id, {"state", "tactile"});
+}
+client.Close();
 ```
+
+The public API uses the standard-library-only `Value` type. Server-side errors
+throw `OmniHandClientError`; for WebSocket errors `status_code()` is `0` and
+`response()` contains the complete result envelope.
 
 ---
 
 ## Python Client
 
 ```python
-import asyncio, json, websockets
+import asyncio
+from omnihand_client import OmniHandWebSocketClient
 
-async def demo(host="127.0.0.1", port=8765):
-    uri = f"ws://{host}:{port}"
-    req_id = 0
-    async with websockets.connect(uri) as ws:
-
-        async def request(msg):
-            nonlocal req_id
-            req_id += 1
-            msg["request_id"] = req_id
-            await ws.send(json.dumps(msg))
-            while True:
-                resp = json.loads(await ws.recv())
-                if resp.get("request_id") == req_id:
-                    return resp
-
-        resp = await request({"type": "list"})
-        print(resp["result"])  # []
-
-        resp = await request({
-            "type": "create",
-            "product_type": "omnihand_2025",
-            "conn_method": "zlgcan",
-            "hand_side": "left",
-            "conn_config": {"canfd_device_id": 0, "canfd_channel_id": 0},
-        })
-        hand_id = resp["result"]["hand_id"]
-
-        resp = await request({"type": "call", "hand_id": hand_id,
-                               "method": "get_all_joint_positions"})
-        print(resp["result"])
-
-        await request({"type": "remove", "hand_id": hand_id})
+async def demo():
+    async with OmniHandWebSocketClient("127.0.0.1", 8000) as client:
+        hands = await client.list_hands()
+        print(hands)
+        if hands:
+            hand_id = hands[0]["hand_id"]
+            await client.subscribe(hand_id, ["state", "tactile"])
+            print(await client.next_event())
 
 asyncio.run(demo())
 ```
 
-Install: `pip install websockets`
+Install the optional transport dependency with `pip install omnihand[client]`.
 
 ---
 
@@ -418,51 +336,30 @@ Push messages (no `request_id`, arrive at `publish_interval_ms` rate):
 
 ### C++ client
 
-```bash
-# Start server first:
-./omnihand_ws_server 127.0.0.1 8765
-
-# Run C++ client demo (requires a connected hand device):
-./demo_omnihand_ws_client --host 127.0.0.1 --port 8765 -d zlgcan
-# rs485 / usb (OmniHand 2025 only):
-./demo_omnihand_ws_client --host 127.0.0.1 --port 8765 -d rs485 --uart-port /dev/ttyUSB0
-./demo_omnihand_ws_client --host 127.0.0.1 --port 8765 -d usb   --uart-port /dev/ttyUSB0
-```
-
-Source: `cpp/demo/omnihand_server/demo_ws_client.cc`
+Link `omnihand_client` and use the `OmniHandWebSocketClient` example above.
+No Crow or WebSocket implementation header is required by the application.
 
 ### Python client
 
 ```bash
-pip install websockets
-python python/demo/server/demo_ws_client.py --host 127.0.0.1 --port 8765 -d zlgcan
+pip install "omnihand[client]"
+python python/demo/server/demo_ws_client.py --host 127.0.0.1 --port 8000 -d zlgcan
 # rs485 / usb:
-python python/demo/server/demo_ws_client.py --host 127.0.0.1 --port 8765 -d rs485 --uart-port /dev/ttyUSB0
+python python/demo/server/demo_ws_client.py --host 127.0.0.1 --port 8000 -d rs485 --uart-port /dev/ttyUSB0
 ```
 
 Source: `python/demo/server/demo_ws_client.py`
-
-### Web browser client
-
-Open `python/demo/server/index.html` in any modern browser.  
-Edit `python/demo/server/configs/host.toml` to point to your server address before opening.
-
----
 
 ## Test
 
 ### C++ tests (no device required)
 
 ```bash
-# Lifecycle tests only (start server, connect, list hands, disconnect):
-./test_omnihand_server --gtest_filter=*WsClient*
+# WebSocket public contract only:
+./test_omnihand_server --gtest_filter=*WebSocketClientBlackBoxTest*
 
 # All WebSocket and REST tests:
-./test_omnihand_server --gtest_filter=*Lifecycle*
-
-# Real-device tests via rs485/usb:
-./test_omnihand_server -d rs485 --uart-port /dev/ttyUSB0
-./test_omnihand_server -d usb   --uart-port /dev/ttyUSB0
+./test_omnihand_server
 ```
 
 Source: `cpp/test/test_omnihand_server.cc`
@@ -470,11 +367,10 @@ Source: `cpp/test/test_omnihand_server.cc`
 ### Python tests (no device required)
 
 ```bash
-pip install fastapi httpx pytest
-pytest python/test/test_ws_client.py -v
+python -m pytest python/test/test_omnihand_server.py -v
 ```
 
-Source: `python/test/test_ws_client.py`
+Source: `python/test/test_omnihand_server.py`
 
 ---
 

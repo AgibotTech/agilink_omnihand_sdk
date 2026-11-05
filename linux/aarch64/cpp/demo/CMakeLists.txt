@@ -4,6 +4,13 @@
 cmake_minimum_required(VERSION 3.22)
 project(omnihand_demo)
 
+# Keep the standalone build consistent with the full SDK build. Parent-project
+# option values are reused automatically when this directory is a subproject.
+option(BUILD_OMNIHAND_3_LITE "Build OmniHand 3 Lite demos" ON)
+option(BUILD_OMNIHAND_3_ULTRA_M "Build OmniHand 3 Ultra M demos" ON)
+option(BUILD_OMNI_PICKER_3 "Build OmniPicker 3 demos" ON)
+option(BUILD_OMNI_PICKER_2025 "Build OmniPicker 2025 demos" ON)
+
 # Support both: building together (as subdirectory) and building separately (after installation)
 if(TARGET omnihand)
   set(OMNIHAND_TARGET omnihand)

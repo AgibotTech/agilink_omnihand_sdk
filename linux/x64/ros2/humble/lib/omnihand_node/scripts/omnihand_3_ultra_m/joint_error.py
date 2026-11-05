@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 @Description: Periodically trigger error-report query and display results
-              for OmniHand3UltraM (O20).
+              for OmniHand3UltraM T1.3/T1.5.
 
 Topic:
   pub: /<product>/<side>/joint_error_cmd    (std_msgs/Empty)
@@ -54,7 +54,7 @@ class JointErrorNode(Node):
             self.callback, 10)
         self.timer = self.create_timer(1.0 / hz, lambda: self.publisher.publish(Empty()))
         self.get_logger().info(
-            f'{product}/{hand_side} joint_error started ({hz} Hz, O20 20 DOF)')
+            f'{product}/{hand_side} joint_error started ({hz} Hz)')
 
     def callback(self, msg: Int16MultiArrayStamped):
         lines = [f'{self.product}/{self.hand_side} joint_error_states:']

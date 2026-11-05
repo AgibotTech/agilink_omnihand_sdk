@@ -163,6 +163,18 @@ class OmniLogger {
   // ── Logging ────────────────────────────────────────────────────────────────
 
   void log(Level level, std::string_view msg) noexcept {
+    log_impl(level, msg, nullptr);
+  }
+
+  // Use the captured event time when formatting timestamps; output stays async.
+  void log(Level level, std::string_view msg,
+           std::chrono::system_clock::time_point event_time) noexcept {
+    log_impl(level, msg, &event_time);
+  }
+
+ private:
+  void log_impl(Level level, std::string_view msg,
+                const std::chrono::system_clock::time_point* event_time) noexcept {
     // ① Compile-time filter: dead code eliminated by the optimiser.
     if constexpr (CompileMinLv > 0) {
       if (static_cast<uint8_t>(level) < CompileMinLv) {
@@ -179,7 +191,7 @@ class OmniLogger {
     const char* lv = kLvStr[std::min(static_cast<uint8_t>(level), uint8_t{5})];
     char tmp[SlotSize];
     if (with_timestamp_) {
-      const auto now = std::chrono::system_clock::now();
+      const auto now = event_time ? *event_time : std::chrono::system_clock::now();
       const auto t   = std::chrono::system_clock::to_time_t(now);
       const auto us  = std::chrono::duration_cast<std::chrono::microseconds>(
                            now.time_since_epoch()) % 1000000;
@@ -219,24 +231,45 @@ class OmniLogger {
     }
   }
 
+ public:
   void verbose(std::string_view msg) noexcept {
     log(Level::VERBOSE, msg);
+  }
+
+  void verbose(std::string_view msg, std::chrono::system_clock::time_point event_time) noexcept {
+    log(Level::VERBOSE, msg, event_time);
   }
 
   void debug(std::string_view msg) noexcept {
     log(Level::DEBUG, msg);
   }
 
+  void debug(std::string_view msg, std::chrono::system_clock::time_point event_time) noexcept {
+    log(Level::DEBUG, msg, event_time);
+  }
+
   void info(std::string_view msg) noexcept {
     log(Level::INFO, msg);
+  }
+
+  void info(std::string_view msg, std::chrono::system_clock::time_point event_time) noexcept {
+    log(Level::INFO, msg, event_time);
   }
 
   void warn(std::string_view msg) noexcept {
     log(Level::WARN, msg);
   }
 
+  void warn(std::string_view msg, std::chrono::system_clock::time_point event_time) noexcept {
+    log(Level::WARN, msg, event_time);
+  }
+
   void error(std::string_view msg) noexcept {
     log(Level::ERROR, msg);
+  }
+
+  void error(std::string_view msg, std::chrono::system_clock::time_point event_time) noexcept {
+    log(Level::ERROR, msg, event_time);
   }
 
   // ── Formatted logging (printf-style) ─────────────────────────────────────────

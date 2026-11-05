@@ -1,4 +1,4 @@
-# AGILINK OmniHand SDK - Linux (x64) - Version 1.1.10
+# AGILINK OmniHand SDK - Linux (x64) - Version 1.1.11
 
 [中文文档](README_zh_cn.md) | [Overview & API Docs](../../README.md)
 
@@ -22,6 +22,7 @@ source ros2/setup.bash
 When using a non-default installation prefix, also run:
 
 ```bash
+export PATH="<prefix>/bin:${PATH}"
 export LD_LIBRARY_PATH="<prefix>/lib:${LD_LIBRARY_PATH:-}"
 ```
 

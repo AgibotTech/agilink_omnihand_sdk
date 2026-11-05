@@ -102,17 +102,17 @@ def main():
 
     # Step 0: Test gesture control
     print("Step 0: Testing gesture control...")
-    print("  Setting gesture: FIST...")
-    hand.set_hand_gesture(OmniHand3LiteGesture.OMNI_HAND_3_LITE_GESTURE_FIST)
+    print("  Setting gesture: SIDE_FIST...")
+    hand.set_hand_gesture(OmniHand3LiteGesture.OMNI_HAND_3_LITE_GESTURE_SIDE_FIST)
     time.sleep(2)
-    fist_positions = hand.get_all_joint_positions()
-    print(f"  FIST positions: {fist_positions}")
+    side_fist_positions = hand.get_all_joint_positions()
+    print(f"  SIDE_FIST positions: {side_fist_positions}")
 
-    print("  Setting gesture: OPEN...")
-    hand.set_hand_gesture(OmniHand3LiteGesture.OMNI_HAND_3_LITE_GESTURE_OPEN)
+    print("  Setting gesture: PRAYER...")
+    hand.set_hand_gesture(OmniHand3LiteGesture.OMNI_HAND_3_LITE_GESTURE_PRAYER)
     time.sleep(2)
-    open_positions = hand.get_all_joint_positions()
-    print(f"  OPEN positions: {open_positions}\n")
+    prayer_positions = hand.get_all_joint_positions()
+    print(f"  PRAYER positions: {prayer_positions}\n")
 
     # Step 1: Set all joints to middle position (2048)
     print("Step 1: Setting all joints to middle position...")

@@ -2,6 +2,7 @@
 // AGILINK OmniHand SDK is licensed under Mulan PSL v2.
 
 #include <gtest/gtest.h>
+#include "timestamp_test_utils.h"
 #include <chrono>
 #include <memory>
 #include <string>
@@ -52,6 +53,47 @@ class OmniHandDexUMITest : public ::testing::Test {
 };
 
 // Test factory method
+// Timestamped feedback tests. Controls hold the measured pose.
+TEST_F(OmniHandDexUMITest, GetAllJointMotorPosiWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllJointMotorPosiWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllJointMotorPosiWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+  for (const auto position : sample.value) { EXPECT_GE(position, 0); EXPECT_LE(position, 4096); }
+}
+
+TEST_F(OmniHandDexUMITest, GetJointMotorPosiWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetJointMotorPosiWithTimestamp(1);
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetJointMotorPosiWithTimestamp", TAG));
+  EXPECT_GE(sample.value, 0); EXPECT_LE(sample.value, 4096);
+}
+
+TEST_F(OmniHandDexUMITest, GetAllActiveJointAnglesWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllActiveJointAnglesWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllActiveJointAnglesWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetDoA());
+  for (const auto angle : sample.value) EXPECT_TRUE(std::isfinite(angle));
+}
+
+TEST_F(OmniHandDexUMITest, GetAllJointAnglesWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  const auto sample = hand_->GetAllJointAnglesWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllJointAnglesWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetJointNames().size());
+  for (const auto angle : sample.value) EXPECT_TRUE(std::isfinite(angle));
+}
+
+TEST_F(OmniHandDexUMITest, GetAllTactileSensorDataRawWithTimestamp) {
+  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+  if (!hand_->InitTactilePointsMap()) GTEST_SKIP() << "Tactile sensors unavailable";
+  const auto sample = hand_->GetAllTactileSensorDataRawWithTimestamp();
+  ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(sample.timestamp_us, "GetAllTactileSensorDataRawWithTimestamp", TAG));
+  ASSERT_EQ(sample.value.size(), hand_->GetSensorOrder().size());
+  for (const auto& sensor : sample.value) EXPECT_FALSE(sensor.data_.empty());
+}
+
 TEST_F(OmniHandDexUMITest, CreateHand) {
   EXPECT_NE(hand_, nullptr);
 }

@@ -3,7 +3,7 @@
 
 /**
  * @file omnihand_3_ultra_m_solver.h
- * @brief Per-joint linear rad <-> motor-tick solver for O20 (h3u_m).
+ * @brief Per-joint linear rad <-> motor-tick solver for H3UM T1.3/T1.5.
  *
  * Naming: aligned with the URDF repo `h3u_m_description`, hence the `_m`
  * suffix on the directory / class. Hardware-wise this is OmniHand3UltraM
@@ -33,7 +33,7 @@ enum class H3UMRevision : uint8_t {
 namespace h3um {
 
 /**
- * @brief O20 (h3u_m) active-joint enum, in motor-index / GetJointNames() order.
+ * @brief H3UM T1.3 active-joint enum, in motor-index / GetJointNames() order.
  * @note Joint order must match OmniHand3UltraM::GetJointNames() exactly:
  *     [0..3]   pinky  (abad, mcp, pip, dip)
  *     [4..7]   ring
@@ -99,14 +99,14 @@ enum class H3UMGesture : int {
 /**
  * @class OmniHand3UltraMSolver
  * @brief Per-joint linear rad <-> actuator-input solver for OmniHand 3 Ultra
- *        (h3u_m, O20).
+ *        (H3UM T1.3/T1.5).
  *
  * Naming follows the O10 / O12 solvers:
  *   - "ActiveJointPos" : joint position in rad (vector<double>), per-joint
  *                        ROS convention (sensor_msgs::JointState::position).
  *   - "ActuatorInput"  : raw motor command, vector<int16_t> in [0, 4095].
  *                        (O10 uses int and 0-4096; O12 uses int and 0-2000.
- *                        For O20 we keep int16_t to match the SDK's
+ *                        For H3UM we keep int16_t to match the SDK's
  *                        Set/GetAllJointMotorPosi protocol type.)
  *
  * Calibration data (rad_min, rad_max, actuator_min, actuator_max) lives in the
@@ -125,8 +125,8 @@ enum class H3UMGesture : int {
  */
 class AGIBOT_EXPORT OmniHand3UltraMSolver {
  public:
-  /// Number of active joints (= H3UMActiveJoint::H3U_M_ACTIVE_JOINT_COUNT = 20).
-  static constexpr std::size_t kActiveJointCount =
+  /// Number of T1.3 active joints (= H3UMActiveJoint::H3U_M_ACTIVE_JOINT_COUNT = 20).
+  static constexpr std::size_t kT1P3ActiveJointCount =
       static_cast<std::size_t>(H3UMActiveJoint::H3U_M_ACTIVE_JOINT_COUNT);
   static constexpr std::size_t kT1P5ActiveJointCount =
       static_cast<std::size_t>(H3UMT1P5ActiveJoint::H3U_M_ACTIVE_JOINT_COUNT);
@@ -187,6 +187,16 @@ class AGIBOT_EXPORT OmniHand3UltraMSolver {
    */
   std::vector<double> ActuatorInput2ActiveJointPos(const std::vector<int16_t>& actuator_input) const;
 
+  /** Convert active-joint angles between H3UM left/right conventions. */
+  std::vector<double> ConvertActiveJointAngles(
+      const std::vector<double>& active_joint_pos, bool source_is_left,
+      bool target_is_left) const;
+
+  /** Convert motor positions between H3UM left/right hands. */
+  std::vector<int16_t> ConvertJointMotorPositions(
+      const std::vector<int16_t>& positions, bool source_is_left,
+      bool target_is_left) const;
+
   /**
    * @brief Single-joint conversion by index (for joint-name / index access APIs).
    * @param joint_index Range [0, 20); out-of-range indices are clamped.
@@ -194,7 +204,7 @@ class AGIBOT_EXPORT OmniHand3UltraMSolver {
   int16_t SingleActiveJointPos2ActuatorInput(std::size_t joint_index, double rad) const;
   double SingleActuatorInput2ActiveJointPos(std::size_t joint_index, int16_t actuator_input) const;
 
-  /// Direct access to the calibration table currently in use (length = kActiveJointCount).
+  /// Direct access to the calibration table currently in use (length = GetActiveJointCount()).
   const JointMotorCalib* CalibTable() const { return table_; }
   bool IsLeftHand() const { return is_left_hand_; }
   std::size_t GetActiveJointCount() const { return active_joint_count_; }
@@ -204,11 +214,12 @@ class AGIBOT_EXPORT OmniHand3UltraMSolver {
 
  private:
   bool is_left_hand_;
+  H3UMRevision revision_;
   std::size_t active_joint_count_;
   const JointMotorCalib* table_;  // Points to either kLeft or kRight.
 
-  static const JointMotorCalib kRight[kActiveJointCount];
-  static const JointMotorCalib kLeft[kActiveJointCount];
+  static const JointMotorCalib kRight[kT1P3ActiveJointCount];
+  static const JointMotorCalib kLeft[kT1P3ActiveJointCount];
   static const JointMotorCalib kT1P5Right[kT1P5ActiveJointCount];
   static const JointMotorCalib kT1P5Left[kT1P5ActiveJointCount];
 };

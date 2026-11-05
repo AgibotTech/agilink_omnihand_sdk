@@ -46,6 +46,24 @@ struct AGIBOT_EXPORT CommunicationLogOptions {
  */
 class AGIBOT_EXPORT OmniHand {
  public:
+  // Timestamped counterparts share the existing virtual implementations.
+  // These methods are nonvirtual to preserve the existing public ABI.
+  TimestampedResult<int16_t> SetJointMotorPosiWithTimestamp(unsigned char index, int16_t position);
+  TimestampedResult<int16_t> GetJointMotorPosiWithTimestamp(unsigned char index) const;
+  TimestampedResult<std::vector<int16_t>> SetAllJointMotorPosiWithTimestamp(const std::vector<int16_t>& positions);
+  TimestampedResult<std::vector<int16_t>> GetAllJointMotorPosiWithTimestamp() const;
+  TimestampedResult<std::vector<int16_t>> SetHandGestureWithTimestamp(int gesture_num = 1);
+  TimestampedResult<std::vector<int16_t>> GetAllTemperatureReportWithTimestamp() const;
+  TimestampedResult<std::vector<int16_t>> GetAllCurrentReportWithTimestamp() const;
+  TimestampedResult<std::vector<JointMotorErrorReport>> GetAllErrorReportWithTimestamp() const;
+  TimestampedResult<MixCtrl> MixControlByPTWithTimestamp(uint8_t index, int16_t position, int16_t torque);
+  TimestampedResult<std::vector<MixCtrl>> MixControlByPTWithTimestamp(const std::vector<int16_t>& positions, const std::vector<int16_t>& torques);
+  TimestampedResult<MixCtrl> MixControlByPVTWithTimestamp(uint8_t index, int16_t position, int16_t velocity, int16_t torque);
+  TimestampedResult<std::vector<MixCtrl>> MixControlByPVTWithTimestamp(const std::vector<int16_t>& positions, const std::vector<int16_t>& velocities, const std::vector<int16_t>& torques);
+  TimestampedResult<std::vector<double>> SetAllActiveJointAnglesWithTimestamp(const std::vector<double>& angles);
+  TimestampedResult<std::vector<double>> GetAllActiveJointAnglesWithTimestamp() const;
+  TimestampedResult<std::vector<double>> GetAllJointAnglesWithTimestamp() const;
+
   /**
    * @brief Gets product type.
    * @return Product type enum value， see @ref ProductType
@@ -316,6 +334,25 @@ class AGIBOT_EXPORT OmniHand {
    *         - OmniHand Pro 2025 (O12): 12 values
    */
   virtual std::vector<double> GetAllActiveJointAngles() const { return {}; }
+
+  /**
+   * @brief Converts active-joint angles between left- and right-hand coordinate
+   *        conventions without communicating with the device.
+   * @param angles Active-joint angles in radians, ordered as GetJointNames().
+   * @param source_hand Hand convention used by @p angles.
+   * @param target_hand Desired hand convention.
+   * @return Converted angles. Unsupported products or invalid input return an
+   *         empty vector; converting between identical known hand types returns
+   *         the input unchanged.
+   */
+  virtual std::vector<double> ConvertActiveJointAngles(
+      const std::vector<double>& angles, HandType source_hand,
+      HandType target_hand) const;
+
+  // Converts motor positions between hand conventions without device IO.
+  virtual std::vector<int16_t> ConvertJointMotorPositions(
+      const std::vector<int16_t>& positions, HandType source_hand,
+      HandType target_hand) const;
   
   /**
    * @brief Gets joint angles of all joints (including active and passive joints).
@@ -395,7 +432,7 @@ class AGIBOT_EXPORT OmniHand {
 
   /**
    * @brief 0x14: Position + torque mixed control (MixControlMode::POSITION_TORQUE).
-   * @param positions Target position per joint; array[i] maps to mix-control joint id i (0-based).
+   * @param positions Target position per joint; array[i] maps to motor index i + 1.
    * @param torques Target torque/current per joint (product-specific unit).
    * @return CAN write-reply echo (empty if unsupported or failed).
    */
@@ -412,7 +449,7 @@ class AGIBOT_EXPORT OmniHand {
 
   /**
    * @brief 0x14: Velocity + torque mixed control (MixControlMode::VELOCITY_TORQUE).
-   * @param velocities Target velocity per joint; array[i] maps to mix-control joint id i (0-based).
+   * @param velocities Target velocity per joint; array[i] maps to motor index i + 1.
    * @param torques Target torque/current per joint.
    */
   virtual std::vector<MixCtrl> MixControlByPV(const std::vector<int16_t>& velocities,
@@ -533,8 +570,10 @@ class AGIBOT_EXPORT OmniHand {
    * @param gesture_num Gesture number (implementation-specific, see derived classes for details)
    * @note Default implementation is provided in OmniHand2025 and OmniHandPro2025
    */
-  virtual void SetHandGesture(int gesture_num = 1) {
-    (void)gesture_num;  // Suppress unused parameter warning
+  // Return actual motor positions from the command reply, or empty on failure.
+  virtual std::vector<int16_t> SetHandGesture(int gesture_num = 1) {
+    (void)gesture_num;
+    return {};
   }
 
   /**
@@ -591,41 +630,54 @@ class AGIBOT_EXPORT OmniHand {
 
   // ============ Frame Reception Timeout Control ============
   /**
-   * @brief Set frame reception timeout
-   * @param milliseconds Timeout for receiving a single frame in milliseconds (range: 10-1000ms, default: 50ms)
-   * @note This timeout applies to both single-frame and multi-frame reception
-   * @note For multi-frame reception, this timeout applies to each frame individually
-   * @note Only applies to CAN communication. RS485 communication is not affected.
-   * @note Serial port communication (RS485) does not support this interface.
-   *       RS485 implementation does nothing (no-op).
+   * @brief Set the synchronous wait timeout for a matching protocol reply frame
+   * @param milliseconds Reply frame wait timeout (clamped to 10-1000ms, default: 50ms)
+   * @note Applies to CAN and serial communication (USB/RS485). Waiting starts
+   *       after sending; waiting for other queued requests is not included.
+   * @note For multi-frame replies, each expected frame has its own wait timeout.
+   * @note This does not configure low-level driver reads or the polling period.
+   *       Serial reads retain their internal 2ms timeout; a read may return
+   *       partial bytes, which are buffered until a protocol frame is complete.
    */
   virtual void SetFrameRecvTimeout(int milliseconds) = 0;
 
   /**
-   * @brief Get current frame reception timeout setting
-   * @return Frame reception timeout in milliseconds
-   * @note Serial port communication (RS485) always returns 0 (not applicable).
+   * @brief Get the synchronous reply frame wait timeout
+   * @return Reply frame wait timeout in milliseconds for CAN or USB/RS485
    */
   virtual int GetFrameRecvTimeout() const = 0;
 
-  // ============ Frame Send Timeout Control (CAN only) ============
+  // ============ Frame Send Timeout Control ============
   /**
-   * @brief Set frame send timeout (ZLG device tx_timeout)
-   * @param milliseconds Timeout for send in milliseconds (0 = driver default, typically no limit; 1-10000ms recommended, e.g. 100ms)
-   * @note Only applies to ZLG CAN FD. Reduces send blocking and request timeout when buffer is busy. RS485/USB do nothing.
+   * @brief Set backend send/write timeout independently of reply reception timeout
+   * @param milliseconds Timeout in milliseconds (1-10000ms). Nonpositive values
+   *       log a warning and use the backend default; values above 10000ms are clamped.
+   * @note USB/RS485: timeout for each underlying serial write. Default: 20ms.
+   *       Nonpositive values log a warning and use the default; values above 10000ms
+   *       are clamped to 10000ms. Short writes may require multiple writes.
+   *       Serial read timeout and reply reception timeout are not changed.
+   * @note ZLG CAN FD (USB/network): device tx_timeout, default 20ms.
+   *       HCAN: CANFD_Transmit timeout, default 100ms. If a ZLG driver rejects
+   *       the setting, a warning is logged and the previous setting is retained.
+   * @note SocketCAN: deadline for submitting one complete frame to the kernel,
+   *       including retries after temporary resource exhaustion. Default: 20ms;
+   *       nonpositive values log a warning and use the default. Remains nonblocking.
+   * @note Successful sending does not guarantee device reply or CAN bus delivery.
    */
   virtual void SetFrameSendTimeout(int milliseconds) = 0;
 
   /**
    * @brief Get current frame send timeout setting
-   * @return Frame send timeout in milliseconds (0 = not set / not applicable)
+   * @return Configured timeout in milliseconds, including the backend default
+   *         when no explicit setting has been made.
+   *         Unsupported backends return 0.
    */
   virtual int GetFrameSendTimeout() const = 0;
 
   // ============ Firmware Update (OTA) ============
   /**
    * @brief Updates firmware via OTA (Over-The-Air) upgrade
-   * @param file_name Path to the firmware binary file
+   * @param file_name UTF-8 encoded path to the firmware binary file
    * @param progress_callback Optional callback for progress (current_packet, total_packets, status)
    * @note Default implementation reports AGILINK_OTA_NOT_SUPPORTED. Products that support OTA override this.
    */

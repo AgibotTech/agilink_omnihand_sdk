@@ -62,31 +62,31 @@ void controlSingleHand(std::unique_ptr<agilink::omnihand::OmniHand3Lite>& hand,
   // ============ Gesture Control Demo ============
   AgilinkLogger::get().infof(TAG, "\n=== Gesture Control ===");
 
-  AgilinkLogger::get().infof(TAG, "Setting gesture: FIST...");
-  hand->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_FIST);
+  AgilinkLogger::get().infof(TAG, "Setting gesture: SIDE_FIST...");
+  hand->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_SIDE_FIST);
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-  auto fist_positions = hand->GetAllJointMotorPosi();
+  auto side_fist_positions = hand->GetAllJointMotorPosi();
   {
-    std::string msg = "FIST positions: [";
-    for (size_t i = 0; i < fist_positions.size(); ++i) {
+    std::string msg = "SIDE_FIST positions: [";
+    for (size_t i = 0; i < side_fist_positions.size(); ++i) {
       if (i > 0) msg += ", ";
-      msg += std::to_string(fist_positions[i]);
+      msg += std::to_string(side_fist_positions[i]);
     }
     msg += "]";
     AgilinkLogger::get().infof(TAG, "%s", msg.c_str());
   }
 
-  AgilinkLogger::get().infof(TAG, "Setting gesture: OPEN...");
-  hand->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_OPEN);
+  AgilinkLogger::get().infof(TAG, "Setting gesture: PRAYER...");
+  hand->SetHandGesture(agilink::omnihand::h3l::OmniHand3LiteGesture::OMNI_HAND_3_LITE_GESTURE_PRAYER);
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-  auto open_positions = hand->GetAllJointMotorPosi();
+  auto prayer_positions = hand->GetAllJointMotorPosi();
   {
-    std::string msg = "OPEN positions: [";
-    for (size_t i = 0; i < open_positions.size(); ++i) {
+    std::string msg = "PRAYER positions: [";
+    for (size_t i = 0; i < prayer_positions.size(); ++i) {
       if (i > 0) msg += ", ";
-      msg += std::to_string(open_positions[i]);
+      msg += std::to_string(prayer_positions[i]);
     }
     msg += "]";
     AgilinkLogger::get().infof(TAG, "%s", msg.c_str());

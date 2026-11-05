@@ -399,20 +399,6 @@ def get_tactile_sensor_data_raw(self, eFinger: Finger) -> TactileSensorData:
     """
 
 @staticmethod
-def get_sensor_data_length(finger_index: int) -> int:
-    """Get sensor data length for a specific finger (static method).
-    
-    Args:
-        finger_index: Finger enum value (Finger).
-    
-    Returns:
-        int: Sensor data length in bytes.
-    
-    Note:
-        For UMI: Returns 0 for Finger.DORSUM (UMI does not have dorsum sensor).
-    """
-
-@staticmethod
 def get_sensor_order() -> List[int]:
     """Get sensor order vector (static method).
     
