@@ -9,31 +9,7 @@
 
 ## Overview
 
-The AGILINK OmniHand SDK supports the following product models:
-
-**OmniHand 2025 灵动款 (O10)**
-
- A compact, high-DOF interactive dexterous hand featuring `10 active + 6 passive degrees of freedom`. Weighing only 500g, it utilizes CANFD communication interfaces and is equipped with `400+ tactile points and 0.1N array resolution, with maximum fingertip force of 5N`. It's suitable for various humanoid robots and robotic arms. Its compact, lightweight design and rich tactile interaction capabilities make it valuable for interactive services, research, education, and light-duty operations.
-
-![](doc/pic/hand_o10.jpg)
-
-**OmniHand Pro 2025 专业款 (O12)**
-
- A 12-degree-of-freedom professional dexterous hand featuring precise operation and flexible control capabilities. It is equipped with tactile sensors and multiple control modes (position control, torque control, hybrid control), making it suitable for a wide range of applications including research and education, entertainment and commercial performances, exhibition guidance, and industrial scenarios.
-
-![](doc/pic/hand_o12.jpg)
-
-**OmniHand 3 Lite (H3L)**
-
-A 4-degree-of-freedom lightweight dexterous hand designed for cost-sensitive and space-constrained applications. It uses CAN communication and exposes raw tactile streaming through its ROS2 node.
-
-**OmniPicker 3 (OP3)**
-
-A 1-degree-of-freedom gripper with CAN/RS485 connectivity, stroke and gentle-grip control, and two-region tactile sensing. A dedicated ROS2 node and message package are included on Linux.
-
-**OmniHand Dex UMI (O10 UMI)**
-
-A read-only dexterous hand using UMI protocol.
+![AGILINK product introduction](doc/pic/agilink_introduction_en_2.png)
 
 ## Platform-Specific Documentation
 
