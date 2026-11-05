@@ -1,0 +1,26 @@
+windows/x64/cpp/test/test_omnihand_pro_2025.cc
+  h_b60f00b173c94b 133-135,137-142
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "881fd0552338d4707437428aec5b3588086199cb",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_pro_2025.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_pro_2025.cc",
+      "additions": {
+        "human": 9
+      },
+      "deletions": {
+        "human": 4
+      }
+    }
+  ]
+}
