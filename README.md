@@ -2,14 +2,12 @@
 
 [中文文档](README_zh_cn.md)
 
+The OmniHand SDK provides C++ and Python control APIs, kinematics solvers, and ROS2 integration for OmniHand products.
+
 ## Quick Links
 
 - 📖 **[Quick Start Guide](doc/en/QUICK_START.md)** - Get started in 5 minutes
 - 🔧 **[Troubleshooting](doc/en/TROUBLESHOOTING.md)** - Common issues and solutions
-
-## Overview
-
-![AGILINK product introduction](doc/pic/agilink_introduction_en_2.png)
 
 ## Platform-Specific Documentation
 
@@ -54,6 +52,10 @@
 - [OmniHand 3 Lite (H3L) ROS2 Interface](doc/en/API_ROS2_H3L.md)
 - [OmniHand 3 Ultra M (H3UM T1.3/T1.5) ROS2 Interface](doc/en/API_ROS2_H3UM.md)
 - [OmniPicker 3 (OP3) ROS2 Interface](doc/en/API_ROS2_OP3.md)
+
+## Product Introduction
+
+![AGILINK product introduction](doc/pic/agilink_introduction_en_2.png)
 
 ## License
 

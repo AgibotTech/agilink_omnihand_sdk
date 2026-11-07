@@ -2,14 +2,12 @@
 
 [English Documentation](README.md)
 
+OmniHand SDK 为 OmniHand 系列产品提供 C++、Python 控制接口、运动学求解器及 ROS2 接入。
+
 ## 快速链接
 
 - 📖 **[快速入门指南](doc/zh_cn/QUICK_START.md)** - 5 分钟上手
 - 🔧 **[故障排除](doc/zh_cn/TROUBLESHOOTING.md)** - 常见问题和解决方案
-
-## 产品概述
-
-![AGILINK 产品介绍](doc/pic/agilink_introduction_cn_2.png)
 
 ## 平台文档
 
@@ -54,6 +52,10 @@
 - [OmniHand 3 Lite (H3L) ROS2 接口](doc/zh_cn/API_ROS2_H3L.md)
 - [OmniHand 3 Ultra M（H3UM T1.3/T1.5）ROS2 接口](doc/zh_cn/API_ROS2_H3UM.md)
 - [OmniPicker 3 (OP3) ROS2 接口](doc/zh_cn/API_ROS2_OP3.md)
+
+## 产品介绍
+
+![AGILINK 产品介绍](doc/pic/agilink_introduction_cn_2.png)
 
 ## 许可证
 
