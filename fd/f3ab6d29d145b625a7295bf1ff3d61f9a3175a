@@ -1,0 +1,169 @@
+doc/en/API_CPP_H3UM.md
+  s_bc7e2fec92cf97::t_aaa4856a556f34 209
+  s_bc7e2fec92cf97::t_c54c231a6df017 245-246
+  s_bc7e2fec92cf97::t_fba9711c0a98e6 27
+doc/zh_cn/API_CPP_H3UM.md
+  s_bc7e2fec92cf97::t_aaa4856a556f34 222
+  s_bc7e2fec92cf97::t_c54c231a6df017 258-259
+  s_bc7e2fec92cf97::t_fba9711c0a98e6 27
+doc/zh_cn/API_PYTHON_H3UM.md
+  s_bc7e2fec92cf97::t_fba9711c0a98e6 27
+doc/en/API_PYTHON_H3UM.md
+  s_bc7e2fec92cf97::t_fba9711c0a98e6 27
+linux/aarch64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  s_bc7e2fec92cf97::t_a1f5bc1a082c27 431,433,436-438
+linux/x64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  s_bc7e2fec92cf97::t_2cff45ed0ced48 431,433,436-438
+windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  s_bc7e2fec92cf97::t_90a87c82b757ff 431,433,436-438
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "fdf3ab6d29d145b625a7295bf1ff3d61f9a3175a",
+  "prompts": {},
+  "sessions": {
+    "s_bc7e2fec92cf97": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1af8d-5192-7231-92b1-32ffa531328c",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.input_tokens": "1640294",
+        "tlab.token_usage.cache_read_tokens": "62766220",
+        "tlab.session_started_at": "2026-11-07T01:47:54Z",
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.token_usage.output_tokens": "248099"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "doc/en/API_CPP_H3UM.md",
+      "new_path": "doc/en/API_CPP_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 4
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON_H3UM.md",
+      "new_path": "doc/en/API_PYTHON_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_H3UM.md",
+      "new_path": "doc/zh_cn/API_CPP_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 4
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON_H3UM.md",
+      "new_path": "doc/zh_cn/API_PYTHON_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 5
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 5
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 5
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3
+      }
+    }
+  ]
+}
