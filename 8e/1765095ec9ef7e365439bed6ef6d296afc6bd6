@@ -1,0 +1,411 @@
+README.md
+  s_bc7e2fec92cf97::t_e39f39045d764a 24,26,28,32,38,40,42,46
+README_zh_cn.md
+  s_bc7e2fec92cf97::t_b9aca1d742f7b3 24,26,28,32,38,40,42,46
+doc/en/API_CPP_H3L.md
+  s_bc7e2fec92cf97::t_f57a0acf60f55c 14,52,59,61-63,216,223-224,249,274-275,290
+doc/en/API_CPP_H3UM.md
+  s_bc7e2fec92cf97::t_309cf99fa9e28b 240-242,252-254,261-295
+doc/en/API_KINEMATICS_CPP_O10.md
+  s_bc7e2fec92cf97::t_9aa186aae84bd5 5,10,16,72,75,91,94,101,108
+doc/en/API_KINEMATICS_CPP_O12.md
+  s_bc7e2fec92cf97::t_119db88e27dfa6 5,10,16,19,99,102,110,113,120,126
+doc/en/API_KINEMATICS_PYTHON_O12.md
+  s_bc7e2fec92cf97::t_0e1cedc12da2ed 16,19,110,114
+doc/en/API_PYTHON_H3L.md
+  s_bc7e2fec92cf97::t_d9601f32747033 302-303
+doc/en/API_PYTHON_H3UM.md
+  s_bc7e2fec92cf97::t_dfa6a282a9c8d0 51-60
+doc/zh_cn/API_CPP_H3L.md
+  s_bc7e2fec92cf97::t_c44ef3d9adb658 14,52,59,61-63,216,223-224,249,273-274
+doc/zh_cn/API_CPP_H3UM.md
+  s_bc7e2fec92cf97::t_7760fcd3334202 253-255,265-267,274-308
+doc/zh_cn/API_KINEMATICS_CPP_O10.md
+  s_bc7e2fec92cf97::t_6dadcd02e70a79 10,72,75,91,101,108
+doc/zh_cn/API_KINEMATICS_CPP_O12.md
+  s_bc7e2fec92cf97::t_f5495fcd68598b 10,16,19,99,102,110,120,126
+doc/zh_cn/API_KINEMATICS_PYTHON_O12.md
+  s_bc7e2fec92cf97::t_fa38efc0eb0ce9 16,19,110,114
+doc/zh_cn/API_PYTHON.md
+  s_bc7e2fec92cf97::t_797dcc9824b468 59-61
+doc/zh_cn/API_PYTHON_H3L.md
+  s_bc7e2fec92cf97::t_f31aacb3a376c6 299-300
+doc/zh_cn/API_PYTHON_H3UM.md
+  s_bc7e2fec92cf97::t_31790addf553de 51-60
+linux/aarch64/cpp/include/omnihand/omnihand_3_lite.h
+  s_bc7e2fec92cf97::t_34006d8f0ada82 36-38
+linux/aarch64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  s_bc7e2fec92cf97::t_37afca3b455659 211-212,215,217,222,242,244,249,271,273,279,303,305,309,328,330,335,355,357,362
+linux/x64/cpp/include/omnihand/omnihand_3_lite.h
+  s_bc7e2fec92cf97::t_6b8a8b9df2eac6 36-38
+linux/x64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  s_bc7e2fec92cf97::t_d1c338ee63e864 211-212,215,217,222,242,244,249,271,273,279,303,305,309,328,330,335,355,357,362
+windows/x64/cpp/include/omnihand/omnihand_3_lite.h
+  s_bc7e2fec92cf97::t_523efe32a94cc7 36-38
+windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  s_bc7e2fec92cf97::t_3de179a095786f 211-212,215,217,222,242,244,249,271,273,279,303,305,309,328,330,335,355,357,362
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "8e1765095ec9ef7e365439bed6ef6d296afc6bd6",
+  "prompts": {},
+  "sessions": {
+    "s_bc7e2fec92cf97": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1af8d-5192-7231-92b1-32ffa531328c",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.token_usage.cache_read_tokens": "100003824",
+        "tlab.token_usage.input_tokens": "2847281",
+        "tlab.token_usage.output_tokens": "418467",
+        "tlab.session_started_at": "2026-11-06T06:30:45Z"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "README.md",
+      "new_path": "README.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 8
+          }
+        ]
+      },
+      "deletions": {
+        "human": 8
+      }
+    },
+    {
+      "old_path": "README_zh_cn.md",
+      "new_path": "README_zh_cn.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 8
+          }
+        ]
+      },
+      "deletions": {
+        "human": 8
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_H3L.md",
+      "new_path": "doc/en/API_CPP_H3L.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 13
+          }
+        ]
+      },
+      "deletions": {
+        "human": 9
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_H3UM.md",
+      "new_path": "doc/en/API_CPP_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 41
+          }
+        ]
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "doc/en/API_KINEMATICS_CPP_O10.md",
+      "new_path": "doc/en/API_KINEMATICS_CPP_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 9
+          }
+        ]
+      },
+      "deletions": {
+        "human": 9
+      }
+    },
+    {
+      "old_path": "doc/en/API_KINEMATICS_CPP_O12.md",
+      "new_path": "doc/en/API_KINEMATICS_CPP_O12.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 10
+          }
+        ]
+      },
+      "deletions": {
+        "human": 10
+      }
+    },
+    {
+      "old_path": "doc/en/API_KINEMATICS_PYTHON_O12.md",
+      "new_path": "doc/en/API_KINEMATICS_PYTHON_O12.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 4
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON_H3L.md",
+      "new_path": "doc/en/API_PYTHON_H3L.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON_H3UM.md",
+      "new_path": "doc/en/API_PYTHON_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 10
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_H3L.md",
+      "new_path": "doc/zh_cn/API_CPP_H3L.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 12
+          }
+        ]
+      },
+      "deletions": {
+        "human": 8
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_H3UM.md",
+      "new_path": "doc/zh_cn/API_CPP_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 41
+          }
+        ]
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_KINEMATICS_CPP_O10.md",
+      "new_path": "doc/zh_cn/API_KINEMATICS_CPP_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 6
+          }
+        ]
+      },
+      "deletions": {
+        "human": 6
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_KINEMATICS_CPP_O12.md",
+      "new_path": "doc/zh_cn/API_KINEMATICS_CPP_O12.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 8
+          }
+        ]
+      },
+      "deletions": {
+        "human": 8
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_KINEMATICS_PYTHON_O12.md",
+      "new_path": "doc/zh_cn/API_KINEMATICS_PYTHON_O12.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 4
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON.md",
+      "new_path": "doc/zh_cn/API_PYTHON.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON_H3L.md",
+      "new_path": "doc/zh_cn/API_PYTHON_H3L.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON_H3UM.md",
+      "new_path": "doc/zh_cn/API_PYTHON_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 10
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/omnihand_3_lite.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/omnihand_3_lite.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 20
+          }
+        ]
+      },
+      "deletions": {
+        "human": 18
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 20
+          }
+        ]
+      },
+      "deletions": {
+        "human": 18
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 20
+          }
+        ]
+      },
+      "deletions": {
+        "human": 18
+      }
+    }
+  ]
+}
