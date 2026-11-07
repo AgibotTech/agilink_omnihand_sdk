@@ -1,0 +1,332 @@
+README.md
+  s_bc7e2fec92cf97::t_c5f857ca139aa7 21,23-24,26,28,31-32,35,37-38,40,42,45-46,49,51,54
+README_zh_cn.md
+  s_bc7e2fec92cf97::t_c07f1e59907427 21,23-24,26,28,31-32,35,37-38,40,42,45-46,49,51,54
+doc/en/API_CPP.md
+  s_bc7e2fec92cf97::t_d5818ff15e99f8 7,11,16,20,24,86,159
+doc/en/API_CPP_O10.md
+  s_bc7e2fec92cf97::t_1a45d120e1ff9c 1
+doc/en/API_KINEMATICS_CPP_O10.md
+  s_bc7e2fec92cf97::t_ba5520f9f569fe 1
+doc/en/API_KINEMATICS_PYTHON_O10.md
+  s_bc7e2fec92cf97::t_5969d4c9952dfe 1
+doc/en/API_PYTHON.md
+  s_bc7e2fec92cf97::t_cefce0e5641167 7,11,16,20,24,80,172
+doc/en/API_PYTHON_O10.md
+  s_bc7e2fec92cf97::t_86ffdd927a8ed6 1
+doc/en/API_ROS2.md
+  s_bc7e2fec92cf97::t_b94dfaf9c3514e 9,12,19,22
+doc/en/API_ROS2_O10.md
+  s_bc7e2fec92cf97::t_b30b5462651bd3 1
+doc/zh_cn/API_CPP.md
+  s_bc7e2fec92cf97::t_8978264f309441 7,11,16,20,24,98,172
+doc/zh_cn/API_CPP_O10.md
+  s_bc7e2fec92cf97::t_8a14a5870ee90e 1
+doc/zh_cn/API_KINEMATICS_CPP_O10.md
+  s_bc7e2fec92cf97::t_26e74515b9ac35 1
+doc/zh_cn/API_KINEMATICS_PYTHON_O10.md
+  s_bc7e2fec92cf97::t_073685a4108948 1
+doc/zh_cn/API_PYTHON.md
+  s_bc7e2fec92cf97::t_15deaa455bcc51 7,11,16,20,24,29,122
+doc/zh_cn/API_PYTHON_O10.md
+  s_bc7e2fec92cf97::t_13b14608c2f6a3 1
+doc/zh_cn/API_ROS2.md
+  s_bc7e2fec92cf97::t_788516a3c945c4 9,12,19,22
+doc/zh_cn/API_ROS2_O10.md
+  s_bc7e2fec92cf97::t_b588d19f32b45f 1
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "25c818bcc5afd78de031dd396ec30ff56785b6fa",
+  "prompts": {},
+  "sessions": {
+    "s_bc7e2fec92cf97": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1af8d-5192-7231-92b1-32ffa531328c",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.session_started_at": "2026-11-06T06:30:45Z",
+        "tlab.token_usage.output_tokens": "375725",
+        "tlab.token_usage.input_tokens": "2479182",
+        "tlab.token_usage.cache_read_tokens": "94119710"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "README.md",
+      "new_path": "README.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 17
+          }
+        ]
+      },
+      "deletions": {
+        "human": 16
+      }
+    },
+    {
+      "old_path": "README_zh_cn.md",
+      "new_path": "README_zh_cn.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 17
+          }
+        ]
+      },
+      "deletions": {
+        "human": 16
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP.md",
+      "new_path": "doc/en/API_CPP.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 7
+          }
+        ]
+      },
+      "deletions": {
+        "human": 7
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_O10.md",
+      "new_path": "doc/en/API_CPP_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/en/API_KINEMATICS_CPP_O10.md",
+      "new_path": "doc/en/API_KINEMATICS_CPP_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/en/API_KINEMATICS_PYTHON_O10.md",
+      "new_path": "doc/en/API_KINEMATICS_PYTHON_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON.md",
+      "new_path": "doc/en/API_PYTHON.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 7
+          }
+        ]
+      },
+      "deletions": {
+        "human": 7
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON_O10.md",
+      "new_path": "doc/en/API_PYTHON_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/en/API_ROS2.md",
+      "new_path": "doc/en/API_ROS2.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 4
+          }
+        ]
+      },
+      "deletions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "doc/en/API_ROS2_O10.md",
+      "new_path": "doc/en/API_ROS2_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP.md",
+      "new_path": "doc/zh_cn/API_CPP.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 7
+          }
+        ]
+      },
+      "deletions": {
+        "human": 7
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_O10.md",
+      "new_path": "doc/zh_cn/API_CPP_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_KINEMATICS_CPP_O10.md",
+      "new_path": "doc/zh_cn/API_KINEMATICS_CPP_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_KINEMATICS_PYTHON_O10.md",
+      "new_path": "doc/zh_cn/API_KINEMATICS_PYTHON_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON.md",
+      "new_path": "doc/zh_cn/API_PYTHON.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 7
+          }
+        ]
+      },
+      "deletions": {
+        "human": 7
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON_O10.md",
+      "new_path": "doc/zh_cn/API_PYTHON_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_ROS2.md",
+      "new_path": "doc/zh_cn/API_ROS2.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 4
+          }
+        ]
+      },
+      "deletions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_ROS2_O10.md",
+      "new_path": "doc/zh_cn/API_ROS2_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    }
+  ]
+}
