@@ -13,6 +13,7 @@
 #include <cstdint>
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 #include "omnihand/export_symbols.h"
@@ -600,6 +601,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
    */
   std::unique_ptr<h3um::OmniHand3UltraMSolver> joint_motor_solver_;
   H3UMRevision revision_{H3UMRevision::T1P3};
+  std::optional<h3um::H3UMGesture> previous_gesture_;
   std::map<Finger, size_t> tactile_points_map_;
   static constexpr Int16Bound kActualMotorPositionBound = {-1800, 1800};
 };

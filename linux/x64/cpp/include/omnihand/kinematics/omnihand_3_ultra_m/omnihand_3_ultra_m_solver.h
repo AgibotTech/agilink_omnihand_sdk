@@ -94,6 +94,10 @@ enum class H3UMT1P5ActiveJoint {
 
 enum class H3UMGesture : int {
   H3U_M_GESTURE_ALL_ZERO = 0,
+  H3U_M_GESTURE_FRONT_FIST = 1,
+  H3U_M_GESTURE_SIDE_FIST = 2,
+  H3U_M_GESTURE_FINGER_HEART = 3,
+  H3U_M_GESTURE_OPEN = 4,
 };
 
 /**

@@ -208,6 +208,22 @@ std::vector<MixCtrl> MixControlByPVT(
 
 Torque is transmitted directly as a signed 16-bit current value in mA. Call `hand->GetMinMaxDefaultMixCtrlTorque(joint_motor_index)` on the constructed hand: T1.3 reports range `0..10000` and default `1000`; T1.5 reports range `0..2000` and default `1900`. Motor indices start at `1`; an index outside the hand's actual joint count returns `{0, 0, 0}`. This is now a `const` instance method; replace previous class-qualified static calls with calls through the hand object.
 
+## Preset Gestures
+
+Use `GetHandGesture(int)` to retrieve motor encoder values or `SetHandGesture(int)` to execute a gesture. Both also accept `h3um::H3UMGesture`.
+
+| ID | Enum | Pose | Revision |
+| --- | --- | --- | --- |
+| 0 | `H3U_M_GESTURE_ALL_ZERO` | All encoder values zero | T1.3 / T1.5 |
+| 1 | `H3U_M_GESTURE_FRONT_FIST` | Front fist | T1.3 / T1.5 |
+| 2 | `H3U_M_GESTURE_SIDE_FIST` | Side fist | T1.3 / T1.5 |
+| 3 | `H3U_M_GESTURE_FINGER_HEART` | Finger heart | T1.3 / T1.5 |
+| 4 | `H3U_M_GESTURE_OPEN` | Open | T1.3 / T1.5 |
+
+Presets store motor encoder values selected by the hand object's revision and side: T1.3 returns 20 axes and T1.5 returns 21. Both revisions share the same gesture IDs. When using a standalone Solver, supply the revision and hand side explicitly.
+
+Switching to a different non-open pose (IDs 1–3, including switches from open) first retains the preceding pose's other joints and sets the four thumb ABAD, MCP, PIP, and DIP encoders to `0`, waits `200 ms`, then executes the target. These are axes 17–20 on T1.3 and 18–21 on T1.5 (1-based). T1.5 thumb ROLL at axis 17 retains its preceding value. A failed transition prevents the target command. First calls, repeated poses, and switches to open have no transition. ID 0 remains available for compatibility and does not participate in transitions.
+
 ## Zero and Calibration
 
 ```cpp
