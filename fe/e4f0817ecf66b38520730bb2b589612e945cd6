@@ -1,0 +1,106 @@
+doc/en/API_CPP_H3UM.md
+  s_bc7e2fec92cf97::t_b981bcb2c9cb7f 1,5,17-22,25-29,36-37,44-45,51-52,59-60,63,65,67
+doc/zh_cn/API_CPP_H3UM.md
+  s_bc7e2fec92cf97::t_b981bcb2c9cb7f 1,5,17-22,25-29,36-37,44-45,51-52,59-60,63,65,67
+doc/en/API_PYTHON_H3UM.md
+  s_bc7e2fec92cf97::t_b4bb336a58a52f 1,5,8,14,16,20-21,23-24,27-31
+doc/zh_cn/API_PYTHON_H3UM.md
+  s_bc7e2fec92cf97::t_e2641b4c217fa0 1,5,8,14,16,20-21,23-24,27-31
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "fee4f0817ecf66b38520730bb2b589612e945cd6",
+  "prompts": {},
+  "sessions": {
+    "s_bc7e2fec92cf97": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1af8d-5192-7231-92b1-32ffa531328c",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.session_started_at": "2026-11-07T01:16:05Z",
+        "tlab.token_usage.input_tokens": "1473275",
+        "tlab.token_usage.cache_read_tokens": "53523640",
+        "tlab.token_usage.output_tokens": "215450",
+        "tlab.token_usage.cache_creation_tokens": "0"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "doc/en/API_CPP_H3UM.md",
+      "new_path": "doc/en/API_CPP_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 24
+          }
+        ]
+      },
+      "deletions": {
+        "human": 4,
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 28
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON_H3UM.md",
+      "new_path": "doc/en/API_PYTHON_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 14
+          }
+        ]
+      },
+      "deletions": {
+        "human": 24
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_H3UM.md",
+      "new_path": "doc/zh_cn/API_CPP_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 24
+          }
+        ]
+      },
+      "deletions": {
+        "human": 4,
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 28
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON_H3UM.md",
+      "new_path": "doc/zh_cn/API_PYTHON_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 14
+          }
+        ]
+      },
+      "deletions": {
+        "human": 24
+      }
+    }
+  ]
+}
