@@ -428,12 +428,14 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
     return kActualMotorPositionBound;
   }
 
-  static constexpr Int16Range GetMinMaxDefaultMixCtrlTorque(uint8_t joint_motor_index) {
+  Int16Range GetMinMaxDefaultMixCtrlTorque(uint8_t joint_motor_index) const {
     if (joint_motor_index == 0 ||
-        joint_motor_index > kT1P5DegreesOfActiveFreedom) {
+        joint_motor_index > GetNumOfJointMotors()) {
       return {0, 0, 0};
     }
-    return kT1P3MixCtrlTorqueRange;
+    return revision_ == H3UMRevision::T1P5
+        ? kT1P5MixCtrlTorqueRange
+        : kT1P3MixCtrlTorqueRange;
   }
 
   // ============ Gesture Control ============

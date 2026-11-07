@@ -24,7 +24,7 @@ joint_names = hand.get_joint_names()
 joint_count = hand.get_num_of_joint_motors()
 ```
 
-Python 默认值仍为 `hand_device_id=9`：省略此参数或显式传入 `9` 时，直接按 T1.3 创建，不发送广播或自由度探测请求。传入 `0` 才启用自动发现：SDK 广播读取设备信息，无回复时回退地址 `9`，再单独读取自由度寄存器选择实现；探测失败或自由度不受支持时返回 `None`。其他显式 ID 跳过广播和地址回退，但仍读取自由度。自动发现适用于所选通道只有一只 H3UM 的场景；同一总线上有多台设备时，请显式传入目标设备 ID。
+Python 默认值仍为 `hand_device_id=9`：省略此参数或显式传入任意非零 ID 时，直接读取该地址的自由度，不发送广播或回退其他地址。设备地址不决定硬件版本。传入 `0` 时启用地址自动发现：SDK 广播读取设备信息，无回复时回退地址 `9`，再单独读取自由度寄存器。有效的 20 或 21 关节回复决定对应实现，探测失败或自由度不受支持时返回 `None`。地址自动发现适用于所选通道只有一只 H3UM 的场景；同一总线上有多台设备时，请显式传入目标设备 ID。
 
 `create_hand_by_hcan`、`create_hand_by_zlgcan_tcp`（相应平台）和 `create_hand_socketcan`（Linux）使用相同的识别流程。ZLG/HCAN 也支持按适配器序列号连接。可选的 `tactile_soc_ip` / `tactile_soc_port` 默认值为 `192.168.99.2:19009`，仅用于带外部 Xense/手掌服务的硬件；IP 为空时禁用该服务。
 

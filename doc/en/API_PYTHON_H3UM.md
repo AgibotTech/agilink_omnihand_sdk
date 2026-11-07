@@ -24,7 +24,7 @@ joint_names = hand.get_joint_names()
 joint_count = hand.get_num_of_joint_motors()
 ```
 
-The Python default remains `hand_device_id=9`: omitting the argument or explicitly passing `9` selects T1.3 without broadcast or DOF probing. Passing `0` requests automatic discovery: the SDK broadcasts a device-information read, falls back to address `9` if no reply arrives, then reads the standalone DOF register to select the implementation. Failed or unsupported discovery replies return `None`. Other explicit IDs skip broadcast and legacy fallback but still read DOF. Automatic discovery requires one H3UM per selected channel; on a shared bus, pass an explicit device ID.
+The Python default remains `hand_device_id=9`: omitting the argument or explicitly passing any nonzero ID queries DOF at that address without broadcast or address fallback. The address does not select a hardware revision. Passing `0` requests automatic address discovery: the SDK broadcasts a device-information read, falls back to address `9` if no reply arrives, then reads the standalone DOF register. A valid 20- or 21-joint reply selects the implementation; failed or unsupported replies return `None`. Automatic address discovery requires one H3UM per selected channel; on a shared bus, pass an explicit device ID.
 
 `create_hand_by_hcan`, `create_hand_by_zlgcan_tcp` (supported builds), and `create_hand_socketcan` (Linux) use the same discovery flow. ZLG/HCAN also accept adapter serial numbers. The optional `tactile_soc_ip` / `tactile_soc_port` endpoint defaults to `192.168.99.2:19009` and is used only by hardware with an external Xense/palm service. An empty IP disables that service.
 

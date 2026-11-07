@@ -24,7 +24,7 @@ if (hand && hand->Init()) {
 
 `hand_device_id` 显式传入 `kBroadcastHandDeviceId`（`0`）时启用自动发现：SDK 广播读取设备信息（`0x02/0x00`），仅在无回复时探测旧设备地址 `9`，再单独读取自由度寄存器（`0x01/0x06`）。收到有效的 20 或 21 关节回复后选择对应实现；读取失败或自由度不受支持时返回 `nullptr`。
 
-显式传入 `kT1P3DefaultHandDeviceId`（`9`）时，直接按 T1.3 创建，不发送广播或自由度探测请求。其他显式 ID 仍读取自由度。自动发现得到的地址（包括 `9`）始终通过自由度回包确认实现。
+显式传入任意非零设备 ID（包括 `kT1P3DefaultHandDeviceId`，即 `9`）时，跳过广播和地址回退，但仍读取自由度。设备地址不决定硬件版本：有效的 20 或 21 关节回复决定对应实现，读取失败或自由度不受支持时返回 `nullptr`。
 
 自动发现适用于所选 CAN 通道只有一台 H3UM 的场景。同一总线上有多台设备时，请显式传入目标设备 ID，此时跳过广播和旧地址回退。关节数和顺序应通过 `GetNumOfJointMotors()` 与 `GetJointNames()` 获取。
 
@@ -219,7 +219,7 @@ std::vector<MixCtrl> MixControlByPVT(
     const std::vector<int16_t>& torques);
 ```
 
-力矩按有符号 16 位电流值直接下发，单位为 mA。`GetMinMaxDefaultMixCtrlTorque()` 返回范围 `0..10000`、默认值 `1000`。
+力矩按有符号 16 位电流值直接下发，单位为 mA。通过构造后的对象调用 `hand->GetMinMaxDefaultMixCtrlTorque(joint_motor_index)`：T1.3 返回范围 `0..10000`、默认值 `1000`；T1.5 返回范围 `0..2000`、默认值 `1900`。电机索引从 `1` 开始，超出实际关节数时返回 `{0, 0, 0}`。该接口现为 `const` 成员函数，原先通过类名调用的静态写法需改为通过手对象调用。
 
 ## 零位与标定
 
@@ -254,6 +254,8 @@ std::vector<TactileSensorResultantForce3DI16> GetAllTactileSensorResultantForces
 int16_t GetTemperatureOfPalm() const;
 int16_t GetTemperatureOfPower() const;
 ```
+
+板温接口仅支持 T1.5。T1.3 调用上述两个接口及其带时间戳版本时，温度值直接返回 `0`，不发送 CAN 请求。
 
 ## 相关文档
 

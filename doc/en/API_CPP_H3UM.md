@@ -24,7 +24,7 @@ if (hand && hand->Init()) {
 
 Pass `kBroadcastHandDeviceId` (`0`) as `hand_device_id` to enable automatic discovery: the SDK broadcasts a device-information read (`0x02/0x00`), falls back to legacy address `9` only if no reply arrives, then reads the standalone DOF register (`0x01/0x06`). A valid 20- or 21-joint reply selects the implementation. Failed or unsupported replies return `nullptr`.
 
-Explicitly passing `kT1P3DefaultHandDeviceId` (`9`) selects T1.3 directly without broadcast or DOF probing. Other explicit IDs still query DOF. An address discovered automatically, including `9`, is always verified by a DOF read.
+Every explicit nonzero device ID, including `kT1P3DefaultHandDeviceId` (`9`), skips broadcast and address fallback but still queries DOF. The device address does not select a hardware revision: a valid 20- or 21-joint reply determines the implementation, and a failed or unsupported reply returns `nullptr`.
 
 Automatic discovery requires one H3UM per selected CAN channel. On a shared bus, pass the target's explicit ID; this skips broadcast and legacy fallback. Use `GetNumOfJointMotors()` and `GetJointNames()` rather than hardcoding the joint count or order.
 
@@ -206,7 +206,7 @@ std::vector<MixCtrl> MixControlByPVT(
     const std::vector<int16_t>& torques);
 ```
 
-Torque is transmitted directly as a signed 16-bit current value in mA. `GetMinMaxDefaultMixCtrlTorque()` reports range `0..10000` and default `1000`.
+Torque is transmitted directly as a signed 16-bit current value in mA. Call `hand->GetMinMaxDefaultMixCtrlTorque(joint_motor_index)` on the constructed hand: T1.3 reports range `0..10000` and default `1000`; T1.5 reports range `0..2000` and default `1900`. Motor indices start at `1`; an index outside the hand's actual joint count returns `{0, 0, 0}`. This is now a `const` instance method; replace previous class-qualified static calls with calls through the hand object.
 
 ## Zero and Calibration
 
@@ -241,6 +241,8 @@ std::vector<TactileSensorResultantForce3DI16> GetAllTactileSensorResultantForces
 int16_t GetTemperatureOfPalm() const;
 int16_t GetTemperatureOfPower() const;
 ```
+
+Board temperatures are supported only on T1.5. On T1.3, both getters and their timestamped variants return a temperature value of `0` without sending a CAN request.
 
 ## Related Documentation
 
