@@ -1,0 +1,72 @@
+README.md
+  s_bc7e2fec92cf97::t_127155ad4d907a 5-6,56-59
+README_zh_cn.md
+  s_bc7e2fec92cf97::t_127155ad4d907a 5-6,56-59
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "8de340b9920a14d44e187704d479badee636bffe",
+  "prompts": {},
+  "sessions": {
+    "s_bc7e2fec92cf97": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1af8d-5192-7231-92b1-32ffa531328c",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": null,
+      "custom_attributes": {
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.token_usage.output_tokens": "366748",
+        "tlab.token_usage.input_tokens": "2433905",
+        "tlab.session_started_at": "2026-11-07T07:56:55Z",
+        "tlab.token_usage.cache_read_tokens": "90534687"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "README.md",
+      "new_path": "README.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 6
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3,
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "README_zh_cn.md",
+      "new_path": "README_zh_cn.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 6
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3,
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      }
+    }
+  ]
+}
