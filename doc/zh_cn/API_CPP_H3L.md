@@ -11,7 +11,7 @@
 - 支持 SocketCAN（仅 Linux）
 - 支持 ZLG CAN TCP（仅 Linux x64 / Windows）
 - 文档所述 H3L 硬件**无触觉传感器**；U16 触觉方法作为协议/固件兼容接口保留
-- **无运动学求解器**：不支持角度控制（`SetAllActiveJointAngles` 为桩实现）。请使用电机位置控制（`SetAllJointMotorPosi` / `SetAllJointMotorPosi`）
+- 提供[离线运动学求解器](#运动学求解器)，用于主动关节角与电机位置换算。设备角度控制接口仍为桩实现；请通过 `SetAllJointMotorPosi` 下发换算后的电机位置。
 
 ## 电机分布
 
@@ -219,6 +219,32 @@ std::vector<int16_t> GetAllJointMotorPosi() const;
 std::vector<double> SetAllActiveJointAngles(const std::vector<double>& angles);
 std::vector<double> GetAllActiveJointAngles() const;
 ```
+
+### 运动学求解器
+
+`agilink::omnihand::h3l::OmniHand3LiteSolver` 提供 H3L-S 和 H3L-M 的离线换算，无需连接设备。
+
+```cpp
+#include "omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h"
+
+using namespace agilink::omnihand::h3l;
+
+OmniHand3LiteSolver solver(true, H3LModel::H3L_S);  // Left H3L-S; use H3L_M for H3L-M.
+std::vector<int16_t> motor_positions = {0, 0, 0, 0};
+auto angles = solver.ActuatorInput2ActiveJointPos(motor_positions);
+auto actuator = solver.ActiveJointPos2ActuatorInput(angles);
+```
+
+单参数构造 `OmniHand3LiteSolver(is_left_hand)` 默认使用 H3L-S。向量必须包含 4 个值，按 `H3LActivateJoint` 顺序排列：中指/无名指/小指联动 PIP、食指 PIP、拇指 PIP、拇指外展/内收。角度单位为弧度，电机输入使用 `[0, 4096]` 协议值。向量长度不正确时，换算返回空向量。
+
+单关节换算使用从 0 开始的索引（`0..3`）：
+
+```cpp
+double SingleActuatorInput2ActiveJointPos(std::size_t joint_index, int16_t actuator_input) const;
+int16_t SingleActiveJointPos2ActuatorInput(std::size_t joint_index, double rad) const;
+```
+
+以上方法仅进行数值计算。H3L 暂不提供完整的主动加被动关节角运动学。控制设备时，将换算后的电机位置传给 `SetAllJointMotorPosi`；`SetAllActiveJointAngles` 和 `GetAllActiveJointAngles` 仍为桩实现。
 
 ### 速度控制
 

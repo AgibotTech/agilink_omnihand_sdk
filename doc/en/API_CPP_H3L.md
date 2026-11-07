@@ -11,7 +11,7 @@
 - Supports SocketCAN (Linux only)
 - Supports ZLG CAN TCP (Linux x64 / Windows only)
 - **No tactile sensors** on the documented H3L hardware; U16 tactile methods remain as protocol/firmware compatibility APIs
-- **No kinematics solver**: angle-based control is unavailable (`SetAllActiveJointAngles` is a stub). Use motor position control (`SetAllJointMotorPosi` / `SetAllJointMotorPosi`) instead.
+- An [offline kinematics solver](#kinematics-solver) converts between active joint angles and motor positions. Device angle-control methods remain stubs; use `SetAllJointMotorPosi` to send the converted positions.
 
 ## Motor Layout
 
@@ -219,6 +219,32 @@ std::vector<int16_t> GetAllJointMotorPosi() const;
 std::vector<double> SetAllActiveJointAngles(const std::vector<double>& angles);
 std::vector<double> GetAllActiveJointAngles() const;
 ```
+
+### Kinematics Solver
+
+`agilink::omnihand::h3l::OmniHand3LiteSolver` provides offline conversion for H3L-S and H3L-M without connecting to a device.
+
+```cpp
+#include "omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h"
+
+using namespace agilink::omnihand::h3l;
+
+OmniHand3LiteSolver solver(true, H3LModel::H3L_S);  // Left H3L-S; use H3L_M for H3L-M.
+std::vector<int16_t> motor_positions = {0, 0, 0, 0};
+auto angles = solver.ActuatorInput2ActiveJointPos(motor_positions);
+auto actuator = solver.ActiveJointPos2ActuatorInput(angles);
+```
+
+The one-argument constructor `OmniHand3LiteSolver(is_left_hand)` defaults to H3L-S. Vectors must contain four values in `H3LActivateJoint` order: MRP PIP, index PIP, thumb PIP, thumb abduction/adduction. Angles are radians; motor inputs use `[0, 4096]` protocol units. Vector conversions return an empty vector if the input length is wrong.
+
+Single-joint conversions use a zero-based index (`0..3`):
+
+```cpp
+double SingleActuatorInput2ActiveJointPos(std::size_t joint_index, int16_t actuator_input) const;
+int16_t SingleActiveJointPos2ActuatorInput(std::size_t joint_index, double rad) const;
+```
+
+These methods only calculate values. H3L does not currently provide full active-plus-passive joint-angle kinematics. To control a device, pass the converted positions to `SetAllJointMotorPosi`; `SetAllActiveJointAngles` and `GetAllActiveJointAngles` remain stubs.
 
 ### Velocity Control
 

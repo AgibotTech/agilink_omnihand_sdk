@@ -33,6 +33,7 @@
 - [OmniHand 2025 (O10) Python API](doc/zh_cn/API_PYTHON_O10.md)
 - [OmniHand Pro 2025 (O12) Python API](doc/zh_cn/API_PYTHON_O12.md)
 - [OmniHand 3 Lite (H3L) Python API](doc/zh_cn/API_PYTHON_H3L.md)
+- [OmniPicker 3 (OP3) Python API](doc/zh_cn/API_PYTHON_OP3.md)
 - [OmniHand Dex UMI (O10 UMI) Python API](doc/zh_cn/API_PYTHON_UMI.md)
 - [OmniHand 3 Ultra M（H3UM T1.3/T1.5）Python API](doc/zh_cn/API_PYTHON_H3UM.md)
 
@@ -41,6 +42,10 @@
 - [OmniHand 2025 (O10) 运动学 Python](doc/zh_cn/API_KINEMATICS_PYTHON_O10.md)
 - [OmniHand Pro 2025 (O12) 运动学 C++](doc/zh_cn/API_KINEMATICS_CPP_O12.md)
 - [OmniHand Pro 2025 (O12) 运动学 Python](doc/zh_cn/API_KINEMATICS_PYTHON_O12.md)
+- [OmniHand 3 Lite (H3L) 运动学 C++](doc/zh_cn/API_CPP_H3L.md#运动学求解器)
+- [OmniHand 3 Lite (H3L) 运动学 Python](doc/zh_cn/API_PYTHON_H3L.md#主动关节角与离线求解器)
+- [OmniHand 3 Ultra M（H3UM T1.3/T1.5）运动学 C++](doc/zh_cn/API_CPP_H3UM.md#运动学求解器)
+- [OmniHand 3 Ultra M（H3UM T1.3/T1.5）运动学 Python](doc/zh_cn/API_PYTHON_H3UM.md#运动学求解器)
 
 ### ROS2 接口（仅 Linux）
 - [ROS2 API 索引](doc/zh_cn/API_ROS2.md)

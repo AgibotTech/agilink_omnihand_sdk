@@ -169,6 +169,33 @@ bool started = hand->PlaySequence(std::move(source));
 
 The static reader writes one point into the SDK-provided buffer and returns the duration from the previous target to this target. Point 0 starts from the current device position. Durations must be positive, except point 0 may have zero duration if it matches the current position. The SDK validates points before starting and caches only two adjacent points during playback. The reader must access memory without blocking, and the source data must remain unchanged. Resolve action/gesture references and handle non-position steps before playback. The SDK retains the shared owner until `StopSequence()` releases its reference.
 
+## Kinematics Solver
+
+`agilink::omnihand::h3um::OmniHand3UltraMSolver` converts between active joint angles and motor positions without connecting to a device.
+
+```cpp
+#include "omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h"
+
+using namespace agilink::omnihand;
+using namespace agilink::omnihand::h3um;
+
+OmniHand3UltraMSolver solver(true, H3UMRevision::T1P5);  // Left T1.5; use T1P3 for T1.3.
+std::vector<int16_t> motor_positions(solver.GetActiveJointCount(), 0);
+auto angles = solver.ActuatorInput2ActiveJointPos(motor_positions);
+auto actuator = solver.ActiveJointPos2ActuatorInput(angles);
+```
+
+The one-argument constructor `OmniHand3UltraMSolver(is_left_hand)` defaults to T1.3. Vectors must contain 20 values for T1.3 or 21 for T1.5, in the same order as the matching device's `GetJointNames()`. Angles are radians; motor inputs use `[0, 4096]` protocol units. Vector conversions return an empty vector if the input length is wrong.
+
+Single-joint conversions use a zero-based index (`0..19` for T1.3, `0..20` for T1.5):
+
+```cpp
+int16_t SingleActiveJointPos2ActuatorInput(std::size_t joint_index, double rad) const;
+double SingleActuatorInput2ActiveJointPos(std::size_t joint_index, int16_t actuator_input) const;
+```
+
+These methods only calculate values. To send the converted positions to a device, call `SetAllJointMotorPosi` separately.
+
 ## Mixed Control
 
 ```cpp

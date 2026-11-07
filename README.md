@@ -33,6 +33,7 @@
 - [OmniHand 2025 (O10) Python API](doc/en/API_PYTHON_O10.md)
 - [OmniHand Pro 2025 (O12) Python API](doc/en/API_PYTHON_O12.md)
 - [OmniHand 3 Lite (H3L) Python API](doc/en/API_PYTHON_H3L.md)
+- [OmniPicker 3 (OP3) Python API](doc/en/API_PYTHON_OP3.md)
 - [OmniHand Dex UMI (O10 UMI) Python API](doc/en/API_PYTHON_UMI.md)
 - [OmniHand 3 Ultra M (H3UM T1.3/T1.5) Python API](doc/en/API_PYTHON_H3UM.md)
 
@@ -41,6 +42,10 @@
 - [OmniHand 2025 (O10) Kinematics Python](doc/en/API_KINEMATICS_PYTHON_O10.md)
 - [OmniHand Pro 2025 (O12) Kinematics C++](doc/en/API_KINEMATICS_CPP_O12.md)
 - [OmniHand Pro 2025 (O12) Kinematics Python](doc/en/API_KINEMATICS_PYTHON_O12.md)
+- [OmniHand 3 Lite (H3L) Kinematics C++](doc/en/API_CPP_H3L.md#kinematics-solver)
+- [OmniHand 3 Lite (H3L) Kinematics Python](doc/en/API_PYTHON_H3L.md#active-joint-angles-and-offline-solver)
+- [OmniHand 3 Ultra M (H3UM T1.3/T1.5) Kinematics C++](doc/en/API_CPP_H3UM.md#kinematics-solver)
+- [OmniHand 3 Ultra M (H3UM T1.3/T1.5) Kinematics Python](doc/en/API_PYTHON_H3UM.md#kinematics-solver)
 
 ### ROS2 Interface (Linux Only)
 - [ROS2 API Index](doc/en/API_ROS2.md)

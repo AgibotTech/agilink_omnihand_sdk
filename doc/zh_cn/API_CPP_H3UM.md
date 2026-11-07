@@ -182,6 +182,33 @@ bool started = hand->PlaySequence(std::move(source));
 
 SDK 在启动时校验数据，播放时只缓存相邻两步。读取函数应只读内存；播放期间原数据保持不变，未解析的动作/手势需提前解析，`none` 步骤需由上层明确处理。SDK 持有数据所有者直到 `StopSequence()`，停止后释放自己的引用。
 
+## 运动学求解器
+
+`agilink::omnihand::h3um::OmniHand3UltraMSolver` 用于主动关节角与电机位置的离线换算，无需连接设备。
+
+```cpp
+#include "omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h"
+
+using namespace agilink::omnihand;
+using namespace agilink::omnihand::h3um;
+
+OmniHand3UltraMSolver solver(true, H3UMRevision::T1P5);  // Left T1.5; use T1P3 for T1.3.
+std::vector<int16_t> motor_positions(solver.GetActiveJointCount(), 0);
+auto angles = solver.ActuatorInput2ActiveJointPos(motor_positions);
+auto actuator = solver.ActiveJointPos2ActuatorInput(angles);
+```
+
+单参数构造 `OmniHand3UltraMSolver(is_left_hand)` 默认使用 T1.3。T1.3 向量必须包含 20 个值，T1.5 必须包含 21 个值，顺序与对应版本设备的 `GetJointNames()` 一致。角度单位为弧度，电机输入使用 `[0, 4096]` 协议值。向量长度不正确时，换算返回空向量。
+
+单关节换算使用从 0 开始的索引（T1.3 为 `0..19`，T1.5 为 `0..20`）：
+
+```cpp
+int16_t SingleActiveJointPos2ActuatorInput(std::size_t joint_index, double rad) const;
+double SingleActuatorInput2ActiveJointPos(std::size_t joint_index, int16_t actuator_input) const;
+```
+
+以上方法仅进行数值计算。需要将换算结果下发到设备时，请另外调用 `SetAllJointMotorPosi`。
+
 ## 混合控制
 
 ```cpp
