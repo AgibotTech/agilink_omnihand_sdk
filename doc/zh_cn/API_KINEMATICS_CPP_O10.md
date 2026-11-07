@@ -7,7 +7,7 @@
 ## 包含头文件
 
 ```cpp
-#include "kinematics/omnihand_2025/omnihand_2025_solver.h"
+#include "omnihand/kinematics/omnihand_2025/omnihand_2025_solver.h"
 ```
 
 ## 构造函数
@@ -69,10 +69,10 @@ std::vector<double> ActuatorInput2ActiveJointPos(const std::vector<int>& actuato
 - 将执行器输入值转换回主动关节位置。
 - **注意**：O10 电机输入范围为 0-4096，与 O12 的 0-2000 不同。
 
-### 4. GetAllJointAngles
+### 4. GetAllJointPos
 
 ```cpp
-std::vector<double> GetAllJointAngles(const std::vector<double>& active_joint_angles);
+std::vector<double> GetAllJointPos(const std::vector<double>& active_joint_angles);
 ```
 
 - 根据给定的主动关节位置，获取所有关节（包括被动关节）的角度。
@@ -88,7 +88,7 @@ void show_log(bool flag);
 ## 代码示例
 
 ```cpp
-#include "kinematics/omnihand_2025/omnihand_2025_solver.h"
+#include "omnihand/kinematics/omnihand_2025/omnihand_2025_solver.h"
 
 // 创建右手求解器
 agilink::omnihand::o10::OmniHand2025Solver solver(false);
@@ -98,14 +98,14 @@ solver.show_log(true);
 
 // 设置手势
 std::vector<int> actuator_input = solver.SetHandGesture(
-    o10::OmniHand2025Gesture::OMNIHAND_2025_GESTURE_FIST1);
+    agilink::omnihand::o10::OmniHand2025Gesture::OMNIHAND_2025_GESTURE_FIST1);
 
 // 将关节位置转换为执行器输入
 std::vector<double> active_joint_angles = {0.5, -0.3, 0.6, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0};
 std::vector<int> input = solver.ActiveJointPos2ActuatorInput(active_joint_angles);
 
 // 获取所有关节位置（包括被动关节）
-std::vector<double> all_joints = solver.GetAllJointAngles(active_joint_angles);
+std::vector<double> all_joints = solver.GetAllJointPos(active_joint_angles);
 ```
 
 ## 相关文档

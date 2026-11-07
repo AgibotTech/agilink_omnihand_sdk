@@ -33,9 +33,9 @@ namespace omnihand {
  * This class provides the public interface for OmniHand 3 Lite S product.
  * 
  * @note O4 does not have tactile sensors. Tactile sensor methods return empty data.
- * @note Currently does not support angle-based control (SetAllActiveJointAngles) as full kinematics solver is not available.
- *       Use motor position control (SetJointMotorPosi, SetAllJointMotorPosi) instead.
- *       Gesture control is available via SetHandGesture() with OmniHand3LiteGesture enum.
+ * @note SetAllActiveJointAngles and GetAllActiveJointAngles support radians over CAN and RS485.
+ * @note Full active-plus-passive joint kinematics (GetAllJointAngles) is not implemented.
+ * @note Gesture control is available via SetHandGesture() with OmniHand3LiteGesture enum.
  */
 class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, public ITactileSensor1DU16 {
  public:

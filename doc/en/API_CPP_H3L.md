@@ -11,7 +11,7 @@
 - Supports SocketCAN (Linux only)
 - Supports ZLG CAN TCP (Linux x64 / Windows only)
 - **No tactile sensors** on the documented H3L hardware; U16 tactile methods remain as protocol/firmware compatibility APIs
-- An [offline kinematics solver](#kinematics-solver) converts between active joint angles and motor positions. Device angle-control methods remain stubs; use `SetAllJointMotorPosi` to send the converted positions.
+- Supports setting and reading four active joint angles in radians over CAN and RS485. An [offline kinematics solver](#kinematics-solver) also converts between active joint angles and motor positions without a device connection. Full active-plus-passive joint-angle kinematics is not supported.
 
 ## Motor Layout
 
@@ -49,17 +49,18 @@ enum class ControlMode : unsigned char {
     TORQUE                    = 3,    // Torque mode (H3L not supported)
     POSITION_TORQUE           = 4,    // Position-Torque mode (Mixed control: position + current)
     VELOCITY_TORQUE           = 5,    // Velocity-Torque mode (H3L not yet available)
-    POSITION_VELOCITY_TORQUE  = 6,    // Position-Velocity-Torque mode (H3L not yet available)
+    POSITION_VELOCITY_TORQUE  = 6,    // Position-Velocity-Torque mode (Mixed control: position + velocity + current)
     UNKNOWN                   = 10    // Unknown mode
 };
 }  // namespace omnihand
 }  // namespace agilink
 ```
 
-**H3L available modes**:
+**H3L control modes and SDK APIs**:
 - `POSITION` (0): Default position control
-- `POSITION_TORQUE` (4): Position + current mixed control
-- Other modes are not available or not yet open
+- `POSITION_TORQUE` (4): Position + current mixed control via `MixControlByPT`
+- `POSITION_VELOCITY_TORQUE` (6): Position + velocity + current mixed control via `MixControlByPVT`
+- See the enum comments above for API restrictions on other modes
 
 ## Data Structures
 
@@ -212,13 +213,14 @@ int16_t GetJointMotorPosi(unsigned char joint_motor_index) const;
 std::vector<int16_t> GetAllJointMotorPosi() const;
 ```
 
-### Joint Angle Control (unavailable)
+### Active Joint Angle Control (radians)
 
 ```cpp
-// These methods are stubs on H3L. Use motor position control instead.
 std::vector<double> SetAllActiveJointAngles(const std::vector<double>& angles);
 std::vector<double> GetAllActiveJointAngles() const;
 ```
+
+Both CAN and RS485 support these methods. Vectors contain four values in radians, ordered by `H3LActivateJoint`. The SDK uses the Solver for the hand object's model and side to convert between angles and motor encoder values; the setter returns active joint angles converted from motor feedback.
 
 ### Kinematics Solver
 
@@ -244,7 +246,7 @@ double SingleActuatorInput2ActiveJointPos(std::size_t joint_index, int16_t actua
 int16_t SingleActiveJointPos2ActuatorInput(std::size_t joint_index, double rad) const;
 ```
 
-These methods only calculate values. H3L does not currently provide full active-plus-passive joint-angle kinematics. To control a device, pass the converted positions to `SetAllJointMotorPosi`; `SetAllActiveJointAngles` and `GetAllActiveJointAngles` remain stubs.
+These Solver methods perform numerical calculations without a device connection. To control a device, call `SetAllActiveJointAngles` and `GetAllActiveJointAngles` directly, or pass offline-converted motor positions to `SetAllJointMotorPosi`. Both `GetAllJointAngles()` and its overload taking active joint angles remain stubs: they return four zeros and do not provide full active-plus-passive joint angles.
 
 ### Velocity Control
 
@@ -269,6 +271,8 @@ std::vector<int16_t> GetAllCurrentThreshold() const;
 
 ### Mixed Control
 
+Supports PT (position + current) and PVT (position + velocity + current) mixed control, with single-axis and batch APIs.
+
 ```cpp
 MixCtrl MixControlByPT(uint8_t joint_motor_index,
                        int16_t position,
@@ -283,7 +287,7 @@ std::vector<MixCtrl> MixControlByPVT(const std::vector<int16_t>& positions,
                                      const std::vector<int16_t>& velocities,
                                      const std::vector<int16_t>& torques);
 ```
-- `ctrl_mode_`: only `POSITION_TORQUE` is available
+- `ctrl_mode_`: `MixControlMode::POSITION_TORQUE` (PT) or `MixControlMode::POSITION_VELOCITY_TORQUE` (PVT)
 - `tgt_posi_`: target position (0-4095 encoder raw value)
 - `tgt_torque_`: target current (unit: mA)
 

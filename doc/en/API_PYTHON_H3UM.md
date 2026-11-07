@@ -48,7 +48,16 @@ hand.set_all_control_modes(modes)
 modes = hand.get_all_control_modes()
 ```
 
-The binding also exposes current-threshold, velocity, temperature, current, error-report, request-interval, receive-timeout, raw tactile, resultant-force, and detail-log APIs. T1.5 additionally provides `get_temperature_of_palm()` and `get_temperature_of_power()`.
+The binding also exposes current-threshold, velocity, temperature, current, error-report, request-interval, receive-timeout, and detail-log APIs. T1.5 additionally provides `get_temperature_of_palm()` and `get_temperature_of_power()`.
+
+## Tactile Data
+
+`get_tactile_sensor_data_raw(sensor)` and `get_all_tactile_sensor_data_raw()` return different data types depending on the hand object's revision:
+
+- **T1.3**: Downsampled 3D tactile force as `TactileSensorData3DI16`, with signed 16-bit XYZ components per point in `points`. `get_tactile_sensor_resultant_force(sensor)` and `get_all_tactile_sensor_resultant_forces()` retrieve resultant forces and are supported only on T1.3.
+- **T1.5**: 1D U16 tactile data as `TactileSensorDataU16`, with one `uint16_t` pressure value per point in `data_`. T1.5 does not support the 3D resultant-force methods above.
+
+Python keeps the same raw method names; the binding selects the tactile interface by revision. C++ uses `GetTactileSensor3D()` and `GetTactileSensor1D()` respectively; see the [H3UM C++ API](API_CPP_H3UM.md).
 
 ## Kinematics Solver
 

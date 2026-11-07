@@ -48,7 +48,16 @@ hand.set_all_control_modes(modes)
 modes = hand.get_all_control_modes()
 ```
 
-绑定还提供电流阈值、速度、温度、电流、错误报告、请求间隔、接收超时、原始触觉、触觉合力和详细日志接口。T1.5 还提供 `get_temperature_of_palm()` 与 `get_temperature_of_power()`。
+绑定还提供电流阈值、速度、温度、电流、错误报告、请求间隔、接收超时和详细日志接口。T1.5 还提供 `get_temperature_of_palm()` 与 `get_temperature_of_power()`。
+
+## 触觉数据
+
+`get_tactile_sensor_data_raw(sensor)` 与 `get_all_tactile_sensor_data_raw()` 根据手对象的版本返回不同类型的数据：
+
+- **T1.3**：3D 触觉力降采样数据，类型为 `TactileSensorData3DI16`，`points` 保存各点有符号 16 位 XYZ 分量。`get_tactile_sensor_resultant_force(sensor)` 与 `get_all_tactile_sensor_resultant_forces()` 用于获取合力，仅支持 T1.3。
+- **T1.5**：1D U16 触觉数据，类型为 `TactileSensorDataU16`，`data_` 保存每点的 `uint16_t` 压力值。T1.5 不支持上述 3D 合力接口。
+
+Python 的 Raw 方法名保持一致，绑定层按版本选择对应的触觉接口。C++ 分别使用 `GetTactileSensor3D()` 和 `GetTactileSensor1D()`，详见 [H3UM C++ API](API_CPP_H3UM.md)。
 
 ## 运动学求解器
 

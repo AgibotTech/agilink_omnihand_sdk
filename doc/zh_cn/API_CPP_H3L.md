@@ -11,7 +11,7 @@
 - 支持 SocketCAN（仅 Linux）
 - 支持 ZLG CAN TCP（仅 Linux x64 / Windows）
 - 文档所述 H3L 硬件**无触觉传感器**；U16 触觉方法作为协议/固件兼容接口保留
-- 提供[离线运动学求解器](#运动学求解器)，用于主动关节角与电机位置换算。设备角度控制接口仍为桩实现；请通过 `SetAllJointMotorPosi` 下发换算后的电机位置。
+- 支持通过 CAN 和 RS485 直接设置、读取 4 个主动关节角（单位：弧度）；[离线运动学求解器](#运动学求解器)也可独立完成主动关节角与电机位置换算。尚不支持完整的主动加被动关节角运动学。
 
 ## 电机分布
 
@@ -49,17 +49,18 @@ enum class ControlMode : unsigned char {
     TORQUE                    = 3,    // 力控模式（H3L 不支持）
     POSITION_TORQUE           = 4,    // 位置-力控模式（混合控制：位置 + 电流）
     VELOCITY_TORQUE           = 5,    // 速度-力控模式（H3L 暂未开放）
-    POSITION_VELOCITY_TORQUE  = 6,    // 位置-速度-力控模式（H3L 暂未开放）
+    POSITION_VELOCITY_TORQUE  = 6,    // 位置-速度-力控模式（混合控制：位置 + 速度 + 电流）
     UNKNOWN                   = 10    // 未知模式
 };
 }  // namespace omnihand
 }  // namespace agilink
 ```
 
-**H3L 可用模式**：
+**H3L 控制模式与 SDK 接口**：
 - `POSITION` (0)：默认位置控制
-- `POSITION_TORQUE` (4)：位置+电流混合控制
-- 其余模式不可用或暂未开放
+- `POSITION_TORQUE` (4)：位置+电流混合控制，使用 `MixControlByPT`
+- `POSITION_VELOCITY_TORQUE` (6)：位置+速度+电流混合控制，使用 `MixControlByPVT`
+- 其他模式的接口限制参见上述枚举说明
 
 ## 数据结构
 
@@ -212,13 +213,14 @@ int16_t GetJointMotorPosi(unsigned char joint_motor_index) const;
 std::vector<int16_t> GetAllJointMotorPosi() const;
 ```
 
-### 关节角度控制（不可用）
+### 主动关节角度控制（弧度）
 
 ```cpp
-// 以下方法在 H3L 中为桩实现，不可用。请使用电机位置控制。
 std::vector<double> SetAllActiveJointAngles(const std::vector<double>& angles);
 std::vector<double> GetAllActiveJointAngles() const;
 ```
+
+CAN 和 RS485 均支持上述接口。向量包含 4 个值，单位为弧度（rad），顺序与 `H3LActivateJoint` 一致。SDK 使用手对象对应型号及左右手的 Solver 完成角度与电机编码换算；设置接口返回电机反馈换算后的主动关节角。
 
 ### 运动学求解器
 
@@ -244,7 +246,7 @@ double SingleActuatorInput2ActiveJointPos(std::size_t joint_index, int16_t actua
 int16_t SingleActiveJointPos2ActuatorInput(std::size_t joint_index, double rad) const;
 ```
 
-以上方法仅进行数值计算。H3L 暂不提供完整的主动加被动关节角运动学。控制设备时，将换算后的电机位置传给 `SetAllJointMotorPosi`；`SetAllActiveJointAngles` 和 `GetAllActiveJointAngles` 仍为桩实现。
+以上 Solver 方法仅进行数值计算，无需连接设备。控制设备时可直接调用 `SetAllActiveJointAngles`、`GetAllActiveJointAngles`，也可将离线换算后的电机位置传给 `SetAllJointMotorPosi`。`GetAllJointAngles()` 及其带主动关节角参数的重载仍为桩实现，返回 4 个零值，不提供完整的主动加被动关节角。
 
 ### 速度控制
 
@@ -267,6 +269,8 @@ std::vector<int16_t> GetAllCurrentThreshold() const;
 ```
 
 ### 混合控制
+
+支持 PT（位置+电流）和 PVT（位置+速度+电流）混控，可单轴或批量控制。
 
 ```cpp
 MixCtrl MixControlByPT(uint8_t joint_motor_index,

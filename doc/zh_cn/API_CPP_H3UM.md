@@ -250,7 +250,9 @@ bool SaveParam();
 
 ## 触觉数据与 T1.5 板温
 
-T1.3 使用 Xense 触觉 SoC 接口：
+### T1.3：Xense 触觉 SoC
+
+T1.3 使用以下 Xense 触觉 SoC 接口：
 
 ```cpp
 bool GetFingerTactile(uint8_t finger_index, XenseFrame& frame); // 0=拇指 .. 4=小指
@@ -260,13 +262,50 @@ bool GetAllTactile(AllTactileFrame& frame);
 
 `XenseFrame::timestamp` 单位为纳秒。`PalmFrame` 包含力场、`resultant[3]` 和触觉服务提供的 `timestamp`。
 
-T1.5 使用通用 Raw 触觉接口，并可获取六个传感器的合力：
+### T1.3：3D 触觉力降采样与合力
+
+T1.3 通过 CAN 获取六个传感器的降采样 3D 触觉力和合力。以下方法属于 `ITactileSensor3DI16`，通过 `hand->GetTactileSensor3D()` 获取该接口：
 
 ```cpp
 TactileSensorData3DI16 GetTactileSensorDataRaw(Finger sensor) const;
 std::vector<TactileSensorData3DI16> GetAllTactileSensorDataRaw() const;
 TactileSensorResultantForce3DI16 GetTactileSensorResultantForce(Finger sensor) const;
 std::vector<TactileSensorResultantForce3DI16> GetAllTactileSensorResultantForces() const;
+```
+
+```cpp
+if (auto* tactile = hand->GetTactileSensor3D()) {
+  auto data = tactile->GetTactileSensorDataRaw(Finger::THUMB);
+  auto forces = tactile->GetAllTactileSensorResultantForces();
+}
+```
+
+`TactileSensorData3DI16::points` 保存降采样后各点的有符号 16 位 XYZ 分量；合力通过独立的合力接口获取。
+
+### T1.5：1D U16 触觉
+
+T1.5 使用独立的 `ITactileSensor1DU16` 接口，通过 `hand->GetTactileSensor1D()` 获取：
+
+```cpp
+TactileSensorDataU16 GetTactileSensorData(Finger sensor) const;
+TactileSensorDataU16 GetTactileSensorDataRaw(Finger sensor) const;
+std::vector<TactileSensorDataU16> GetAllTactileSensorDataRaw() const;
+```
+
+```cpp
+if (auto* tactile = hand->GetTactileSensor1D()) {
+  auto data = tactile->GetTactileSensorDataRaw(Finger::THUMB);
+  auto all_data = tactile->GetAllTactileSensorDataRaw();
+}
+```
+
+`TactileSensorDataU16::data_` 保存每点的 `uint16_t` 压力值。T1.5 不提供上述 T1.3 的 3D 触觉力及合力接口。两个触觉接口获取函数返回的指针均随手对象存活；不支持的维度返回 `nullptr`。
+
+### T1.5：板温
+
+以下方法直接通过手对象调用：
+
+```cpp
 int16_t GetTemperatureOfPalm() const;
 int16_t GetTemperatureOfPower() const;
 ```

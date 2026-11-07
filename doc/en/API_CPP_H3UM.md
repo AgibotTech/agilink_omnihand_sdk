@@ -237,7 +237,9 @@ bool SaveParam();
 
 ## Tactile Data and T1.5 Board Temperatures
 
-T1.3 uses the Xense tactile SoC APIs:
+### T1.3: Xense Tactile SoC
+
+T1.3 uses the following Xense tactile SoC APIs:
 
 ```cpp
 bool GetFingerTactile(uint8_t finger_index, XenseFrame& frame); // 0=thumb .. 4=pinky
@@ -247,13 +249,50 @@ bool GetAllTactile(AllTactileFrame& frame);
 
 `XenseFrame::timestamp` is in nanoseconds. `PalmFrame` contains the force field, `resultant[3]`, and `timestamp` supplied by the tactile service.
 
-T1.5 uses the common raw tactile APIs and supplies resultant force for six sensors:
+### T1.3: Downsampled 3D Tactile Force and Resultant Force
+
+T1.3 provides downsampled 3D tactile force and resultant force for six sensors over CAN. The following methods belong to `ITactileSensor3DI16`, obtained through `hand->GetTactileSensor3D()`:
 
 ```cpp
 TactileSensorData3DI16 GetTactileSensorDataRaw(Finger sensor) const;
 std::vector<TactileSensorData3DI16> GetAllTactileSensorDataRaw() const;
 TactileSensorResultantForce3DI16 GetTactileSensorResultantForce(Finger sensor) const;
 std::vector<TactileSensorResultantForce3DI16> GetAllTactileSensorResultantForces() const;
+```
+
+```cpp
+if (auto* tactile = hand->GetTactileSensor3D()) {
+  auto data = tactile->GetTactileSensorDataRaw(Finger::THUMB);
+  auto forces = tactile->GetAllTactileSensorResultantForces();
+}
+```
+
+`TactileSensorData3DI16::points` contains signed 16-bit XYZ components for each downsampled point. Resultant force is retrieved through the separate resultant-force methods.
+
+### T1.5: 1D U16 Tactile Data
+
+T1.5 uses the separate `ITactileSensor1DU16` interface, obtained through `hand->GetTactileSensor1D()`:
+
+```cpp
+TactileSensorDataU16 GetTactileSensorData(Finger sensor) const;
+TactileSensorDataU16 GetTactileSensorDataRaw(Finger sensor) const;
+std::vector<TactileSensorDataU16> GetAllTactileSensorDataRaw() const;
+```
+
+```cpp
+if (auto* tactile = hand->GetTactileSensor1D()) {
+  auto data = tactile->GetTactileSensorDataRaw(Finger::THUMB);
+  auto all_data = tactile->GetAllTactileSensorDataRaw();
+}
+```
+
+`TactileSensorDataU16::data_` contains one `uint16_t` pressure value per point. T1.5 does not expose the T1.3 3D tactile-force or resultant-force interfaces above. Both interface accessors return borrowed pointers valid for the hand object's lifetime; an unsupported dimension returns `nullptr`.
+
+### T1.5: Board Temperatures
+
+Call these methods directly on the hand object:
+
+```cpp
 int16_t GetTemperatureOfPalm() const;
 int16_t GetTemperatureOfPower() const;
 ```

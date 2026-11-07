@@ -56,9 +56,9 @@ from omnihand import OmniHandPro2025, HandType
 # 创建手部实例
 hand = OmniHandPro2025.create_hand_by_zlgcan(
     hand_type=HandType.LEFT,
-    device_id=1,
-    canfd_id=0,
-    channel_id=0
+    hand_device_id=1,
+    canfd_device_id=0,
+    canfd_channel_id=0,
 )
 
 if not hand.init():

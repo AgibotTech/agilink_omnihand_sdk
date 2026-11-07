@@ -208,16 +208,18 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   virtual ~OmniHand3UltraM() = default;
 
   // ============ Factory Methods ============
+  // Address discovery assumes one hand on the selected CAN channel.
+  // Without a broadcast reply, discovery tries kT1P3DefaultHandDeviceId.
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by canfd_device_id
-   * @note This factory is only for H3UM T1.3. Use createHandT1P5ByZlgcan() for T1.5.
+   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 discovers the address; nonzero queries that address.
    * @param canfd_device_id CANFD device ID
    * @param canfd_channel_id CANFD channel ID
    * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
    * @param tactile_soc_port Tactile SoC data port
-   * @return A unique pointer to OmniHand3UltraM instance
+   * @return A hand instance, or nullptr if connection or revision detection fails.
    */
   static std::unique_ptr<OmniHand3UltraM> createHandByZlgcan(
       HandType hand_type,
@@ -237,14 +239,14 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by serial number
-   * @note This factory is only for H3UM T1.3. Use createHandT1P5ByZlgcan() for T1.5.
+   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 discovers the address; nonzero queries that address.
    * @param usbcanfd_serial_number USB CANFD serial number
    * @param canfd_channel_id CANFD channel ID
    * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
    * @param tactile_soc_port Tactile SoC data port
-   * @return A unique pointer to OmniHand3UltraM instance
+   * @return A hand instance, or nullptr if connection or revision detection fails.
    */
   static std::unique_ptr<OmniHand3UltraM> createHandByZlgcan(
       HandType hand_type,
@@ -266,15 +268,15 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   /**
    * @brief Factory method - ZLG CANFD over TCP (WiFi/Ethernet to CANFD, this machine acts as TCP client)
    * @note Only available on Windows and Linux x64 (not supported on Linux aarch64/arm64)
-   * @note This factory is only for H3UM T1.3. Use createHandT1P5ByZlgCanTcp() for T1.5.
+   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 discovers the address; nonzero queries that address.
    * @param tcp_host TCP server IP or hostname (e.g. "192.168.0.178")
    * @param tcp_port TCP server port (e.g. 8000)
    * @param canfd_channel_id CAN channel index (0 or 1, default 0)
    * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
    * @param tactile_soc_port Tactile SoC data port
-   * @return A unique pointer to OmniHand3UltraM instance
+   * @return A hand instance, or nullptr if connection or revision detection fails.
    */
   static std::unique_ptr<OmniHand3UltraM> createHandByZlgCanTcp(
       HandType hand_type,
@@ -298,13 +300,13 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 #ifdef __linux__
   /**
    * @brief Factory method - SocketCAN communication (Linux native CAN interface)
-   * @note This factory is only for H3UM T1.3. Use createHandT1P5SocketCan() for T1.5.
+   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 discovers the address; nonzero queries that address.
    * @param can_interface CAN interface name (e.g. "can0")
    * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
    * @param tactile_soc_port Tactile SoC data port
-   * @return A unique pointer to OmniHand3UltraM instance
+   * @return A hand instance, or nullptr if connection or revision detection fails.
    */
   static std::unique_ptr<OmniHand3UltraM> createHandSocketCan(
       HandType hand_type,
@@ -323,14 +325,14 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 
   /**
    * @brief Factory method - HCAN USB CANFD communication (by canfd_device_id)
-   * @note This factory is only for H3UM T1.3. Use createHandT1P5ByHcan() for T1.5.
+   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 discovers the address; nonzero queries that address.
    * @param canfd_device_id CANFD device ID
    * @param canfd_channel_id CANFD channel ID
    * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
    * @param tactile_soc_port Tactile SoC data port
-   * @return A unique pointer to OmniHand3UltraM instance
+   * @return A hand instance, or nullptr if connection or revision detection fails.
    */
   static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
       HandType hand_type,
@@ -350,14 +352,14 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 
   /**
    * @brief Factory method - HCAN USB CANFD communication (by serial number)
-   * @note This factory is only for H3UM T1.3. Use createHandT1P5ByHcan() for T1.5.
+   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 discovers the address; nonzero queries that address.
    * @param hcan_serial_number HCAN serial number
    * @param canfd_channel_id CANFD channel ID
    * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
    * @param tactile_soc_port Tactile SoC data port
-   * @return A unique pointer to OmniHand3UltraM instance
+   * @return A hand instance, or nullptr if connection or revision detection fails.
    */
   static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
       HandType hand_type,
