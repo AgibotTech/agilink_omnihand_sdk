@@ -4,24 +4,24 @@
 
 OmniHand SDK 为以下产品提供了**产品特定的接口**：
 
-- **OmniHand 2025 (O10)**: 10 自由度灵巧手，配备 1D 触觉传感器
+- **OmniHand 2025 & OmniHand 3 (O10)**: 10 自由度灵巧手，配备 1D 触觉传感器
 - **OmniHand Pro 2025 (O12)**: 12 自由度灵巧手，配备 3D 触觉传感器
 - **OmniHand 3 Lite (H3L)**: 4 自由度轻量级灵巧手
 - **OmniHand Dex UMI (O10 UMI)**: 10 自由度灵巧手，支持 UMI 协议
-- **OmniHand 3 Ultra M（H3UM T1.3/T1.5）**：20/21 自由度灵巧手，提供版本对应的触觉数据
+- **OmniHand 3 Ultra M（H3UM）**：20/21 自由度灵巧手，提供版本对应的触觉数据
 - **OmniPicker 3 (OP3)**: 1 自由度夹爪
 
 每个产品都有自己的接口类（`OmniHand2025`、`OmniHandPro2025`、`OmniHand3Lite`、`OmniHandDexUMI`），具有产品特定的工厂方法和 API。与使用 `ProductType` 的统一接口相比，这种设计提供了更好的类型安全性和更清晰的 API 组织。
 
-**C++ 类型说明：** **OmniHand 2025 (O10)** 与 **OmniHand Dex UMI** 的工厂方法及 CAN 广播发现中，`hand_device_id` 与 CAN 适配器索引（`canfd_device_id`、`canfd_channel_id`）使用 **`std::uint8_t`**。完整签名见各产品 C++ API 文档。
+**C++ 类型说明：** **OmniHand 2025 & OmniHand 3 (O10)** 与 **OmniHand Dex UMI** 的工厂方法及 CAN 广播发现中，`hand_device_id` 与 CAN 适配器索引（`canfd_device_id`、`canfd_channel_id`）使用 **`std::uint8_t`**。完整签名见各产品 C++ API 文档。
 
 ## 产品特定 API 文档
 
-- **[OmniHand 2025 (O10) C++ API](API_CPP_O10.md)** - 10 自由度，1D 触觉传感器，支持 CAN 和 RS485
+- **[OmniHand 2025 & OmniHand 3 (O10) C++ API](API_CPP_O10.md)** - 10 自由度，1D 触觉传感器，支持 CAN 和 RS485
 - **[OmniHand Pro 2025 (O12) C++ API](API_CPP_O12.md)** - 12 自由度，3D 触觉传感器，仅支持 CAN
 - **[OmniHand 3 Lite (H3L) C++ API](API_CPP_H3L.md)** - 4 自由度，触觉兼容接口，支持 CAN 和 RS485
 - **[OmniHand Dex UMI (O10 UMI) C++ API](API_CPP_O10_UMI.md)** - 10 自由度，UMI 协议，主动查询，仅支持 CAN
-- **[OmniHand 3 Ultra M（H3UM T1.3/T1.5）C++ API](API_CPP_H3UM.md)** - 20/21 自由度，CAN FD，版本对应的触觉接口
+- **[OmniHand 3 Ultra M（H3UM）C++ API](API_CPP_H3UM.md)** - 20/21 自由度，CAN FD，版本对应的触觉接口
 - **[OmniPicker 3 (OP3) C++ API](API_CPP_OP3.md)** - 1 自由度夹爪；混合控制仅 `MixControlByPT`
 
 ## 通用枚举和数据结构
@@ -95,7 +95,7 @@ enum class ControlMode : unsigned char {
 
 ## 快速开始示例
 
-### OmniHand 2025 (O10)
+### OmniHand 2025 & OmniHand 3 (O10)
 
 ```cpp
 #include "omnihand/omnihand_2025.h"
@@ -169,6 +169,6 @@ hand->SetPositionReportCallback([](const std::vector<int16_t>& positions) {
 ## 相关文档
 
 - [SocketCAN 设置指南](SOCKETCAN_SETUP.md) - Linux SocketCAN 配置说明
-- [OmniHand 2025 (O10) 运动学求解器 C++ API](API_KINEMATICS_CPP_O10.md) - 运动学计算
+- [OmniHand 2025 & OmniHand 3 (O10) 运动学求解器 C++ API](API_KINEMATICS_CPP_O10.md) - 运动学计算
 - [OmniHand Pro 2025 (O12) 运动学求解器 C++ API](API_KINEMATICS_CPP_O12.md) - 运动学计算
 - [服务器接口 API](API_SERVER.md) - WebSocket 与 RESTful 服务器/客户端接口（C++、Python、Web 浏览器）

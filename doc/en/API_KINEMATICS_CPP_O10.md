@@ -1,4 +1,4 @@
-# OmniHand 2025 (O10) Kinematics Solver C++ API
+# OmniHand 2025 & OmniHand 3 (O10) Kinematics Solver C++ API
 
 ## Introduction
 

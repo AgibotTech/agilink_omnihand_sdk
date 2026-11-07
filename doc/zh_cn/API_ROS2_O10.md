@@ -1,4 +1,4 @@
-# OmniHand 2025 (O10) ROS2 接口
+# OmniHand 2025 & OmniHand 3 (O10) ROS2 接口
 
 > ⚠️ **仅支持 Linux**：ROS2 接口仅在 Linux 上可用，不支持 Windows。
 

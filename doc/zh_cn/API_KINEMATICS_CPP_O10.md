@@ -1,4 +1,4 @@
-# OmniHand 2025 (O10) 运动学求解器 C++ API
+# OmniHand 2025 & OmniHand 3 (O10) 运动学求解器 C++ API
 
 ## 简介
 

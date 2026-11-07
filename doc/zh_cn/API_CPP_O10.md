@@ -1,4 +1,4 @@
-# OmniHand 2025 (O10) C++ API
+# OmniHand 2025 & OmniHand 3 (O10) C++ API
 
 ## 概述
 
