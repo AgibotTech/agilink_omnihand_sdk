@@ -1,13 +1,8 @@
-# OmniHand 3 Ultra M (H3UM T1.3/T1.5) C++ API
+# OmniHand 3 Ultra M (H3UM) C++ API
 
 ## Overview
 
-`OmniHand3UltraM` controls both H3UM revisions through CAN FD. T1.3 has 20 active joints and uses the Xense tactile SoC; T1.5 has 21 active joints and obtains tactile data directly through CAN FD. Motor positions use `[0, 4096]` protocol units and active joint angles are radians.
-
-| Revision | Active joints | Default device ID | Factory prefix |
-|----------|---------------|-------------------|----------------|
-| T1.3 | 20 | 9 | `createHandBy*` / `createHandSocketCan` |
-| T1.5 | 21 | 1 | `createHandT1P5By*` / `createHandT1P5SocketCan` |
+`OmniHand3UltraM` uses one set of factories for supported H3UM hardware. The SDK discovers the device address and reads its active-joint count before selecting the protocol, kinematics calibration, and tactile interface. Motor positions use `[0, 4096]` protocol units and active joint angles are radians.
 
 ## Include Header
 
@@ -18,61 +13,58 @@ using namespace agilink::omnihand;
 
 ## Factory Methods
 
-T1.3 factories accept an optional tactile SoC endpoint after the transport parameters:
-
 ```cpp
-const std::string& tactile_soc_ip = OmniHand3UltraM::kDefaultTactileSocIp;
-uint16_t tactile_soc_port = OmniHand3UltraM::kDefaultTactileSocPort;
+auto hand = OmniHand3UltraM::createHandByZlgcan(
+    HandType::LEFT, kBroadcastHandDeviceId, 0);
+if (hand && hand->Init()) {
+  const auto joint_count = hand->GetNumOfJointMotors();
+  const auto joint_names = hand->GetJointNames();
+}
 ```
 
-The defaults are `192.168.99.2:19009`. The SDK probes the endpoint during construction and initializes Xense and palm services only when it is reachable. Applications using the standard endpoint should omit both arguments.
+Pass `kBroadcastHandDeviceId` (`0`) as `hand_device_id` to enable automatic discovery: the SDK broadcasts a device-information read (`0x02/0x00`), falls back to legacy address `9` only if no reply arrives, then reads the standalone DOF register (`0x01/0x06`). A valid 20- or 21-joint reply selects the implementation. Failed or unsupported replies return `nullptr`.
+
+Explicitly passing `kT1P3DefaultHandDeviceId` (`9`) selects T1.3 directly without broadcast or DOF probing. Other explicit IDs still query DOF. An address discovered automatically, including `9`, is always verified by a DOF read.
+
+Automatic discovery requires one H3UM per selected CAN channel. On a shared bus, pass the target's explicit ID; this skips broadcast and legacy fallback. Use `GetNumOfJointMotors()` and `GetJointNames()` rather than hardcoding the joint count or order.
 
 ```cpp
 static std::unique_ptr<OmniHand3UltraM> createHandByZlgcan(
     HandType hand_type, uint8_t hand_device_id,
     uint8_t canfd_device_id, uint8_t canfd_channel_id = 0,
     const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort);
+    uint16_t tactile_soc_port = kDefaultTactileSocPort,
+    CommunicationLogOptions log_options = {});
 
 static std::unique_ptr<OmniHand3UltraM> createHandByZlgcan(
     HandType hand_type, uint8_t hand_device_id,
     const std::string& usbcanfd_serial_number,
     uint8_t canfd_channel_id = 0,
     const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort);
+    uint16_t tactile_soc_port = kDefaultTactileSocPort,
+    CommunicationLogOptions log_options = {});
 
 static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
     HandType hand_type, uint8_t hand_device_id,
     uint8_t canfd_device_id, uint8_t canfd_channel_id = 0,
     const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort);
+    uint16_t tactile_soc_port = kDefaultTactileSocPort,
+    CommunicationLogOptions log_options = {});
 
 static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
     HandType hand_type, uint8_t hand_device_id,
     const std::string& hcan_serial_number,
     uint8_t canfd_channel_id = 0,
     const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort);
+    uint16_t tactile_soc_port = kDefaultTactileSocPort,
+    CommunicationLogOptions log_options = {});
 ```
 
-`createHandByZlgCanTcp(...)` and Linux `createHandSocketCan(...)` have the same final two tactile endpoint parameters.
+`createHandByZlgCanTcp` and Linux `createHandSocketCan` use the same discovery flow. Pass `kBroadcastHandDeviceId` as the hand device ID to enable automatic discovery, including when supplying an adapter serial number, TCP endpoint, or SocketCAN interface.
 
-T1.5 uses separate factories and does not take a tactile SoC endpoint:
+The optional tactile SoC endpoint defaults to `192.168.99.2:19009`. It is used only by hardware with an external Xense/palm service, and only initialized when reachable. An empty `tactile_soc_ip` disables that service; hardware with CAN-based tactile data ignores these endpoint parameters.
 
-```cpp
-createHandT1P5ByZlgcan(...);
-createHandT1P5ByZlgCanTcp(...);
-createHandT1P5ByHcan(...);
-createHandT1P5SocketCan(...);  // Linux
-```
-
-The selected revision is available at runtime:
-
-```cpp
-H3UMRevision GetRevision() const;
-std::vector<std::string> GetJointNames() const;
-uint8_t GetNumOfJointMotors() const;
-```
+The existing `createHandT1P5*` factories remain available for source compatibility and retain their explicit hardware selection. New applications should use the unified factories above. `GetRevision()` remains available for diagnostics and offline model selection.
 
 ## Device Information and Addressing
 

@@ -1,44 +1,34 @@
-# OmniHand 3 Ultra M（H3UM T1.3/T1.5）Python API
+# OmniHand 3 Ultra M（H3UM）Python API
 
 ## 概述
 
-Python 使用同一个 `OmniHand3UltraM` 类支持两个版本。T1.3 有 20 个主动关节，默认设备 ID 为 `9`；T1.5 有 21 个主动关节，默认设备 ID 为 `1`。
+`OmniHand3UltraM` 保持原有 Python 工厂函数签名和默认值。需要自动发现设备地址和硬件能力时，通过同一入口显式传入 `hand_device_id=0`。
 
 ```python
-from omnihand import (
-    ControlMode,
-    H3UMRevision,
-    HandType,
-    OmniHand3UltraM,
-    OmniHand3UltraMSolver,
-)
+from omnihand import ControlMode, H3UMRevision, HandType, OmniHand3UltraM, OmniHand3UltraMSolver
 ```
 
 ## 工厂函数
 
 ```python
-# T1.3：create_hand_by_*，20 关节，默认 ID 9
-t1p3 = OmniHand3UltraM.create_hand_by_zlgcan(
+hand = OmniHand3UltraM.create_hand_by_zlgcan(
     hand_type=HandType.LEFT,
-    canfd_device_id=0,
-    canfd_channel_id=0,
-    tactile_soc_ip="192.168.99.2",
-    tactile_soc_port=19009,
-)
-
-# T1.5：create_hand_t1p5_*，21 关节，默认 ID 1
-t1p5 = OmniHand3UltraM.create_hand_t1p5_by_hcan(
-    hand_type=HandType.LEFT,
+    hand_device_id=0,  # 显式启用自动发现。
     canfd_device_id=0,
     canfd_channel_id=0,
 )
+if hand is None:
+    raise RuntimeError("H3UM device discovery failed")
 
-assert t1p3.get_revision() == H3UMRevision.T1P3
-assert t1p5.get_revision() == H3UMRevision.T1P5
-joint_names = t1p5.get_joint_names()  # 按电机索引排列的 21 个名称
+joint_names = hand.get_joint_names()
+joint_count = hand.get_num_of_joint_motors()
 ```
 
-ZLG 和 HCAN 也提供按适配器序列号创建的重载。相应平台还提供 `create_hand_by_zlgcan_tcp(...)` / `create_hand_t1p5_by_zlgcan_tcp(...)`；Linux 还提供 `create_hand_socketcan(...)` / `create_hand_t1p5_socketcan(...)`。T1.3 工厂可通过 `tactile_soc_ip` 和 `tactile_soc_port` 配置 Xense 端点。
+Python 默认值仍为 `hand_device_id=9`：省略此参数或显式传入 `9` 时，直接按 T1.3 创建，不发送广播或自由度探测请求。传入 `0` 才启用自动发现：SDK 广播读取设备信息，无回复时回退地址 `9`，再单独读取自由度寄存器选择实现；探测失败或自由度不受支持时返回 `None`。其他显式 ID 跳过广播和地址回退，但仍读取自由度。自动发现适用于所选通道只有一只 H3UM 的场景；同一总线上有多台设备时，请显式传入目标设备 ID。
+
+`create_hand_by_hcan`、`create_hand_by_zlgcan_tcp`（相应平台）和 `create_hand_socketcan`（Linux）使用相同的识别流程。ZLG/HCAN 也支持按适配器序列号连接。可选的 `tactile_soc_ip` / `tactile_soc_port` 默认值为 `192.168.99.2:19009`，仅用于带外部 Xense/手掌服务的硬件；IP 为空时禁用该服务。
+
+原有 `create_hand_t1p5_*` 工厂保留兼容，并维持原先的显式硬件选择行为。新应用统一使用普通工厂入口。`get_revision()` 仍可用于诊断或离线模型选择。
 
 ## 控制与状态
 

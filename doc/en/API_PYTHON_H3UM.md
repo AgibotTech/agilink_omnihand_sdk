@@ -1,44 +1,34 @@
-# OmniHand 3 Ultra M (H3UM T1.3/T1.5) Python API
+# OmniHand 3 Ultra M (H3UM) Python API
 
 ## Overview
 
-Python exposes one `OmniHand3UltraM` class for both revisions. T1.3 has 20 active joints and default device ID `9`; T1.5 has 21 active joints and default device ID `1`.
+`OmniHand3UltraM` keeps the existing Python factory signatures and defaults. Applications can request automatic address and capability discovery through the same factories by passing `hand_device_id=0`.
 
 ```python
-from omnihand import (
-    ControlMode,
-    H3UMRevision,
-    HandType,
-    OmniHand3UltraM,
-    OmniHand3UltraMSolver,
-)
+from omnihand import ControlMode, H3UMRevision, HandType, OmniHand3UltraM, OmniHand3UltraMSolver
 ```
 
 ## Factories
 
 ```python
-# T1.3: create_hand_by_*, 20 joints, default ID 9
-t1p3 = OmniHand3UltraM.create_hand_by_zlgcan(
+hand = OmniHand3UltraM.create_hand_by_zlgcan(
     hand_type=HandType.LEFT,
-    canfd_device_id=0,
-    canfd_channel_id=0,
-    tactile_soc_ip="192.168.99.2",
-    tactile_soc_port=19009,
-)
-
-# T1.5: create_hand_t1p5_*, 21 joints, default ID 1
-t1p5 = OmniHand3UltraM.create_hand_t1p5_by_hcan(
-    hand_type=HandType.LEFT,
+    hand_device_id=0,  # Explicitly request automatic discovery.
     canfd_device_id=0,
     canfd_channel_id=0,
 )
+if hand is None:
+    raise RuntimeError("H3UM device discovery failed")
 
-assert t1p3.get_revision() == H3UMRevision.T1P3
-assert t1p5.get_revision() == H3UMRevision.T1P5
-joint_names = t1p5.get_joint_names()  # 21 names in motor-index order
+joint_names = hand.get_joint_names()
+joint_count = hand.get_num_of_joint_motors()
 ```
 
-The ZLG and HCAN overloads also accept adapter serial numbers. Supported builds additionally expose `create_hand_by_zlgcan_tcp(...)` / `create_hand_t1p5_by_zlgcan_tcp(...)`; Linux also exposes `create_hand_socketcan(...)` / `create_hand_t1p5_socketcan(...)`. T1.3 factories accept the optional Xense endpoint through `tactile_soc_ip` and `tactile_soc_port`.
+The Python default remains `hand_device_id=9`: omitting the argument or explicitly passing `9` selects T1.3 without broadcast or DOF probing. Passing `0` requests automatic discovery: the SDK broadcasts a device-information read, falls back to address `9` if no reply arrives, then reads the standalone DOF register to select the implementation. Failed or unsupported discovery replies return `None`. Other explicit IDs skip broadcast and legacy fallback but still read DOF. Automatic discovery requires one H3UM per selected channel; on a shared bus, pass an explicit device ID.
+
+`create_hand_by_hcan`, `create_hand_by_zlgcan_tcp` (supported builds), and `create_hand_socketcan` (Linux) use the same discovery flow. ZLG/HCAN also accept adapter serial numbers. The optional `tactile_soc_ip` / `tactile_soc_port` endpoint defaults to `192.168.99.2:19009` and is used only by hardware with an external Xense/palm service. An empty IP disables that service.
+
+Existing `create_hand_t1p5_*` factories remain available for compatibility with their previous explicit hardware selection. New applications should use the unified factories. `get_revision()` remains available for diagnostics and offline model selection.
 
 ## Control and State
 

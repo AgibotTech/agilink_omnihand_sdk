@@ -1,13 +1,8 @@
-# OmniHand 3 Ultra M（H3UM T1.3/T1.5）C++ API
+# OmniHand 3 Ultra M（H3UM）C++ API
 
 ## 概述
 
-`OmniHand3UltraM` 通过 CAN FD 支持两个 H3UM 版本。T1.3 有 20 个主动关节并使用 Xense 触觉 SoC；T1.5 有 21 个主动关节，触觉数据直接通过 CAN FD 获取。电机位置使用 `[0, 4096]` 协议值，主动关节角单位为弧度。
-
-| 版本 | 主动关节数 | 默认设备 ID | 工厂函数前缀 |
-|------|-----------|-------------|---------------|
-| T1.3 | 20 | 9 | `createHandBy*` / `createHandSocketCan` |
-| T1.5 | 21 | 1 | `createHandT1P5By*` / `createHandT1P5SocketCan` |
+`OmniHand3UltraM` 使用统一工厂函数连接所支持的 H3UM 硬件。SDK 自动发现设备地址，读取主动关节数，再选择协议解析、运动学标定和触觉接口。电机位置使用 `[0, 4096]` 协议值，主动关节角单位为弧度。
 
 ## 包含头文件
 
@@ -18,61 +13,58 @@ using namespace agilink::omnihand;
 
 ## 工厂函数
 
-T1.3 工厂函数可在通信参数后接受一个可选的触觉 SoC 端点：
-
 ```cpp
-const std::string& tactile_soc_ip = OmniHand3UltraM::kDefaultTactileSocIp;
-uint16_t tactile_soc_port = OmniHand3UltraM::kDefaultTactileSocPort;
+auto hand = OmniHand3UltraM::createHandByZlgcan(
+    HandType::LEFT, kBroadcastHandDeviceId, 0);
+if (hand && hand->Init()) {
+  const auto joint_count = hand->GetNumOfJointMotors();
+  const auto joint_names = hand->GetJointNames();
+}
 ```
 
-默认值为 `192.168.99.2:19009`。SDK 在构造期间探测该端点，仅在可通信时初始化 Xense 和手掌服务。使用标准端点的应用无需传入这两个参数。
+`hand_device_id` 显式传入 `kBroadcastHandDeviceId`（`0`）时启用自动发现：SDK 广播读取设备信息（`0x02/0x00`），仅在无回复时探测旧设备地址 `9`，再单独读取自由度寄存器（`0x01/0x06`）。收到有效的 20 或 21 关节回复后选择对应实现；读取失败或自由度不受支持时返回 `nullptr`。
+
+显式传入 `kT1P3DefaultHandDeviceId`（`9`）时，直接按 T1.3 创建，不发送广播或自由度探测请求。其他显式 ID 仍读取自由度。自动发现得到的地址（包括 `9`）始终通过自由度回包确认实现。
+
+自动发现适用于所选 CAN 通道只有一台 H3UM 的场景。同一总线上有多台设备时，请显式传入目标设备 ID，此时跳过广播和旧地址回退。关节数和顺序应通过 `GetNumOfJointMotors()` 与 `GetJointNames()` 获取。
 
 ```cpp
 static std::unique_ptr<OmniHand3UltraM> createHandByZlgcan(
     HandType hand_type, uint8_t hand_device_id,
     uint8_t canfd_device_id, uint8_t canfd_channel_id = 0,
     const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort);
+    uint16_t tactile_soc_port = kDefaultTactileSocPort,
+    CommunicationLogOptions log_options = {});
 
 static std::unique_ptr<OmniHand3UltraM> createHandByZlgcan(
     HandType hand_type, uint8_t hand_device_id,
     const std::string& usbcanfd_serial_number,
     uint8_t canfd_channel_id = 0,
     const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort);
+    uint16_t tactile_soc_port = kDefaultTactileSocPort,
+    CommunicationLogOptions log_options = {});
 
 static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
     HandType hand_type, uint8_t hand_device_id,
     uint8_t canfd_device_id, uint8_t canfd_channel_id = 0,
     const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort);
+    uint16_t tactile_soc_port = kDefaultTactileSocPort,
+    CommunicationLogOptions log_options = {});
 
 static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
     HandType hand_type, uint8_t hand_device_id,
     const std::string& hcan_serial_number,
     uint8_t canfd_channel_id = 0,
     const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort);
+    uint16_t tactile_soc_port = kDefaultTactileSocPort,
+    CommunicationLogOptions log_options = {});
 ```
 
-`createHandByZlgCanTcp(...)` 和 Linux 下的 `createHandSocketCan(...)` 也使用相同的最后两个触觉端点参数。
+`createHandByZlgCanTcp` 和 Linux 下的 `createHandSocketCan` 使用相同的自动识别流程。按适配器序列号、TCP 端点或 SocketCAN 接口创建时，设备 ID 显式传入 `kBroadcastHandDeviceId` 即可启用自动发现。
 
-T1.5 使用独立工厂函数，不接收触觉 SoC 参数：
+可选触觉 SoC 端点默认值为 `192.168.99.2:19009`。只有使用外部 Xense/手掌服务的硬件会探测该端点，并在可访问时初始化服务。`tactile_soc_ip` 为空时禁用服务；通过 CAN 获取触觉数据的硬件忽略这些端点参数。
 
-```cpp
-createHandT1P5ByZlgcan(...);
-createHandT1P5ByZlgCanTcp(...);
-createHandT1P5ByHcan(...);
-createHandT1P5SocketCan(...);  // Linux
-```
-
-可在运行时查询实例版本和关节顺序：
-
-```cpp
-H3UMRevision GetRevision() const;
-std::vector<std::string> GetJointNames() const;
-uint8_t GetNumOfJointMotors() const;
-```
+原有 `createHandT1P5*` 工厂保留兼容，并维持原先的显式硬件选择行为。新应用统一使用以上普通工厂入口。`GetRevision()` 仍可用于诊断或离线模型选择。
 
 ## 设备信息与地址
 
