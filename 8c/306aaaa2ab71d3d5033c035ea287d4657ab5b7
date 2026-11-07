@@ -1,0 +1,100 @@
+doc/en/API_CPP_H3UM.md
+  s_bc7e2fec92cf97::t_8c858039222ce2 211-217,226
+  s_bc7e2fec92cf97::t_fe189bf1c3f591 218-224
+  s_bc7e2fec92cf97::t_111f8d344986a7 225
+doc/zh_cn/API_CPP_H3UM.md
+  s_bc7e2fec92cf97::t_fe189bf1c3f591 231-237
+  s_bc7e2fec92cf97::t_111f8d344986a7 238
+  s_bc7e2fec92cf97::t_8c858039222ce2 224-230,239
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "8c306aaaa2ab71d3d5033c035ea287d4657ab5b7",
+  "prompts": {},
+  "sessions": {
+    "s_bc7e2fec92cf97": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1af8d-5192-7231-92b1-32ffa531328c",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.input_tokens": "2093597",
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.token_usage.cache_read_tokens": "83097730",
+        "tlab.session_started_at": "2026-11-07T03:13:36Z",
+        "tlab.token_usage.output_tokens": "348168"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "doc/en/API_CPP_H3UM.md",
+      "new_path": "doc/en/API_CPP_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 16
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_H3UM.md",
+      "new_path": "doc/zh_cn/API_CPP_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 16
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h",
+      "additions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h",
+      "new_path": "linux/x64/cpp/include/omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h",
+      "additions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h",
+      "new_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h",
+      "additions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "human": 2
+      }
+    }
+  ]
+}
