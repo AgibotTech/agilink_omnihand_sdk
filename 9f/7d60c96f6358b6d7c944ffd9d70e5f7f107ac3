@@ -1,0 +1,116 @@
+doc/en/API_CPP_H3L.md
+  s_bc7e2fec92cf97::t_83ea53aa0aac24 14,223-248
+README_zh_cn.md
+  s_bc7e2fec92cf97::t_83ea53aa0aac24 36,45-48
+doc/zh_cn/API_CPP_H3UM.md
+  s_bc7e2fec92cf97::t_83ea53aa0aac24 185-211
+doc/zh_cn/API_CPP_H3L.md
+  s_bc7e2fec92cf97::t_83ea53aa0aac24 14,223-248
+README.md
+  s_bc7e2fec92cf97::t_83ea53aa0aac24 36,45-48
+doc/en/API_CPP_H3UM.md
+  s_bc7e2fec92cf97::t_83ea53aa0aac24 172-198
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "9f7d60c96f6358b6d7c944ffd9d70e5f7f107ac3",
+  "prompts": {},
+  "sessions": {
+    "s_bc7e2fec92cf97": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1af8d-5192-7231-92b1-32ffa531328c",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": null,
+      "custom_attributes": {
+        "tlab.token_usage.input_tokens": "1130663",
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.session_started_at": "2026-11-06T06:30:45Z",
+        "tlab.token_usage.output_tokens": "127480",
+        "tlab.token_usage.cache_read_tokens": "32254829"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "README.md",
+      "new_path": "README.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 5
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "README_zh_cn.md",
+      "new_path": "README_zh_cn.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 5
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_H3L.md",
+      "new_path": "doc/en/API_CPP_H3L.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 27
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_H3UM.md",
+      "new_path": "doc/en/API_CPP_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 27
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_H3L.md",
+      "new_path": "doc/zh_cn/API_CPP_H3L.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 27
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_H3UM.md",
+      "new_path": "doc/zh_cn/API_CPP_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 27
+          }
+        ]
+      }
+    }
+  ]
+}
