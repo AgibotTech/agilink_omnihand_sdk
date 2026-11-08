@@ -454,7 +454,7 @@ def set_frame_send_timeout(self, milliseconds: int) -> None: ...
 def get_frame_send_timeout(self) -> int: ...
 ```
 
-发送超时仅适用于 CAN 传输。RS485 实现中的 setter 不执行操作，getter 返回 `0`。
+发送超时适用于 CAN 和 RS485；在 RS485 下用于设置每次串口写入的超时时间。
 
 ### 调试功能
 

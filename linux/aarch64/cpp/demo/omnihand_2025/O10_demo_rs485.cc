@@ -55,8 +55,7 @@ void controlSingleHand(std::unique_ptr<agilink::omnihand::OmniHand2025>& hand, c
   AgilinkLogger::get().info("");
   AgilinkLogger::get().infof(TAG, "=== Reading Sensor Data ===");
 
-  // Note: RS485 does not support raw tactile sensor data reading (GetTactileSensorDataRaw)
-  // But it supports GetTactileSensorData (downsampled data)
+  // Raw tactile reads require the standard serial protocol; this demo uses downsampled data.
   AgilinkLogger::get().info("");
   AgilinkLogger::get().infof(TAG, "Tactile Sensor Data (1D):");
   try {
@@ -83,9 +82,8 @@ void controlSingleHand(std::unique_ptr<agilink::omnihand::OmniHand2025>& hand, c
     AgilinkLogger::get().infof(TAG, "  Warning: %s", e.what());
   }
 
-  // Note: RS485 does not support temperature/current/error report/velocity reads
   AgilinkLogger::get().info("");
-  AgilinkLogger::get().infof(TAG, "Note: RS485 communication does not support temperature/current/error/velocity reports");
+  AgilinkLogger::get().infof(TAG, "RS485 also supports temperature/current/error/velocity queries");
 
   // ============ Joint Angle Control Demo ============
   // Use joint-angle control (recommended; underlying layer auto-converts)

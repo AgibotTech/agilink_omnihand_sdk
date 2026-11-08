@@ -245,7 +245,7 @@ O10 支持的连接方式：`zlgcan`、`hcan`、`socketcan`、`rs485`、`usb`。
       can_interface: "can1"
 ```
 
-**RS485 串口（仅 O10）：**
+**RS485 串口：**
 
 ```yaml
 /**:

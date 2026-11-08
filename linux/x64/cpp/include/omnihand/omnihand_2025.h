@@ -45,10 +45,12 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
   virtual ~OmniHand2025() = default;
 
   // ============ Factory Methods ============
+  // Zero selects default IDs; it does not request address discovery.
+  // For CAN discovery, call GetHandDeviceIdByBroadcast() after creation.
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by canfd_device_id
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 uses protocol defaults (standard=1, private=9); nonzero initializes both target IDs.
    * @param canfd_device_id USB CANFD adapter device index
    * @param canfd_channel_id CAN channel index (default 0)
    *        - Dual-channel (USBCANFD-200U): can0=0, can1=1
@@ -65,7 +67,7 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by serial number
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 uses protocol defaults (standard=1, private=9); nonzero initializes both target IDs.
    * @param usbcanfd_serial_number USB CANFD device serial number (supports partial matching)
    * @param canfd_channel_id CAN channel index (default 0)
    *        - Dual-channel (USBCANFD-200U): can0=0, can1=1
@@ -84,7 +86,7 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
    * @brief Factory method - ZLG CANFD over TCP (e.g. WiFi/Ethernet adapter as TCP server)
    * @note Only available on Windows and Linux x64 (not supported on Linux aarch64/arm64)
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 uses protocol defaults (standard=1, private=9); nonzero initializes both target IDs.
    * @param host TCP server IP or hostname (e.g. "192.168.0.178")
    * @param port TCP server port (e.g. 8000)
    * @param canfd_channel_id Logical channel (default 0)
@@ -100,9 +102,9 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
 #endif  // OMNIHAND_ZLG_TCP_SUPPORTED
 
   /**
-   * @brief Factory method - RS485 communication (OmniHand 2025 only)
+   * @brief Factory method - RS485 communication
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 uses protocol defaults (standard=1, private=9); nonzero initializes both target IDs.
    * @param uart_port Serial port path (e.g., "/dev/ttyUSB0")
    * @param baudrate Baud rate (default 460800)
    * @return A unique pointer to OmniHand2025 instance
@@ -118,7 +120,7 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
    * @brief Factory method - USB communication (OmniHand 2025 only)
    * @note Pass `kDefaultHandDeviceId` explicitly; `uart_port` has no default.
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 uses protocol defaults (standard=1, private=9); nonzero initializes both target IDs.
    * @param uart_port Serial port path (e.g., "/dev/ttyACM0" or "COM3")
    * @param baudrate Baud rate (default 460800)
    * @return A unique pointer to OmniHand2025 instance
@@ -134,7 +136,7 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
   /**
    * @brief Factory method - SocketCAN communication (Linux native CAN interface)
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 uses protocol defaults (standard=1, private=9); nonzero initializes both target IDs.
    * @param can_interface CAN interface name (e.g., "can0", "can1")
    * @return A unique pointer to OmniHand2025 instance
    */
@@ -148,7 +150,7 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
   /**
    * @brief Factory method - HCAN USB CANFD communication (by canfd_device_id)
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 uses protocol defaults (standard=1, private=9); nonzero initializes both target IDs.
    * @param canfd_device_id HCAN device index
    * @param canfd_channel_id CAN channel index (default 0)
    * @return A unique pointer to OmniHand2025 instance
@@ -163,7 +165,7 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
   /**
    * @brief Factory method - HCAN USB CANFD communication (by serial number)
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 uses protocol defaults (standard=1, private=9); nonzero initializes both target IDs.
    * @param hcan_serial_number HCAN device serial number (supports partial matching)
    * @param canfd_channel_id CAN channel index (default 0)
    * @return A unique pointer to OmniHand2025 instance, or nullptr if device not found

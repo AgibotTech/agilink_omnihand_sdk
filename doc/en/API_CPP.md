@@ -9,6 +9,7 @@ The OmniHand SDK provides **product-specific interfaces** for the following prod
 - **OmniHand 3 Lite (H3L)**: 4 DOF lightweight dexterous hand
 - **OmniHand Dex UMI (O10 UMI)**: 10 DOF dexterous hand with UMI protocol support
 - **OmniHand 3 Ultra M (H3UM)**: 20/21 DOF dexterous hand with revision-specific tactile data
+- **OmniHandPicker 2025 (OP1)**: 1 DOF gripper, CAN FD and USB direct
 - **OmniPicker 3 (OP3)**: 1 DOF gripper
 
 Each product has its own interface class (`OmniHand2025`, `OmniHandPro2025`, `OmniHand3Lite`, `OmniHandDexUMI`) with product-specific factory methods and APIs. This design provides better type safety and clearer API organization compared to a unified interface with `ProductType`.
@@ -22,6 +23,7 @@ Each product has its own interface class (`OmniHand2025`, `OmniHandPro2025`, `Om
 - **[OmniHand 3 Lite (H3L) C++ API](API_CPP_H3L.md)** - 4 DOF, tactile compatibility APIs, CAN and RS485
 - **[OmniHand Dex UMI (O10 UMI) C++ API](API_CPP_O10_UMI.md)** - 10 DOF, UMI protocol, active query, CAN only
 - **[OmniHand 3 Ultra M (H3UM) C++ API](API_CPP_H3UM.md)** - 20/21 DOF, CAN FD, revision-specific tactile APIs
+- **[OmniHandPicker 2025 (OP1) C++ API](API_CPP_OP1.md)** - 1 DOF gripper, CAN FD and USB direct
 - **[OmniPicker 3 (OP3) C++ API](API_CPP_OP3.md)** - 1 DOF gripper; mixed control: `MixControlByPT` only
 
 ## Common Enums and Data Structures

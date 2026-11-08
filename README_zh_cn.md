@@ -26,6 +26,7 @@ OmniHand SDK 为 OmniHand 系列产品提供 C++、Python 控制接口、运动�
 - [OmniHand Pro 2025 (O12) 运动学 C++ API](doc/zh_cn/API_KINEMATICS_CPP_O12.md)（纯计算，与物理连接无关）
 - [OmniHand 3 Lite (H3L) C++ API](doc/zh_cn/API_CPP_H3L.md)
 - [OmniHand 3 Lite (H3L) 运动学 C++ API](doc/zh_cn/API_CPP_H3L.md#运动学求解器)（纯计算，与物理连接无关）
+- [OmniHandPicker 2025 (OP1) C++ API](doc/zh_cn/API_CPP_OP1.md)
 - [OmniPicker 3 (OP3) C++ API](doc/zh_cn/API_CPP_OP3.md)
 - [OmniHand Dex UMI (O10 UMI) C++ API](doc/zh_cn/API_CPP_O10_UMI.md)
 - [OmniHand 3 Ultra M（H3UM）C++ API](doc/zh_cn/API_CPP_H3UM.md)

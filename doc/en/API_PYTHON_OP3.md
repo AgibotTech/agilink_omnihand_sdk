@@ -270,7 +270,7 @@ picker.set_broadcast(False)
 picker.show_data_details(True)
 ```
 
-RS485 ignores the frame-send timeout and returns `0` from its getter.
+On RS485, the frame-send timeout controls the timeout for each serial write.
 `set_broadcast()` changes the request addressing mode in the SDK and does not
 write a new device ID.
 

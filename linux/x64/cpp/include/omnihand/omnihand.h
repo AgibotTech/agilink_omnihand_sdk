@@ -115,8 +115,6 @@ class AGIBOT_EXPORT OmniHand {
   /**
    * @brief 0x02: Gets device information.
    * @return Device information structure containing device ID and communication parameters
-   * @note Serial port communication (RS485) does not support this interface. 
-   *       RS485 implementation returns an empty DeviceInfo structure.
    */
   virtual DeviceInfo GetDeviceInfo() const {
     return {};
@@ -194,7 +192,6 @@ class AGIBOT_EXPORT OmniHand {
    * @brief 0x03: Sets the current threshold of a single joint motor.
    * @param joint_motor_index Joint motor index
    * @param current_threshold Current threshold value
-   * @note Serial port communication (USB/RS485) does not support this interface.
    * @note O10/H3L: not allowed to both SetCurrentThreshold and MixControl at the same time.
    *        If you want to use MixControl, please do not call SetCurrentThreshold.
    */
@@ -204,14 +201,12 @@ class AGIBOT_EXPORT OmniHand {
    * @brief 0x03: Gets the current threshold of a single joint motor.
    * @param joint_motor_index Joint motor index (O10: 1-10, O12: 1-12)
    * @return Current threshold value
-   * @note Serial port communication (RS485) does not support this interface.
    */
   virtual int16_t GetCurrentThreshold(unsigned char joint_motor_index) const { (void)joint_motor_index; return 0; }
   
   /**
    * @brief 0x03: Sets current thresholds of all joint motors in batch.
    * @param current_thresholds Current threshold vector.
-   * @note Serial port communication (USB/RS485) does not support this interface.
    * @note O10/H3L: not allowed to both SetAllCurrentThreshold and MixControl at the same time.
    *        If you want to use MixControl, please do not call SetAllCurrentThreshold.
    */
@@ -222,7 +217,6 @@ class AGIBOT_EXPORT OmniHand {
    * @return Current threshold vector. Length depends on product type:
    *         - OmniHand 2025 (O10): 10 values
    *         - OmniHand Pro 2025 (O12): 12 values
-   * @note Serial port communication (RS485) does not support this interface.
    */
   virtual std::vector<int16_t> GetAllCurrentThreshold() const { return {}; }
 
@@ -389,7 +383,6 @@ class AGIBOT_EXPORT OmniHand {
    * @brief 0x12: Sets the velocity of a single joint motor.
    * @param joint_motor_index Joint motor index (O10: 1-10, O12: 1-12)
    * @param velo Target velocity value
-   * @note Serial port communication (RS485) does not support this interface.
    */
   virtual void SetJointMotorVelo(unsigned char joint_motor_index, int16_t velo) { (void)joint_motor_index; (void)velo; }
   
@@ -397,7 +390,6 @@ class AGIBOT_EXPORT OmniHand {
    * @brief 0x12: Gets the velocity of a single joint motor.
    * @param joint_motor_index Joint motor index (O10: 1-10, O12: 1-12)
    * @return Current velocity value
-   * @note Serial port communication (RS485) does not support this interface.
    */
   virtual int16_t GetJointMotorVelo(unsigned char joint_motor_index) const { (void)joint_motor_index; return 0; }
   
@@ -608,23 +600,20 @@ class AGIBOT_EXPORT OmniHand {
 
   // ============ Request Interval Control ============
   /**
-   * @brief Set request interval to control CAN bus communication rate
+   * @brief Sets the minimum interval between communication requests.
    * @param milliseconds Minimum interval between requests in milliseconds (range: 0-100ms, default: 0ms = no throttling)
    * @note 0 = no limit (no throttling, matches CanBusDeviceBase / SerialDevice default),
    *       1-100ms = throttled requests
-   * @note This helps prevent CAN bus congestion and device timeout issues.
+   * @note This helps prevent communication congestion and device timeout issues.
    *       Higher interval = more stable but slower response.
    *       Lower interval = faster but may cause timeouts if device is busy.
-   * @note Only applies to CAN communication. RS485 communication is not affected.
-   * @note Serial port communication (RS485) does not support this interface.
-   *       RS485 implementation does nothing (no-op).
+   * @note Applies to CAN and serial communication (USB/RS485).
    */
   virtual void SetRequestInterval(int milliseconds) = 0;
 
   /**
    * @brief Get current request interval setting
    * @return Request interval in milliseconds (0 = no limit)
-   * @note Serial port communication (RS485) always returns 0 (not applicable).
    */
   virtual int GetRequestInterval() const = 0;
 
@@ -707,8 +696,7 @@ class AGIBOT_EXPORT OmniHand {
    * @deprecated
    * @brief Sets device ID.
    * @param device_id Device ID
-   * @note Serial port communication (RS485) does not support this interface.
-   *       RS485 implementation does nothing (device ID is fixed at construction time).
+   * @note Use SetHandDeviceId() instead.
    * @warning Changing device ID without proper documentation may result in device inaccessibility.
    */
   virtual void SetDeviceId(unsigned char device_id) {

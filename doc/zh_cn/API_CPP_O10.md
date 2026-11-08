@@ -67,18 +67,13 @@ enum class ControlMode : unsigned char {
     VELOCITY                  = 2,    // 速度模式（O10 不支持 SetControlMode 切换）
     TORQUE                    = 3,    // 力控模式（O10 不支持）
     POSITION_TORQUE           = 4,    // 位置-力控模式（混合控制：位置 + 电流 mA，范围 0–1000）
-    VELOCITY_TORQUE           = 5,    // 速度-力控模式（O10 暂未开放）
-    POSITION_VELOCITY_TORQUE  = 6,    // 位置-速度-力控模式（O10 暂未开放）
+    VELOCITY_TORQUE           = 5,    // 速度-力控模式
+    POSITION_VELOCITY_TORQUE  = 6,    // 位置-速度-力控模式
     UNKNOWN                   = 10    // 未知模式
 };
 }  // namespace omnihand
 }  // namespace agilink
 ```
-
-**O10 可用模式**：
-- `POSITION` (0)：默认位置控制
-- `POSITION_TORQUE` (4)：位置+电流混合控制（力矩字段实为电流 mA，范围 0–1000）
-- 其余模式不可用或暂未开放
 
 ## 数据结构
 
@@ -118,6 +113,8 @@ struct TactileSensorData {
 ```
 
 ## 工厂方法
+
+`hand_device_id=0` 使用协议各自的默认 ID；非零值作为两种协议的初始目标 ID。CAN 连接需要广播发现时，创建对象后调用 `GetHandDeviceIdByBroadcast()`。
 
 ### 推荐：ZLG USB CANFD（零配置）
 
@@ -213,11 +210,11 @@ static std::unique_ptr<OmniHand2025> createHandByHcan(
     uint8_t canfd_channel_id = 0);
 ```
 
-### RS485 通信（仅 O10）
+### RS485 通信
 
 ```cpp
 /**
- * @brief 工厂方法 - RS485 通信（仅 OmniHand 2025）
+ * @brief 工厂方法 - RS485 通信
  * @param hand_type 手型（左/右手）
  * @param hand_device_id 手部设备 ID
  * @param uart_port 串口路径（例如："/dev/ttyUSB0"）
@@ -279,7 +276,6 @@ std::string GetSN() const;
 /**
  * @brief 获取设备信息）
  * @return 包含设备 ID 和通信参数据DeviceInfo 结构）
- * @note 串口通信（RS485）不支持此接口）
  */
 DeviceInfo GetDeviceInfo() const;
 
@@ -490,6 +486,8 @@ O10 不支持通过 `SetControlMode` 指令切换控制模式，默认工作在*
 
 ## 电流阈值控制
 
+标准串口协议支持读写电流阈值；私有串口协议的设置接口写入保护电流，读取接口返回 `0` 或空数组。
+
 > **注意**：O10/H3L 不允许同时使用电流阈值控制和混合控制。如需使用混合控制，请勿调用电流阈值接口。
 
 ```cpp
@@ -501,19 +499,23 @@ std::vector<int16_t> GetAllCurrentThreshold() const;
 
 ## 混合控制
 
+CAN 和 RS485 均支持 PT、PVT 混合控制。RS485 单关节接口要求标准串口协议；私有串口协议仅支持全手调用。
+
+力矩参数实际为电机电流，单位 **mA**（0–1000），非 N·m。位置使用电机原始编码值；全手数组须包含 10 个值。
+
 ```cpp
 MixCtrl MixControlByPT(uint8_t joint_motor_index,
-                       int16_t position,
-                       int16_t torque);
+                      int16_t position,
+                      int16_t torque);
 std::vector<MixCtrl> MixControlByPT(const std::vector<int16_t>& positions,
-                                    const std::vector<int16_t>& torques);
+                                   const std::vector<int16_t>& torques);
 MixCtrl MixControlByPVT(uint8_t joint_motor_index,
-                        int16_t position,
-                        int16_t velocity,
-                        int16_t torque);
+                       int16_t position,
+                       int16_t velocity,
+                       int16_t torque);
 std::vector<MixCtrl> MixControlByPVT(const std::vector<int16_t>& positions,
-                                     const std::vector<int16_t>& velocities,
-                                     const std::vector<int16_t>& torques);
+                                    const std::vector<int16_t>& velocities,
+                                    const std::vector<int16_t>& torques);
 ```
 
 ## 错误处理

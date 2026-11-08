@@ -460,8 +460,7 @@ def set_frame_send_timeout(self, milliseconds: int) -> None: ...
 def get_frame_send_timeout(self) -> int: ...
 ```
 
-Frame-send timeout is a CAN transport setting. The RS485 implementation treats
-the setter as a no-op and returns `0` from the getter.
+Frame-send timeout applies to CAN and RS485. On RS485, it controls the timeout for each serial write.
 
 ### Debugging
 

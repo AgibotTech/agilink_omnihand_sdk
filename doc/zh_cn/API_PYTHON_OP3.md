@@ -264,7 +264,7 @@ picker.set_broadcast(False)
 picker.show_data_details(True)
 ```
 
-RS485 不使用帧发送超时，setter 不执行操作，getter 返回 `0`。
+RS485 的帧发送超时用于设置每次串口写入的超时时间。
 `set_broadcast()` 只切换 SDK 请求使用的寻址方式，不会写入新的设备 ID。
 
 ## 硬件 pytest

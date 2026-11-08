@@ -252,7 +252,7 @@ Parameters are organized under `left_hand` / `right_hand` namespaces. If `connec
       can_interface: "can1"
 ```
 
-**RS485 Serial (O10 only):**
+**RS485 Serial:**
 
 ```yaml
 /**:

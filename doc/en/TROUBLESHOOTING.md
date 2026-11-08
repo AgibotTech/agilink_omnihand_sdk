@@ -13,7 +13,8 @@
 
 **Solutions:**
 
-#### Check Hardware Connection
+#### Check Adapter Detection
+
 ```bash
 # Linux: Check if device is recognized
 lsusb | grep -i zlg
@@ -84,26 +85,44 @@ groups  # Should include 'dialout' and 'plugdev'
 **Solutions:**
 
 #### Check CANFD Parameters
+
+The following example is for O10. Initialize the adapter, then discover the device address by broadcast. Successful discovery updates the object's cached protocol addresses.
+
 ```python
-# Verify hand_device_id matches the actual device
-info = hand.get_device_info()
-print(f"Actual device ID: {info.hand_device_id}")
+from omnihand import HandType, OmniHand2025
 
-# If mismatch, create with correct ID
-hand = OmniHand2025.create_hand_by_zlgcan(HandType.LEFT, actual_id, 0, 0)
+hand = OmniHand2025.create_hand_by_zlgcan(
+    hand_type=HandType.LEFT, hand_device_id=1,
+    canfd_device_id=0, canfd_channel_id=0,
+)
 
-# Alternatively, by serial number (stable after reboot; triggers scan then open):
-hand = OmniHand2025.create_hand_by_zlgcan(HandType.LEFT, 1, usbcanfd_serial_number="YOUR_DEVICE_SN", canfd_channel_id=0)
+# To select by adapter serial number, replace the factory call above with:
+# hand = OmniHand2025.create_hand_by_zlgcan(
+#     hand_type=HandType.LEFT, hand_device_id=1,
+#     usbcanfd_serial_number="YOUR_DEVICE_SN", canfd_channel_id=0,
+# )
+
+if hand is None or not hand.init():
+    raise RuntimeError("Failed to initialize the O10 adapter")
+
+discovery_result = hand.get_hand_device_id_by_broadcast()
+if discovery_result < 0:
+    raise RuntimeError("Address discovery failed or protocol addresses differ")
+print(f"O10 address discovery result: {discovery_result}")
 ```
+
+`0` represents O10's default protocol address combination; a positive value represents a custom address. Subsequent requests use the cached addresses, so there is no need to recreate the object.
 
 > **Note on `canfd_channel_id`**:
 > - For dual-channel adapters (USBCANFD-200U): `can0` → `channel_id=0`, `can1` → `channel_id=1`
 > - For single-channel adapters (USBCANFD-100U): always use `channel_id=0`
 
-#### Check Power Supply
-- Ensure 24V power is stable
-- Check for loose power connections
-- LED on hand should be lit
+#### Check Power Supply and CAN Wiring
+
+- Ensure the power supply is stable: 48V for H3UM, 24V for other products.
+- Check for loose power connections.
+- Confirm that the hand's LED is lit.
+- If the LED is lit but CAN communication still gets no response, power off, try swapping CAN_H and CAN_L, then power on and test again.
 
 #### Reduce Communication Rate
 ```python
@@ -111,7 +130,7 @@ hand = OmniHand2025.create_hand_by_zlgcan(HandType.LEFT, 1, usbcanfd_serial_numb
 hand.set_request_interval(100)  # 100ms between requests
 
 # Increase response timeout threshold
-hand.set_request_timeout(500)  # 500ms timeout for each request
+hand.set_frame_recv_timeout(500)  # 500ms timeout for each request
 ```
 
 ---
@@ -125,39 +144,46 @@ hand.set_request_timeout(500)  # 500ms timeout for each request
 **Solutions:**
 
 #### Check Control Mode
+
+Control mode APIs vary by product. O10 does not expose `set_all_control_modes()`. O12 and H3UM accept an array of per-joint modes; supported modes are listed in each product's API.
+
+For an initialized O12 instance named `o12_hand`, set each joint to position mode as follows:
+
 ```python
-# Use servo mode (recommended) or position mode
 from omnihand import ControlMode
 
-# Servo mode - smooth motion with velocity/torque limits
-hand.set_all_control_mode(ControlMode.SERVO)
-
-# Or position mode - direct position control
-hand.set_all_control_mode(ControlMode.POSITIONTION)
+modes = [int(ControlMode.POSITION)] * o12_hand.get_doa()
+o12_hand.set_all_control_modes(modes)
 ```
 
-#### Check Position Range
+See [O12 Python API](API_PYTHON_O12.md) and [H3UM Python API](API_PYTHON_H3UM.md).
+
+#### Check Position Feedback and Target Data
+
+Read the current positions from the initialized `hand` instance and check that the feedback count matches the active joint count:
+
 ```python
-# Valid range is typically 0-4096
-# WARNING: Some motors cannot reach extreme values (0 or 4096) due to finger mechanical limits
-# Using extreme values may cause the motor to stall or trigger protection
-
-# Start with safe middle positions (tested values from demo)
-safe_pos = [2048, 2048, 4096, 2048, 4096, 4096, 2048, 4096, 2048, 4096]
-hand.set_all_joint_motor_posi(safe_pos)
-
-# Or use joint angle interface (recommended, handles limits automatically)
-angles = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-hand.set_all_active_joint_angles(angles)
+positions = hand.get_all_joint_positions()
+if len(positions) != hand.get_doa():
+    raise RuntimeError("Position feedback count does not match active DOF")
+print(positions)
 ```
+
+Use `set_all_joint_positions()` for motor encoder commands and `set_all_active_joint_angles()` for angle commands. Targets must match the product, hand side, hardware revision, joint count, and mechanical constraints. Neither `0`, `4096`, nor all-zero radians is a universally safe position; refer to the product's API and preset gestures.
 
 #### Check Error Status
 ```python
 # Read error reports
-errors = hand.get_all_error_report()
-for i, err in enumerate(errors):
-    if err:
-        print(f"Joint {i+1} error: {err}")
+errors = hand.get_all_error_reports()
+for i, err in enumerate(errors, start=1):
+    flags = {
+        name: getattr(err, name)
+        for name in (
+            "stalled", "overheat", "over_current", "motor_except", "commu_except"
+        )
+    }
+    if any(flags.values()):
+        print(f"Joint {i} error: {flags}")
 ```
 
 ---
@@ -171,16 +197,24 @@ for i, err in enumerate(errors):
 **Solutions:**
 
 #### Reinstall Package
+
+Run from the release package's platform directory (`linux/x64`, `linux/aarch64`, or `windows/x64`) using the same Python interpreter as your application. pip selects a compatible wheel from the local `python/` directory; do not pass all wheels through a wildcard.
+
+**Linux:**
+
 ```bash
-# Uninstall and reinstall
-pip uninstall omnihand
-pip install python/omnihand-*.whl
+python3 --version
+python3 -m pip install --force-reinstall --no-deps --no-index --find-links=python omnihand
 ```
 
-#### Check Python Version
-```bash
-python3 --version  # Should be 3.10+
+**Windows:**
+
+```powershell
+python --version
+python -m pip install --force-reinstall --no-deps --no-index --find-links=python omnihand
 ```
+
+The current package provides CPython 3.10–3.14 wheels. Check that the Python version, operating system, and architecture match.
 
 #### Install Test Dependencies (for running tests)
 ```bash
@@ -276,10 +310,7 @@ int main() {
 **Solutions:**
 
 ```bash
-# Source ROS2 first
-source /opt/ros/humble/setup.bash
-
-# Then source omnihand
+# Load the matching ROS2 environment and OmniHand package automatically
 source ros2/setup.bash
 
 # Verify package
@@ -308,7 +339,7 @@ cat /etc/udev/rules.d/99-omnihand-usb.rules
 # Check user groups
 groups $USER
 
-# Test device access
+# Check SDK import (does not connect to a device)
 python3 -c "from omnihand import OmniHand2025; print('OK')"
 ```
 
@@ -336,11 +367,13 @@ If the issue persists:
    - Hardware model (O10/O12, adapter type)
 
 2. **Check logs:**
+   Enable C++ SDK TX/RX details on the initialized `hand` instance:
+
    ```python
-   # Enable verbose output
-   import logging
-   logging.basicConfig(level=logging.DEBUG)
+   hand.show_data_details(True)
    ```
+
+   Logs are printed to standard output by default. Keep the full TX/RX and error output.
 
 3. **Contact support:**
    - Email: xuqigui@agibot.com

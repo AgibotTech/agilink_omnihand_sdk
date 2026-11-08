@@ -29,7 +29,7 @@ namespace omnihand {
  * | Error Code | Value | Description |
  * |------------|-------|-------------|
  * | AGILINK_SUCCESS | 0 | Operation successful |
- * | AGILINK_OTA_NOT_SUPPORTED | -1 | OTA not supported (e.g., RS485) |
+ * | AGILINK_OTA_NOT_SUPPORTED | -1 | OTA not supported by this implementation |
  * | AGILINK_OTA_FILE_NOT_FOUND | -2 | Firmware file not found |
  * | AGILINK_OTA_FILE_EMPTY | -3 | Firmware file is empty |
  * | AGILINK_OTA_REQUEST_TIMEOUT | -4 | Upgrade request or finish response timeout |
@@ -53,7 +53,7 @@ namespace omnihand {
  */
 enum class AGIBOT_EXPORT OtaErrorCode : int {
   AGILINK_SUCCESS = 0,                    // Operation successful
-  AGILINK_OTA_NOT_SUPPORTED = -1,         // OTA not supported for this communication type (e.g., RS485)
+  AGILINK_OTA_NOT_SUPPORTED = -1,         // OTA not supported by this implementation
   AGILINK_OTA_FILE_NOT_FOUND = -2,        // Firmware file not found or cannot be opened
   AGILINK_OTA_FILE_EMPTY = -3,            // Firmware file is empty
   AGILINK_OTA_REQUEST_TIMEOUT = -4,       // Upgrade request or finish response timeout

@@ -25,6 +25,8 @@ from omnihand import OmniHand2025, HandType, Finger, ControlMode
 
 ## 工厂方法
 
+`hand_device_id=0` 使用协议各自的默认 ID；非零值作为两种协议的初始目标 ID。CAN 连接需要广播发现时，创建对象后调用 `get_hand_device_id_by_broadcast()`。
+
 ### 推荐：ZLG USB CANFD（零配置）
 
 ```python
@@ -101,7 +103,7 @@ def create_hand_by_hcan(hand_type: HandType,
     """
 ```
 
-### RS485 通信（仅 O10）
+### RS485 通信
 
 ```python
 @staticmethod
@@ -109,7 +111,7 @@ def create_hand_by_rs485(hand_type: HandType,
                       hand_device_id: int,
                       uart_port: str,
                       baudrate: int = 460800) -> 'OmniHand2025':
-    """使用 RS485 通信创建灵巧手对象（仅 O10）。
+    """使用 RS485 通信创建灵巧手对象。
 
     Args:
         hand_type: 手型。
@@ -338,17 +340,16 @@ def get_all_joint_velocities(self) -> List[int]:
 
 ## 控制模式
 
-O10 不支持通过 `set_control_mode` 指令切换控制模式，默认工作在**位置控制模式**。可通过 `mix_control_by_pt` / `mix_control_by_pvt` 实现混合控制，支持以下控制模式：
+O10 不支持通过 `set_control_mode` 切换控制模式。混合控制使用以下接口；全手数组须包含 10 个值。
 
-| 模式枚举 | 值 | 说明 |
-|---|---|---|
-| `ControlMode.POSITION` | 0 | 位置控制（默认） |
-| `ControlMode.POSITION_TORQUE` | 4 | 位置 + 力矩混合控制 |
-| `ControlMode.POSITION_VELOCITY_TORQUE` | 6 | 位置 + 速度 + 力矩混合控制（**暂未开放**） |
-
-> **非标单位说明**：`POSITION_TORQUE` 模式中的"力矩"实际对应电机电流值，单位为 **mA**，范围 **0–1000**，而非 ROS2 标准的 N·m。
+| API | 说明 |
+|-----|------|
+| `mix_control_by_pt` | 位置 + 电流（mA，0–1000） |
+| `mix_control_by_pvt` | 位置 + 速度 + 电流 |
 
 ## 电流阈值控制
+
+标准串口协议支持读写电流阈值；私有串口协议的设置接口写入保护电流，读取接口返回 `0` 或空数组。
 
 > **注意**：O10/H3L 不允许同时使用电流阈值控制和混合控制。如需使用混合控制，请勿调用电流阈值接口。
 
@@ -360,8 +361,6 @@ def set_current_threshold(self, joint_motor_index: int, current_threshold: int) 
         joint_motor_index: 关节电机索引（1-10）。
         current_threshold: 电流阈值。
     
-    Note:
-        串口通信（RS485）不支持此接口。
     """
 
 def get_current_threshold(self, joint_motor_index: int) -> int:
@@ -373,8 +372,6 @@ def get_current_threshold(self, joint_motor_index: int) -> int:
     Returns:
         int: 当前电流阈值。
     
-    Note:
-        串口通信（RS485）不支持此接口。
     """
 
 def set_all_current_thresholds(self, current_thresholds: List[int]) -> None:
@@ -383,8 +380,6 @@ def set_all_current_thresholds(self, current_thresholds: List[int]) -> None:
     Args:
         current_thresholds: 电流阈值列表。必须包含 10 个值。
     
-    Note:
-        串口通信（RS485）不支持此接口。
     """
 
 def get_all_current_thresholds(self) -> List[int]:
@@ -393,31 +388,18 @@ def get_all_current_thresholds(self) -> List[int]:
     Returns:
         List[int]: 电流阈值列表。返回 10 个值。
     
-    Note:
-        串口通信（RS485）不支持此接口。
     """
 ```
 
 ## 混合控制
 
-> **注意**：O10/H3L 的混合控制中，`tgt_torque` 字段实际对应电机电流，单位为 **mA**，范围 **0–1000**（非标准 N·m）。`tgt_velo` 速度参数为 `int`，范围 **0–32767**。`POSITION_VELOCITY_TORQUE` 模式暂未开放（速度值当前被内部写死）。
+CAN 和 RS485 均支持 PT、PVT 混合控制。RS485 单关节接口要求标准串口协议；私有串口协议仅支持全手调用。
+
+力矩参数实际为电机电流，单位 **mA**（0–1000），非 N·m。位置使用电机原始编码值；全手数组须包含 10 个值。
 
 ```python
 def mix_control_by_pt(self, positions: List[int], torques: List[int]) -> List[MixCtrl]: ...
 def mix_control_by_pvt(self, positions: List[int], velocities: List[int], torques: List[int]) -> List[MixCtrl]: ...
-# legacy removed: mix_ctrl_joint_motor
-    """以混合模式控制关节电机。
-    
-    Args:
-        mix_ctrls: 混合控制参数列表。
-            - ctrl_mode: 控制模式（仅 POSITION_TORQUE 可用）
-            - tgt_posi: 目标位置（0–4095 编码器原始值）
-            - tgt_torque: 目标电流（单位 mA，范围 0–1000，非 N·m）
-    
-    Note:
-        纯力控模式 (TORQUE) 不支持。
-        串口通信（RS485）不支持此接口。
-    """
 ```
 
 ## 错误处理

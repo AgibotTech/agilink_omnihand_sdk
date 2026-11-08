@@ -125,7 +125,7 @@ ros2 topic pub --once /h3l/left/tactile_cmd std_msgs/msg/Float32 '{data: 0.0}'
 
 配置文件默认位于 [config/omnihand_3_lite_node.yaml](../../../node/omnihand_node/config/omnihand_3_lite_node.yaml)，可直接修改或通过启动参数 `config_file` 指定。
 
-H3L 支持的连接方式：`zlgcan`、`hcan`、`socketcan`。（不支持 RS485、USB 直连）
+H3L 支持的连接方式：`zlgcan`、`hcan`、`socketcan`、`rs485`。不支持 USB 直连。
 
 ### 参数说明
 
@@ -134,11 +134,12 @@ H3L 支持的连接方式：`zlgcan`、`hcan`、`socketcan`。（不支持 RS485
 | 参数 | 类型 | 默认值 | 适用连接方式 | 说明 |
 |------|------|--------|-------------|------|
 | `hand_device_id` | int | 1 | 全部 | 手设备 ID（1–255） |
-| `connection_type` | string | "" | — | `"zlgcan"` / `"hcan"` / `"socketcan"`；为空则跳过 |
+| `connection_type` | string | "" | — | `"zlgcan"` / `"hcan"` / `"socketcan"` / `"rs485"`；为空则跳过 |
 | `canfd_serial_number` | string | "" | zlgcan / hcan | 适配器序列号（**推荐**，重启后稳定） |
 | `canfd_device_id` | int | 0 | zlgcan / hcan | 适配器设备索引（`canfd_serial_number` 为空时使用，重启后可能变化） |
 | `canfd_channel_id` | int | 0 | zlgcan / hcan | CAN 通道索引（0 或 1，双通道适配器如 200U 选 0/1，单通道始终为 0） |
 | `can_interface` | string | "can0" | socketcan | SocketCAN 接口名（如 `can0`、`can1`） |
+| `uart_port` | string | "" | rs485 | 串口路径（如 `/dev/ttyUSB0`）；RS485 必填 |
 | `request_interval_ms` | int | -1 | 全部 | 请求最小间隔（ms），0=不限速，范围 0-100，-1=使用 SDK 默认值 |
 | `frame_recv_timeout_ms` | int | -1 | 全部 | 单帧接收超时（ms），范围 10-1000，-1=使用 SDK 默认值（50ms） |
 | `show_data_details` | bool | false | 全部 | 是否在终端打印收发数据详情（调试用） |
@@ -202,6 +203,21 @@ H3L 支持的连接方式：`zlgcan`、`hcan`、`socketcan`。（不支持 RS485
       canfd_channel_id: 1
 ```
 
+**RS485：**
+
+```yaml
+/**:
+  ros__parameters:
+    left_hand:
+      hand_device_id: 1
+      connection_type: "rs485"
+      uart_port: "/dev/ttyUSB0"
+    right_hand:
+      hand_device_id: 1
+      connection_type: "rs485"
+      uart_port: "/dev/ttyUSB1"
+```
+
 **SocketCAN：**
 
 ```yaml
@@ -248,7 +264,8 @@ ros2 launch omnihand_node omnihand_3_lite_node.launch.py config_file:=/path/to/y
 | 角度控制 | ❌ 不可用（无运动学求解器） | ✅ rad |
 | 电机位置控制 | ✅ 推荐（0–4095 ticks） | ✅ 可选 |
 | 触觉传感器 | ✅ 六区域 `uint16[]` 原始数据 | ✅ 产品专属格式 |
-| RS485 / USB 直连 | ❌ 不支持 | ✅ O10 支持 |
+| RS485 | ✅ 支持 | ✅ O10 支持 |
+| USB 直连 | ❌ 不支持 | ✅ 仅 OmniHand 2025 |
 | `joint_cmd` 单位 | motor ticks（int16） | rad（float64） |
 | namespace | `/h3l` | `/o10` / `/o12` |
 

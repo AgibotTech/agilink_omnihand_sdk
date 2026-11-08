@@ -125,7 +125,7 @@ ros2 topic pub --once /h3l/left/tactile_cmd std_msgs/msg/Float32 '{data: 0.0}'
 
 The default config file is [config/omnihand_3_lite_node.yaml](../../../node/omnihand_node/config/omnihand_3_lite_node.yaml). Edit it directly or override via the `config_file` launch argument.
 
-H3L supports: `zlgcan`, `hcan`, `socketcan`. (RS485 and USB direct are not supported.)
+H3L supports `zlgcan`, `hcan`, `socketcan`, and `rs485`. USB direct is not supported.
 
 ### Parameters
 
@@ -134,11 +134,12 @@ Parameters are organized under `left_hand` / `right_hand` namespaces. If `connec
 | Parameter | Type | Default | Applicable | Description |
 |-----------|------|---------|------------|-------------|
 | `hand_device_id` | int | 1 | All | Hand device ID (1-255) |
-| `connection_type` | string | "" | — | `"zlgcan"` / `"hcan"` / `"socketcan"`; empty = skip |
+| `connection_type` | string | "" | — | `"zlgcan"` / `"hcan"` / `"socketcan"` / `"rs485"`; empty = skip |
 | `canfd_serial_number` | string | "" | zlgcan / hcan | Adapter serial number (**recommended**, stable across reboots) |
 | `canfd_device_id` | int | 0 | zlgcan / hcan | Adapter device index (used when `canfd_serial_number` is empty; may change across reboots) |
 | `canfd_channel_id` | int | 0 | zlgcan / hcan | CAN channel index (0 or 1; dual-channel adapters like 200U use 0/1) |
 | `can_interface` | string | "can0" | socketcan | SocketCAN interface name (e.g. `can0`, `can1`) |
+| `uart_port` | string | "" | rs485 | Serial port path (e.g. `/dev/ttyUSB0`); required for RS485 |
 | `request_interval_ms` | int | -1 | All | Minimum request interval (ms), 0=no limit, range 0-100, -1=SDK default |
 | `frame_recv_timeout_ms` | int | -1 | All | Per-frame receive timeout (ms), range 10-1000, -1=SDK default (50ms) |
 | `show_data_details` | bool | false | All | Print TX/RX data to terminal (for debugging) |
@@ -202,6 +203,21 @@ Parameters are organized under `left_hand` / `right_hand` namespaces. If `connec
       canfd_channel_id: 1
 ```
 
+**RS485:**
+
+```yaml
+/**:
+  ros__parameters:
+    left_hand:
+      hand_device_id: 1
+      connection_type: "rs485"
+      uart_port: "/dev/ttyUSB0"
+    right_hand:
+      hand_device_id: 1
+      connection_type: "rs485"
+      uart_port: "/dev/ttyUSB1"
+```
+
 **SocketCAN:**
 
 ```yaml
@@ -248,7 +264,8 @@ ros2 launch omnihand_node omnihand_3_lite_node.launch.py config_file:=/path/to/y
 | Angle control | ❌ Unavailable (no kinematics solver) | ✅ rad |
 | Motor position control | ✅ Recommended (0-4095 ticks) | ✅ Optional |
 | Tactile sensor | ✅ Six-region raw `uint16[]` data | ✅ Product-specific formats |
-| RS485 / USB direct | ❌ Not supported | ✅ O10 supported |
+| RS485 | ✅ Supported | ✅ O10 supported |
+| USB direct | ❌ Not supported | ✅ OmniHand 2025 only |
 | `joint_cmd` unit | motor ticks (int16) | rad (float64) |
 | namespace | `/h3l` | `/o10` / `/o12` |
 

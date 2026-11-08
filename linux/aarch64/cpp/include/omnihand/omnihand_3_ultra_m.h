@@ -212,9 +212,9 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   // Without a broadcast reply, discovery tries kT1P3DefaultHandDeviceId.
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by canfd_device_id
-   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
+   * @note Both zero and nonzero IDs detect T1.3/T1.5 by querying active DOF.
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id 0 discovers the address; nonzero queries that address.
+   * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param canfd_device_id CANFD device ID
    * @param canfd_channel_id CANFD channel ID
    * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
@@ -239,9 +239,9 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by serial number
-   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
+   * @note Both zero and nonzero IDs detect T1.3/T1.5 by querying active DOF.
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id 0 discovers the address; nonzero queries that address.
+   * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param usbcanfd_serial_number USB CANFD serial number
    * @param canfd_channel_id CANFD channel ID
    * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
@@ -268,9 +268,9 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   /**
    * @brief Factory method - ZLG CANFD over TCP (WiFi/Ethernet to CANFD, this machine acts as TCP client)
    * @note Only available on Windows and Linux x64 (not supported on Linux aarch64/arm64)
-   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
+   * @note Both zero and nonzero IDs detect T1.3/T1.5 by querying active DOF.
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id 0 discovers the address; nonzero queries that address.
+   * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param tcp_host TCP server IP or hostname (e.g. "192.168.0.178")
    * @param tcp_port TCP server port (e.g. 8000)
    * @param canfd_channel_id CAN channel index (0 or 1, default 0)
@@ -300,9 +300,9 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 #ifdef __linux__
   /**
    * @brief Factory method - SocketCAN communication (Linux native CAN interface)
-   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
+   * @note Both zero and nonzero IDs detect T1.3/T1.5 by querying active DOF.
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id 0 discovers the address; nonzero queries that address.
+   * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param can_interface CAN interface name (e.g. "can0")
    * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
    * @param tactile_soc_port Tactile SoC data port
@@ -325,9 +325,9 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 
   /**
    * @brief Factory method - HCAN USB CANFD communication (by canfd_device_id)
-   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
+   * @note Both zero and nonzero IDs detect T1.3/T1.5 by querying active DOF.
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id 0 discovers the address; nonzero queries that address.
+   * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param canfd_device_id CANFD device ID
    * @param canfd_channel_id CANFD channel ID
    * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
@@ -352,9 +352,9 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 
   /**
    * @brief Factory method - HCAN USB CANFD communication (by serial number)
-   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
+   * @note Both zero and nonzero IDs detect T1.3/T1.5 by querying active DOF.
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id 0 discovers the address; nonzero queries that address.
+   * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param hcan_serial_number HCAN serial number
    * @param canfd_channel_id CANFD channel ID
    * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
