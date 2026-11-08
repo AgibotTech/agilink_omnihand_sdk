@@ -1,0 +1,767 @@
+doc/en/API_CPP_OP1.md
+  s_bc7e2fec92cf97::t_73b93b40932827 1-85,87-124,127-133
+  s_bc7e2fec92cf97::t_214030c1bad91d 86,125-126
+doc/zh_cn/API_CPP_OP1.md
+  s_bc7e2fec92cf97::t_214030c1bad91d 86,125-126
+  s_bc7e2fec92cf97::t_73b93b40932827 1-85,87-124,127-133
+doc/en/QUICK_START.md
+  s_bc7e2fec92cf97::t_2b3c32a5dcf0b2 86-95,103
+  s_bc7e2fec92cf97::t_9b58ea7285f9ea 403-404
+  s_bc7e2fec92cf97::t_3562d0c2874c16 24,26-29
+  s_bc7e2fec92cf97::t_15f8ca061bc94d 52-58,151,200-202,209,211-212,329
+  s_bc7e2fec92cf97::t_24c4f8b6b98ac4 287,289,330-331
+  s_bc7e2fec92cf97::t_9668c9e52eb586 143,150
+  s_bc7e2fec92cf97::t_824cb2609e44a9 405-406,412-414,420-422,428-430,433-435,441-443,445-447,451
+  s_bc7e2fec92cf97::t_88e4e91eefa44c 407-411,415-419,423-427,431-432,436-440,444,448-450
+  s_bc7e2fec92cf97::t_0bc174ea7bcee8 82
+  s_bc7e2fec92cf97::t_b8153919abe065 161,174-177,189-192
+  s_bc7e2fec92cf97::t_b458a967d6638f 30
+  s_bc7e2fec92cf97::t_39975130860c62 13-20
+  s_bc7e2fec92cf97::t_409b099d8e64e7 80,83-85,96-102,104,135-136,138-139,142,146,148-149,195-199
+  s_bc7e2fec92cf97::t_b6d07afc8102cb 163,168-169,183-184
+  s_bc7e2fec92cf97::t_dcd628342833fa 22
+  s_bc7e2fec92cf97::t_36fe43ccce6554 367,369-377,379-386
+  s_bc7e2fec92cf97::t_43152fc5582a89 7,9
+  s_bc7e2fec92cf97::t_897261b2a8d84c 137,153,155-160,165,167,170-173,178,180-182,185-188
+  s_bc7e2fec92cf97::t_a48251f384f3bb 365-366,368,378,387-399
+  s_bc7e2fec92cf97::t_bb5940416e0d14 34,38,45,59
+  s_bc7e2fec92cf97::t_3513c6380ddb38 12,35-37,39-40,48,50
+  s_bc7e2fec92cf97::t_0e655d876102af 105-109,112-119,122-134,205,207,213-219,223,230,232,236-265,269-286,290-328,332
+  s_bc7e2fec92cf97::t_a1cf961fb90327 11
+  s_bc7e2fec92cf97::t_d3d147d16619be 288
+  s_bc7e2fec92cf97::t_3495c0271588eb 452
+doc/en/TROUBLESHOOTING.md
+  s_bc7e2fec92cf97::t_34b13ae71f0f55 89,92-111,114-115,133,147-151,155-156,159-161,163,166-169,172-173,177,200-204,206-207,210-214,217,313,342,370-371,373,376
+  s_bc7e2fec92cf97::t_8a9a8466417524 16-17,91,165,218,377
+  s_bc7e2fec92cf97::t_1ec3ac868a08a4 178-186
+  s_bc7e2fec92cf97::t_2331a73092033a 120-125
+doc/zh_cn/QUICK_START.md
+  s_bc7e2fec92cf97::t_e3918e5da55eaa 348
+  s_bc7e2fec92cf97::t_9b58ea7285f9ea 415-416
+  s_bc7e2fec92cf97::t_9668c9e52eb586 155,162
+  s_bc7e2fec92cf97::t_dcd628342833fa 22
+  s_bc7e2fec92cf97::t_24c4f8b6b98ac4 299,301,342-343
+  s_bc7e2fec92cf97::t_43152fc5582a89 7,9
+  s_bc7e2fec92cf97::t_824cb2609e44a9 417-418,424-426,432-434,440-442,445-447,453-455,457-459,463
+  s_bc7e2fec92cf97::t_88e4e91eefa44c 419-423,427-431,435-439,443-444,448-452,456,460-462
+  s_bc7e2fec92cf97::t_3495c0271588eb 464
+  s_bc7e2fec92cf97::t_36aab7a8386276 48,50,52
+  s_bc7e2fec92cf97::t_2b3c32a5dcf0b2 98-107,115
+  s_bc7e2fec92cf97::t_5621eaadcdbfbe 36,38,54,58,60,163,212-214,221,223-224,341
+  s_bc7e2fec92cf97::t_b458a967d6638f 30
+  s_bc7e2fec92cf97::t_897261b2a8d84c 149,165,167-172,177,179,182-185,190,192-194,197-200
+  s_bc7e2fec92cf97::t_b6d07afc8102cb 175,180-181,195-196
+  s_bc7e2fec92cf97::t_d3d147d16619be 300
+  s_bc7e2fec92cf97::t_a48251f384f3bb 377-378,380,390,399-411
+  s_bc7e2fec92cf97::t_36fe43ccce6554 379,381-389,391-398
+  s_bc7e2fec92cf97::t_3513c6380ddb38 12,34-35,37,39-40,45,62,64-71
+  s_bc7e2fec92cf97::t_39975130860c62 13-20
+  s_bc7e2fec92cf97::t_0e655d876102af 117-121,124-131,134-146,217,219,225-231,235,242,244,248-277,281-298,302-340,344
+  s_bc7e2fec92cf97::t_0bc174ea7bcee8 94
+  s_bc7e2fec92cf97::t_3562d0c2874c16 24,26-29
+  s_bc7e2fec92cf97::t_a1cf961fb90327 11
+  s_bc7e2fec92cf97::t_409b099d8e64e7 92,95-97,108-114,116,147-148,150-151,154,158,160-161,207-211
+  s_bc7e2fec92cf97::t_b8153919abe065 173,186-189,201-204
+doc/zh_cn/TROUBLESHOOTING.md
+  s_bc7e2fec92cf97::t_1ec3ac868a08a4 178-186
+  s_bc7e2fec92cf97::t_34b13ae71f0f55 89,92-111,114-115,133,147-151,155-156,159-161,163,166-169,172-173,177,200-204,206-207,210-214,217,313,342,370-371,373,376,379
+  s_bc7e2fec92cf97::t_8a9a8466417524 16-17,91,165,218,377
+  s_bc7e2fec92cf97::t_2331a73092033a 120-125
+README.md
+  s_bc7e2fec92cf97::t_cebfc059c63686 29
+README_zh_cn.md
+  s_bc7e2fec92cf97::t_d78b976943f698 29
+doc/en/API_CPP.md
+  s_bc7e2fec92cf97::t_8e936a70621fe6 12,26
+doc/en/API_CPP_O10.md
+  s_bc7e2fec92cf97::t_ededa38bbf1137 64-65,109-110,205,209,474,476-479,483-484,519,521,525-526,528,530-532,534-535
+doc/en/API_PYTHON_H3L.md
+  s_bc7e2fec92cf97::t_2a89da05fb48fe 463
+doc/en/API_PYTHON_O10.md
+  s_bc7e2fec92cf97::t_ef8f712cbde388 105-106,215,223,529,531-534,538-539,583-585
+doc/en/API_PYTHON_OP3.md
+  s_bc7e2fec92cf97::t_f0e81a902d7eeb 273
+doc/en/API_ROS2_H3L.md
+  s_bc7e2fec92cf97::t_6fed7ecc116ae6 128,137,142,206-220,267-268
+doc/en/API_ROS2_O10.md
+  s_bc7e2fec92cf97::t_46e2f22ce518f0 255
+doc/zh_cn/API_CPP.md
+  s_bc7e2fec92cf97::t_886f07de63d9ab 12,26
+doc/zh_cn/API_CPP_O10.md
+  s_bc7e2fec92cf97::t_cffda2cfd0733b 70-71,117-118,213,217,489-490,502-505,508-509,511,513-515,517-518
+doc/zh_cn/API_PYTHON_H3L.md
+  s_bc7e2fec92cf97::t_9ef9b46f259075 457
+doc/zh_cn/API_PYTHON_O10.md
+  s_bc7e2fec92cf97::t_53cd60d34a0b86 28-29,106,114,343,345-348,352-353,396-398
+doc/zh_cn/API_PYTHON_OP3.md
+  s_bc7e2fec92cf97::t_e4e7443c3aca2e 267
+doc/zh_cn/API_ROS2_H3L.md
+  s_bc7e2fec92cf97::t_7a36b95adef053 128,137,142,206-220,267-268
+doc/zh_cn/API_ROS2_O10.md
+  s_bc7e2fec92cf97::t_5ed52ac0cea93d 248
+linux/aarch64/cpp/demo/omnihand_2025/O10_demo_rs485.cc
+  s_bc7e2fec92cf97::t_530c87acb9027c 58,86
+linux/aarch64/cpp/include/omnihand/i_control_mode.h
+  s_bc7e2fec92cf97::t_2d7d040b31697f 38,47,56
+linux/aarch64/cpp/include/omnihand/omnihand.h
+  s_bc7e2fec92cf97::t_092fbd8fe04150 603,607,610,699
+linux/aarch64/cpp/include/omnihand/omnihand_2025.h
+  s_bc7e2fec92cf97::t_75301ffba329c7 48-49,53,70,89,105,107,123,139,153,168
+linux/aarch64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  s_bc7e2fec92cf97::t_fdf56080655db1 215,217,242,244,271,273,303,305,328,330,355,357
+linux/aarch64/cpp/include/omnihand/ota_types.h
+  s_bc7e2fec92cf97::t_67026896ce24f1 32,56
+linux/x64/cpp/demo/omnihand_2025/O10_demo_rs485.cc
+  s_bc7e2fec92cf97::t_476d076b70bd04 58,86
+linux/x64/cpp/include/omnihand/i_control_mode.h
+  s_bc7e2fec92cf97::t_2685885687e1a9 38,47,56
+linux/x64/cpp/include/omnihand/omnihand.h
+  s_bc7e2fec92cf97::t_8493ea748af968 603,607,610,699
+linux/x64/cpp/include/omnihand/omnihand_2025.h
+  s_bc7e2fec92cf97::t_82342e53244987 48-49,53,70,89,105,107,123,139,153,168
+linux/x64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  s_bc7e2fec92cf97::t_186cec0dc3aa5c 215,217,242,244,271,273,303,305,328,330,355,357
+linux/x64/cpp/include/omnihand/ota_types.h
+  s_bc7e2fec92cf97::t_4ba5f8050669f2 32,56
+windows/x64/cpp/demo/omnihand_2025/O10_demo_rs485.cc
+  s_bc7e2fec92cf97::t_4d6cf3e7d205f3 58,86
+windows/x64/cpp/include/omnihand/i_control_mode.h
+  s_bc7e2fec92cf97::t_22c52bebb6ac57 38,47,56
+windows/x64/cpp/include/omnihand/omnihand.h
+  s_bc7e2fec92cf97::t_892566ea01f97e 603,607,610,699
+windows/x64/cpp/include/omnihand/omnihand_2025.h
+  s_bc7e2fec92cf97::t_2690692a9e7657 48-49,53,70,89,105,107,123,139,153,168
+windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  s_bc7e2fec92cf97::t_9f65adffe67568 215,217,242,244,271,273,303,305,328,330,355,357
+windows/x64/cpp/include/omnihand/ota_types.h
+  s_bc7e2fec92cf97::t_abbfa65d6bb104 32,56
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "9c5fd6125132cf976bf050acf696ae419bd18ba9",
+  "prompts": {},
+  "sessions": {
+    "s_bc7e2fec92cf97": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1af8d-5192-7231-92b1-32ffa531328c",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.output_tokens": "598948",
+        "tlab.token_usage.cache_read_tokens": "137105348",
+        "tlab.session_started_at": "2026-11-07T23:40:29Z",
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.token_usage.input_tokens": "3904763"
+      }
+    }
+  },
+  "changes": [
+    {
+      "new_path": "doc/en/API_CPP_OP1.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 133
+          }
+        ]
+      }
+    },
+    {
+      "new_path": "doc/zh_cn/API_CPP_OP1.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 133
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "README.md",
+      "new_path": "README.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "README_zh_cn.md",
+      "new_path": "README_zh_cn.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP.md",
+      "new_path": "doc/en/API_CPP.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_O10.md",
+      "new_path": "doc/en/API_CPP_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 23
+          }
+        ]
+      },
+      "deletions": {
+        "human": 43
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON_H3L.md",
+      "new_path": "doc/en/API_PYTHON_H3L.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON_O10.md",
+      "new_path": "doc/en/API_PYTHON_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 14
+          }
+        ]
+      },
+      "deletions": {
+        "human": 35
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON_OP3.md",
+      "new_path": "doc/en/API_PYTHON_OP3.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/en/API_ROS2_H3L.md",
+      "new_path": "doc/en/API_ROS2_H3L.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 20
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "doc/en/API_ROS2_O10.md",
+      "new_path": "doc/en/API_ROS2_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/en/QUICK_START.md",
+      "new_path": "doc/en/QUICK_START.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 336
+          }
+        ]
+      },
+      "deletions": {
+        "human": 26,
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 99
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/TROUBLESHOOTING.md",
+      "new_path": "doc/en/TROUBLESHOOTING.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 82
+          }
+        ]
+      },
+      "deletions": {
+        "human": 4,
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 45
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP.md",
+      "new_path": "doc/zh_cn/API_CPP.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_O10.md",
+      "new_path": "doc/zh_cn/API_CPP_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 20
+          }
+        ]
+      },
+      "deletions": {
+        "human": 18
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON_H3L.md",
+      "new_path": "doc/zh_cn/API_PYTHON_H3L.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON_O10.md",
+      "new_path": "doc/zh_cn/API_PYTHON_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 14
+          }
+        ]
+      },
+      "deletions": {
+        "human": 32
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON_OP3.md",
+      "new_path": "doc/zh_cn/API_PYTHON_OP3.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_ROS2_H3L.md",
+      "new_path": "doc/zh_cn/API_ROS2_H3L.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 20
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_ROS2_O10.md",
+      "new_path": "doc/zh_cn/API_ROS2_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/QUICK_START.md",
+      "new_path": "doc/zh_cn/QUICK_START.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 342
+          }
+        ]
+      },
+      "deletions": {
+        "human": 21,
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 97
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/TROUBLESHOOTING.md",
+      "new_path": "doc/zh_cn/TROUBLESHOOTING.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 83
+          }
+        ]
+      },
+      "deletions": {
+        "human": 4,
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 46
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/demo/omnihand_2025/O10_demo_rs485.cc",
+      "new_path": "linux/aarch64/cpp/demo/omnihand_2025/O10_demo_rs485.cc",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/i_control_mode.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/i_control_mode.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/omnihand.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/omnihand.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 4
+          }
+        ]
+      },
+      "deletions": {
+        "human": 16
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/omnihand_2025.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/omnihand_2025.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 11
+          }
+        ]
+      },
+      "deletions": {
+        "human": 9
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 12
+          }
+        ]
+      },
+      "deletions": {
+        "human": 12
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/ota_types.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/ota_types.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_2025/O10_demo_rs485.cc",
+      "new_path": "linux/x64/cpp/demo/omnihand_2025/O10_demo_rs485.cc",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/i_control_mode.h",
+      "new_path": "linux/x64/cpp/include/omnihand/i_control_mode.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnihand.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnihand.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 4
+          }
+        ]
+      },
+      "deletions": {
+        "human": 16
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnihand_2025.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnihand_2025.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 11
+          }
+        ]
+      },
+      "deletions": {
+        "human": 9
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 12
+          }
+        ]
+      },
+      "deletions": {
+        "human": 12
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/ota_types.h",
+      "new_path": "linux/x64/cpp/include/omnihand/ota_types.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_2025/O10_demo_rs485.cc",
+      "new_path": "windows/x64/cpp/demo/omnihand_2025/O10_demo_rs485.cc",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/i_control_mode.h",
+      "new_path": "windows/x64/cpp/include/omnihand/i_control_mode.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 4
+          }
+        ]
+      },
+      "deletions": {
+        "human": 16
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_2025.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_2025.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 11
+          }
+        ]
+      },
+      "deletions": {
+        "human": 9
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 12
+          }
+        ]
+      },
+      "deletions": {
+        "human": 12
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/ota_types.h",
+      "new_path": "windows/x64/cpp/include/omnihand/ota_types.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_bc7e2fec92cf97",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "human": 2
+      }
+    }
+  ]
+}
