@@ -1,0 +1,62 @@
+windows/x64/cpp/bin/kerneldlls/devices_property/usbcanfd-200u.xml
+  h_b60f00b173c94b 93,110,344
+windows/x64/cpp/demo/omnihand_3_ultra_m/T1P5_motor_ota.md
+  h_b60f00b173c94b 7-8,63,69-71,75,90
+windows/x64/cpp/test/test_eyou_motor_ota_protocol.cc
+  h_b60f00b173c94b 243-250,298,300,303-318
+windows/x64/cpp/test/test_eyou_motor_ota_upgrader.cc
+  h_b60f00b173c94b 8,68-70,84-87,134,174,204-205,217,265-270,272-302,305-307,481-483,510-514,520,552,611,637
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "d5c83ada5338caef17a3477ec5024c0c6bd02731",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/usbcanfd-200u.xml",
+      "new_path": "windows/x64/cpp/bin/kerneldlls/devices_property/usbcanfd-200u.xml",
+      "additions": {
+        "human": 3
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/T1P5_motor_ota.md",
+      "new_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/T1P5_motor_ota.md",
+      "additions": {
+        "human": 8
+      },
+      "deletions": {
+        "human": 6
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_eyou_motor_ota_protocol.cc",
+      "new_path": "windows/x64/cpp/test/test_eyou_motor_ota_protocol.cc",
+      "additions": {
+        "human": 26
+      },
+      "deletions": {
+        "human": 26
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_eyou_motor_ota_upgrader.cc",
+      "new_path": "windows/x64/cpp/test/test_eyou_motor_ota_upgrader.cc",
+      "additions": {
+        "human": 65
+      },
+      "deletions": {
+        "human": 9
+      }
+    }
+  ]
+}
