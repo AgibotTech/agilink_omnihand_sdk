@@ -1,0 +1,59 @@
+windows/x64/cpp/demo/omnihand_3_ultra_m/T1P5_motor_ota.md
+  h_b60f00b173c94b 1-96
+windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  h_b60f00b173c94b 13-15,17,219,246,275,307,332,359,515-534,611-626
+windows/x64/cpp/test/CMakeLists.txt
+  h_b60f00b173c94b 139-149
+windows/x64/cpp/test/test_eyou_motor_ota_protocol.cc
+  h_b60f00b173c94b 1-371
+windows/x64/cpp/test/test_eyou_motor_ota_upgrader.cc
+  h_b60f00b173c94b 1-620
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "4710d2bc4f2bc5c27cbf5da75ee7c65652363f36",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "new_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/T1P5_motor_ota.md",
+      "additions": {
+        "human": 96
+      }
+    },
+    {
+      "new_path": "windows/x64/cpp/test/test_eyou_motor_ota_protocol.cc",
+      "additions": {
+        "human": 371
+      }
+    },
+    {
+      "new_path": "windows/x64/cpp/test/test_eyou_motor_ota_upgrader.cc",
+      "additions": {
+        "human": 620
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "human": 46
+      },
+      "deletions": {
+        "human": 6
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "additions": {
+        "human": 11
+      }
+    }
+  ]
+}
