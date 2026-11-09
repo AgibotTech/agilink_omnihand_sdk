@@ -1,0 +1,51 @@
+windows/x64/cpp/demo/omnihand_3_ultra_m/T1P5_motor_ota.md
+  h_b60f00b173c94b 79-82
+windows/x64/cpp/test/CMakeLists.txt
+  h_b60f00b173c94b 80-103
+windows/x64/cpp/test/test_can_frame_transport.cc
+  h_b60f00b173c94b 1-119
+windows/x64/cpp/test/test_zlg_classic_can_transport.cc
+  h_b60f00b173c94b 1-204
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "82bb1a7ad24d55e0e5c639c6b1f1f42be12cf5e2",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "new_path": "windows/x64/cpp/test/test_can_frame_transport.cc",
+      "additions": {
+        "human": 119
+      }
+    },
+    {
+      "new_path": "windows/x64/cpp/test/test_zlg_classic_can_transport.cc",
+      "additions": {
+        "human": 204
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/T1P5_motor_ota.md",
+      "new_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/T1P5_motor_ota.md",
+      "additions": {
+        "human": 4
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "additions": {
+        "human": 24
+      }
+    }
+  ]
+}
