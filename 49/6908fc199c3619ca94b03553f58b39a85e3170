@@ -1,0 +1,60 @@
+windows/x64/cpp/demo/omnihand_3_ultra_m/T1P5_motor_ota.md
+  s_62d7f790ba05bc::t_5671423a410c0d 9,21,39,42,49,60-65,85-86,97-98
+windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  s_62d7f790ba05bc::t_ad0e1c9d86c1be 14,521,523-524,527,535,623,627
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "496908fc199c3619ca94b03553f58b39a85e3170",
+  "prompts": {},
+  "sessions": {
+    "s_62d7f790ba05bc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1b947-618f-72f1-be20-c6e2c733b4b5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.cache_read_tokens": "112706250",
+        "tlab.token_usage.output_tokens": "549371",
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.token_usage.input_tokens": "3378090",
+        "tlab.session_started_at": "2026-11-08T03:50:32Z"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/T1P5_motor_ota.md",
+      "new_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/T1P5_motor_ota.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 15
+          }
+        ]
+      },
+      "deletions": {
+        "human": 9
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 8
+          }
+        ]
+      },
+      "deletions": {
+        "human": 7
+      }
+    }
+  ]
+}
