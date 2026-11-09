@@ -11,7 +11,7 @@
 #define AGILINK_OMNIHAND_3_ULTRA_M_H
 
 // Lets clients retain support for SDK releases without motor discovery and OTA.
-#define OMNIHAND_H3UM_MOTOR_OTA_API 5
+#define OMNIHAND_H3UM_MOTOR_OTA_API 6
 
 #include <cstdint>
 #include <functional>
@@ -518,12 +518,13 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   // methods from progress callbacks. Progress counts acknowledged 1KB blocks;
   // errors use SDK OtaErrorCode values, not the motor's raw status byte.
   // Success requires all block CRC replies, App detection and exit command delivery.
+  // Returns the confirmed App version on success, or empty on failure.
   // An interrupted upgrade can be restarted from offset 0 when the motor is in Boot.
-  // Wait 0~60000 ms after each pass-through switch; default 1000 ms.
-  virtual bool UpdateJointMotorFirmware(
+  // Wait 0~60000 ms after each pass-through switch; default 180 ms.
+  virtual std::string UpdateJointMotorFirmware(
       uint8_t node_id, const std::string& file_name,
       OtaProgressCallback progress_callback = nullptr,
-      int pass_through_wait_ms = 1000) {
+      int pass_through_wait_ms = 180) {
     (void)node_id;
     (void)file_name;
     (void)pass_through_wait_ms;
@@ -531,7 +532,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
       progress_callback(static_cast<int>(OtaErrorCode::AGILINK_OTA_NOT_SUPPORTED),
                         0, OtaProgressStatus::AGILINK_OTA_ERROR);
     }
-    return false;
+    return {};
   }
 
   // Read register 0x28 for motor indices 1~21; returns empty on failure or unsupported revision.
@@ -619,11 +620,11 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   // Suspend other hand requests until this returns.
   // Callbacks must not reenter hand methods.
   // Callback exceptions propagate to the caller. No Python binding.
-  // Wait 0~60000 ms after each pass-through switch; default 1000 ms.
+  // Wait 0~60000 ms after each pass-through switch; default 20 ms.
   virtual bool ScanJointMotorFirmware(
       std::function<void(uint8_t node_id, bool in_boot,
                          const std::string& version)> callback,
-      int pass_through_wait_ms = 1000) {
+      int pass_through_wait_ms = 20) {
     (void)callback;
     (void)pass_through_wait_ms;
     return false;

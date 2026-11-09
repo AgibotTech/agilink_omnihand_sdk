@@ -6,7 +6,7 @@
 透传完全由 SDK 内部管理，不暴露开关 API。每次扫描或单个电机升级前开启透传，
 开启命令发送成功后等待 `pass_through_wait_ms`，再开始电机任务；结束时关闭，
 退出命令后也等待同样时间才返回。失败或回调抛出异常也会尝试关闭并等待。
-等待时间范围为 0～60000 ms，默认 1000 ms，0 表示不等待。开启命令发送失败时不发送电机指令，
+等待时间范围为 0～60000 ms，扫描默认 20 ms，升级默认 180 ms，0 表示不等待。开启命令发送失败时不发送电机指令，
 仍尝试发送退出命令。扫描和升级共用互斥锁，保证整个操作及透传收尾串行执行。
 透传切换等待抛出异常时记录 warning，不改变开关命令的成功／失败结果；退出命令抛出异常时记录 error。
 调用期间暂停灵巧手的普通控制与轮询；Toolbox 的电机页与手固件页保持隔离，
@@ -18,7 +18,7 @@
 bool ScanJointMotorFirmware(
     std::function<void(uint8_t node_id, bool in_boot,
                        const std::string& version)> callback,
-    int pass_through_wait_ms = 1000);
+    int pass_through_wait_ms = 20);
 
 // Pause normal hand requests while the synchronous scan runs.
 const bool scanned = hand->ScanJointMotorFirmware(
@@ -36,17 +36,17 @@ const bool scanned = hand->ScanJointMotorFirmware(
 开启／退出透传失败或通信异常返回 `false`。该接口不提供 Python 绑定。
 
 ```cpp
-bool UpdateJointMotorFirmware(
+std::string UpdateJointMotorFirmware(
     uint8_t node_id, const std::string& file_name,
     OtaProgressCallback progress_callback = nullptr,
-    int pass_through_wait_ms = 1000);
+    int pass_through_wait_ms = 180);
 ```
 
 ```cpp
 using namespace agilink::omnihand;
 
 // The SDK enters and exits pass-through for this call.
-const bool success = hand->UpdateJointMotorFirmware(
+const std::string version = hand->UpdateJointMotorFirmware(
     9, "motor_firmware.bin",
     [](int current, int total, OtaProgressStatus status) {
       if (status == OtaProgressStatus::AGILINK_OTA_TRANSMITTING) {
@@ -56,6 +56,12 @@ const bool success = hand->UpdateJointMotorFirmware(
       }
     });
 ```
+
+成功时返回更新后确认的 App 版本号，普通失败时返回空字符串。
+版本直接复用退出透传前确认 App 的查询结果，不增加查询或透传切换。
+Toolbox 每完成一个节点就刷新该行版本和更新结果；失败时版本显示为空，
+未更新节点保持原样，整批结束后不再自动扫描全部节点。
+此返回值从 `OMNIHAND_H3UM_MOTOR_OTA_API == 6` 起提供，SDK 与调用方需一起重新编译。
 
 进度回调复用灵巧手 OTA 的 `OtaProgressCallback`，块大小为 1024 字节，
 完成块数仅在 CRC／写入应答成功后递增。回调内不要再次调用手对象的方法。
@@ -76,8 +82,8 @@ const bool success = hand->UpdateJointMotorFirmware(
    CRC16/XMODEM 只计算实际固件数据。准备地址和 CRC／写入的超时均为 3 s。
 6. 依据更新版参考程序 `idriver.cpp`，三类操作回包均为
    `ID=0xFF, DATA=FE 06 F4 STATUS ...`；STATUS 为 0 才成功，不解析未定义的尾部字段。
-7. 跳回 App，等待 500 ms 并重新查询模式，随后关闭透传并等待 `pass_through_wait_ms`。
-   全部完成且退出命令发送成功，才通知升级成功并返回 `true`。
+7. 跳回 App，等待 500 ms 并查询确认模式及版本，随后关闭透传并等待 `pass_through_wait_ms`。
+   全部完成且退出命令发送成功，才通知升级成功并返回本次查询得到的 App 版本号。
 
 透传开关使用原有 CAN FD 扩展帧；开启后，电机查询及升级报文使用经典 CAN 2.0
 标准帧，原始 11 位 CAN ID 和 8 字节意优数据不变。ZLG 同时读取经典 CAN 与 CAN FD
@@ -88,8 +94,8 @@ CAN 转发，SDK 不提前折算全局关节号。
 升级期间临时取消普通请求的毫秒限速，本次升级返回或抛异常时恢复原设置。
 
 每次扫描及单个电机升级各自拥有一对透传开启／退出命令；多选升级时逐个调用即可。
-Toolbox 可输入透传切换等待时间，扫描及升级均使用该值，节点之间不再额外插入延时。
-普通升级失败返回 `false`，日志记录失败阶段及电机原始状态码。
+Toolbox 不再提供等待时间输入框，扫描使用 20 ms，升级使用 180 ms，节点之间不额外插入延时。
+普通升级失败返回空字符串，日志记录失败阶段及电机原始状态码。
 回调错误沿用 SDK 错误码：`-1` 不支持或参数无效、`-2` 打开文件失败、
 `-3` 文件长度或读取无效、`-4` 探测或进入 Boot 失败、`-5` 未确认回到 App、
 `-6` 擦除／地址失败、`-7` CRC／写入失败、`-8` 通信／透传失败。
