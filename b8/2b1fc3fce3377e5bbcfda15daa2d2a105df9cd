@@ -1,0 +1,84 @@
+windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  s_62d7f790ba05bc::t_e83952e9858a4a 14,522,525-526,529,622,625-626,628
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "b82b1fc3fce3377e5bbcfda15daa2d2a105df9cd",
+  "prompts": {},
+  "sessions": {
+    "s_62d7f790ba05bc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1b947-618f-72f1-be20-c6e2c733b4b5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.session_started_at": "2026-11-08T03:50:32Z",
+        "tlab.token_usage.output_tokens": "463285",
+        "tlab.token_usage.cache_read_tokens": "94311355",
+        "tlab.token_usage.input_tokens": "2790998",
+        "tlab.token_usage.cache_creation_tokens": "0"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/T1P5_motor_ota.md",
+      "new_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/T1P5_motor_ota.md",
+      "additions": {
+        "human": 12
+      },
+      "deletions": {
+        "human": 9
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 9
+          }
+        ]
+      },
+      "deletions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "deletions": {
+        "human": 35
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_can_frame_transport.cc",
+      "deletions": {
+        "human": 119
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_eyou_motor_ota_protocol.cc",
+      "deletions": {
+        "human": 371
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_eyou_motor_ota_upgrader.cc",
+      "deletions": {
+        "human": 676
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_zlg_classic_can_transport.cc",
+      "deletions": {
+        "human": 204
+      }
+    }
+  ]
+}
