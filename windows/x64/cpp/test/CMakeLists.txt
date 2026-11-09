@@ -136,6 +136,17 @@ endif()
 
 # OmniHand 3 Ultra M T1.3 Tests
 if(BUILD_OMNIHAND_3_ULTRA_M)
+  add_executable(test_eyou_motor_ota_protocol
+    test_eyou_motor_ota_protocol.cc
+    test_eyou_motor_ota_upgrader.cc
+    ../src/omnihand/impl/eyou_motor_ota_protocol.cc
+    ../src/omnihand/impl/eyou_motor_ota_upgrader.cc)
+  target_include_directories(test_eyou_motor_ota_protocol PRIVATE ../src)
+  target_link_libraries(test_eyou_motor_ota_protocol PRIVATE GTest::gtest_main)
+  set_target_properties(test_eyou_motor_ota_protocol PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${TEST_OUTPUT_DIR}")
+  add_test(NAME EyouMotorOtaProtocolTest COMMAND test_eyou_motor_ota_protocol)
+
   add_executable(test_omnihand_3_ultra_m_t1.3 test_omnihand_3_ultra_m_t1.3.cc)
   target_link_libraries(
     test_omnihand_3_ultra_m_t1.3
