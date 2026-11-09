@@ -240,7 +240,14 @@ TEST(EyouMotorOtaProtocolTest, AllBlockLengthsRoundTripWithFfPadding) {
     SCOPED_TRACE(size);
     const auto frames = protocol.WriteBlock(data.data(), size);
     std::vector<uint8_t> restored;
-    {
+    if (size <= 4) {
+      ASSERT_EQ(frames.size(), 1);
+      const auto& first = frames.front().data;
+      EXPECT_EQ(first[1], size + 2);
+      EXPECT_EQ(first[2], 0xB4);
+      EXPECT_EQ(first[3], 0xC4);
+      restored.insert(restored.end(), first.begin() + 4, first.end());
+    } else {
       const auto& first = frames.front().data;
       EXPECT_EQ(((first[1] & 0x0F) << 8) | first[2], size + 2);
       EXPECT_EQ(first[3], 0xB4);
@@ -288,35 +295,28 @@ TEST(EyouMotorOtaProtocolTest, BlockAddressesAreFileOffsetsAndTailLengthIsExact)
             (Payload{0xFE, 0x06, 0xB4, 0x03, 0, 0, 8, 0}));
   const std::array<uint8_t, 4> data{1, 2, 3, 4};
   const auto frames = protocol.WriteBlock(data.data(), data.size());
-  ASSERT_EQ(frames.size(), 2);
+  ASSERT_EQ(frames.size(), 1);
   EXPECT_EQ(frames[0].data,
-            (Payload{0xFE, 0x10, 6, 0xB4, 0xC4, 1, 2, 3}));
-  EXPECT_EQ(frames[1].data[2], 4);
-  EXPECT_EQ(frames[1].data[3], 0xFF);
+            (Payload{0xFE, 0x06, 0xB4, 0xC4, 1, 2, 3, 4}));
 }
 
-TEST(EyouMotorOtaProtocolTest, PrepareReplyStatusAndBufferLimitAreEnforced) {
-  EyouMotorOtaFrame frame{0xFF, {0xFE, 0x06, 0xF4, 0, 4, 2, 0xFF, 0xFF}};
-  auto reply = EyouMotorOtaProtocol::ParsePrepareWriteReply(frame);
-  ASSERT_TRUE(reply);
-  EXPECT_EQ(reply->buffer_size, 1026);
-  EXPECT_TRUE(reply->CanWrite(1024));
-  EXPECT_FALSE(reply->CanWrite(1025));
-  EXPECT_FALSE(reply->CanWrite(0));
-  frame.data[5] = 0;
-  reply = EyouMotorOtaProtocol::ParsePrepareWriteReply(frame);
-  ASSERT_TRUE(reply);
-  EXPECT_FALSE(reply->CanWrite(1024));
-  EXPECT_TRUE(reply->CanWrite(1022));
-  for (const uint8_t status : {3, 4}) {
-    frame.data[3] = status;
-    reply = EyouMotorOtaProtocol::ParsePrepareWriteReply(frame);
-    ASSERT_TRUE(reply);
-    EXPECT_EQ(reply->status, status);
-    EXPECT_FALSE(reply->CanWrite(1));
+TEST(EyouMotorOtaProtocolTest, ShortBlocksMatchReferenceSingleFrames) {
+  const EyouMotorOtaProtocol protocol(4);
+  const std::array<uint8_t, 4> data{0, 1, 2, 3};
+  const std::array<Payload, 4> expected{{
+      {0xFE, 0x03, 0xB4, 0xC4, 0, 0xFF, 0xFF, 0xFF},
+      {0xFE, 0x04, 0xB4, 0xC4, 0, 1, 0xFF, 0xFF},
+      {0xFE, 0x05, 0xB4, 0xC4, 0, 1, 2, 0xFF},
+      {0xFE, 0x06, 0xB4, 0xC4, 0, 1, 2, 3},
+  }};
+  for (size_t size = 1; size <= data.size(); ++size) {
+    SCOPED_TRACE(size);
+    const auto frames = protocol.WriteBlock(data.data(), size);
+    ASSERT_EQ(frames.size(), 1);
+    EXPECT_EQ(frames[0].can_id, 4);
+    EXPECT_EQ(frames[0].size, 8);
+    EXPECT_EQ(frames[0].data, expected[size - 1]);
   }
-  frame.size = 7;
-  EXPECT_FALSE(EyouMotorOtaProtocol::ParsePrepareWriteReply(frame));
 }
 
 TEST(EyouMotorOtaChannelTest, ReceivesDuringSendAndFiltersUnrelatedFrames) {

@@ -5,6 +5,7 @@
 #include "omnihand/impl/eyou_motor_ota_channel.h"
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <filesystem>
 #include <fstream>
@@ -64,6 +65,9 @@ class EyouMotorOtaUpgraderTest : public ::testing::Test {
           if (frame.data[0] == 0x23) {
             ++enter_boot_count_;
             if (!stay_in_app_) mode_ = 0x55;
+          } else if (frame.data[2] == 0xB4 && frame.data[3] == 0xC4) {
+            block_.assign(frame.data.begin() + 4, frame.data.end());
+            block_size_ = frame.data[1] - 2;
           } else if ((frame.data[1] & 0xF0) == 0x10) {
             block_.assign(frame.data.begin() + 5, frame.data.end());
             block_size_ = ((frame.data[1] & 0xF) << 8) + frame.data[2] - 2;
@@ -77,6 +81,10 @@ class EyouMotorOtaUpgraderTest : public ::testing::Test {
           return !fail_send_;
         },
         [this](const EyouMotorOtaFrame& frame, uint16_t reply_id, int timeout) {
+          if (requests_.empty()) {
+            EXPECT_EQ(sleeps_, (std::vector<int64_t>{5000000}));
+            EXPECT_EQ(switches_, (std::vector<bool>{true}));
+          }
           requests_.push_back(frame);
           timeouts_.push_back(timeout);
           if (frame.data[2] == 0xB2) {
@@ -123,8 +131,7 @@ class EyouMotorOtaUpgraderTest : public ::testing::Test {
           // Reference idriver only checks FE 06 F4 STATUS; no required padding.
           return std::optional<EyouMotorOtaFrame>{{
               0xFF, {0xFE, 0x06, 0xF4, status,
-                     static_cast<uint8_t>(buffer_size_ >> 8),
-                     static_cast<uint8_t>(buffer_size_), 0x12, 0x34}}};
+                     reply_tail_[0], reply_tail_[1], reply_tail_[2], reply_tail_[3]}}};
         },
         [this](bool enabled) {
           switches_.push_back(enabled);
@@ -164,7 +171,7 @@ class EyouMotorOtaUpgraderTest : public ::testing::Test {
   uint8_t mode_ = 0x55;
   uint8_t failure_operation_ = 0;
   uint8_t timeout_operation_ = 0;
-  uint16_t buffer_size_ = 1026;
+  std::array<uint8_t, 4> reply_tail_{};
   uint32_t erase_size_ = 0;
   int boot_queries_ = 0;
   int enter_boot_count_ = 0;
@@ -194,6 +201,8 @@ TEST_F(EyouMotorOtaUpgraderTest, BootRecoveryStartsAtZeroAndVerifiesApp) {
   EXPECT_EQ(events_.back().status, Status::AGILINK_OTA_SUCCESS);
   EXPECT_EQ(events_.back().current, 3);
   EXPECT_EQ(events_.back().total, 3);
+  EXPECT_EQ(sleeps_.front(), 5000000);
+  EXPECT_EQ(std::count(sleeps_.begin(), sleeps_.end(), 5000000), 1);
   EXPECT_EQ(std::count(sleeps_.begin(), sleeps_.end(), 2000), 342);
 }
 
@@ -205,7 +214,7 @@ TEST_F(EyouMotorOtaUpgraderTest, AppEntersBootOnlyThroughCanopen) {
   ASSERT_FALSE(sent_.empty());
   EXPECT_EQ(sent_[0].can_id, 0x611);
   EXPECT_EQ(sent_[0].data, (std::array<uint8_t, 8>{0x23, 9, 0x21, 0, 0x78, 0x56, 0x34, 0x12}));
-  EXPECT_EQ(sleeps_, (std::vector<int64_t>{500000, 500000}));
+  EXPECT_EQ(sleeps_, (std::vector<int64_t>{5000000, 500000, 500000}));
 }
 
 TEST_F(EyouMotorOtaUpgraderTest, CanopenFallbackDetectsAppBeforeAndAfterUpgrade) {
@@ -253,13 +262,48 @@ TEST_F(EyouMotorOtaUpgraderTest, PrepareFailureStopsBeforeData) {
   ExpectFailure();
 }
 
-TEST_F(EyouMotorOtaUpgraderTest, InsufficientBufferStopsBeforeData) {
-  buffer_size_ = 1025;
+class EyouMotorOtaReplyTailTest
+    : public EyouMotorOtaUpgraderTest,
+      public ::testing::WithParamInterface<std::array<uint8_t, 4>> {};
+
+TEST_P(EyouMotorOtaReplyTailTest, SuccessDoesNotDependOnUnusedReplyBytes) {
+  reply_tail_ = GetParam();
   auto engine = Engine();
-  EXPECT_FALSE(engine.UpdateFirmware(node_, path_.u8string(), Progress(), 0));
-  EXPECT_TRUE(sent_.empty());
-  ExpectFailure();
+  ASSERT_TRUE(engine.UpdateFirmware(node_, path_.u8string(), Progress(), 0));
+  EXPECT_EQ(written_, firmware_);
+  EXPECT_EQ(events_.back().status, Status::AGILINK_OTA_SUCCESS);
 }
+
+INSTANTIATE_TEST_SUITE_P(
+    ReferenceStatus, EyouMotorOtaReplyTailTest,
+    ::testing::Values(std::array<uint8_t, 4>{0, 0, 0, 0},
+                      std::array<uint8_t, 4>{0xFF, 0xFF, 0xFF, 0xFF},
+                      std::array<uint8_t, 4>{0x04, 0x01, 0x12, 0x34}));
+
+class EyouMotorOtaShortTailTest
+    : public EyouMotorOtaUpgraderTest,
+      public ::testing::WithParamInterface<size_t> {};
+
+TEST_P(EyouMotorOtaShortTailTest, FullUpgradeWritesShortTailAndChecksItsCrc) {
+  WriteFirmware(GetParam());
+  auto engine = Engine();
+  ASSERT_TRUE(engine.UpdateFirmware(node_, path_.u8string(), Progress(), 0));
+  EXPECT_EQ(erase_size_, 2048);
+  EXPECT_EQ(offsets_, (std::vector<uint32_t>{0, 1024}));
+  EXPECT_EQ(written_, firmware_);
+  ASSERT_GE(sent_.size(), 2);
+  const auto& tail = sent_[sent_.size() - 2];
+  EXPECT_EQ(tail.data[1], firmware_.size() - 1024 + 2);
+  EXPECT_EQ(tail.data[2], 0xB4);
+  EXPECT_EQ(tail.data[3], 0xC4);
+  EXPECT_EQ(enter_app_count_, 1);
+  EXPECT_EQ(events_.back().current, 2);
+  EXPECT_EQ(events_.back().total, 2);
+  EXPECT_EQ(events_.back().status, Status::AGILINK_OTA_SUCCESS);
+}
+
+INSTANTIATE_TEST_SUITE_P(OneToFourBytes, EyouMotorOtaShortTailTest,
+                         ::testing::Values(1025, 1026, 1027, 1028));
 
 TEST_F(EyouMotorOtaUpgraderTest, CrcFailureNeverAdvancesProgressOrJumpsApp) {
   failure_operation_ = 0x85;
@@ -434,6 +478,9 @@ class EyouMotorScanTest : public ::testing::Test {
         {},
         [this](const EyouMotorOtaFrame& frame, uint16_t reply_id,
                int timeout_ms) -> std::optional<EyouMotorOtaFrame> {
+          EXPECT_EQ(sleeps_.size(), (switches_.size() + 1) / 2);
+          EXPECT_EQ(sleeps_.back(), 5000000);
+          EXPECT_TRUE(switches_.back());
           requests_.push_back(frame);
           EXPECT_EQ(timeout_ms, 100);
           if (throw_exchange_) {
@@ -460,11 +507,17 @@ class EyouMotorScanTest : public ::testing::Test {
             throw std::runtime_error("scan toggle failed");
           }
           return enabled ? !fail_enter_ : !fail_exit_;
+        },
+        [this](std::chrono::microseconds duration) {
+          EXPECT_TRUE(requests_.empty() || switches_.size() > 2);
+          EXPECT_TRUE(switches_.back());
+          sleeps_.push_back(duration.count());
         });
   }
 
   std::vector<EyouMotorOtaFrame> requests_;
   std::vector<bool> switches_;
+  std::vector<int64_t> sleeps_;
   bool respond_ = true;
   bool throw_exchange_ = false;
   bool fail_enter_ = false;
@@ -496,6 +549,7 @@ TEST_F(EyouMotorScanTest, ScansGlobalNodesBootFirstAndReportsOnlyKnownModes) {
     }
   }
   EXPECT_EQ(index, requests_.size());
+  EXPECT_EQ(sleeps_, (std::vector<int64_t>{5000000}));
   EXPECT_EQ(switches_, (std::vector<bool>{true, false}));
 }
 
@@ -554,6 +608,7 @@ TEST_F(EyouMotorScanTest, FailedEntryExitsWithoutQueryingNodes) {
   auto scanner = MakeScanner();
   EXPECT_FALSE(scanner.ScanFirmware([](uint8_t, bool, const std::string&) {}));
   EXPECT_TRUE(requests_.empty());
+  EXPECT_TRUE(sleeps_.empty());
   EXPECT_EQ(switches_, (std::vector<bool>{true, false}));
 }
 
@@ -579,6 +634,7 @@ TEST_F(EyouMotorScanTest, RepeatedScansEachHaveTheirOwnPassThroughSession) {
     EXPECT_TRUE(scanner.ScanFirmware([](uint8_t, bool, const std::string&) {}));
   }
   EXPECT_EQ(switches_, (std::vector<bool>{true, false, true, false}));
+  EXPECT_EQ(sleeps_, (std::vector<int64_t>{5000000, 5000000}));
 }
 
 TEST(EyouMotorOtaStatusTest, ReferenceStatusDoesNotDependOnUnusedBytes) {
