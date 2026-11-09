@@ -4,9 +4,11 @@
 固件文件为原始 `.bin`，路径使用 UTF-8。目前支持 T1.5 CAN 连接。
 
 透传完全由 SDK 内部管理，不暴露开关 API。每次扫描或单个电机升级前开启透传，
-开启命令发送成功后等待 5 s，再开始电机任务；结束时关闭，失败或回调抛出异常也会
-尝试关闭。开启命令发送失败时不发送电机指令，
+开启命令发送成功后等待 `pass_through_wait_ms`，再开始电机任务；结束时关闭，
+退出命令后也等待同样时间才返回。失败或回调抛出异常也会尝试关闭并等待。
+等待时间范围为 0～60000 ms，默认 1000 ms，0 表示不等待。开启命令发送失败时不发送电机指令，
 仍尝试发送退出命令。扫描和升级共用互斥锁，保证整个操作及透传收尾串行执行。
+透传切换等待抛出异常时记录 warning，不改变开关命令的成功／失败结果；退出命令抛出异常时记录 error。
 调用期间暂停灵巧手的普通控制与轮询；Toolbox 的电机页与手固件页保持隔离，
 进入、返回或空闲停留在电机页均不改变透传状态。
 
@@ -15,7 +17,8 @@
 ```cpp
 bool ScanJointMotorFirmware(
     std::function<void(uint8_t node_id, bool in_boot,
-                       const std::string& version)> callback);
+                       const std::string& version)> callback,
+    int pass_through_wait_ms = 1000);
 
 // Pause normal hand requests while the synchronous scan runs.
 const bool scanned = hand->ScanJointMotorFirmware(
@@ -36,7 +39,7 @@ const bool scanned = hand->ScanJointMotorFirmware(
 bool UpdateJointMotorFirmware(
     uint8_t node_id, const std::string& file_name,
     OtaProgressCallback progress_callback = nullptr,
-    int frame_interval_us = 2000);
+    int pass_through_wait_ms = 1000);
 ```
 
 ```cpp
@@ -60,7 +63,7 @@ const bool success = hand->UpdateJointMotorFirmware(
 
 内部流程：
 
-1. 完整读取并校验文件，开启透传并等待 5 s 后才发送电机指令。
+1. 完整读取并校验文件，开启透传并等待 `pass_through_wait_ms` 后才发送电机指令。
 2. 先查询 Boot 协议版本，依据 TYPE 判断 Boot／App；未收到有效回包时读
    CANopen `0x100A/0`。CANopen 成功即为 App。
 3. App 只通过 CANopen `0x2109/0 = 0x12345678` 进入 Boot，等待 500 ms 后
@@ -73,7 +76,7 @@ const bool success = hand->UpdateJointMotorFirmware(
    CRC16/XMODEM 只计算实际固件数据。准备地址和 CRC／写入的超时均为 3 s。
 6. 依据更新版参考程序 `idriver.cpp`，三类操作回包均为
    `ID=0xFF, DATA=FE 06 F4 STATUS ...`；STATUS 为 0 才成功，不解析未定义的尾部字段。
-7. 跳回 App，等待 500 ms 并重新查询模式，随后关闭透传。
+7. 跳回 App，等待 500 ms 并重新查询模式，随后关闭透传并等待 `pass_through_wait_ms`。
    全部完成且退出命令发送成功，才通知升级成功并返回 `true`。
 
 透传开关使用原有 CAN FD 扩展帧；开启后，电机查询及升级报文使用经典 CAN 2.0
@@ -81,11 +84,11 @@ const bool success = hand->UpdateJointMotorFirmware(
 接收队列，结束时通过 CAN FD 发送退出透传命令。手固件负责内部总线映射与电机
 CAN 转发，SDK 不提前折算全局关节号。
 
-`frame_interval_us` 为续帧发送后的间隔，可设置为 0～1,000,000 微秒，默认
-2000 微秒。该默认值仍需结合实机调整。升级期间临时取消普通请求的毫秒限速，
-本次升级返回或抛异常时恢复原设置。
+数据帧顺序发送，不额外插入逐帧延时；擦除、准备地址和 CRC／写入仍等待操作应答。
+升级期间临时取消普通请求的毫秒限速，本次升级返回或抛异常时恢复原设置。
 
 每次扫描及单个电机升级各自拥有一对透传开启／退出命令；多选升级时逐个调用即可。
+Toolbox 可输入透传切换等待时间，扫描及升级均使用该值，节点之间不再额外插入延时。
 普通升级失败返回 `false`，日志记录失败阶段及电机原始状态码。
 回调错误沿用 SDK 错误码：`-1` 不支持或参数无效、`-2` 打开文件失败、
 `-3` 文件长度或读取无效、`-4` 探测或进入 Boot 失败、`-5` 未确认回到 App、

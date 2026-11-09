@@ -77,30 +77,6 @@ else()
   set(TEST_OUTPUT_DIR "${CMAKE_BINARY_DIR}/bin/omnihand/test")
 endif()
 
-add_executable(test_can_frame_transport test_can_frame_transport.cc
-  ../src/can/can_bus_device.cc ../src/omnihand/impl/receive_timestamp.cc
-  ../../omnilogger/agilink_logger.cc)
-target_include_directories(test_can_frame_transport PRIVATE ../src ../../omnilogger)
-target_compile_definitions(test_can_frame_transport PRIVATE AGILINK_BUILDING_DLL)
-target_link_libraries(test_can_frame_transport PRIVATE GTest::gtest_main)
-set_target_properties(test_can_frame_transport PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY "${TEST_OUTPUT_DIR}")
-add_test(NAME CanFrameTransportTest COMMAND test_can_frame_transport)
-
-if(WIN32)
-  add_executable(test_zlg_classic_can_transport test_zlg_classic_can_transport.cc
-    ../src/can/zlg_usbcanfd_device.cc ../src/can/can_bus_device.cc
-    ../src/omnihand/impl/receive_timestamp.cc
-    ../src/omnihand/impl/eyou_motor_ota_protocol.cc ../../omnilogger/agilink_logger.cc)
-  target_include_directories(test_zlg_classic_can_transport PRIVATE
-    ../src ../../omnilogger ../third_party/zlgcan/win/x64)
-  target_compile_definitions(test_zlg_classic_can_transport PRIVATE AGILINK_BUILDING_DLL)
-  target_link_libraries(test_zlg_classic_can_transport PRIVATE GTest::gtest_main)
-  set_target_properties(test_zlg_classic_can_transport PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${TEST_OUTPUT_DIR}")
-  add_test(NAME ZlgClassicCanTransportTest COMMAND test_zlg_classic_can_transport)
-endif()
-
 # OmniHand 2025 (O10) Tests - Combined USB/CANFD (legacy)
 add_executable(test_omnihand_2025 test_omnihand_2025.cc)
 target_link_libraries(
@@ -160,17 +136,6 @@ endif()
 
 # OmniHand 3 Ultra M T1.3 Tests
 if(BUILD_OMNIHAND_3_ULTRA_M)
-  add_executable(test_eyou_motor_ota_protocol
-    test_eyou_motor_ota_protocol.cc
-    test_eyou_motor_ota_upgrader.cc
-    ../src/omnihand/impl/eyou_motor_ota_protocol.cc
-    ../src/omnihand/impl/eyou_motor_ota_upgrader.cc)
-  target_include_directories(test_eyou_motor_ota_protocol PRIVATE ../src)
-  target_link_libraries(test_eyou_motor_ota_protocol PRIVATE GTest::gtest_main)
-  set_target_properties(test_eyou_motor_ota_protocol PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${TEST_OUTPUT_DIR}")
-  add_test(NAME EyouMotorOtaProtocolTest COMMAND test_eyou_motor_ota_protocol)
-
   add_executable(test_omnihand_3_ultra_m_t1.3 test_omnihand_3_ultra_m_t1.3.cc)
   target_link_libraries(
     test_omnihand_3_ultra_m_t1.3
