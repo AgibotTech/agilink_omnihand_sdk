@@ -1,0 +1,26 @@
+windows/x64/cpp/include/omnihand/omnihand_3_lite.h
+  h_b60f00b173c94b 257-259
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "fedeaba984ab20ebbca59cbb020e217da6d85c08",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "additions": {
+        "human": 3
+      },
+      "deletions": {
+        "human": 1
+      }
+    }
+  ]
+}
