@@ -1,0 +1,32 @@
+windows/x64/cpp/include/omnihand/omnihand_3_lite.h
+  h_b60f00b173c94b 250-269
+windows/x64/cpp/include/omnihand/ota_types.h
+  h_b60f00b173c94b 40-43,68-71,104-107
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "8299418fb19e73d2923da6f49836d27d0c56e0d4",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "additions": {
+        "human": 20
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/ota_types.h",
+      "new_path": "windows/x64/cpp/include/omnihand/ota_types.h",
+      "additions": {
+        "human": 12
+      }
+    }
+  ]
+}
