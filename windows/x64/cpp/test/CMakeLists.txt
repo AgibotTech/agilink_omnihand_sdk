@@ -43,6 +43,15 @@ endif()
 # Enable testing
 enable_testing()
 
+# File loading is tested without opening devices or linking an installed SDK.
+add_executable(test_firmware_load
+  test_firmware_load.cc
+  ../src/omnihand/impl/firmware_file.cc)
+target_compile_definitions(test_firmware_load PRIVATE BUILDING_DLL)
+target_include_directories(test_firmware_load PRIVATE ../src)
+target_link_libraries(test_firmware_load PRIVATE GTest::gtest_main)
+add_test(NAME FirmwareLoadTest COMMAND test_firmware_load)
+
 # Support both: building together (as subdirectory) and building separately (after installation)
 if(TARGET omnihand)
   set(OMNIHAND_TARGET omnihand)

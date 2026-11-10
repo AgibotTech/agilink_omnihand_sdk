@@ -138,18 +138,6 @@ constexpr int kOtaPacketSizeBytes = 2048;
 using OtaPacket = std::array<std::uint8_t, kOtaPacketSizeBytes>;
 
 /**
- * @brief Result of loading a firmware file only (no device communication)
- * @note Check error_code == OtaErrorCode::AGILINK_SUCCESS to determine success
- * @note packets are chunked into 2KB blocks, with the last packet padded with 0xFF; can be reused by UpdateFirmware
- */
-struct AGIBOT_EXPORT FirmwareLoadResult {
-  int total_packets{0};          ///< Total number of packets (calculated by kOtaPacketSizeBytes)
-  size_t file_size_bytes{0};     ///< File size in bytes
-  OtaErrorCode error_code{OtaErrorCode::AGILINK_SUCCESS};  ///< AGILINK_SUCCESS on success, specific error code on failure
-  std::vector<OtaPacket> packets;  ///< Loaded and chunked data, last packet padded with 0xFF if less than 2KB
-};
-
-/**
  * @brief OTA upgrade progress status
  * 
  * | Status | current_packet | total_packets | Description |
@@ -235,14 +223,6 @@ inline std::string OtaVersionToString(int packed_version) {
  */
 using OtaProgressCallback = std::function<void(int current_packet, int total_packets, 
                                                OtaProgressStatus status)>;
-
-/**
- * @brief Load firmware file only and calculate packet count, without device communication
- * @param file_name UTF-8 encoded firmware file path
- * @return FirmwareLoadResult containing total_packets, file_size_bytes, packets, and error_code (AGILINK_SUCCESS on success)
- * @note Consistent with the internal chunking rules of UpdateFirmware; packets are chunked into 2KB blocks with the last packet padded with 0xFF, and can be reused by the update interface
- */
-AGIBOT_EXPORT FirmwareLoadResult LoadFirmwareOnly(const std::string& file_name);
 
 }  // namespace omnihand
 }  // namespace agilink
