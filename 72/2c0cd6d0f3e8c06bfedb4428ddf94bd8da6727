@@ -1,0 +1,69 @@
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.13.0",
+  "base_commit_sha": "722c0cd6d0f3e8c06bfedb4428ddf94bd8da6727",
+  "prompts": {},
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/T1P5_motor_ota.md",
+      "new_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/T1P5_motor_ota.md",
+      "additions": {
+        "human": 4
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnipicker_3/OP3_demo_canfd_id.cc",
+      "new_path": "windows/x64/cpp/demo/omnipicker_3/OP3_demo_canfd_id.cc",
+      "additions": {
+        "human": 23
+      },
+      "deletions": {
+        "human": 6
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnipicker_3/OP3_demo_rs485.cc",
+      "new_path": "windows/x64/cpp/demo/omnipicker_3/OP3_demo_rs485.cc",
+      "additions": {
+        "human": 23
+      },
+      "deletions": {
+        "human": 6
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnipicker_3.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnipicker_3.h",
+      "additions": {
+        "human": 11
+      },
+      "deletions": {
+        "human": 5
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnipicker_3.cc",
+      "new_path": "windows/x64/cpp/test/test_omnipicker_3.cc",
+      "additions": {
+        "human": 66
+      },
+      "deletions": {
+        "human": 17
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_omnipicker_3.py",
+      "new_path": "windows/x64/python/test/test_omnipicker_3.py",
+      "additions": {
+        "human": 23
+      },
+      "deletions": {
+        "human": 1
+      }
+    }
+  ]
+}
