@@ -247,6 +247,26 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
       const std::vector<int16_t>& speeds,
       const std::vector<uint16_t>& torques) override = 0;
 
+  /**
+   * @brief Update one H3L-S tactile sensor through the hand's CAN FD connection.
+   * @param sensor_id Sensor address, 1..6 (request registers F3..F8).
+   * @param file_name UTF-8 path to a raw APP BIN or an image with a sensor OTA header.
+   * @param progress_callback Existing OTA progress/error callback, once per confirmed 2KB block.
+   * @note Blocking. Stop polling and other commands on this CAN channel during OTA.
+   *       Replies are awaited for 200ms. Control commands allow three timeout retries;
+   *       unnumbered DATA is retried only on an explicit queue-busy rejection.
+   *       Positive error codes are the sensor bridge's results (see H3LS_sensor_ota.md).
+   *       H3L-M and serial connections report AGILINK_OTA_NOT_SUPPORTED.
+   */
+  virtual void UpdateTactileSensorFirmware(uint8_t /* sensor_id */,
+                                          const std::string& /* file_name */,
+                                          OtaProgressCallback progress_callback = nullptr) {
+    if (progress_callback) {
+      progress_callback(static_cast<int>(OtaErrorCode::AGILINK_OTA_NOT_SUPPORTED), 0,
+                        OtaProgressStatus::AGILINK_OTA_ERROR);
+    }
+  }
+
   // ============ Sensor Utilities ============
   // Note: O4 (OmniHand3Lite) does not support tactile sensors
   /**

@@ -37,6 +37,10 @@ namespace omnihand {
  * | AGILINK_OTA_TRANSMISSION_TIMEOUT | -6 | Data transmission timeout |
  * | AGILINK_OTA_CRC_CHECK_FAILED | -7 | CRC checksum verification failed |
  * | AGILINK_OTA_DEVICE_DISCONNECTED | -8 | Device disconnected during OTA |
+ * | AGILINK_OTA_INVALID_ARGUMENT | -9 | Invalid OTA target or argument |
+ * | AGILINK_OTA_INVALID_FIRMWARE | -10 | Unsupported image or invalid firmware header |
+ * | AGILINK_OTA_INVALID_RESPONSE | -11 | Unexpected response or ambiguous acknowledgement |
+ * | AGILINK_OTA_BUSY | -12 | Another OTA operation is active |
  * | AGILINK_OTA_DEVICE_UNKNOWN_ERROR | 1 | Device: unknown error |
  * | AGILINK_OTA_DEVICE_DATA_READ_ERROR | 2 | Device: data read error |
  * | AGILINK_OTA_DEVICE_WRITE_ERROR | 3 | Device: write error |
@@ -61,6 +65,10 @@ enum class AGIBOT_EXPORT OtaErrorCode : int {
   AGILINK_OTA_TRANSMISSION_TIMEOUT = -6,  // Data transmission timeout
   AGILINK_OTA_CRC_CHECK_FAILED = -7,      // CRC checksum verification failed
   AGILINK_OTA_DEVICE_DISCONNECTED = -8,   // Device disconnected during transmission
+  AGILINK_OTA_INVALID_ARGUMENT = -9,      // Invalid OTA target or argument
+  AGILINK_OTA_INVALID_FIRMWARE = -10,     // Unsupported image or invalid firmware header
+  AGILINK_OTA_INVALID_RESPONSE = -11,     // Unexpected response or ambiguous acknowledgement
+  AGILINK_OTA_BUSY = -12,                 // Another OTA operation is active
   // Device-returned error codes (positive values from OTA result response 0x05)
   AGILINK_OTA_DEVICE_UNKNOWN_ERROR = 1,       // Device: unknown error
   AGILINK_OTA_DEVICE_DATA_READ_ERROR = 2,     // Device: data read error
@@ -93,6 +101,10 @@ inline const char* OtaErrorCodeToString(OtaErrorCode code) {
     case OtaErrorCode::AGILINK_OTA_TRANSMISSION_TIMEOUT:    return "Data transmission timeout";
     case OtaErrorCode::AGILINK_OTA_CRC_CHECK_FAILED:        return "CRC checksum verification failed";
     case OtaErrorCode::AGILINK_OTA_DEVICE_DISCONNECTED:     return "Device disconnected during OTA";
+    case OtaErrorCode::AGILINK_OTA_INVALID_ARGUMENT:        return "Invalid OTA argument";
+    case OtaErrorCode::AGILINK_OTA_INVALID_FIRMWARE:        return "Invalid firmware image";
+    case OtaErrorCode::AGILINK_OTA_INVALID_RESPONSE:        return "Invalid OTA response";
+    case OtaErrorCode::AGILINK_OTA_BUSY:                    return "OTA operation already active";
     case OtaErrorCode::AGILINK_OTA_DEVICE_UNKNOWN_ERROR:    return "Device: unknown error";
     case OtaErrorCode::AGILINK_OTA_DEVICE_DATA_READ_ERROR:  return "Device: data read error";
     case OtaErrorCode::AGILINK_OTA_DEVICE_WRITE_ERROR:      return "Device: write error";
