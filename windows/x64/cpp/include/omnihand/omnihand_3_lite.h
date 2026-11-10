@@ -254,7 +254,9 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
    * @param progress_callback Existing OTA progress/error callback, once per confirmed 2KB block.
    * @note Blocking. Stop polling and other commands on this connection during OTA.
    *       Replies are awaited for 200ms. Control commands allow three timeout retries;
-   *       unnumbered DATA is retried only on an explicit queue-busy rejection.
+   *       indexed blocks use CRC16; queue-busy retries the last fragment,
+   *       block CRC failure retries the whole block (up to three attempts).
+   *       Silent data timeouts stop the update without retransmitting data.
    *       Positive error codes are returned by the hand's sensor update bridge.
    *       H3L-M reports AGILINK_OTA_NOT_SUPPORTED.
    */
