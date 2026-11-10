@@ -1,0 +1,38 @@
+windows/x64/cpp/test/CMakeLists.txt
+  h_b60f00b173c94b 46-54
+windows/x64/cpp/test/test_firmware_load.cc
+  h_b60f00b173c94b 1-164
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "3d7b786c50d2802d1cdd011d7f6e8eaeaa6133c8",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "new_path": "windows/x64/cpp/test/test_firmware_load.cc",
+      "additions": {
+        "human": 164
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/ota_types.h",
+      "new_path": "windows/x64/cpp/include/omnihand/ota_types.h",
+      "deletions": {
+        "human": 20
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "additions": {
+        "human": 9
+      }
+    }
+  ]
+}
