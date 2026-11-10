@@ -244,12 +244,13 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
    *       current is given the other is filled with the documented firmware default
    *       (GetMinMaxStrokeMixSpeed() / GetMinMaxMixCtrlCurrent() default_value).
    * @return Actual stroke from the device reply, sampled when the command arrives (not the
-   *         target), or -1 on failure. The stroke can be slightly negative near the fully
-   *         closed end (hardware-observed -449), so -1 is a valid reading too; check the log.
+   *         target), or std::nullopt on failure (timeout, short reply, or a transport that
+   *         does not implement it). The stroke can be negative near the fully closed end
+   *         (hardware-observed -449), which is why no in-range value can signal failure.
    */
-  virtual int16_t MixControlByStroke(int16_t stroke,
-                                     std::optional<int16_t> speed = std::nullopt,
-                                     std::optional<int16_t> current = std::nullopt);
+  virtual std::optional<int16_t> MixControlByStroke(
+      int16_t stroke, std::optional<int16_t> speed = std::nullopt,
+      std::optional<int16_t> current = std::nullopt);
 
   /**
    * @brief 0x15: enters gentle grip mode.
@@ -320,6 +321,11 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
   static constexpr Int16Range kStrokeMixSpeedRange = {0, 5000, 3000}; // unit: rpm
   static constexpr Int16Range kMixCtrlCurrentRange = {0, 3500, 3000}; // unit: mA
   static constexpr uint8_t kDefaultHandDevideId = 0x01;
+
+ public:
+  // Declared last so it takes a new vtable slot instead of shifting the existing ones.
+  // 0x14 mode=5 read: stroke in 0.01 mm without moving the gripper; nullopt on failure.
+  virtual std::optional<int16_t> GetStroke() const;
 };
 
 }  // namespace omnihand

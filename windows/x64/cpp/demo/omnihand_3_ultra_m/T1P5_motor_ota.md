@@ -55,11 +55,14 @@ const std::string version = hand->UpdateJointMotorFirmware(
         printf("Motor upgrade failed: SDK error %d\n", current);
       }
     });
+if (!version.empty()) {
+  printf("Updated App version: %s\n", version.c_str());
+}
 ```
 
 成功时返回更新后确认的 App 版本号，普通失败时返回空字符串。
 版本直接复用退出透传前确认 App 的查询结果，不增加查询或透传切换。
-Toolbox 每完成一个节点就刷新该行版本和更新结果；失败时版本显示为空，
+Toolbox 每完成一个节点就刷新该行版本和更新结果；失败时保留原版本号，
 未更新节点保持原样，整批结束后不再自动扫描全部节点。
 此返回值从 `OMNIHAND_H3UM_MOTOR_OTA_API == 6` 起提供，SDK 与调用方需一起重新编译。
 

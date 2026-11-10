@@ -455,19 +455,22 @@ TEST_F(OmniPicker3Test, MixControlByStroke) {
   RequireDevice();
 
   constexpr int16_t kTarget = 5000;  // 50.00 mm
-  const int16_t pure = hand_->MixControlByStroke(kTarget);
-  AgilinkLogger::get().infof(TAG, "[MixControlByStroke] stroke-only reply=%d", pure);
+  const std::optional<int16_t> pure = hand_->MixControlByStroke(kTarget);
+  ASSERT_TRUE(pure.has_value()) << "no reply to the stroke-only command";
+  AgilinkLogger::get().infof(TAG, "[MixControlByStroke] stroke-only reply=%d", *pure);
   std::this_thread::sleep_for(kStrokeSettleTime);
 
-  const int16_t full = hand_->MixControlByStroke(kTarget, 3000, 3000);
-  AgilinkLogger::get().infof(TAG, "[MixControlByStroke] stroke/speed/current reply=%d", full);
-  EXPECT_NEAR(full, kTarget, kStrokeTolerance) << "reply is not in 0.01 mm or did not reach the target";
+  const std::optional<int16_t> full = hand_->MixControlByStroke(kTarget, 3000, 3000);
+  ASSERT_TRUE(full.has_value()) << "no reply to the stroke/speed/current command";
+  AgilinkLogger::get().infof(TAG, "[MixControlByStroke] stroke/speed/current reply=%d", *full);
+  EXPECT_NEAR(*full, kTarget, kStrokeTolerance) << "reply is not in 0.01 mm or did not reach the target";
   std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
   // Only current given: the 7-byte form, speed filled with the 3000 rpm firmware default.
-  const int16_t partial = hand_->MixControlByStroke(kTarget, std::nullopt, 2000);
-  AgilinkLogger::get().infof(TAG, "[MixControlByStroke] current-only reply=%d", partial);
-  EXPECT_NEAR(partial, kTarget, kStrokeTolerance);
+  const std::optional<int16_t> partial = hand_->MixControlByStroke(kTarget, std::nullopt, 2000);
+  ASSERT_TRUE(partial.has_value()) << "no reply to the current-only command";
+  AgilinkLogger::get().infof(TAG, "[MixControlByStroke] current-only reply=%d", *partial);
+  EXPECT_NEAR(*partial, kTarget, kStrokeTolerance);
 }
 
 // A stroke of 12000 is sent as 11200 (with a warn log), so the gripper settles at the limit.
@@ -476,20 +479,66 @@ TEST_F(OmniPicker3Test, MixControlByStroke) {
 TEST_F(OmniPicker3Test, ClampOutOfRangeStrokeAndCurrent) {
   RequireDevice();
 
-  const int16_t first = hand_->MixControlByStroke(12000);
-  AgilinkLogger::get().infof(TAG, "[Clamp] MixControlByStroke(12000) reply=%d", first);
+  const std::optional<int16_t> first = hand_->MixControlByStroke(12000);
+  ASSERT_TRUE(first.has_value()) << "no reply to the over-limit stroke command";
+  AgilinkLogger::get().infof(TAG, "[Clamp] MixControlByStroke(12000) reply=%d", *first);
   std::this_thread::sleep_for(kStrokeSettleTime);
 
-  const int16_t at_limit = hand_->MixControlByStroke(12000);
-  AgilinkLogger::get().infof(TAG, "[Clamp] settled reply=%d", at_limit);
-  EXPECT_NEAR(at_limit, oh::OmniPicker3::GetMinMaxStroke().max_value, kStrokeTolerance);
-  EXPECT_LE(at_limit, oh::OmniPicker3::GetMinMaxStroke().max_value);
+  const std::optional<int16_t> at_limit = hand_->MixControlByStroke(12000);
+  ASSERT_TRUE(at_limit.has_value()) << "no reply at the stroke limit";
+  AgilinkLogger::get().infof(TAG, "[Clamp] settled reply=%d", *at_limit);
+  EXPECT_NEAR(*at_limit, oh::OmniPicker3::GetMinMaxStroke().max_value, kStrokeTolerance);
+  EXPECT_LE(*at_limit, oh::OmniPicker3::GetMinMaxStroke().max_value);
 
-  const int16_t clamped_current = hand_->MixControlByStroke(5000, 3000, 5000);
+  const std::optional<int16_t> clamped_current = hand_->MixControlByStroke(5000, 3000, 5000);
+  ASSERT_TRUE(clamped_current.has_value()) << "no reply to the clamped-current command";
   AgilinkLogger::get().infof(TAG, "[Clamp] MixControlByStroke(current=5000) reply=%d",
-                             clamped_current);
-  EXPECT_NE(clamped_current, -1) << "no reply to the clamped-current command";
+                             *clamped_current);
   std::this_thread::sleep_for(kStrokeSettleTime);
+}
+
+// The fully closed end reads slightly negative (hardware-observed -449 CAN / -233 RS485), so a
+// negative stroke must come back as a value rather than be mistaken for a failure. The reply is
+// sampled when the command arrives, hence the second call after settling.
+TEST_F(OmniPicker3Test, MixControlByStrokeNegativeAtClosedEnd) {
+  RequireDevice();
+
+  const int16_t closed_target = oh::OmniPicker3::GetMinMaxStroke().min_value;
+  ASSERT_TRUE(hand_->MixControlByStroke(closed_target).has_value()) << "no reply to the close command";
+  std::this_thread::sleep_for(kStrokeSettleTime);
+
+  const std::optional<int16_t> closed = hand_->MixControlByStroke(closed_target);
+  ASSERT_TRUE(closed.has_value()) << "no reply at the closed end";
+  AgilinkLogger::get().infof(TAG, "[NegativeStroke] closed-end reply=%d", *closed);
+  EXPECT_LT(*closed, 0) << "closed end did not read negative";
+
+  // Leave the gripper mid-stroke so later cases start from the same state as before.
+  hand_->MixControlByStroke(5000);
+  std::this_thread::sleep_for(kStrokeSettleTime);
+}
+
+// GetStroke is a read-only 0x14 request: once settled it reports the target, and repeated reads
+// stay put. Hardware runs on 2026-11-09 drifted at most 4 counts over five reads at rest.
+TEST_F(OmniPicker3Test, GetStrokeReadsWithoutMoving) {
+  RequireDevice();
+
+  constexpr int16_t kTarget = 5000;  // 50.00 mm
+  constexpr int16_t kMaxDriftAtRest = 50;  // 0.50 mm
+  ASSERT_TRUE(hand_->MixControlByStroke(kTarget).has_value()) << "no reply to the move command";
+  std::this_thread::sleep_for(kStrokeSettleTime);
+
+  std::vector<int> reads;
+  for (int i = 0; i < 5; ++i) {
+    const std::optional<int16_t> stroke = hand_->GetStroke();
+    ASSERT_TRUE(stroke.has_value()) << "no reply to read " << i;
+    reads.push_back(*stroke);
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+  }
+  AgilinkLogger::get().infof(TAG, "[GetStroke] reads at rest: %s", JoinValues(reads).c_str());
+
+  const auto [lo, hi] = std::minmax_element(reads.begin(), reads.end());
+  EXPECT_NEAR(reads.front(), kTarget, kStrokeTolerance) << "read does not match the settled target";
+  EXPECT_LE(*hi - *lo, kMaxDriftAtRest) << "stroke changed between read-only requests";
 }
 
 // Hardware-observed 0x15 reply (2026-10-13, CAN and RS485): 4 bytes, mode(1) contact(1)
