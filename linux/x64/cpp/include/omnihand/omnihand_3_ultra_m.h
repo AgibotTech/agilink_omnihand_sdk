@@ -10,7 +10,11 @@
 #ifndef AGILINK_OMNIHAND_3_ULTRA_M_H
 #define AGILINK_OMNIHAND_3_ULTRA_M_H
 
+// Lets clients retain support for SDK releases without motor discovery and OTA.
+#define OMNIHAND_H3UM_MOTOR_OTA_API 6
+
 #include <cstdint>
+#include <functional>
 #include <map>
 #include <memory>
 #include <optional>
@@ -212,7 +216,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   // Without a broadcast reply, discovery tries kT1P3DefaultHandDeviceId.
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by canfd_device_id
-   * @note Both zero and nonzero IDs detect T1.3/T1.5 by querying active DOF.
+   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
    * @param hand_type Hand type (left/right)
    * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param canfd_device_id CANFD device ID
@@ -239,7 +243,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by serial number
-   * @note Both zero and nonzero IDs detect T1.3/T1.5 by querying active DOF.
+   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
    * @param hand_type Hand type (left/right)
    * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param usbcanfd_serial_number USB CANFD serial number
@@ -268,7 +272,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   /**
    * @brief Factory method - ZLG CANFD over TCP (WiFi/Ethernet to CANFD, this machine acts as TCP client)
    * @note Only available on Windows and Linux x64 (not supported on Linux aarch64/arm64)
-   * @note Both zero and nonzero IDs detect T1.3/T1.5 by querying active DOF.
+   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
    * @param hand_type Hand type (left/right)
    * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param tcp_host TCP server IP or hostname (e.g. "192.168.0.178")
@@ -300,7 +304,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 #ifdef __linux__
   /**
    * @brief Factory method - SocketCAN communication (Linux native CAN interface)
-   * @note Both zero and nonzero IDs detect T1.3/T1.5 by querying active DOF.
+   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
    * @param hand_type Hand type (left/right)
    * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param can_interface CAN interface name (e.g. "can0")
@@ -325,7 +329,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 
   /**
    * @brief Factory method - HCAN USB CANFD communication (by canfd_device_id)
-   * @note Both zero and nonzero IDs detect T1.3/T1.5 by querying active DOF.
+   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
    * @param hand_type Hand type (left/right)
    * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param canfd_device_id CANFD device ID
@@ -352,7 +356,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 
   /**
    * @brief Factory method - HCAN USB CANFD communication (by serial number)
-   * @note Both zero and nonzero IDs detect T1.3/T1.5 by querying active DOF.
+   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
    * @param hand_type Hand type (left/right)
    * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param hcan_serial_number HCAN serial number
@@ -508,6 +512,29 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   virtual bool GetAllTactile(AllTactileFrame& frame) { (void)frame; return false; }
 
   // ============ T1.5 Extended API ============
+  // Synchronous Eyou motor upgrade, currently supported over T1.5 CAN only.
+  // Owns pass-through entry and cleanup on success, failure and exceptions.
+  // Suspend other hand requests until this returns. Do not reenter hand
+  // methods from progress callbacks. Progress counts acknowledged 1KB blocks;
+  // errors use SDK OtaErrorCode values, not the motor's raw status byte.
+  // Success requires all block CRC replies, App detection and exit command delivery.
+  // Returns the confirmed App version on success, or empty on failure.
+  // An interrupted upgrade can be restarted from offset 0 when the motor is in Boot.
+  // Wait 0~60000 ms after each pass-through switch; default 180 ms.
+  virtual std::string UpdateJointMotorFirmware(
+      uint8_t node_id, const std::string& file_name,
+      OtaProgressCallback progress_callback = nullptr,
+      int pass_through_wait_ms = 180) {
+    (void)node_id;
+    (void)file_name;
+    (void)pass_through_wait_ms;
+    if (progress_callback) {
+      progress_callback(static_cast<int>(OtaErrorCode::AGILINK_OTA_NOT_SUPPORTED),
+                        0, OtaProgressStatus::AGILINK_OTA_ERROR);
+    }
+    return {};
+  }
+
   // Read register 0x28 for motor indices 1~21; returns empty on failure or unsupported revision.
   virtual std::string GetMotorVersion(uint8_t joint_motor_index) const {
     (void)joint_motor_index;
@@ -583,6 +610,25 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   // Clear error report
   virtual void ClearAllErrorReport() {}
   virtual void ClearErrorReport(unsigned char joint_motor_index) { (void)joint_motor_index; }
+
+  // Append new virtual APIs to preserve the slots of existing declarations.
+  // Scan global nodes 1~21 over T1.5 CAN; owns pass-through entry and cleanup.
+  // Attempts cleanup before returning or propagating a callback exception.
+  // Each valid reply invokes callback(node_id, in_boot, version) synchronously.
+  // Probe Boot first, then CANopen on no valid Boot reply; absent nodes are skipped.
+  // Returns true after a completed scan and exit delivery, even with no nodes.
+  // Suspend other hand requests until this returns.
+  // Callbacks must not reenter hand methods.
+  // Callback exceptions propagate to the caller. No Python binding.
+  // Wait 0~60000 ms after each pass-through switch; default 20 ms.
+  virtual bool ScanJointMotorFirmware(
+      std::function<void(uint8_t node_id, bool in_boot,
+                         const std::string& version)> callback,
+      int pass_through_wait_ms = 20) {
+    (void)callback;
+    (void)pass_through_wait_ms;
+    return false;
+  }
 
  protected:
   /**

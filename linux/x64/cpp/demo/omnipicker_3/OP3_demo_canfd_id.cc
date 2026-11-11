@@ -337,6 +337,11 @@ void DemoMixControl(oh::OmniPicker3& hand) {
   PrintMixControlReply(hand.MixControlByPVT({2048}, {0}, {0}));
 }
 
+// Prints a failure marker instead of a number so a timeout cannot pass for a -0.01 mm stroke.
+std::string FormatStroke(const std::optional<int16_t>& stroke) {
+  return stroke.has_value() ? std::to_string(*stroke) : std::string("FAILED (no reply)");
+}
+
 // 0x14 mode=5: clamping stroke in 0.01 mm (5000 = 50.00 mm). The reply carries the stroke
 // sampled when the command arrives, so the second call after a pause shows where the first
 // one landed. Out-of-range stroke/speed/current are clamped with a warning log.
@@ -355,29 +360,41 @@ void DemoStrokeControl(oh::OmniPicker3& hand) {
             << std::endl;
 
   // Speed and current omitted: 3-byte form, firmware applies its own defaults.
-  std::cout << "MixControlByStroke(5000) -> " << hand.MixControlByStroke(5000) << std::endl;
+  std::cout << "MixControlByStroke(5000) -> " << FormatStroke(hand.MixControlByStroke(5000))
+            << std::endl;
   std::this_thread::sleep_for(std::chrono::milliseconds(1500));
 
   std::cout << "MixControlByStroke(5000, 3000, 3000) -> "
-            << hand.MixControlByStroke(5000, 3000, 3000) << std::endl;
+            << FormatStroke(hand.MixControlByStroke(5000, 3000, 3000)) << std::endl;
   std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
   // Only current given: speed is filled with the 3000 rpm default (no 5-byte form exists).
   std::cout << "MixControlByStroke(5000, std::nullopt, 2000) -> "
-            << hand.MixControlByStroke(5000, std::nullopt, 2000) << std::endl;
+            << FormatStroke(hand.MixControlByStroke(5000, std::nullopt, 2000)) << std::endl;
   std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-  std::cout << "MixControlByStroke(12000) (clamped to 11200) -> " << hand.MixControlByStroke(12000)
+  std::cout << "MixControlByStroke(12000) (clamped to 11200) -> "
+            << FormatStroke(hand.MixControlByStroke(12000))
             << std::endl;
   std::this_thread::sleep_for(std::chrono::milliseconds(1500));
 
   std::cout << "MixControlByStroke(5000, 3000, 5000) (current clamped to 3500) -> "
-            << hand.MixControlByStroke(5000, 3000, 5000) << std::endl;
+            << FormatStroke(hand.MixControlByStroke(5000, 3000, 5000)) << std::endl;
   std::this_thread::sleep_for(std::chrono::milliseconds(1500));
 
   std::cout << "MixControlByStroke(0, 6000, 3000) (speed clamped to 5000) -> "
-            << hand.MixControlByStroke(0, 6000, 3000) << std::endl;
+            << FormatStroke(hand.MixControlByStroke(0, 6000, 3000)) << std::endl;
   std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+
+  // The reply is sampled when the command arrives, so the second call reads the closed end.
+  std::cout << "MixControlByStroke(-500) -> " << FormatStroke(hand.MixControlByStroke(-500))
+            << std::endl;
+  std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+  std::cout << "MixControlByStroke(-500) at closed end -> "
+            << FormatStroke(hand.MixControlByStroke(-500)) << std::endl;
+
+  // Read-only: samples the stroke without issuing a motion command.
+  std::cout << "GetStroke() -> " << FormatStroke(hand.GetStroke()) << std::endl;
 }
 
 void PrintHexBytes(const std::string& name, const std::vector<uint8_t>& bytes) {

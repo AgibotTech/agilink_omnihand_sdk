@@ -13,8 +13,8 @@ set_target_properties(omnihand_pro_2025_node_msgs::omnihand_pro_2025_node_msgs__
   IMPORTED_SONAME_RELEASE "libomnihand_pro_2025_node_msgs__rosidl_typesupport_cpp.so"
   )
 
-list(APPEND _IMPORT_CHECK_TARGETS omnihand_pro_2025_node_msgs::omnihand_pro_2025_node_msgs__rosidl_typesupport_cpp )
-list(APPEND _IMPORT_CHECK_FILES_FOR_omnihand_pro_2025_node_msgs::omnihand_pro_2025_node_msgs__rosidl_typesupport_cpp "${_IMPORT_PREFIX}/lib/libomnihand_pro_2025_node_msgs__rosidl_typesupport_cpp.so" )
+list(APPEND _cmake_import_check_targets omnihand_pro_2025_node_msgs::omnihand_pro_2025_node_msgs__rosidl_typesupport_cpp )
+list(APPEND _cmake_import_check_files_for_omnihand_pro_2025_node_msgs::omnihand_pro_2025_node_msgs__rosidl_typesupport_cpp "${_IMPORT_PREFIX}/lib/libomnihand_pro_2025_node_msgs__rosidl_typesupport_cpp.so" )
 
 # Commands beyond this point should not need to know the version.
 set(CMAKE_IMPORT_FILE_VERSION)
