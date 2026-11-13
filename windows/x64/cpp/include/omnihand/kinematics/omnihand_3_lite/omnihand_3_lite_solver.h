@@ -79,6 +79,8 @@ class AGIBOT_EXPORT OmniHand3LiteSolver {
     return {kActuatorInputMin, kActuatorInputMax};
   }
 
+  // H3L-S: SDK/URDF angle limits are mechanical limits (rad).
+  // Refer to the product specification for motor limit ranges.
   static constexpr FloatBound GetActivateJointAngleRange(
       H3LActivateJoint joint_index, bool is_left_hand,
       H3LModel model = H3LModel::H3L_S) {
@@ -139,21 +141,21 @@ class AGIBOT_EXPORT OmniHand3LiteSolver {
   using JointMotorCalibTable =
       std::array<JointMotorCalib, kActiveJointCount>;
 
-  // Active-joint order: MRP/index PIP, thumb PIP, thumb ABAD/rolling.
-  // Six-decimal URDF limits are used directly.
-  // Higher-precision limits are rounded inward (ceil lower, floor upper).
-  // Each entry is {rad_min, rad_max, actuator_at_rad_min,
-  // actuator_at_rad_max}, so the complete linear mapping stays together.
+  // Active-joint order: MRP PIP, index PIP, thumb PIP, thumb ABAD/rolling.
+  // SDK/URDF angle bounds are mechanical joint limits in radians.
+  // Refer to the product specification for motor limit ranges.
+  // Table bounds use six decimal places, rounded inward from the URDF.
+  // Each entry: {rad_min, rad_max, actuator_at_rad_min, actuator_at_rad_max}.
   inline static constexpr JointMotorCalibTable kH3LSRight = {{
       {0.000000, 1.396263, kActuatorInputMax, kActuatorInputMin},
       {0.000000, 1.396263, kActuatorInputMax, kActuatorInputMin},
-      {0.000000, 1.169371, kActuatorInputMax, kActuatorInputMin},
+      {0.000000, 1.169370, kActuatorInputMax, kActuatorInputMin},
       {0.000000, 1.570796, kActuatorInputMax, kActuatorInputMin},
   }};
   inline static constexpr JointMotorCalibTable kH3LSLeft = {{
       {0.000000, 1.396263, kActuatorInputMin, kActuatorInputMax},
       {0.000000, 1.396263, kActuatorInputMax, kActuatorInputMin},
-      {0.000000, 1.169371, kActuatorInputMax, kActuatorInputMin},
+      {0.000000, 1.169370, kActuatorInputMax, kActuatorInputMin},
       {0.000000, 1.570796, kActuatorInputMin, kActuatorInputMax},
   }};
   inline static constexpr JointMotorCalibTable kH3LMRight = {{

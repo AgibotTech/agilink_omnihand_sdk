@@ -272,6 +272,19 @@ class OmniHand3LiteSolver:
     def set_hand_gesture(self, gesture: OmniHand3LiteGesture) -> List[int]: ...
 ```
 
+> **H3L-S Joint Limit Notice**: The angle limits specified in the SDK and URDF are mechanical limits. Refer to the specification for the corresponding model for motor limit ranges. The table below lists SDK active joint angle ranges in radians (rad); degrees are approximate references. The URDF uses higher-precision decimals.
+
+| Array index (zero-based) | Active joint | SDK angle range (rad) | Approx. degrees |
+|---|---|---|---|
+| 0 | Coupled middle/ring/little PIP | [0, 1.396263] | 0°–80° |
+| 1 | Index PIP | [0, 1.396263] | 0°–80° |
+| 2 | Thumb PIP | [0, 1.169370] | 0°–67° |
+| 3 | Thumb abduction/adduction | [0, 1.570796] | 0°–90° |
+
+Both hands use the same angle order, positive directions, and ranges; do not negate angles manually. The SDK Solver handles motor encoder direction differences. The motor position range `[0, 4096]` is a protocol range, not the motor limits specified in the product specification.
+
+`set_all_active_joint_angles`, `get_all_active_joint_angles`, and the solver use the four-value order above. The one-argument constructor `OmniHand3LiteSolver(is_left_hand)` defaults to H3L-S. Solver single-joint indices are `0..3`; the hand object's `get_min_max_activate_joint_angle` takes motor numbers `1..4`.
+
 The solver methods above are pure calculations and do not communicate with the
 device. H3L does not currently provide full active-plus-passive joint-angle
 kinematics.

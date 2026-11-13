@@ -6,11 +6,24 @@
 
 The H3L ROS2 node provides a unified topic interface for the 4 DOF dexterous hand, following the [Unified ROS2 Interface Specification](API_ROS2.md).
 
-> **Important**: H3L has no full kinematics solver for angle-based control. `JointState.position` carries **motor ticks** (int16, range 0-4096), **NOT radians**. The node performs double ↔ int16 transparent conversion internally. Gesture control is available via the SDK's `SetHandGesture()` API.
+> **Important**: H3L supports angle control for four active joints. The `position` fields of `joint_cmd`, `joint_angle_cmd`, and `joint_states` use **radians (rad)**. Use the separate `joint_position_cmd` / `joint_position_states` interfaces for raw motor ticks. H3L does not yet provide full active-plus-passive joint-angle kinematics.
 
 ## Motor Layout
 
 ![H3L Motor Layout](../pic/hand_h3l_motors.png)
+
+## Active Joint Angles (H3L-S)
+
+> **H3L-S Joint Limit Notice**: The angle limits specified in the SDK and URDF are mechanical limits. Refer to the specification for the corresponding model for motor limit ranges. The table below lists SDK active joint angle ranges in radians (rad); degrees are approximate references. The URDF uses higher-precision decimals.
+
+| Array index (zero-based) | Active joint | SDK angle range (rad) | Approx. degrees |
+|---|---|---|---|
+| 0 | Coupled middle/ring/little PIP | [0, 1.396263] | 0°–80° |
+| 1 | Index PIP | [0, 1.396263] | 0°–80° |
+| 2 | Thumb PIP | [0, 1.169370] | 0°–67° |
+| 3 | Thumb abduction/adduction | [0, 1.570796] | 0°–90° |
+
+Both hands use the same angle order, positive directions, and ranges; do not negate angles manually. The SDK Solver handles motor encoder direction differences. The motor position range `[0, 4096]` is a protocol range, not the motor limits specified in the product specification.
 
 ## ROS2 Topics
 
@@ -18,11 +31,11 @@ All topics are prefixed with `/h3l/<side>/`, where `<side>` is `left` or `right`
 
 | Topic | Message Type | Direction | Description |
 |-------|-------------|-----------|-------------|
-| `joint_cmd` | `sensor_msgs/JointState` | Subscribe (you pub) | `position[0..3]` = motor ticks (0-4095), triggers control + readback |
-| `joint_states` | `sensor_msgs/JointState` | Publish (you sub) | `position[0..3]` = motor ticks (0-4095) |
+| `joint_cmd` | `sensor_msgs/JointState` | Subscribe (you pub) | Source `0`; `position[0..3]` = active joint angles (rad), triggers control + readback |
+| `joint_states` | `sensor_msgs/JointState` | Publish (you sub) | `position[0..3]` = active joint angles (rad) |
 | `joint_cmd_source` | `std_msgs/Int8` | Subscribe (you pub) | `0=NORMAL`, `1=ANGLE`, `2=POSITION` |
-| `joint_angle_cmd` | `sensor_msgs/JointState` | Subscribe (you pub) | Source `1`; H3L still interprets values through its available position path |
-| `joint_position_cmd` | `std_msgs/Int16MultiArray` | Subscribe (you pub) | Source `2`; raw motor positions |
+| `joint_angle_cmd` | `sensor_msgs/JointState` | Subscribe (you pub) | Source `1`; `position[0..3]` = active joint angles (rad) |
+| `joint_position_cmd` | `std_msgs/Int16MultiArray` | Subscribe (you pub) | Source `2`; four raw motor positions (ticks, range [0, 4096]) |
 | `joint_position_states` | `omnihand_node_msgs/Int16MultiArrayStamped` | Publish (you sub) | Timestamped raw position readback |
 | `joint_mix_control_cmd` | `sensor_msgs/JointState` | Subscribe (you pub) | Position+torque mixed control (see below) |
 | `joint_error_cmd` | `std_msgs/Empty` | Subscribe (you pub) | Triggers `GetAllErrorReport()` |
@@ -44,7 +57,7 @@ All topics are prefixed with `/h3l/<side>/`, where `<side>` is `left` or `right`
 
 `joint_mix_control_cmd` uses `sensor_msgs/JointState` for position+torque mixed control:
 
-- `position[]` = raw motor position (int16 ticks, range 0-4095)
+- `position[]` = raw motor position (int16 ticks, range 0-4096)
 - `effort[]` = motor current (int16, unit: mA)
 
 > **Note**: The `effort` field carries current values in mA, not ROS2 standard torque (N·m). H3L uses `MixControlByPT` (4 position + effort values). **No readback**.
@@ -71,10 +84,9 @@ ros2 launch omnihand_node omnihand_3_lite_node.launch.py
 
 ### Python Script Examples
 
-```bash
-# Send position command + subscribe to readback (4 DOF, motor ticks)
-python3 scripts/omnihand_3_lite/joint_cmd.py left
+> The legacy `joint_cmd.py` still sends ticks and is incompatible with the current radian interface. Use the CLI example below for active joint angle control.
 
+```bash
 # Mixed control (position + current)
 python3 scripts/omnihand_3_lite/mix_control_pt_pub.py left
 
@@ -98,8 +110,9 @@ python3 scripts/omnihand_3_lite/tactile.py left 0
 ### CLI Examples
 
 ```bash
-# Send position command (4 motor ticks, range 0-4095)
-ros2 topic pub --once /h3l/left/joint_cmd sensor_msgs/msg/JointState   "{position: [2048, 2048, 2048, 2048]}"
+# Select the normal command source and send four active joint angles (rad)
+ros2 topic pub --once /h3l/left/joint_cmd_source std_msgs/msg/Int8 '{data: 0}'
+ros2 topic pub --once /h3l/left/joint_cmd sensor_msgs/msg/JointState   "{position: [0.3, 0.3, 0.3, 0.3]}"
 
 # View readback
 ros2 topic echo /h3l/left/joint_states
@@ -247,7 +260,7 @@ ros2 launch omnihand_node omnihand_3_lite_node.launch.py config_file:=/path/to/y
 
 | Function | Python | C++ |
 |---|---|---|
-| Position control + state readback | [joint_cmd.py](../../../node/omnihand_node/scripts/omnihand_3_lite/joint_cmd.py) | [ros2_joint_cmd_demo.cpp](../../../node/omnihand_node/demo/ros2_joint_cmd_demo.cpp) |
+| Active joint angle control + state readback | — (use the CLI example above) | [ros2_joint_cmd_demo.cpp](../../../node/omnihand_node/demo/ros2_joint_cmd_demo.cpp) |
 | Mixed control (position + current) | [mix_control_pt_pub.py](../../../node/omnihand_node/scripts/omnihand_3_lite/mix_control_pt_pub.py) | [ros2_mix_ctrl_pos_torque_demo.cpp](../../../node/omnihand_node/demo/ros2_mix_ctrl_pos_torque_demo.cpp) |
 | Tactile stream control | [tactile.py](../../../node/omnihand_node/scripts/omnihand_3_lite/tactile.py) | — |
 | Temperature query | [joint_temperature.py](../../../node/omnihand_node/scripts/omnihand_3_lite/joint_temperature.py) | [ros2_joint_cmd_demo.cpp](../../../node/omnihand_node/demo/ros2_joint_cmd_demo.cpp) |
@@ -261,12 +274,12 @@ ros2 launch omnihand_node omnihand_3_lite_node.launch.py config_file:=/path/to/y
 | Feature | H3L | O10 / O12 |
 |---------|----|-----------|
 | DOF | 4 | 10 / 12 |
-| Angle control | ❌ Unavailable (no kinematics solver) | ✅ rad |
-| Motor position control | ✅ Recommended (0-4095 ticks) | ✅ Optional |
+| Angle control | ✅ Active joint angles (rad) | ✅ rad |
+| Motor position control | ✅ `joint_position_cmd` (0-4096 ticks) | ✅ Optional |
 | Tactile sensor | ✅ Six-region raw `uint16[]` data | ✅ Product-specific formats |
 | RS485 | ✅ Supported | ✅ O10 supported |
 | USB direct | ❌ Not supported | ✅ OmniHand 2025 only |
-| `joint_cmd` unit | motor ticks (int16) | rad (float64) |
+| `joint_cmd` unit | rad (float64) | rad (float64) |
 | namespace | `/h3l` | `/o10` / `/o12` |
 
 ## Related Documentation

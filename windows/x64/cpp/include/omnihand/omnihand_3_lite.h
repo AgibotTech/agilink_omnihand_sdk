@@ -326,6 +326,8 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
     return kMixCtrlTorqueRange;
   }
 
+  // H3L-S: SDK/URDF angle limits are mechanical limits (rad).
+  // Refer to the product specification for motor limit ranges.
   static constexpr FloatBound GetMinMaxActivateJointAngle(
       uint8_t joint_motor_index, HandType hand_type,
       h3l::H3LModel model = h3l::H3LModel::H3L_S) {

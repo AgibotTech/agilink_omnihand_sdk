@@ -271,6 +271,19 @@ class OmniHand3LiteSolver:
     def set_hand_gesture(self, gesture: OmniHand3LiteGesture) -> List[int]: ...
 ```
 
+> **H3L-S 限位声明**：SDK 及 URDF 中的角度限制均为机械限位，电机限位范围以对应型号的规格书为准。以下为 SDK 主动关节角范围，单位为弧度（rad），角度值仅供参考；URDF 使用更高精度的小数。
+
+| 数组索引（从 0 开始） | 主动关节 | SDK 角度范围（rad） | 约合角度 |
+|---|---|---|---|
+| 0 | 中指/无名指/小指联动 PIP | [0, 1.396263] | 0°～80° |
+| 1 | 食指 PIP | [0, 1.396263] | 0°～80° |
+| 2 | 拇指 PIP | [0, 1.169370] | 0°～67° |
+| 3 | 拇指外展/内收 | [0, 1.570796] | 0°～90° |
+
+左右手使用相同的角度顺序、正方向和范围，无需手动取负；电机编码方向差异由 SDK 的 Solver 处理。电机位置的 `[0, 4096]` 是协议值范围，不代表规格书规定的电机限位。
+
+`set_all_active_joint_angles`、`get_all_active_joint_angles` 及求解器均使用上述四值顺序。单参数构造 `OmniHand3LiteSolver(is_left_hand)` 默认使用 H3L-S；求解器单关节索引为 `0..3`，手对象的 `get_min_max_activate_joint_angle` 使用电机编号 `1..4`。
+
 上述求解器接口仅执行本地计算，不与设备通信。H3L 目前没有包含主动、
 被动关节的完整关节角运动学。
 

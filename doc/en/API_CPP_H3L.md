@@ -222,6 +222,17 @@ std::vector<double> GetAllActiveJointAngles() const;
 
 Both CAN and RS485 support these methods. Vectors contain four values in radians, ordered by `H3LActivateJoint`. The SDK uses the Solver for the hand object's model and side to convert between angles and motor encoder values; the setter returns active joint angles converted from motor feedback.
 
+> **H3L-S Joint Limit Notice**: The angle limits specified in the SDK and URDF are mechanical limits. Refer to the specification for the corresponding model for motor limit ranges. The table below lists SDK active joint angle ranges in radians (rad); degrees are approximate references. The URDF uses higher-precision decimals.
+
+| Array index (zero-based) | Active joint | SDK angle range (rad) | Approx. degrees |
+|---|---|---|---|
+| 0 | Coupled middle/ring/little PIP | [0, 1.396263] | 0°–80° |
+| 1 | Index PIP | [0, 1.396263] | 0°–80° |
+| 2 | Thumb PIP | [0, 1.169370] | 0°–67° |
+| 3 | Thumb abduction/adduction | [0, 1.570796] | 0°–90° |
+
+Both hands use the same angle order, positive directions, and ranges; do not negate angles manually. The SDK Solver handles motor encoder direction differences. The motor position range `[0, 4096]` is a protocol range, not the motor limits specified in the product specification.
+
 ### Kinematics Solver
 
 `agilink::omnihand::h3l::OmniHand3LiteSolver` provides offline conversion for H3L-S and H3L-M without connecting to a device.
