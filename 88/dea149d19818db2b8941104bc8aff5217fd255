@@ -1,0 +1,23 @@
+windows/x64/cpp/include/omnihand/omnipicker_3.h
+  h_b60f00b173c94b 329-336
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "88dea149d19818db2b8941104bc8aff5217fd255",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnipicker_3.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnipicker_3.h",
+      "additions": {
+        "human": 8
+      }
+    }
+  ]
+}
