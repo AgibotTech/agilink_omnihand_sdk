@@ -326,6 +326,14 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
   // Declared last so it takes a new vtable slot instead of shifting the existing ones.
   // 0x14 mode=5 read: stroke in 0.01 mm without moving the gripper; nullopt on failure.
   virtual std::optional<int16_t> GetStroke() const;
+
+  // 0x27/0x01: persists a 19-char SN (0x21..0x7E); true only on device status 0x00.
+  virtual bool SetProductSerialNumber(const std::string& sn);
+
+ protected:
+  static constexpr size_t kProductSnLen = 19;
+  // Sends the 19 SN bytes as a 0x27/0x01 write; returns the reply payload, nullopt on no reply.
+  virtual std::optional<std::vector<uint8_t>> WriteProductSnRaw(const uint8_t* data, size_t len);
 };
 
 }  // namespace omnihand
