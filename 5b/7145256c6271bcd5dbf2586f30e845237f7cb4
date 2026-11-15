@@ -1,0 +1,133 @@
+windows/x64/cpp/test/test_omnipicker_3.cc
+  h_b60f00b173c94b 46
+windows/x64/cpp/include/omnihand/omnihand.h
+  h_b60f00b173c94b 14,18,21,25,34,51-52,599-602,697-698,751,759
+windows/x64/cpp/include/omnihand/utils.h
+  h_b60f00b173c94b 36
+windows/x64/cpp/include/omnihand/device_context.h
+  h_b60f00b173c94b 1-75
+windows/x64/cpp/include/omnihand/kinematics/omnihand_pro_2025/omnihand_pro_2025_solver.h
+  h_b60f00b173c94b 18,97,294
+windows/x64/cpp/include/omnihand/omnihand_dex_umi.h
+  h_b60f00b173c94b 228,232
+windows/x64/cpp/include/omnilogger.h
+  h_b60f00b173c94b 9,16-17,20-23,25-26,31,33,41,46,49,57,68-69,79,88,91,106-107,111-122,124-128,130-153,156-242,244-245,247,250-252,254,262-263,265-266,269,271,274,282-317,320,325,330-343,345,347-349,351-466,471,475,479,483,487,491,495,499,503,507,515-516,529,539,549,559,569-635,643,653-670,674,677,683-685,688-709,715-716,720,724,728-729,731-732,736-757,762-767,771-784,786,788-815,818-820,824-848,850-855,857-861,863-901,903,905-912,914-926,930-947,949-958,960,963-990,992-998,1000-1004,1006-1010,1012,1015-1024,1026-1037,1039,1042-1092,1095,1097-1101,1105-1111,1119-1120,1124-1185,1188-1205,1208,1210-1218
+windows/x64/cpp/include/agilink_logger.h
+  h_b60f00b173c94b 16,20,54-55,61-62,68-73
+windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  h_b60f00b173c94b 634-636
+windows/x64/cpp/include/omnihand/kinematics/omnihand_2025/omnihand_2025_solver.h
+  h_b60f00b173c94b 14,94-96,153
+windows/x64/cpp/include/omnihand/omnihand_2025.h
+  h_b60f00b173c94b 303,307
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "5b7145256c6271bcd5dbf2586f30e845237f7cb4",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "new_path": "windows/x64/cpp/include/omnihand/device_context.h",
+      "additions": {
+        "human": 75
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/agilink_logger.h",
+      "new_path": "windows/x64/cpp/include/agilink_logger.h",
+      "additions": {
+        "human": 12
+      },
+      "deletions": {
+        "human": 6
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_2025/omnihand_2025_solver.h",
+      "new_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_2025/omnihand_2025_solver.h",
+      "additions": {
+        "human": 5
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_pro_2025/omnihand_pro_2025_solver.h",
+      "new_path": "windows/x64/cpp/include/omnihand/kinematics/omnihand_pro_2025/omnihand_pro_2025_solver.h",
+      "additions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand.h",
+      "additions": {
+        "human": 15
+      },
+      "deletions": {
+        "human": 7
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_2025.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_2025.h",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_dex_umi.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_dex_umi.h",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/utils.h",
+      "new_path": "windows/x64/cpp/include/omnihand/utils.h",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnilogger.h",
+      "new_path": "windows/x64/cpp/include/omnilogger.h",
+      "additions": {
+        "human": 898
+      },
+      "deletions": {
+        "human": 258
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnipicker_3.cc",
+      "new_path": "windows/x64/cpp/test/test_omnipicker_3.cc",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 1
+      }
+    }
+  ]
+}
