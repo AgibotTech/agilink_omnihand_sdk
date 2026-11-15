@@ -10,17 +10,19 @@
 #ifndef AGILINK_OMNIHAND_H
 #define AGILINK_OMNIHAND_H
 
-#include <cstdio>
 #include <cstdint>
+#include <cstdio>
 #include <memory>
 #include <string>
 #include <vector>
+#include "omnihand/device_context.h"
 #include "omnihand/export_symbols.h"
-#include "omnihand/proto.h"
 #include "omnihand/ota_types.h"
+#include "omnihand/proto.h"
 #include "omnihand/utils.h"
 
 #define OMNIHAND_HAS_JOINT_ANGLES_FROM_MOTOR_POSITIONS 1
+#define OMNIHAND_HAS_DEVICE_LOG_CALLBACK 1
 
 namespace agilink {
 namespace omnihand {
@@ -29,7 +31,7 @@ namespace omnihand {
 struct MixCtrl;
 struct JointMotorErrorReport;
 
-/** Initial per-device communication logging applied before constructor-time requests. */
+/** Initial device log callback and communication-detail switch, applied before constructor-time requests. */
 struct AGIBOT_EXPORT CommunicationLogOptions {
   bool enabled = false;
   DataDetailsLogCallback callback = nullptr;
@@ -46,6 +48,8 @@ struct AGIBOT_EXPORT CommunicationLogOptions {
  */
 class AGIBOT_EXPORT OmniHand {
  public:
+  std::shared_ptr<const DeviceContext> GetDeviceContext() const { return device_context_; }
+
   // Timestamped counterparts share the existing virtual implementations.
   // These methods are nonvirtual to preserve the existing public ABI.
   TimestampedResult<int16_t> SetJointMotorPosiWithTimestamp(unsigned char index, int16_t position);
@@ -592,9 +596,10 @@ class AGIBOT_EXPORT OmniHand {
 
   // ============ Debug Interface ============
   /**
-   * @brief Shows send/receive data details.
-   * @param show Whether to show data details (true=show, false=hide)
-   * @param log_callback When set, each log line is passed here; otherwise printed to stdout.
+   * @brief Configures device WARN/ERROR output and optional send/receive details.
+   * @param show Whether to include communication details; does not disable WARN/ERROR.
+   * @param log_callback Optional device log callback; empty keeps the existing callback.
+   * @note The callback runs on the shared log output worker and should return quickly.
    */
   virtual void ShowDataDetails(bool show, DataDetailsLogCallback log_callback = nullptr) const = 0;
 
@@ -689,7 +694,8 @@ class AGIBOT_EXPORT OmniHand {
    * @brief Constructor - protected to prevent direct instantiation
    * @note Users should use product-specific classes: OmniHand2025, OmniHandPro2025, or OmniHandDexUMI
    */
-  OmniHand() = default;
+  OmniHand() : OmniHand(std::make_shared<DeviceContext>()) {}
+  explicit OmniHand(std::shared_ptr<DeviceContext> context) : device_context_(std::move(context)) {}
 
  public:
   /**
@@ -742,6 +748,7 @@ class AGIBOT_EXPORT OmniHand {
   void Reset(ProductType product_type, unsigned char device_id, HandType hand_type) {
     product_type_ = product_type;
     device_id_ = device_id;
+    device_context_->device_id.store(device_id_);
     hand_type_ = hand_type;
   }
 
@@ -749,6 +756,7 @@ class AGIBOT_EXPORT OmniHand {
   unsigned char device_id_{DEFAULT_DEVICE_ID};
   HandType hand_type_{HandType::LEFT};
   bool is_init_{false};
+  const std::shared_ptr<DeviceContext> device_context_;
 };
 
 /** mA to 1-byte mix-control torque register (O10/H3L). */

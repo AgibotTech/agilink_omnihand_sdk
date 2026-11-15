@@ -300,11 +300,11 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
   void Reset(unsigned char device_id, HandType hand_type) {
     OmniHand::Reset(ProductType::OMNIHAND_2025, device_id, hand_type);
     // Automatically initialize kinematics solver
-    kinematics_solver_ = std::make_unique<o10::OmniHand2025Solver>(hand_type_ == HandType::LEFT);
+    kinematics_solver_ = std::make_unique<o10::OmniHand2025Solver>(device_context_, hand_type_ == HandType::LEFT);
   }
 
   void OnHandTypeChanged() override {
-    kinematics_solver_ = std::make_unique<o10::OmniHand2025Solver>(hand_type_ == HandType::LEFT);
+    kinematics_solver_ = std::make_unique<o10::OmniHand2025Solver>(device_context_, hand_type_ == HandType::LEFT);
   }
 
   virtual uint8_t GetDefaultNonPrivateHandDeviceId() const = 0;

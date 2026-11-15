@@ -631,6 +631,9 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   }
 
  protected:
+  OmniHand3UltraM() = default;
+  explicit OmniHand3UltraM(std::shared_ptr<DeviceContext> context) : OmniHand(std::move(context)) {}
+
   /**
    * @brief Initialize base class members and per-joint rad <-> tick solver.
    * @param device_id Device ID

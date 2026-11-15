@@ -225,11 +225,11 @@ class AGIBOT_EXPORT OmniHandDexUMI : public OmniHand, public IO10TactileSensor1D
    */
   void Reset(unsigned char device_id, HandType hand_type) {
     OmniHand::Reset(ProductType::OMNIHAND_DEX_UMI, device_id, hand_type);
-    kinematics_solver_ = std::make_unique<o10::OmniHand2025Solver>(hand_type_ == HandType::LEFT);
+    kinematics_solver_ = std::make_unique<o10::OmniHand2025Solver>(device_context_, hand_type_ == HandType::LEFT);
   }
 
   void OnHandTypeChanged() override {
-    kinematics_solver_ = std::make_unique<o10::OmniHand2025Solver>(hand_type_ == HandType::LEFT);
+    kinematics_solver_ = std::make_unique<o10::OmniHand2025Solver>(device_context_, hand_type_ == HandType::LEFT);
   }
 };
 

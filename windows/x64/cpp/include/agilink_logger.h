@@ -13,11 +13,11 @@
  * Two init() overloads:
  *
  *   // ① FILE* sink (timestamps on by default):
- *   AgilinkLogger::init(stdout, OmniLogger<>::Level::INFO);
+ *   AgilinkLogger::init(stdout, LogLevel::INFO);
  *
  *   // ② Custom write_fn (timestamps off by default):
  *   AgilinkLogger::init(
- *       [](OmniLogger<>::Level lv, const char* msg, std::size_t len) {
+ *       [](LogLevel lv, const char* msg, std::size_t len) {
  *           RCLCPP_INFO(node->get_logger(), "%.*s", static_cast<int>(len), msg);
  *       });
  *
@@ -51,19 +51,25 @@ class AGILINK_EXPORT AgilinkLogger {
 
   // FILE* sink: no external formatting, timestamps on by default.
   static void init(FILE* fp = stdout,
-                   OmniLogger<>::Level min_level = OmniLogger<>::Level::VERBOSE,
-                   std::chrono::milliseconds flush_interval = std::chrono::milliseconds(50),
+                   LogLevel min_level = LogLevel::VERBOSE,
+                   std::chrono::milliseconds idle_interval = std::chrono::milliseconds(50),
                    bool with_timestamp = true);
 
   // Custom sink: caller usually adds its own timestamps (e.g. RCLCPP, syslog), off by default.
   static void init(OmniLogger<>::WriteFn write_fn,
                    OmniLogger<>::FlushFn flush_fn = nullptr,
-                   OmniLogger<>::Level min_level = OmniLogger<>::Level::VERBOSE,
-                   std::chrono::milliseconds flush_interval = std::chrono::milliseconds(50),
+                   LogLevel min_level = LogLevel::VERBOSE,
+                   std::chrono::milliseconds idle_interval = std::chrono::milliseconds(50),
                    bool with_timestamp = false);
 
   // Returns the singleton; auto-initialises to stdout if init() was not called.
   static OmniLogger<>& get() noexcept;
+
+  // After stopping producers, drain, join the worker and release its queues.
+  // Do not invoke from a sink or a Windows DLL detach handler.
+  static void shutdown() noexcept;
+
+  static uint64_t new_source_id() noexcept;
 
  private:
   static std::unique_ptr<OmniLogger<>>& inst_() noexcept;
