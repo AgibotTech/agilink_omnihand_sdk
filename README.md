@@ -11,9 +11,9 @@ The OmniHand SDK provides C++ and Python control APIs, kinematics solvers, and R
 
 ## Platform-Specific Documentation
 
-- **[Linux (x64/amd64)](linux/x64/README.md)** - Installation, USB setup, ROS2
-- **[Linux (arm64/aarch64)](linux/aarch64/README.md)** - Installation, USB setup, ROS2
-- **[Windows (x64)](windows/x64/README.md)** - Installation, driver setup
+- **[Linux (x64/amd64)](linux/x64/README.md)**
+- **[Linux (arm64/aarch64)](linux/aarch64/README.md)**
+- **[Windows (x64)](windows/x64/README.md)**
 
 ## API Documentation
 

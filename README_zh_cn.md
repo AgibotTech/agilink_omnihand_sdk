@@ -11,9 +11,9 @@ OmniHand SDK 为 OmniHand 系列产品提供 C++、Python 控制接口、运动�
 
 ## 平台文档
 
-- **[Linux (x64/amd64)](linux/x64/README_zh_cn.md)** - 安装、USB 配置、ROS2
-- **[Linux (arm64/aarch64)](linux/aarch64/README_zh_cn.md)** - 安装、USB 配置、ROS2
-- **[Windows (x64)](windows/x64/README_zh_cn.md)** - 安装、驱动配置
+- **[Linux (x64/amd64)](linux/x64/README_zh_cn.md)**
+- **[Linux (arm64/aarch64)](linux/aarch64/README_zh_cn.md)**
+- **[Windows (x64)](windows/x64/README_zh_cn.md)**
 
 ## API 文档
 
