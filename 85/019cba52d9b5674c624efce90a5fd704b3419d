@@ -1,0 +1,354 @@
+doc/zh_cn/API_CPP_H3UM.md
+  s_62d7f790ba05bc::t_ab616cd13f01cb 240,242
+doc/en/API_PYTHON_UMI.md
+  s_62d7f790ba05bc::t_ab616cd13f01cb 10,312,314
+doc/zh_cn/API_PYTHON_UMI.md
+  s_62d7f790ba05bc::t_ab616cd13f01cb 10,99,101
+doc/en/API_CPP_H3UM.md
+  s_62d7f790ba05bc::t_ab616cd13f01cb 227,229
+doc/en/API_CPP_O10_UMI.md
+  s_62d7f790ba05bc::t_ab616cd13f01cb 10,288,290
+doc/zh_cn/API_CPP_O10_UMI.md
+  s_62d7f790ba05bc::t_ab616cd13f01cb 10,210,212
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "85019cba52d9b5674c624efce90a5fd704b3419d",
+  "prompts": {},
+  "sessions": {
+    "s_62d7f790ba05bc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1b947-618f-72f1-be20-c6e2c733b4b5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.output_tokens": "16940",
+        "tlab.session_started_at": "2026-11-16T01:40:47Z",
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.token_usage.cache_read_tokens": "3694764",
+        "tlab.token_usage.input_tokens": "127847"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "doc/en/API_CPP_H3UM.md",
+      "new_path": "doc/en/API_CPP_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 9
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_O10_UMI.md",
+      "new_path": "doc/en/API_CPP_O10_UMI.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 2,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 40
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON_UMI.md",
+      "new_path": "doc/en/API_PYTHON_UMI.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 29
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_H3UM.md",
+      "new_path": "doc/zh_cn/API_CPP_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 9
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_O10_UMI.md",
+      "new_path": "doc/zh_cn/API_CPP_O10_UMI.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 2,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 36
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON_UMI.md",
+      "new_path": "doc/zh_cn/API_PYTHON_UMI.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 19
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/h3u_m_demo_canfd_id.cc",
+      "new_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/h3u_m_demo_canfd_id.cc",
+      "deletions": {
+        "human": 44
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnipicker_2025/OP1_demo_usb.cc",
+      "new_path": "windows/x64/cpp/demo/omnipicker_2025/OP1_demo_usb.cc",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 7
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/i_omnihand_calibrator.h",
+      "deletions": {
+        "human": 100
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand.h",
+      "deletions": {
+        "human": 32
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_2025.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_2025.h",
+      "additions": {
+        "human": 4
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "additions": {
+        "human": 7
+      },
+      "deletions": {
+        "human": 5
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 39
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_dex_umi.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_dex_umi.h",
+      "deletions": {
+        "human": 27
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnipicker_2025.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnipicker_2025.h",
+      "deletions": {
+        "human": 13
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnipicker_3.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnipicker_3.h",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 24
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/private_omnihand.h",
+      "deletions": {
+        "human": 429
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/proto.h",
+      "new_path": "windows/x64/cpp/include/omnihand/proto.h",
+      "additions": {
+        "human": 25
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "additions": {
+        "human": 5
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/README.md",
+      "new_path": "windows/x64/cpp/test/README.md",
+      "additions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/README_zh_cn.md",
+      "new_path": "windows/x64/cpp/test/README_zh_cn.md",
+      "additions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_2025.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_2025.cc",
+      "additions": {
+        "human": 66
+      },
+      "deletions": {
+        "human": 55
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_3_lite.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_3_lite.cc",
+      "additions": {
+        "human": 11
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc",
+      "additions": {
+        "human": 15
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_dex_umi.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_dex_umi.cc",
+      "deletions": {
+        "human": 32
+      }
+    },
+    {
+      "old_path": "windows/x64/install.bat",
+      "new_path": "windows/x64/install.bat",
+      "additions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/README.md",
+      "new_path": "windows/x64/python/demo/README.md",
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/README_zh_cn.md",
+      "new_path": "windows/x64/python/demo/README_zh_cn.md",
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_dex_umi/demo_set_max_min_calibration.py",
+      "deletions": {
+        "human": 156
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_omnihand_dex_umi.py",
+      "new_path": "windows/x64/python/test/test_omnihand_dex_umi.py",
+      "additions": {
+        "human": 5
+      },
+      "deletions": {
+        "human": 29
+      }
+    }
+  ]
+}
