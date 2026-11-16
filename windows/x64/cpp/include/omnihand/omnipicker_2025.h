@@ -305,6 +305,11 @@ class AGIBOT_EXPORT OmniPicker2025 : public OmniHand {
     ThrowUnsupported("GetCanNodeId");
   };
 
+  // Creates this product from one context; retains its identity and callback.
+  // Invalid configuration/reuse throws; initialization failure returns nullptr.
+  static std::unique_ptr<OmniPicker2025> CreateHand(
+      std::shared_ptr<DeviceContext> context);
+
   /**
    * @brief Show device information via USB Fibre protocol (device type, serial number, firmware version, CAN node ID).
    * @note This is equivalent to typing "ref0" in the REF-CLI tool.
@@ -313,6 +318,11 @@ class AGIBOT_EXPORT OmniPicker2025 : public OmniHand {
 
   // ============ Factory Methods ============
   static std::unique_ptr<OmniPicker2025> createHandByUSB(
+      CommunicationLogOptions log_options = {});
+  // Exact USB descriptor serial number from ScanUsbDevices(); no fallback to
+  // another device. Empty retains the default first-device selection.
+  static std::unique_ptr<OmniPicker2025> createHandByUSB(
+      const std::string& usb_serial_number,
       CommunicationLogOptions log_options = {});
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by canfd_device_id
@@ -449,6 +459,10 @@ class AGIBOT_EXPORT OmniPicker2025 : public OmniHand {
   }
 
  protected:
+  OmniPicker2025() = default;
+  explicit OmniPicker2025(std::shared_ptr<DeviceContext> context)
+      : OmniHand(std::move(context)) {}
+
   /**
    * @brief Initialize common base-class metadata for OP1.
    * @param device_id Hand device ID.

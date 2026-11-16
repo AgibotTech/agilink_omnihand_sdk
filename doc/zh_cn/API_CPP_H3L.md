@@ -240,6 +240,7 @@ CAN 和 RS485 均支持上述接口。向量包含 4 个值，单位为弧度（
 ```cpp
 #include "omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h"
 
+using agilink::omnihand::H3LModel;
 using namespace agilink::omnihand::h3l;
 
 OmniHand3LiteSolver solver(true, H3LModel::H3L_S);  // Left H3L-S; use H3L_M for H3L-M.

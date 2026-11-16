@@ -66,16 +66,13 @@ class OmniHand3UltraMT1P3Test : public ::testing::Test {
       AgilinkLogger::get().infof(TAG, "Using SocketCAN device (%s)", g_can_interface.c_str());
 #endif
     } else {
-      hand_ = g_revision_t1p5 ?
-          agilink::omnihand::OmniHand3UltraM::createHandT1P5ByZlgcan(
-              agilink::omnihand::HandType::LEFT, g_device_id, 0, 0) :
-          agilink::omnihand::OmniHand3UltraM::createHandByZlgcan(
-              agilink::omnihand::HandType::LEFT, g_device_id, 0, 0);
+      hand_ = agilink::omnihand::OmniHand3UltraM::createHandByZlgcan(
+          agilink::omnihand::HandType::LEFT, g_device_id, 0, 0);
       AgilinkLogger::get().infof(TAG, "Using ZLG CAN device");
     }
     int request_interval = GetRequestInterval();
     hand_->SetRequestInterval(request_interval);
-    if (hand_->GetRevision() == agilink::omnihand::H3UMRevision::T1P5) {
+    if (hand_->GetRevision() == agilink::omnihand::h3um::H3UMRevision::T1P5) {
       mix_ctrl_current_ma_ =
           agilink::omnihand::OmniHand3UltraM::kT1P5MixCtrlTorqueRange.default_value;
     }
@@ -123,7 +120,7 @@ TEST_F(OmniHand3UltraMT1P3Test, GetTemperatureOfPalmWithTimestamp) {
   if (!hand_ || !hand_->Init()) {
     GTEST_SKIP() << "Device not available";
   }
-  if (hand_->GetRevision() != agilink::omnihand::H3UMRevision::T1P5) {
+  if (hand_->GetRevision() != agilink::omnihand::h3um::H3UMRevision::T1P5) {
     GTEST_SKIP() << "Board temperature requires T1.5";
   }
   const auto sample = hand_->GetTemperatureOfPalmWithTimestamp();
@@ -136,7 +133,7 @@ TEST_F(OmniHand3UltraMT1P3Test, GetTemperatureOfPowerWithTimestamp) {
   if (!hand_ || !hand_->Init()) {
     GTEST_SKIP() << "Device not available";
   }
-  if (hand_->GetRevision() != agilink::omnihand::H3UMRevision::T1P5) {
+  if (hand_->GetRevision() != agilink::omnihand::h3um::H3UMRevision::T1P5) {
     GTEST_SKIP() << "Board temperature requires T1.5";
   }
   const auto sample = hand_->GetTemperatureOfPowerWithTimestamp();
@@ -391,7 +388,7 @@ TEST_F(OmniHand3UltraMT1P3Test, GetVendorInfo) {
     const uint8_t doa = hand_->GetDoA();
     EXPECT_EQ(doa, 20);
     EXPECT_EQ(hand_->GetNumOfJointMotors(), doa);
-    EXPECT_EQ(hand_->GetRevision(), agilink::omnihand::H3UMRevision::T1P3);
+    EXPECT_EQ(hand_->GetRevision(), agilink::omnihand::h3um::H3UMRevision::T1P3);
     const auto joint_names = hand_->GetJointNames();
     EXPECT_EQ(joint_names.size(), doa);
   }

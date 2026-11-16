@@ -109,6 +109,12 @@ struct ScannedCanfdDeviceInfo {
   std::string dev_name;
 };
 
+// Native USB devices supported by the SDK. The descriptor serial number is
+// distinct from the device's application-level SN.
+struct ScannedUsbDeviceInfo {
+  std::string serial_number;
+};
+
 struct ScannedSerialDeviceInfo {
   std::string port;
   std::string description;

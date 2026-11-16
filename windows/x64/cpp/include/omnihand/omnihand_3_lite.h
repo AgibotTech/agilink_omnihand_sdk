@@ -38,17 +38,23 @@ namespace omnihand {
  */
 class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public ITactileSensor1DU16 {
  public:
-  virtual uint16_t GetPrivateHandDeviceIdByBroadcast() = 0;
-  virtual uint16_t GetPrivateHandDeviceId() = 0;
-
   // Constants
   static constexpr unsigned char kDegreesOfActiveFreedom = 4;  // DoA
-  static constexpr uint8_t kDegreesOfPassiveFreedom = 5; // DoP
+  static constexpr uint8_t kDegreesOfPassiveFreedom = 7; // DoP
   static constexpr uint8_t kDefaultHandDeviceId = 1u;
+
+  virtual uint16_t GetPrivateHandDeviceIdByBroadcast() = 0;
+  virtual uint16_t GetPrivateHandDeviceId() = 0;
 
   virtual ~OmniHand3Lite() = default;
 
   // ============ Factory Methods ============
+  // A zero device ID selects the product's default address.
+  // Creates this product from one context; retains its identity and callback.
+  // Invalid configuration/reuse throws; initialization failure returns nullptr.
+  static std::unique_ptr<OmniHand3Lite> CreateHand(
+      std::shared_ptr<DeviceContext> context);
+
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by canfd_device_id
    * @param hand_type Hand type (left/right)
@@ -353,6 +359,10 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public ITactileSensor1DU16 
   std::vector<int16_t> GetHandGesture(int gesture_num) override;
 
  protected:
+  OmniHand3Lite() = default;
+  explicit OmniHand3Lite(std::shared_ptr<DeviceContext> context)
+      : OmniHand(std::move(context)) {}
+
   /**
    * @brief Initialize base class members and kinematics solver
    * @param device_id Device ID

@@ -240,6 +240,7 @@ Both hands use the same angle order, positive directions, and ranges; do not neg
 ```cpp
 #include "omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h"
 
+using agilink::omnihand::H3LModel;
 using namespace agilink::omnihand::h3l;
 
 OmniHand3LiteSolver solver(true, H3LModel::H3L_S);  // Left H3L-S; use H3L_M for H3L-M.

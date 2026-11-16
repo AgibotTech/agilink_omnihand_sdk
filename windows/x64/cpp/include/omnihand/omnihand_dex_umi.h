@@ -42,6 +42,12 @@ class AGIBOT_EXPORT OmniHandDexUMI : public OmniHand, public IO10TactileSensor1D
   virtual ~OmniHandDexUMI() = default;
 
   // ============ Factory Methods ============
+  // A zero device ID selects the product's default address.
+  // Creates this product from one context; retains its identity and callback.
+  // Invalid configuration/reuse throws; initialization failure returns nullptr.
+  static std::unique_ptr<OmniHandDexUMI> CreateHand(
+      std::shared_ptr<DeviceContext> context);
+
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by canfd_device_id
    * @param hand_type Hand type (left/right)
@@ -185,6 +191,10 @@ class AGIBOT_EXPORT OmniHandDexUMI : public OmniHand, public IO10TactileSensor1D
   // GetAllTactileSensorDataRaw and GetTactileSensorDataRaw are inherited from IO10TactileSensor1D
 
  protected:
+  OmniHandDexUMI() = default;
+  explicit OmniHandDexUMI(std::shared_ptr<DeviceContext> context)
+      : OmniHand(std::move(context)) {}
+
   /**
    * @brief Kinematics solver for OmniHand 2025 (O10)
    */
@@ -197,7 +207,10 @@ class AGIBOT_EXPORT OmniHandDexUMI : public OmniHand, public IO10TactileSensor1D
    * @note Product type is fixed to ProductType::OMNIHAND_DEX_UMI for this class
    */
   void Reset(unsigned char device_id, HandType hand_type) {
-    OmniHand::Reset(ProductType::OMNIHAND_DEX_UMI, device_id, hand_type);
+    OmniHand::Reset(
+        ProductType::OMNIHAND_DEX_UMI,
+        device_id == kBroadcastHandDeviceId ? kDefaultHandDeviceId : device_id,
+        hand_type);
     kinematics_solver_ = std::make_unique<o10::OmniHand2025Solver>(device_context_, hand_type_ == HandType::LEFT);
   }
 

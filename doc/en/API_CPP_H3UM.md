@@ -32,39 +32,39 @@ Automatic discovery requires one H3UM per selected CAN channel. On a shared bus,
 static std::unique_ptr<OmniHand3UltraM> createHandByZlgcan(
     HandType hand_type, uint8_t hand_device_id,
     uint8_t canfd_device_id, uint8_t canfd_channel_id = 0,
-    const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort,
-    CommunicationLogOptions log_options = {});
+    bool show_data_details = false);
 
 static std::unique_ptr<OmniHand3UltraM> createHandByZlgcan(
     HandType hand_type, uint8_t hand_device_id,
     const std::string& usbcanfd_serial_number,
     uint8_t canfd_channel_id = 0,
-    const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort,
-    CommunicationLogOptions log_options = {});
+    bool show_data_details = false);
 
 static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
     HandType hand_type, uint8_t hand_device_id,
     uint8_t canfd_device_id, uint8_t canfd_channel_id = 0,
-    const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort,
-    CommunicationLogOptions log_options = {});
+    bool show_data_details = false);
 
 static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
     HandType hand_type, uint8_t hand_device_id,
     const std::string& hcan_serial_number,
     uint8_t canfd_channel_id = 0,
-    const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort,
-    CommunicationLogOptions log_options = {});
+    bool show_data_details = false);
 ```
 
 `createHandByZlgCanTcp` and Linux `createHandSocketCan` use the same discovery flow. Pass `kBroadcastHandDeviceId` as the hand device ID to enable automatic discovery, including when supplying an adapter serial number, TCP endpoint, or SocketCAN interface.
 
-The optional tactile SoC endpoint defaults to `192.168.99.2:19009`. It is used only by hardware with an external Xense/palm service, and only initialized when reachable. An empty `tactile_soc_ip` disables that service; hardware with CAN-based tactile data ignores these endpoint parameters.
+The final `show_data_details` argument defaults to `false`. To register a per-device log callback before connection, use `DeviceContext::SetLogCallback()` with `CreateHand(context)`.
 
-The existing `createHandT1P5*` factories remain available for source compatibility and retain their explicit hardware selection. New applications should use the unified factories above. `GetRevision()` remains available for diagnostics and offline model selection.
+T1.3 uses the default external tactile SoC endpoint `192.168.99.2:19009`. To change it after creation, call `AttachTactileSoc(ip, port)`. This waits for old tactile workers to stop and initializes the new endpoint; finger scanning is asynchronous. An empty IP detaches the service. It returns `true` on detach or a successful endpoint probe, and `false` for T1.5, an invalid nonempty endpoint, or a failed probe.
+
+```cpp
+bool AttachTactileSoc(
+    const std::string& tactile_soc_ip,
+    uint16_t tactile_soc_port = kDefaultTactileSocPort);
+```
+
+The dedicated `createHandT1P5ByZlgcan` factories have been removed; use `createHandByZlgcan` for automatic revision detection. `GetRevision()` remains available for diagnostics and offline model selection.
 
 ## Device Information and Addressing
 

@@ -50,6 +50,12 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
 
   // ============ Factory Methods ============
 
+  // A zero device ID selects the product's default address.
+  // Creates this product from one context; retains its identity and callback.
+  // Invalid configuration/reuse throws; initialization failure returns nullptr.
+  static std::unique_ptr<OmniPicker3> CreateHand(
+      std::shared_ptr<DeviceContext> context);
+
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by canfd_device_id
    * @param hand_type Hand type; stored and returned by GetHandType() but not used in any OP3 control logic -- any value is accepted
@@ -286,6 +292,10 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
   std::vector<int16_t> GetHandGesture(int gesture_num) override;
 
  protected:
+  OmniPicker3() = default;
+  explicit OmniPicker3(std::shared_ptr<DeviceContext> context)
+      : OmniHand(std::move(context)) {}
+
   // Shared reader for the production stroke calibration register.
   static constexpr size_t kStrokeCalibPayloadLen = 8;
   // Sends the read frame; returns the reply payload verbatim, nullopt on no reply.
@@ -297,7 +307,10 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
    * @param hand_type Hand type; stored only, not used in any OP3 control logic
    */
   void Reset(unsigned char device_id, HandType hand_type) {
-    OmniHand::Reset(ProductType::OMNI_PICKER_3, device_id, hand_type);
+    OmniHand::Reset(
+        ProductType::OMNI_PICKER_3,
+        device_id == kBroadcastHandDeviceId ? kDefaultHandDeviceId : device_id,
+        hand_type);
   }
 
   static constexpr Int16Bound kMotorPositionBound = {0, 4095};

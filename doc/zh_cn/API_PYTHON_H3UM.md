@@ -2,7 +2,7 @@
 
 ## 概述
 
-`OmniHand3UltraM` 保持原有 Python 工厂函数签名和默认值。需要自动发现设备地址和硬件能力时，通过同一入口显式传入 `hand_device_id=0`。
+`OmniHand3UltraM` 通过工厂函数自动识别硬件版本。需要自动发现设备地址和硬件能力时，显式传入 `hand_device_id=0`。
 
 ```python
 from omnihand import ControlMode, H3UMRevision, HandType, OmniHand3UltraM, OmniHand3UltraMSolver
@@ -26,9 +26,9 @@ joint_count = hand.get_num_of_joint_motors()
 
 Python 默认值仍为 `hand_device_id=9`：省略此参数或显式传入任意非零 ID 时，直接读取该地址的自由度，不发送广播或回退其他地址。设备地址不决定硬件版本。传入 `0` 时启用地址自动发现：SDK 广播读取设备信息，无回复时回退地址 `9`，再单独读取自由度寄存器。有效的 20 或 21 关节回复决定对应实现，探测失败或自由度不受支持时返回 `None`。地址自动发现适用于所选通道只有一只 H3UM 的场景；同一总线上有多台设备时，请显式传入目标设备 ID。
 
-`create_hand_by_hcan`、`create_hand_by_zlgcan_tcp`（相应平台）和 `create_hand_socketcan`（Linux）使用相同的识别流程。ZLG/HCAN 也支持按适配器序列号连接。可选的 `tactile_soc_ip` / `tactile_soc_port` 默认值为 `192.168.99.2:19009`，仅用于带外部 Xense/手掌服务的硬件；IP 为空时禁用该服务。
+`create_hand_by_hcan`、`create_hand_by_zlgcan_tcp`（相应平台）和 `create_hand_socketcan`（Linux）使用相同的识别流程。ZLG/HCAN 也支持按适配器序列号连接。末尾可选参数 `show_data_details` 默认为 `False`。T1.3 的外部触觉服务默认地址为 `192.168.99.2:19009`；`hand.attach_tactile_soc(ip, 19009)` 可更换地址并重新初始化，IP 为空时断开服务。该方法等待旧线程退出，五指扫描异步执行；T1.5 或端点探测失败时返回 `False`。
 
-原有 `create_hand_t1p5_*` 工厂保留兼容，并维持原先的显式硬件选择行为。新应用统一使用普通工厂入口。`get_revision()` 仍可用于诊断或离线模型选择。
+已移除专用的 `create_hand_t1p5_by_zlgcan` 创建接口，请使用 `create_hand_by_zlgcan` 自动识别版本。`get_revision()` 仍可用于诊断和离线模型选择。
 
 ## 控制与状态
 

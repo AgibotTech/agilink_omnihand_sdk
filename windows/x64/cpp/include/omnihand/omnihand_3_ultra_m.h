@@ -201,8 +201,8 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   static constexpr char kDefaultTactileSocIp[] = "192.168.99.2";
   static constexpr uint16_t kDefaultTactileSocPort = 19009;
 
-  static constexpr uint8_t GetDefaultHandDeviceId(H3UMRevision revision) {
-    return revision == H3UMRevision::T1P5
+  static constexpr uint8_t GetDefaultHandDeviceId(h3um::H3UMRevision revision) {
+    return revision == h3um::H3UMRevision::T1P5
         ? kT1P5DefaultHandDeviceId
         : kT1P3DefaultHandDeviceId;
   }
@@ -212,6 +212,11 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   // ============ Factory Methods ============
   // Address discovery assumes one hand on the selected CAN channel.
   // Without a broadcast reply, discovery tries kT1P3DefaultHandDeviceId.
+  // Creates this product from one context; retains its identity and callback.
+  // Invalid configuration/reuse throws; initialization failure returns nullptr.
+  static std::unique_ptr<OmniHand3UltraM> CreateHand(
+      std::shared_ptr<DeviceContext> context);
+
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by canfd_device_id
    * @note Automatically detects T1.3/T1.5 from the reported active DOF.
@@ -219,20 +224,9 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
    * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param canfd_device_id CANFD device ID
    * @param canfd_channel_id CANFD channel ID
-   * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
-   * @param tactile_soc_port Tactile SoC data port
    * @return A hand instance, or nullptr if connection or revision detection fails.
    */
   static std::unique_ptr<OmniHand3UltraM> createHandByZlgcan(
-      HandType hand_type,
-      uint8_t hand_device_id,
-      uint8_t canfd_device_id,
-      uint8_t canfd_channel_id = 0,
-      const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-      uint16_t tactile_soc_port = kDefaultTactileSocPort,
-      CommunicationLogOptions log_options = {});
-
-  static std::unique_ptr<OmniHand3UltraM> createHandT1P5ByZlgcan(
       HandType hand_type,
       uint8_t hand_device_id,
       uint8_t canfd_device_id,
@@ -246,20 +240,9 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
    * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param usbcanfd_serial_number USB CANFD serial number
    * @param canfd_channel_id CANFD channel ID
-   * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
-   * @param tactile_soc_port Tactile SoC data port
    * @return A hand instance, or nullptr if connection or revision detection fails.
    */
   static std::unique_ptr<OmniHand3UltraM> createHandByZlgcan(
-      HandType hand_type,
-      uint8_t hand_device_id,
-      const std::string& usbcanfd_serial_number,
-      uint8_t canfd_channel_id = 0,
-      const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-      uint16_t tactile_soc_port = kDefaultTactileSocPort,
-      CommunicationLogOptions log_options = {});
-
-  static std::unique_ptr<OmniHand3UltraM> createHandT1P5ByZlgcan(
       HandType hand_type,
       uint8_t hand_device_id,
       const std::string& usbcanfd_serial_number,
@@ -276,8 +259,6 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
    * @param tcp_host TCP server IP or hostname (e.g. "192.168.0.178")
    * @param tcp_port TCP server port (e.g. 8000)
    * @param canfd_channel_id CAN channel index (0 or 1, default 0)
-   * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
-   * @param tactile_soc_port Tactile SoC data port
    * @return A hand instance, or nullptr if connection or revision detection fails.
    */
   static std::unique_ptr<OmniHand3UltraM> createHandByZlgCanTcp(
@@ -286,8 +267,6 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
       const std::string& tcp_host,
       uint16_t tcp_port,
       uint8_t canfd_channel_id = 0,
-      const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-      uint16_t tactile_soc_port = kDefaultTactileSocPort,
       CommunicationLogOptions log_options = {});
 
   static std::unique_ptr<OmniHand3UltraM> createHandT1P5ByZlgCanTcp(
@@ -306,16 +285,12 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
    * @param hand_type Hand type (left/right)
    * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param can_interface CAN interface name (e.g. "can0")
-   * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
-   * @param tactile_soc_port Tactile SoC data port
    * @return A hand instance, or nullptr if connection or revision detection fails.
    */
   static std::unique_ptr<OmniHand3UltraM> createHandSocketCan(
       HandType hand_type,
       uint8_t hand_device_id,
       const std::string& can_interface = "can0",
-      const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-      uint16_t tactile_soc_port = kDefaultTactileSocPort,
       CommunicationLogOptions log_options = {});
 
   static std::unique_ptr<OmniHand3UltraM> createHandT1P5SocketCan(
@@ -332,8 +307,6 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
    * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param canfd_device_id CANFD device ID
    * @param canfd_channel_id CANFD channel ID
-   * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
-   * @param tactile_soc_port Tactile SoC data port
    * @return A hand instance, or nullptr if connection or revision detection fails.
    */
   static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
@@ -341,8 +314,6 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
       uint8_t hand_device_id,
       uint8_t canfd_device_id,
       uint8_t canfd_channel_id = 0,
-      const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-      uint16_t tactile_soc_port = kDefaultTactileSocPort,
       CommunicationLogOptions log_options = {});
 
   static std::unique_ptr<OmniHand3UltraM> createHandT1P5ByHcan(
@@ -359,8 +330,6 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
    * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param hcan_serial_number HCAN serial number
    * @param canfd_channel_id CANFD channel ID
-   * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
-   * @param tactile_soc_port Tactile SoC data port
    * @return A hand instance, or nullptr if connection or revision detection fails.
    */
   static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
@@ -368,8 +337,6 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
       uint8_t hand_device_id,
       const std::string& hcan_serial_number,
       uint8_t canfd_channel_id = 0,
-      const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-      uint16_t tactile_soc_port = kDefaultTactileSocPort,
       CommunicationLogOptions log_options = {});
 
   static std::unique_ptr<OmniHand3UltraM> createHandT1P5ByHcan(
@@ -391,7 +358,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   *       binding; ROS2 node code should call this instead of hard-coding the list.
   */
   std::vector<std::string> GetJointNames() const override {
-    return revision_ == H3UMRevision::T1P5
+    return revision_ == h3um::H3UMRevision::T1P5
         ? h3um::OmniHand3UltraMSolver::kT1P5JointNames
         : h3um::OmniHand3UltraMSolver::kT1P3JointNames;
   }
@@ -419,7 +386,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
       const std::vector<int16_t>& positions, HandType source_hand,
       HandType target_hand) const override;
 
-  H3UMRevision GetRevision() const {
+  h3um::H3UMRevision GetRevision() const {
     return revision_;
   }
 
@@ -438,7 +405,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
         joint_motor_index > GetNumOfJointMotors()) {
       return {0, 0, 0};
     }
-    return revision_ == H3UMRevision::T1P5
+    return revision_ == h3um::H3UMRevision::T1P5
         ? kT1P5MixCtrlTorqueRange
         : kT1P3MixCtrlTorqueRange;
   }
@@ -480,6 +447,12 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   virtual std::string GetSNOfTactileSensor(Finger sensor) const = 0;
   virtual size_t GetSensorDataLength(Finger sensor) const = 0;
   virtual const std::vector<Finger>& GetSensorOrder() const;
+
+  // T1.3 only: empty IP detaches; replacing an endpoint waits for old workers.
+  // Returns true on detach or successful probe; finger scanning is asynchronous.
+  virtual bool AttachTactileSoc(
+      const std::string& tactile_soc_ip,
+      uint16_t tactile_soc_port = kDefaultTactileSocPort);
 
   // ============ Xense Tactile Sensing ============
   // Cached frames retain their first SDK host receive time; vendor clocks are unchanged.
@@ -604,7 +577,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
    *       Solver is built here so derived impls (CAN / Serial / ...) can use
    *       joint_motor_solver_ directly without re-implementing init logic.
    */
-  void Reset(uint8_t device_id, HandType hand_type, H3UMRevision revision);
+  void Reset(uint8_t device_id, HandType hand_type, h3um::H3UMRevision revision);
   void OnHandTypeChanged() override;
 
   /**
@@ -613,7 +586,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
    *        Shared by every transport implementation.
    */
   std::unique_ptr<h3um::OmniHand3UltraMSolver> joint_motor_solver_;
-  H3UMRevision revision_{H3UMRevision::T1P3};
+  h3um::H3UMRevision revision_{h3um::H3UMRevision::T1P3};
   std::optional<h3um::H3UMGesture> previous_gesture_;
   std::map<Finger, size_t> tactile_points_map_;
   static constexpr Int16Bound kActualMotorPositionBound = {-1800, 1800};

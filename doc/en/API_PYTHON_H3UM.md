@@ -2,7 +2,7 @@
 
 ## Overview
 
-`OmniHand3UltraM` keeps the existing Python factory signatures and defaults. Applications can request automatic address and capability discovery through the same factories by passing `hand_device_id=0`.
+`OmniHand3UltraM` detects hardware revisions through its factories. Applications can request automatic address and capability discovery through the same factories by passing `hand_device_id=0`.
 
 ```python
 from omnihand import ControlMode, H3UMRevision, HandType, OmniHand3UltraM, OmniHand3UltraMSolver
@@ -26,9 +26,9 @@ joint_count = hand.get_num_of_joint_motors()
 
 The Python default remains `hand_device_id=9`: omitting the argument or explicitly passing any nonzero ID queries DOF at that address without broadcast or address fallback. The address does not select a hardware revision. Passing `0` requests automatic address discovery: the SDK broadcasts a device-information read, falls back to address `9` if no reply arrives, then reads the standalone DOF register. A valid 20- or 21-joint reply selects the implementation; failed or unsupported replies return `None`. Automatic address discovery requires one H3UM per selected channel; on a shared bus, pass an explicit device ID.
 
-`create_hand_by_hcan`, `create_hand_by_zlgcan_tcp` (supported builds), and `create_hand_socketcan` (Linux) use the same discovery flow. ZLG/HCAN also accept adapter serial numbers. The optional `tactile_soc_ip` / `tactile_soc_port` endpoint defaults to `192.168.99.2:19009` and is used only by hardware with an external Xense/palm service. An empty IP disables that service.
+`create_hand_by_hcan`, `create_hand_by_zlgcan_tcp` (supported builds), and `create_hand_socketcan` (Linux) use the same discovery flow. ZLG/HCAN also accept adapter serial numbers. The optional final `show_data_details` argument defaults to `False`. T1.3 uses `192.168.99.2:19009` for its external tactile service by default; `hand.attach_tactile_soc(ip, 19009)` replaces the endpoint and reinitializes tactile sensing. An empty IP detaches the service. The method waits for old workers, then scans fingers asynchronously; it returns `False` on T1.5 or a failed endpoint probe.
 
-Existing `create_hand_t1p5_*` factories remain available for compatibility with their previous explicit hardware selection. New applications should use the unified factories. `get_revision()` remains available for diagnostics and offline model selection.
+The dedicated `create_hand_t1p5_by_zlgcan` factories have been removed; use `create_hand_by_zlgcan` for automatic revision detection. `get_revision()` remains available for diagnostics and offline model selection.
 
 ## Control and State
 

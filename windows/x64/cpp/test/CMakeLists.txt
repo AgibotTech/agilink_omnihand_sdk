@@ -79,7 +79,6 @@ else()
   set(OMNIHAND_TARGET omnihand)
 endif()
 
-# Set output directory for test executables
 # Always use the top-level binary directory to ensure consistent output location
 get_filename_component(TOP_LEVEL_BINARY_DIR "${CMAKE_BINARY_DIR}" DIRECTORY)
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)

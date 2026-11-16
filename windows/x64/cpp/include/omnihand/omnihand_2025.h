@@ -33,22 +33,27 @@ namespace omnihand {
  */
 class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public IO10TactileSensor1D{
  public:
-  virtual uint16_t GetPrivateHandDeviceIdByBroadcast() = 0;
-  virtual uint16_t GetPrivateHandDeviceId() = 0;
-
-  TimestampedResult<std::vector<TactileSensorData>> GetAllTactileSensorDataWithTimestamp() const;
-
   // Constants
   static constexpr unsigned char kDegreesOfActiveFreedom = 10;  // DoA
   static constexpr unsigned char kDegreesOfPassiveFreedom = 6;  // DoP
   /** @brief Default hand device ID on the bus for O10 (protocol value 1). Pass explicitly to factories. */
   static constexpr uint8_t kDefaultHandDeviceId = 1u;
 
+  virtual uint16_t GetPrivateHandDeviceIdByBroadcast() = 0;
+  virtual uint16_t GetPrivateHandDeviceId() = 0;
+
+  TimestampedResult<std::vector<TactileSensorData>> GetAllTactileSensorDataWithTimestamp() const;
+
   virtual ~OmniHand2025() = default;
 
   // ============ Factory Methods ============
   // Zero selects default IDs; it does not request address discovery.
   // For CAN discovery, call GetHandDeviceIdByBroadcast() after creation.
+  // Creates this product from one context; retains its identity and callback.
+  // Invalid configuration/reuse throws; initialization failure returns nullptr.
+  static std::unique_ptr<OmniHand2025> CreateHand(
+      std::shared_ptr<DeviceContext> context);
+
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by canfd_device_id
    * @param hand_type Hand type (left/right)
@@ -292,6 +297,10 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public IO10TactileSensor1D{
   std::vector<int16_t> GetHandGesture(int gesture_num) override;
 
  protected:
+  OmniHand2025() = default;
+  explicit OmniHand2025(std::shared_ptr<DeviceContext> context)
+      : OmniHand(std::move(context)) {}
+
   /**
    * @brief Initialize base class members and kinematics solver
    * @param device_id Device ID

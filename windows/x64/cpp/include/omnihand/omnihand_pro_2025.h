@@ -43,6 +43,11 @@ class AGIBOT_EXPORT OmniHandPro2025 : public OmniHand, public IControlMode {
   virtual ~OmniHandPro2025() = default;
 
   // ============ Factory Methods ============
+  // Creates this product from one context; retains its identity and callback.
+  // Invalid configuration/reuse throws; initialization failure returns nullptr.
+  static std::unique_ptr<OmniHandPro2025> CreateHand(
+      std::shared_ptr<DeviceContext> context);
+
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by canfd_device_id
    * @param hand_type Hand type (left/right)
@@ -409,6 +414,10 @@ class AGIBOT_EXPORT OmniHandPro2025 : public OmniHand, public IControlMode {
   std::vector<int16_t> GetHandGesture(int gesture_num) override;
 
  protected:
+  OmniHandPro2025() = default;
+  explicit OmniHandPro2025(std::shared_ptr<DeviceContext> context)
+      : OmniHand(std::move(context)) {}
+
   /**
    * @brief Initialize base class members and kinematics solver
    * @param device_id Device ID

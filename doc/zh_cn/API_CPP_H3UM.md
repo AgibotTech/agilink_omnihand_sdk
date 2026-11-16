@@ -32,39 +32,39 @@ if (hand && hand->Init()) {
 static std::unique_ptr<OmniHand3UltraM> createHandByZlgcan(
     HandType hand_type, uint8_t hand_device_id,
     uint8_t canfd_device_id, uint8_t canfd_channel_id = 0,
-    const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort,
-    CommunicationLogOptions log_options = {});
+    bool show_data_details = false);
 
 static std::unique_ptr<OmniHand3UltraM> createHandByZlgcan(
     HandType hand_type, uint8_t hand_device_id,
     const std::string& usbcanfd_serial_number,
     uint8_t canfd_channel_id = 0,
-    const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort,
-    CommunicationLogOptions log_options = {});
+    bool show_data_details = false);
 
 static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
     HandType hand_type, uint8_t hand_device_id,
     uint8_t canfd_device_id, uint8_t canfd_channel_id = 0,
-    const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort,
-    CommunicationLogOptions log_options = {});
+    bool show_data_details = false);
 
 static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
     HandType hand_type, uint8_t hand_device_id,
     const std::string& hcan_serial_number,
     uint8_t canfd_channel_id = 0,
-    const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort,
-    CommunicationLogOptions log_options = {});
+    bool show_data_details = false);
 ```
 
 `createHandByZlgCanTcp` 和 Linux 下的 `createHandSocketCan` 使用相同的自动识别流程。按适配器序列号、TCP 端点或 SocketCAN 接口创建时，设备 ID 显式传入 `kBroadcastHandDeviceId` 即可启用自动发现。
 
-可选触觉 SoC 端点默认值为 `192.168.99.2:19009`。只有使用外部 Xense/手掌服务的硬件会探测该端点，并在可访问时初始化服务。`tactile_soc_ip` 为空时禁用服务；通过 CAN 获取触觉数据的硬件忽略这些端点参数。
+末尾的 `show_data_details` 默认值为 `false`。需要在连接前注册设备日志回调时，通过 `DeviceContext::SetLogCallback()` 配合 `CreateHand(context)` 使用。
 
-原有 `createHandT1P5*` 工厂保留兼容，并维持原先的显式硬件选择行为。新应用统一使用以上普通工厂入口。`GetRevision()` 仍可用于诊断或离线模型选择。
+T1.3 默认使用外部触觉 SoC 地址 `192.168.99.2:19009`。创建后调用 `AttachTactileSoc(ip, port)` 可更换地址：先等待旧触觉线程退出，再初始化新地址，五指扫描异步执行。IP 为空时断开该服务。断开成功或端点探测成功返回 `true`；T1.5、不合法的非空端点或探测失败返回 `false`。
+
+```cpp
+bool AttachTactileSoc(
+    const std::string& tactile_soc_ip,
+    uint16_t tactile_soc_port = kDefaultTactileSocPort);
+```
+
+已移除专用的 `createHandT1P5ByZlgcan` 创建接口，请使用 `createHandByZlgcan` 自动识别版本。`GetRevision()` 仍可用于诊断和离线模型选择。
 
 ## 设备信息与地址
 
