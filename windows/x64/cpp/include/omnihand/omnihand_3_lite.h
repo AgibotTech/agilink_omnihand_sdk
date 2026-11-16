@@ -240,22 +240,6 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public ITactileSensor1DU16 
                                     uint16_t position) = 0;
 
   /**
-   * @deprecated Use SetAllJointMotorPosi() instead.
-   */
-  [[deprecated("Use SetAllJointMotorPosi() instead.")]]
-  virtual SetAllAxisPosResponse SetAllAxisPos(
-      const std::vector<uint16_t>& positions) = 0;
-
-  /**
-   * @deprecated Use MixControlByPVT() instead.
-   */
-  [[deprecated("Use MixControlByPVT() instead.")]]
-  virtual SetAllAxisPosResponse SetPosSpeedTorqueData(
-      const std::vector<uint16_t>& positions,
-      const std::vector<int16_t>& speeds,
-      const std::vector<uint16_t>& torques) = 0;
-
-  /**
    * @brief Update one H3L-S tactile sensor through the hand's CAN FD or serial connection.
    * @param sensor_id Sensor address, 1..6 (request registers F3..F8).
    * @param file_name UTF-8 path to a raw APP BIN or an image with a sensor OTA header.

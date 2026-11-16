@@ -24,31 +24,6 @@
 namespace agilink {
 namespace omnihand {
 
-/**
- * @brief Response of SetAllAxisPos (0x08): positions, velocities, currents after set.
- * @note 60-byte protocol: [0:20] 10×position (uint16 LE), [20:40] 10×velocity (uint16 LE), [40:50] 10×current (1 byte/axis).
- *       O10: all three filled (10 elements each). O4: positions.size()=4, velocities/currents empty or 4 if device returns them.
- */
-struct AGIBOT_EXPORT SetAllAxisPosResponse {
-  std::vector<uint16_t> positions;   ///< Position per axis (O10: 10, O4: 4)
-  std::vector<int16_t> velocities; ///< Velocity per axis (same length as positions when present)
-  std::vector<int8_t> currents;   ///< Current per axis, 1 byte in protocol zero-extended to uint16 (same length when present)
-  std::vector<int8_t> error_codes;  ///< Error code per axis, 1 byte per axis (same length when present)
-  bool empty() const { return positions.empty(); }
-
-  std::string ToString() const {
-    std::ostringstream oss;
-    for (size_t i = 0; i < positions.size(); i++) {
-      oss << "[Joint:" << i + 1 << "][Position:" << static_cast<unsigned int>(positions[i])
-          << "][Velocity:" << static_cast<int>(velocities[i])
-          << "][Current:" << static_cast<int>(currents[i])
-          << "][Error Code:" << static_cast<int>(error_codes[i]) << "]\n";
-    }
-    return oss.str();
-  }
-};
-
-
 #pragma pack(push, 1)
 
 /**
