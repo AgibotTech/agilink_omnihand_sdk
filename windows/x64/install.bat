@@ -25,6 +25,14 @@ echo.
 echo Installing to: %INSTALL_DIR%
 echo.
 
+REM Remove retired service files left by an older SDK installation.
+if exist "%INSTALL_DIR%\bin\omnihand_server.exe" del /Q "%INSTALL_DIR%\bin\omnihand_server.exe"
+for %%n in (omnihand_server omnihand_client omnihand_web) do (
+    if exist "%INSTALL_DIR%\include\%%n" rmdir /S /Q "%INSTALL_DIR%\include\%%n"
+    if exist "%INSTALL_DIR%\lib\%%n.lib" del /Q "%INSTALL_DIR%\lib\%%n.lib"
+)
+if exist "%INSTALL_DIR%\share\omnihand\frontend" rmdir /S /Q "%INSTALL_DIR%\share\omnihand\frontend"
+
 REM Install C++ SDK
 if not exist "%INSTALL_DIR%" mkdir "%INSTALL_DIR%"
 if exist "%INSTALL_DIR%\include\omnihand\private_omnihand.h" del /Q "%INSTALL_DIR%\include\omnihand\private_omnihand.h"
@@ -35,11 +43,6 @@ for %%d in (include lib bin) do (
         echo [FAIL] Could not install cpp\%%d to %INSTALL_DIR%\%%d
         exit /b 1
     )
-)
-xcopy /E /I /Y "%SCRIPT_DIR%frontend" "%INSTALL_DIR%\share\omnihand\frontend" >nul
-if errorlevel 1 (
-    echo [FAIL] Could not install frontend. Check that the release package contains frontend\index.html.
-    exit /b 1
 )
 if exist "%SCRIPT_DIR%cpp\share\cmake\omnihand" (
     xcopy /E /I /Y "%SCRIPT_DIR%cpp\share\cmake\omnihand" "%INSTALL_DIR%\share\cmake\omnihand" >nul

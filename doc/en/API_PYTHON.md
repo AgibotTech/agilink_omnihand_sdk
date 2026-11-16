@@ -171,4 +171,3 @@ stroke = picker.mix_control_by_stroke(5000, 3000, 2000)
 - [SocketCAN Setup Guide](SOCKETCAN_SETUP.md) - For Linux SocketCAN configuration
 - [OmniHand 2025 & OmniHand 3 (O10) Kinematics Solver Python API](API_KINEMATICS_PYTHON_O10.md) - For kinematics calculations
 - [OmniHand Pro 2025 (O12) Kinematics Solver Python API](API_KINEMATICS_PYTHON_O12.md) - For kinematics calculations
-- [Server Interface API](API_SERVER.md) - WebSocket and RESTful server/client API (C++, Python, Web)

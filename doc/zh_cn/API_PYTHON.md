@@ -121,4 +121,3 @@ stroke = picker.mix_control_by_stroke(5000, 3000, 2000)
 - [SocketCAN 设置指南](SOCKETCAN_SETUP.md) - Linux SocketCAN 配置说明
 - [OmniHand 2025 & OmniHand 3 (O10) 运动学求解器 Python API](API_KINEMATICS_PYTHON_O10.md) - 运动学计算
 - [OmniHand Pro 2025 (O12) 运动学求解器 Python API](API_KINEMATICS_PYTHON_O12.md) - 运动学计算
-- [服务器接口 API](API_SERVER.md) - WebSocket 与 RESTful 服务器/客户端接口（C++、Python、Web 浏览器）

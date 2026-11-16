@@ -175,16 +175,3 @@ if(BUILD_OMNI_PICKER_3)
   )
   add_test(NAME OmniPicker3Test COMMAND test_omnipicker_3)
 endif()
-
-# OmniHand Client tests exercise an externally started Server over public APIs.
-add_executable(test_omnihand_server test_omnihand_server.cc)
-target_link_libraries(
-  test_omnihand_server
-  PRIVATE
-  omnihand_client
-  GTest::gtest_main
-)
-set_target_properties(test_omnihand_server PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY "${TEST_OUTPUT_DIR}"
-)
-add_test(NAME OmniHandServerTest COMMAND test_omnihand_server)

@@ -15,11 +15,6 @@ if [[ ! -d "$SCRIPT_DIR/cpp/lib" ]]; then
     echo "Please check the release package."
     exit 1
 fi
-if [[ ! -x "$SCRIPT_DIR/cpp/bin/omnihand/omnihand_server" ]]; then
-    echo "Error: omnihand_server executable not found!"
-    echo "Please check the release package."
-    exit 1
-fi
 
 # Install C++ SDK
 echo "Installing C++ SDK..."
@@ -31,9 +26,13 @@ sudo rm -f "$PREFIX/lib/libusb-1.0.so"* 2>/dev/null || true
 sudo rm -f "$PREFIX/lib/libcanbus.so"* 2>/dev/null || true
 
 sudo mkdir -p "$PREFIX/bin" "$PREFIX/include" "$PREFIX/lib" "$PREFIX/share/cmake/omnihand"
-sudo install -m 755 "$SCRIPT_DIR/cpp/bin/omnihand/omnihand_server" "$PREFIX/bin/omnihand_server"
-sudo mkdir -p "$PREFIX/share/omnihand"
-sudo cp -r "$SCRIPT_DIR/frontend" "$PREFIX/share/omnihand/"
+# Remove retired service files left by an older SDK installation.
+sudo rm -f "$PREFIX/bin/omnihand_server"
+sudo rm -rf "$PREFIX/share/omnihand/frontend" \
+    "$PREFIX/include/omnihand_server" "$PREFIX/include/omnihand_client" \
+    "$PREFIX/include/omnihand_web"
+sudo rm -f "$PREFIX/lib/libomnihand_server.a" \
+    "$PREFIX/lib/libomnihand_client.a" "$PREFIX/lib/libomnihand_web.a"
 sudo cp -r "$SCRIPT_DIR/cpp/include/"* "$PREFIX/include/"
 sudo cp -P "$SCRIPT_DIR/cpp/lib/"* "$PREFIX/lib/"
 sudo cp "$SCRIPT_DIR/cpp/share/cmake/omnihand/"* "$PREFIX/share/cmake/omnihand/"
