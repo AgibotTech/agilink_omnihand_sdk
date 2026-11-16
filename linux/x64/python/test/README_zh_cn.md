@@ -31,7 +31,6 @@ pytest -v test_omnihand_2025.py
 python3 test_omnihand_2025.py -f 0
 python3 test_omnihand_2025.py -d hcan -c 0 -i 0
 python3 test_omnihand_2025.py -d socketcan --can-if can0
-python3 test_omnihand_2025.py -d zlgcantcp --tcp-host 192.168.0.178 --tcp-port 8000
 python3 test_omnihand_2025.py -d usb -p /dev/ttyACM0
 python3 test_omnihand_2025.py -d rs485 -p /dev/ttyUSB0
 
@@ -91,7 +90,7 @@ pytest -s
 
 测试组织方式与 C++ gtest 结构类似：
 
-- **test_omnihand_2025.py**：OmniHand 2025 (O10, 10 DOF) 各传输方式的统一测试（CANFD + USB/RS485），由原 `test_omnihand_2025_canfd.py` / `test_omnihand_2025_usb.py` / `test_omnihand_2025_zlgcan_tcp.py` 合并而来
+- **test_omnihand_2025.py**：OmniHand 2025 (O10, 10 DOF) 各传输方式的统一测试（CANFD + USB/RS485），由原 `test_omnihand_2025_canfd.py` / `test_omnihand_2025_usb.py` 合并而来
 - **test_omnihand_pro_2025.py**：OmniHand Pro 2025 (O12, 12 DOF) 的测试
 - **test_omnihand_3_lite.py**：OmniHand 3 Lite (H3L, 4 DOF) 的测试
 - **test_omnihand_3_ultra_m_t1_3.py**：OmniHand 3 Ultra M T1.3 (H3UM, 20 DOF) 的测试

@@ -165,7 +165,7 @@ python .\python\test\test_omnihand_2025.py -d zlgcan
 
 | 参数 | 含义 |
 |------|------|
-| `-d` | 连接方式：`zlgcan`、`hcan`、`socketcan`、`zlgcantcp`、`usb` 或 `rs485` |
+| `-d` | 连接方式：`zlgcan`、`hcan`、`socketcan`、`usb` 或 `rs485` |
 | `-p` | `usb` 或 `rs485` 使用的串口，填写设备实际分配的端口 |
 | `-i` | CANFD 适配器索引，从 0 开始 |
 | `-c` | CAN 通道索引，从 0 开始 |

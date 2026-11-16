@@ -41,7 +41,7 @@ from omnihand import (
 )
 
 
-CAN_TRANSPORTS = ("zlgcan", "hcan", "socketcan", "zlgcantcp")
+CAN_TRANSPORTS = ("zlgcan", "hcan", "socketcan")
 TRANSPORTS = CAN_TRANSPORTS + ("rs485",)
 
 DEVICE_TYPE = "zlgcan"
@@ -49,8 +49,6 @@ REQUEST_INTERVAL = 5
 CHANNEL_ID = 0
 CANFD_ID = 0
 CAN_IF = "can0"
-TCP_HOST = "192.168.0.178"
-TCP_PORT = 8000
 RS485_PORT = "COM5" if platform.system() == "Windows" else "/dev/ttyUSB0"
 BAUDRATE = 460800
 FRAME_RECV_TIMEOUT = 200
@@ -64,7 +62,6 @@ STROKE_TOLERANCE = 100  # 1.00 mm, because the protocol unit is 0.01 mm.
 _STR_OPTIONS = (
     ("OMNIHAND_DEVICE_TYPE", "-d", "DEVICE_TYPE"),
     ("OMNIHAND_CAN_IF", "--can-if", "CAN_IF"),
-    ("OMNIHAND_TCP_HOST", "--tcp-host", "TCP_HOST"),
     ("OMNIHAND_RS485_PORT", "-p", "RS485_PORT"),
     ("OMNIHAND_RS485_PORT", "-P", "RS485_PORT"),
 )
@@ -72,7 +69,6 @@ _INT_OPTIONS = (
     ("OMNIHAND_REQUEST_INTERVAL", "-f", "REQUEST_INTERVAL"),
     ("OMNIHAND_CHANNEL_ID", "-c", "CHANNEL_ID"),
     ("OMNIHAND_CANFD_ID", "-i", "CANFD_ID"),
-    ("OMNIHAND_TCP_PORT", "--tcp-port", "TCP_PORT"),
     ("OMNIHAND_BAUDRATE", "-b", "BAUDRATE"),
     ("OMNIHAND_FRAME_RECV_TIMEOUT", "-t", "FRAME_RECV_TIMEOUT"),
     ("OMNIHAND_TARGET_DEVICE_ID", "--device-id", "DEVICE_ID"),
@@ -151,15 +147,6 @@ def _create_hand():
             **common,
             can_interface=CAN_IF,
         )
-    if DEVICE_TYPE == "zlgcantcp":
-        if not hasattr(OmniPicker3, "create_hand_by_zlgcan_tcp"):
-            pytest.fail("ZLG CAN TCP is unavailable on this platform", pytrace=False)
-        return OmniPicker3.create_hand_by_zlgcan_tcp(
-            **common,
-            host=TCP_HOST,
-            port=TCP_PORT,
-            canfd_channel_id=CHANNEL_ID,
-        )
     if DEVICE_TYPE == "rs485":
         return OmniPicker3.create_hand_by_rs485(
             **common,
@@ -192,7 +179,7 @@ def hand():
         f"\n[Info] transport={DEVICE_TYPE} device_id={DEVICE_ID} "
         f"interval={REQUEST_INTERVAL}ms recv_timeout={FRAME_RECV_TIMEOUT}ms"
     )
-    if DEVICE_TYPE in ("zlgcan", "hcan", "zlgcantcp"):
+    if DEVICE_TYPE in ("zlgcan", "hcan"):
         print(f"[Info] canfd_id={CANFD_ID} channel={CHANNEL_ID}")
     elif DEVICE_TYPE == "socketcan":
         print(f"[Info] can_interface={CAN_IF}")

@@ -24,26 +24,6 @@ cd /path/to/omnihand2025/python
 PYTHONPATH=. python demo/lingchu/hand_receive_data/udp_receive_control.py
 ```
 
-### ZLG CAN over TCP（`udp_receive_tcp_control.py`，如 USBCANFD-100U 网口）
-
-Python 绑定为 **每个 TCP 连接对应一路 CAN**；**单通道 100U** 若左右手各接一个盒子，需 **两个 TCP 端点**（不同 IP 或不同端口，以实际设备为准）：
-
-```bash
-PYTHONPATH=. python demo/lingchu/hand_receive_data/udp_receive_tcp_control.py \
-  --mode dual \
-  --left-tcp-host 192.168.0.10 --left-tcp-port 8000 \
-  --right-tcp-host 192.168.0.11 --right-tcp-port 8000
-```
-
-单手（仅右手，默认 `192.168.0.178:8000`）：
-
-```bash
-PYTHONPATH=. python demo/lingchu/hand_receive_data/udp_receive_tcp_control.py \
-  --mode right
-```
-
-USB 直连请使用同目录下的 `udp_receive_control.py`（`--transport zlgcan` / `hcan`）；`udp_receive_tcp_control.py` **仅** `create_hand_by_zlgcan_tcp`。
-
 **仅一只灵巧手**（例如只有右手，CAN 通道 0）：
 
 ```bash

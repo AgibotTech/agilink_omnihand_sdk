@@ -32,6 +32,7 @@ sudo rm -f "$PREFIX/bin/omnihand_server"
 sudo rm -rf "$PREFIX/share/omnihand/frontend" \
     "$PREFIX/include/omnihand_server" "$PREFIX/include/omnihand_client" \
     "$PREFIX/include/omnihand_web"
+sudo rm -f "$PREFIX/lib/libCANFDNET.so"
 sudo rm -f "$PREFIX/lib/libomnihand_server.a" \
     "$PREFIX/lib/libomnihand_client.a" "$PREFIX/lib/libomnihand_web.a"
 sudo cp -r "$SCRIPT_DIR/cpp/include/"* "$PREFIX/include/"

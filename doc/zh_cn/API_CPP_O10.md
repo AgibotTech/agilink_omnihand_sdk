@@ -602,7 +602,6 @@ SDK 发布包中提供了可直接编译运行的 C++ demo 源码：
 | CAN FD（按串号连接） | [O10_demo_canfd_serial.cc](../../../cpp/demo/omnihand_2025/O10_demo_canfd_serial.cc) |
 | SocketCAN | [O10_demo_socketcan.cc](../../../cpp/demo/omnihand_2025/O10_demo_socketcan.cc) |
 | RS485 串口 | [O10_demo_rs485.cc](../../../cpp/demo/omnihand_2025/O10_demo_rs485.cc) |
-| ZLG CAN TCP | [O10_demo_zlgcan_tcp.cc](../../../cpp/demo/omnihand_2025/O10_demo_zlgcan_tcp.cc) |
 | OTA 升级 | [O10_demo_ota.cc](../../../cpp/demo/omnihand_2025/O10_demo_ota.cc) |
 
 编译方式参见 [CMakeLists.txt](../../../cpp/demo/omnihand_2025/CMakeLists.txt)。

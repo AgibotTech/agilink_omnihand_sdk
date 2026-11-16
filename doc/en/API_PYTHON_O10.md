@@ -722,7 +722,6 @@ The SDK release package includes ready-to-run Python demo scripts (under `python
 | CAN FD (connect by ID) | [demo_canfd_id.py](../../../python/demo/omnihand_2025/demo_canfd_id.py) |
 | CAN FD (connect by serial) | [demo_canfd_serial.py](../../../python/demo/omnihand_2025/demo_canfd_serial.py) |
 | SocketCAN | [demo_socketcan.py](../../../python/demo/omnihand_2025/demo_socketcan.py) |
-| ZLG CAN TCP | [demo_zlgcan_tcp.py](../../../python/demo/omnihand_2025/demo_zlgcan_tcp.py) |
 | Position + Torque mixed control | [demo_mix_ctrl_pos_torque.py](../../../python/demo/omnihand_2025/demo_mix_ctrl_pos_torque.py) |
 | Position + Velocity + Torque mixed control | [demo_mix_ctrl_pos_vel_torque.py](../../../python/demo/omnihand_2025/demo_mix_ctrl_pos_vel_torque.py) |
 | Current monitoring | [demo_monitor_current.py](../../../python/demo/omnihand_2025/demo_monitor_current.py) |

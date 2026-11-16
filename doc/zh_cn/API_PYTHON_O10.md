@@ -536,7 +536,6 @@ SDK 发布包中提供了可直接运行的 Python demo 脚本（位于 `python/
 | CAN FD（按 ID 连接） | [demo_canfd_id.py](../../../python/demo/omnihand_2025/demo_canfd_id.py) |
 | CAN FD（按串号连接） | [demo_canfd_serial.py](../../../python/demo/omnihand_2025/demo_canfd_serial.py) |
 | SocketCAN | [demo_socketcan.py](../../../python/demo/omnihand_2025/demo_socketcan.py) |
-| ZLG CAN TCP | [demo_zlgcan_tcp.py](../../../python/demo/omnihand_2025/demo_zlgcan_tcp.py) |
 | 位置+力矩混合控制 | [demo_mix_ctrl_pos_torque.py](../../../python/demo/omnihand_2025/demo_mix_ctrl_pos_torque.py) |
 | 位置+速度+力矩混合控制 | [demo_mix_ctrl_pos_vel_torque.py](../../../python/demo/omnihand_2025/demo_mix_ctrl_pos_vel_torque.py) |
 | 电流监控 | [demo_monitor_current.py](../../../python/demo/omnihand_2025/demo_monitor_current.py) |

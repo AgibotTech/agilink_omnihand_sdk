@@ -249,34 +249,6 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
       uint8_t canfd_channel_id = 0,
       CommunicationLogOptions log_options = {});
 
-#if OMNIHAND_ZLG_TCP_SUPPORTED
-  /**
-   * @brief Factory method - ZLG CANFD over TCP (WiFi/Ethernet to CANFD, this machine acts as TCP client)
-   * @note Only available on Windows and Linux x64 (not supported on Linux aarch64/arm64)
-   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
-   * @param hand_type Hand type (left/right)
-   * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
-   * @param tcp_host TCP server IP or hostname (e.g. "192.168.0.178")
-   * @param tcp_port TCP server port (e.g. 8000)
-   * @param canfd_channel_id CAN channel index (0 or 1, default 0)
-   * @return A hand instance, or nullptr if connection or revision detection fails.
-   */
-  static std::unique_ptr<OmniHand3UltraM> createHandByZlgCanTcp(
-      HandType hand_type,
-      uint8_t hand_device_id,
-      const std::string& tcp_host,
-      uint16_t tcp_port,
-      uint8_t canfd_channel_id = 0,
-      CommunicationLogOptions log_options = {});
-
-  static std::unique_ptr<OmniHand3UltraM> createHandT1P5ByZlgCanTcp(
-      HandType hand_type,
-      uint8_t hand_device_id,
-      const std::string& tcp_host,
-      uint16_t tcp_port,
-      uint8_t canfd_channel_id = 0,
-      CommunicationLogOptions log_options = {});
-#endif
 
 #ifdef __linux__
   /**

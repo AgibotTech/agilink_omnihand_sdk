@@ -2,7 +2,7 @@
 
 ## 概述
 
-**OmniPicker 3 (OP3)** 为 1 自由度夹爪，支持 ZLG CAN FD、HCAN、ZLG CAN TCP、SocketCAN 和 RS485。请包含 `omnihand/omnipicker_3.h`；原来的 `omni_picker_3.h` 不再是公开头文件名。
+**OmniPicker 3 (OP3)** 为 1 自由度夹爪，支持 ZLG CAN FD、HCAN、SocketCAN 和 RS485。请包含 `omnihand/omnipicker_3.h`；原来的 `omni_picker_3.h` 不再是公开头文件名。
 
 ## 工厂函数
 
@@ -20,7 +20,7 @@ static std::unique_ptr<OmniPicker3> createHandByRs485(
     const std::string& uart_port, int32_t baudrate = 460800);
 ```
 
-ZLG 和 HCAN 工厂函数还提供序列号重载。ZLG CAN TCP 和 Linux SocketCAN 工厂函数与其他产品类采用相同形式。
+ZLG 和 HCAN 工厂函数还提供序列号重载。Linux SocketCAN 工厂函数与其他产品类采用相同形式。
 
 ## 设备 ID
 

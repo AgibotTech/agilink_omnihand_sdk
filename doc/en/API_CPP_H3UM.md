@@ -52,7 +52,7 @@ static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
     bool show_data_details = false);
 ```
 
-`createHandByZlgCanTcp` and Linux `createHandSocketCan` use the same discovery flow. Pass `kBroadcastHandDeviceId` as the hand device ID to enable automatic discovery, including when supplying an adapter serial number, TCP endpoint, or SocketCAN interface.
+Linux `createHandSocketCan` uses the same discovery flow. Pass `kBroadcastHandDeviceId` as the hand device ID to enable automatic discovery, including when supplying an adapter serial number or SocketCAN interface.
 
 The final `show_data_details` argument defaults to `false`. To register a per-device log callback before connection, use `DeviceContext::SetLogCallback()` with `CreateHand(context)`.
 

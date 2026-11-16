@@ -9,7 +9,6 @@
 - 电机位置范围：0–4096（int16 电机 ticks）
 - 支持 CAN（ZLG USB CANFD / HCAN）通信
 - 支持 SocketCAN（仅 Linux）
-- 支持 ZLG CAN TCP（仅 Linux x64 / Windows）
 - 文档所述 H3L 硬件**无触觉传感器**；U16 触觉方法作为协议/固件兼容接口保留
 - 支持通过 CAN 和 RS485 直接设置、读取 4 个主动关节角（单位：弧度）；[离线运动学求解器](#运动学求解器)也可独立完成主动关节角与电机位置换算。尚不支持完整的主动加被动关节角运动学。
 
@@ -155,19 +154,6 @@ static std::unique_ptr<OmniHand3Lite> createHandSocketCan(
     HandType hand_type,
     uint8_t hand_device_id,
     const std::string& can_interface = "can0");
-#endif
-```
-
-### ZLG CAN TCP（仅部分平台）
-
-```cpp
-#if OMNIHAND_ZLG_TCP_SUPPORTED
-static std::unique_ptr<OmniHand3Lite> createHandByZlgCanTcp(
-    HandType hand_type,
-    uint8_t hand_device_id,
-    const std::string& tcp_host,
-    uint16_t tcp_port,
-    uint8_t canfd_channel_id = 0);
 #endif
 ```
 

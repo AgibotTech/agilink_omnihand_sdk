@@ -2,7 +2,7 @@
 
 ## Overview
 
-**OmniPicker 3 (OP3)** is a 1-DOF gripper supporting ZLG CAN FD, HCAN, ZLG CAN TCP, SocketCAN, and RS485. Include `omnihand/omnipicker_3.h`; the former `omni_picker_3.h` name is no longer public.
+**OmniPicker 3 (OP3)** is a 1-DOF gripper supporting ZLG CAN FD, HCAN, SocketCAN, and RS485. Include `omnihand/omnipicker_3.h`; the former `omni_picker_3.h` name is no longer public.
 
 ## Factory Methods
 
@@ -20,7 +20,7 @@ static std::unique_ptr<OmniPicker3> createHandByRs485(
     const std::string& uart_port, int32_t baudrate = 460800);
 ```
 
-The ZLG and HCAN factories also have serial-number overloads. ZLG CAN TCP and Linux SocketCAN factories follow the same conventions as the other product classes.
+The ZLG and HCAN factories also have serial-number overloads. Linux SocketCAN factories follow the same conventions as the other product classes.
 
 ## Device ID
 

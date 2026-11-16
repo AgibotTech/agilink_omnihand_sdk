@@ -55,12 +55,6 @@ struct UsbConnectionInfo {
   std::string serial_number;
 };
 
-struct TcpCanConnectionInfo {
-  std::string host;
-  uint16_t port = 0;
-  uint8_t channel = 0;
-};
-
 // Per-hand creation configuration and runtime state. Configure before
 // the product's CreateHand(); the SDK completes connection descriptions during
 // construction. Use one context per creation attempt and do not edit configuration
@@ -88,7 +82,6 @@ struct AGIBOT_EXPORT DeviceContext {
   // Connection descriptions are initialized before publishing the hand.
   std::optional<CanConnectionInfo> can;
   std::optional<SerialConnectionInfo> serial;
-  std::optional<TcpCanConnectionInfo> tcp_can;
   std::optional<std::string> socket_can;
   std::optional<UsbConnectionInfo> usb;
 

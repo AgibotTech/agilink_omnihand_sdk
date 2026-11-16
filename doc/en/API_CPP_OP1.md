@@ -11,7 +11,6 @@ OP1 is a 1-DOF gripper. Its C++ interface is `agilink::omnihand::OmniPicker2025`
 | ZLG USB CANFD | `createHandByZlgcan(hand_type, hand_device_id, canfd_device_id, canfd_channel_id)` | Windows / Linux |
 | HCAN USB CANFD | `createHandByHcan(hand_type, hand_device_id, canfd_device_id, canfd_channel_id)` | Windows / Linux |
 | SocketCAN | `createHandSocketCan(hand_type, hand_device_id, "can0")` | Linux |
-| ZLG CANFD over TCP | `createHandByZlgCanTcp(hand_type, hand_device_id, tcp_host, tcp_port, canfd_channel_id)` | Windows / Linux x64 |
 | USB direct | `createHandByUSB()` | Windows / Linux |
 
 For CAN connections, pass the gripper's actual node ID; the default is `OmniPicker2025::kDefaultHandDeviceId` (1). Adapter and channel indices start at 0. `hand_type` is retained in the factory signature; the example uses `HandType::LEFT`. ZLG and HCAN factories also accept an adapter serial number instead of its index.

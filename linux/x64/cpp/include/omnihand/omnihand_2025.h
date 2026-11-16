@@ -81,25 +81,6 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
       uint8_t canfd_channel_id = 0,
       CommunicationLogOptions log_options = {});
 
-#if OMNIHAND_ZLG_TCP_SUPPORTED
-  /**
-   * @brief Factory method - ZLG CANFD over TCP (e.g. WiFi/Ethernet adapter as TCP server)
-   * @note Only available on Windows and Linux x64 (not supported on Linux aarch64/arm64)
-   * @param hand_type Hand type (left/right)
-   * @param hand_device_id 0 uses protocol defaults (standard=1, private=9); nonzero initializes both target IDs.
-   * @param host TCP server IP or hostname (e.g. "192.168.0.178")
-   * @param port TCP server port (e.g. 8000)
-   * @param canfd_channel_id Logical channel (default 0)
-   * @return A unique pointer to OmniHand2025 instance
-   */
-  static std::unique_ptr<OmniHand2025> createHandByZlgCanTcp(
-      HandType hand_type,
-      uint8_t hand_device_id,
-      const std::string& host,
-      uint16_t port,
-      uint8_t canfd_channel_id = 0,
-      CommunicationLogOptions log_options = {});
-#endif  // OMNIHAND_ZLG_TCP_SUPPORTED
 
   /**
    * @brief Factory method - RS485 communication

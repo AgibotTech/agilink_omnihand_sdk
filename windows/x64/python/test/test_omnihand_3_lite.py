@@ -12,7 +12,7 @@ explicitly supplied.
 Transport is selected with ``-d`` when this file is run directly, or with
 ``OMNIHAND_DEVICE_TYPE`` when it is run through pytest:
 
-    zlgcan | hcan | socketcan | zlgcantcp | rs485
+    zlgcan | hcan | socketcan | rs485
 
 Examples:
 
@@ -24,7 +24,7 @@ Environment variables:
 
     OMNIHAND_DEVICE_TYPE, OMNIHAND_REQUEST_INTERVAL,
     OMNIHAND_CHANNEL_ID, OMNIHAND_CANFD_ID, OMNIHAND_CAN_IF,
-    OMNIHAND_TCP_HOST, OMNIHAND_TCP_PORT, OMNIHAND_RS485_PORT,
+    OMNIHAND_RS485_PORT,
     OMNIHAND_BAUDRATE, OMNIHAND_FRAME_RECV_TIMEOUT,
     OMNIHAND_TARGET_DEVICE_ID, OMNIHAND_HAND_TYPE, OMNIHAND_H3L_MODEL
 
@@ -56,7 +56,7 @@ from omnihand import (
 )
 
 
-CAN_TRANSPORTS = ("zlgcan", "hcan", "socketcan", "zlgcantcp")
+CAN_TRANSPORTS = ("zlgcan", "hcan", "socketcan")
 TRANSPORTS = CAN_TRANSPORTS + ("rs485",)
 
 DEVICE_TYPE = "zlgcan"
@@ -64,8 +64,6 @@ REQUEST_INTERVAL = 5
 CHANNEL_ID = 0
 CANFD_ID = 0
 CAN_IF = "can0"
-TCP_HOST = "192.168.0.178"
-TCP_PORT = 8000
 RS485_PORT = "COM5" if platform.system() == "Windows" else "/dev/ttyUSB0"
 BAUDRATE = 460800
 FRAME_RECV_TIMEOUT = 100
@@ -77,7 +75,6 @@ _STR_OPTIONS = (
     ("OMNIHAND_DEVICE_TYPE", "-d", "DEVICE_TYPE"),
     ("OMNIHAND_DEVICE_TYPE", "--device", "DEVICE_TYPE"),
     ("OMNIHAND_CAN_IF", "--can-if", "CAN_IF"),
-    ("OMNIHAND_TCP_HOST", "--tcp-host", "TCP_HOST"),
     ("OMNIHAND_RS485_PORT", "-p", "RS485_PORT"),
     ("OMNIHAND_RS485_PORT", "--port", "RS485_PORT"),
     ("OMNIHAND_RS485_PORT", "-P", "RS485_PORT"),
@@ -89,7 +86,6 @@ _INT_OPTIONS = (
     ("OMNIHAND_REQUEST_INTERVAL", "--request-interval", "REQUEST_INTERVAL"),
     ("OMNIHAND_CHANNEL_ID", "-c", "CHANNEL_ID"),
     ("OMNIHAND_CANFD_ID", "-i", "CANFD_ID"),
-    ("OMNIHAND_TCP_PORT", "--tcp-port", "TCP_PORT"),
     ("OMNIHAND_BAUDRATE", "-b", "BAUDRATE"),
     ("OMNIHAND_FRAME_RECV_TIMEOUT", "-t", "FRAME_RECV_TIMEOUT"),
     ("OMNIHAND_TARGET_DEVICE_ID", "--device-id", "TARGET_DEVICE_ID"),
@@ -182,13 +178,6 @@ def _create_hand():
             **common,
             can_interface=CAN_IF,
         )
-    if DEVICE_TYPE == "zlgcantcp":
-        return getattr(OmniHand3Lite, factory_prefix + "_by_zlgcan_tcp")(
-            **common,
-            host=TCP_HOST,
-            port=TCP_PORT,
-            canfd_channel_id=CHANNEL_ID,
-        )
     if DEVICE_TYPE == "rs485":
         return getattr(OmniHand3Lite, factory_prefix + "_by_rs485")(
             **common,
@@ -223,7 +212,7 @@ def hand():
         f"target_device_id={TARGET_DEVICE_ID} interval={REQUEST_INTERVAL}ms "
         f"recv_timeout={FRAME_RECV_TIMEOUT}ms"
     )
-    if DEVICE_TYPE in ("zlgcan", "hcan", "zlgcantcp"):
+    if DEVICE_TYPE in ("zlgcan", "hcan"):
         print(f"[Info] canfd_id={CANFD_ID} channel={CHANNEL_ID}")
     elif DEVICE_TYPE == "socketcan":
         print(f"[Info] can_interface={CAN_IF}")

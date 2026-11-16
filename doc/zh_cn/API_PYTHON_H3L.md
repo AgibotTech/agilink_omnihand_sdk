@@ -9,7 +9,6 @@
 - 电机位置范围：0–4096（int16 电机 ticks）
 - 支持 CAN（ZLG USB CANFD / HCAN）通信
 - 支持 SocketCAN（仅 Linux）
-- 支持 ZLG CAN TCP（仅 Linux x64 / Windows）
 - 支持 RS485 通信（默认波特率 460800）
 - 支持 6 个 U16 一维触觉传感器：五指和掌心
 - 支持主动关节角控制，并可通过 `OmniHand3LiteSolver` 离线进行电机位置/角度换算
@@ -135,31 +134,6 @@ def create_hand_socketcan(hand_type: HandType,
         hand_type: 手型。
         hand_device_id: 手部设备 ID。
         can_interface: CAN 接口名（如 "can0"、"can1"），默认 "can0"。
-
-    Returns:
-        OmniHand3Lite: 灵巧手实例。
-    """
-```
-
-### ZLG CAN TCP（仅部分平台）
-
-```python
-@staticmethod
-def create_hand_by_zlgcan_tcp(hand_type: HandType,
-                hand_device_id: int,
-                tcp_host: str,
-                tcp_port: int,
-                canfd_channel_id: int = 0) -> 'OmniHand3Lite':
-    """创建灵巧手对象（ZLG CANFD over TCP）。
-
-    仅支持 Windows 和 Linux x64（不支持 Linux aarch64/arm64）。
-
-    Args:
-        hand_type: 手型。
-        hand_device_id: 手部设备 ID。
-        tcp_host: TCP 服务器 IP 或主机名。
-        tcp_port: TCP 服务器端口。
-        canfd_channel_id: CAN 通道索引，默认为 0。
 
     Returns:
         OmniHand3Lite: 灵巧手实例。
@@ -519,7 +493,6 @@ SDK 发布包中提供了可直接运行的 Python demo 脚本（位于 `python/
 | CAN FD（按 ID 连接） | [demo_canfd_id.py](../../../python/demo/omnihand_3_lite/demo_canfd_id.py) |
 | CAN FD（按串号连接） | [demo_canfd_serial.py](../../../python/demo/omnihand_3_lite/demo_canfd_serial.py) |
 | SocketCAN | [demo_socketcan.py](../../../python/demo/omnihand_3_lite/demo_socketcan.py) |
-| ZLG CAN TCP | [demo_zlgcan_tcp.py](../../../python/demo/omnihand_3_lite/demo_zlgcan_tcp.py) |
 | 电机位置控制 | [demo_set_motor.py](../../../python/demo/omnihand_3_lite/demo_set_motor.py) |
 | 硬件信息 | [demo_get_hardware_info.py](../../../python/demo/omnihand_3_lite/demo_get_hardware_info.py) |
 | 双手控制（多 CAN） | [demo_set_motor_via_multicans.py](../../../python/demo/omnihand_3_lite/demo_set_motor_via_multicans.py) |

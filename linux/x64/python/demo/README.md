@@ -46,7 +46,6 @@
 - `omnihand_3_lite/demo_canfd_id.py` - CANFD communication example (by device ID)
 - `omnihand_3_lite/demo_canfd_serial.py` - CANFD communication example (by serial number)
 - `omnihand_3_lite/demo_socketcan.py` - SocketCAN example (Linux only)
-- `omnihand_3_lite/demo_zlgcan_tcp.py` - ZLG CAN TCP example
 
 ## Usage
 

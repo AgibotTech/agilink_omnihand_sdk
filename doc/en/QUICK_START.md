@@ -153,7 +153,7 @@ python .\python\test\test_omnihand_2025.py -d zlgcan
 
 | Argument | Meaning |
 |----------|---------|
-| `-d` | Transport: `zlgcan`, `hcan`, `socketcan`, `zlgcantcp`, `usb`, or `rs485` |
+| `-d` | Transport: `zlgcan`, `hcan`, `socketcan`, `usb`, or `rs485` |
 | `-p` | Serial port for `usb` or `rs485`; use the port assigned to your device |
 | `-i` | CANFD adapter index, starting at 0 |
 | `-c` | CAN channel index, starting at 0 |

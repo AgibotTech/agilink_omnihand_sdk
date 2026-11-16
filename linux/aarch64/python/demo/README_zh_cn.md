@@ -46,7 +46,6 @@
 - `omnihand_3_lite/demo_canfd_id.py` - CANFD通信示例（通过设备ID）
 - `omnihand_3_lite/demo_canfd_serial.py` - CANFD通信示例（通过序列号）
 - `omnihand_3_lite/demo_socketcan.py` - SocketCAN 示例（仅 Linux）
-- `omnihand_3_lite/demo_zlgcan_tcp.py` - ZLG CAN TCP 示例
 
 ## 使用说明
 

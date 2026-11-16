@@ -9,7 +9,6 @@
 - Motor position range: 0-4096 (int16 motor ticks)
 - Supports CAN (ZLG USB CANFD / HCAN) communication
 - Supports SocketCAN (Linux only)
-- Supports ZLG CAN TCP (Linux x64 / Windows only)
 - Supports RS485 communication (default 460800 baud)
 - Six U16 1D tactile sensors: five fingers and palm
 - Active-joint angle control and offline motor/angle conversion through `OmniHand3LiteSolver`
@@ -136,31 +135,6 @@ def create_hand_socketcan(hand_type: HandType,
         hand_type: The hand type.
         hand_device_id: The hand device ID.
         can_interface: CAN interface name (e.g. "can0", "can1"), default "can0".
-
-    Returns:
-        OmniHand3Lite: Dexterous hand instance.
-    """
-```
-
-### ZLG CAN TCP (partial platform support)
-
-```python
-@staticmethod
-def create_hand_by_zlgcan_tcp(hand_type: HandType,
-                hand_device_id: int,
-                tcp_host: str,
-                tcp_port: int,
-                canfd_channel_id: int = 0) -> 'OmniHand3Lite':
-    """Creates a dexterous hand object (ZLG CANFD over TCP).
-
-    Only supported on Windows and Linux x64 (not Linux aarch64/arm64).
-
-    Args:
-        hand_type: The hand type.
-        hand_device_id: The hand device ID.
-        tcp_host: TCP server IP or hostname.
-        tcp_port: TCP server port.
-        canfd_channel_id: CAN channel index, defaults to 0.
 
     Returns:
         OmniHand3Lite: Dexterous hand instance.
@@ -526,7 +500,6 @@ The SDK release package includes ready-to-run Python demo scripts (under `python
 | CAN FD (connect by ID) | [demo_canfd_id.py](../../../python/demo/omnihand_3_lite/demo_canfd_id.py) |
 | CAN FD (connect by serial) | [demo_canfd_serial.py](../../../python/demo/omnihand_3_lite/demo_canfd_serial.py) |
 | SocketCAN | [demo_socketcan.py](../../../python/demo/omnihand_3_lite/demo_socketcan.py) |
-| ZLG CAN TCP | [demo_zlgcan_tcp.py](../../../python/demo/omnihand_3_lite/demo_zlgcan_tcp.py) |
 | Motor position control | [demo_set_motor.py](../../../python/demo/omnihand_3_lite/demo_set_motor.py) |
 | Hardware info | [demo_get_hardware_info.py](../../../python/demo/omnihand_3_lite/demo_get_hardware_info.py) |
 | Dual-hand control (multi CAN) | [demo_set_motor_via_multicans.py](../../../python/demo/omnihand_3_lite/demo_set_motor_via_multicans.py) |

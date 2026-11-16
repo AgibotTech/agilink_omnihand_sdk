@@ -52,7 +52,7 @@ static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
     bool show_data_details = false);
 ```
 
-`createHandByZlgCanTcp` 和 Linux 下的 `createHandSocketCan` 使用相同的自动识别流程。按适配器序列号、TCP 端点或 SocketCAN 接口创建时，设备 ID 显式传入 `kBroadcastHandDeviceId` 即可启用自动发现。
+Linux 下的 `createHandSocketCan` 使用相同的自动识别流程。按适配器序列号或 SocketCAN 接口创建时，设备 ID 显式传入 `kBroadcastHandDeviceId` 即可启用自动发现。
 
 末尾的 `show_data_details` 默认值为 `false`。需要在连接前注册设备日志回调时，通过 `DeviceContext::SetLogCallback()` 配合 `CreateHand(context)` 使用。
 

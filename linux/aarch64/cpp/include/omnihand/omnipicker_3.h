@@ -84,25 +84,6 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
       uint8_t canfd_channel_id = 0,
       CommunicationLogOptions log_options = {});
 
-#if OMNIHAND_ZLG_TCP_SUPPORTED
-  /**
-   * @brief Factory method - ZLG CANFD over TCP (WiFi/Ethernet to CANFD, this machine acts as TCP client)
-   * @param hand_type Hand type; stored and returned by GetHandType() but not used in any OP3 control logic -- any value is accepted
-   * @param hand_device_id Hand device ID
-   * @param tcp_host TCP server IP or hostname (e.g. "192.168.0.178")
-   * @param tcp_port TCP server port (e.g. 8000)
-   * @param canfd_channel_id CAN channel index (0 or 1, default 0)
-   * @return A unique pointer to OmniPicker3 instance
-   * @note Only available on Windows and Linux x64 (not supported on Linux aarch64/arm64)
-   */
-  static std::unique_ptr<OmniPicker3> createHandByZlgCanTcp(
-      HandType hand_type,
-      uint8_t hand_device_id,
-      const std::string& tcp_host,
-      uint16_t tcp_port,
-      uint8_t canfd_channel_id = 0,
-      CommunicationLogOptions log_options = {});
-#endif  // OMNIHAND_ZLG_TCP_SUPPORTED
 
 #ifdef __linux__
   /**

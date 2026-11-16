@@ -9,13 +9,13 @@
  * test_omnihand_2025_usb.cc.
  *
  * Transport is selected with -d/--device:
- *   zlgcan | hcan | socketcan | zlgcantcp | usb | rs485   (default: zlgcan)
+ *   zlgcan | hcan | socketcan | usb | rs485   (default: zlgcan)
  *
  * Usage:
  *   ./test_omnihand_2025 [options] [-- gtest_options]
  *
  * Common options:
- *   -d, --device NAME  Backend: zlgcan | hcan | socketcan | zlgcantcp | usb
+ *   -d, --device NAME  Backend: zlgcan | hcan | socketcan | usb
  *                      (default: zlgcan)
  *   -f INTERVAL        Request interval ms. CAN default 5 (max 100),
  *                      USB default 500 (max 500). Value applies to the
@@ -25,13 +25,10 @@
  *                      caches the current IDs. When specified, SetUp switches
  *                      the IDs and TearDown restores both original IDs.
  *
- * CAN options (zlgcan / hcan / socketcan / zlgcantcp):
- *   -c CHANNEL         CAN channel index (zlgcan/hcan/zlgcantcp), default 0
+ * CAN options (zlgcan / hcan / socketcan):
+ *   -c CHANNEL         CAN channel index (zlgcan/hcan), default 0
  *   -i CANFD_ID        Adapter device index (zlgcan/hcan), default 0
  *   --can-if IFACE     SocketCAN interface name (socketcan), default can0
- *   --tcp-host HOST    ZLG CANFD-over-TCP peer host (zlgcantcp),
- *                      default 192.168.0.178
- *   --tcp-port PORT    ZLG TCP port (zlgcantcp), default 8000
  *
  * USB/RS485 options:
  *   -p PORT            Serial port (USB default: Windows COM3, Linux
@@ -43,7 +40,6 @@
  * Examples:
  *   ./test_omnihand_2025 -d zlgcan -c 0 -i 0
  *   ./test_omnihand_2025 -d socketcan --can-if can0
- *   ./test_omnihand_2025 -d zlgcantcp --tcp-host 192.168.0.178 --tcp-port 8000
  *   ./test_omnihand_2025 -d usb -p /dev/ttyACM0
  *   ./test_omnihand_2025 -d rs485 -p /dev/ttyUSB0
  */
@@ -73,7 +69,6 @@ enum class Transport {
   kZlgcan,
   kHcan,
   kSocketCan,
-  kZlgCanTcp,
   kUsb,
   kRs485,
 };
@@ -84,8 +79,6 @@ static int g_channel_id = 0;
 static int g_canfd_id = 0;
 static int g_request_interval = -1;  // -1 = not set, use transport default
 static std::string g_can_if = "can0";
-static std::string g_tcp_host = "192.168.0.178";
-static uint16_t g_tcp_port = 8000;
 
 // USB/RS485 Global configuration (default port: Windows COM3/COM5,
 // Linux /dev/ttyACM0 for USB, /dev/ttyUSB0 for RS485)
@@ -119,7 +112,6 @@ static const char* TransportName(Transport t) {
     case Transport::kZlgcan:    return "zlgcan";
     case Transport::kHcan:      return "hcan";
     case Transport::kSocketCan: return "socketcan";
-    case Transport::kZlgCanTcp: return "zlgcantcp";
     case Transport::kUsb:       return "USB";
     case Transport::kRs485:     return "RS485";
   }
@@ -212,7 +204,6 @@ static Transport ParseTransport(std::string s) {
   if (s == "zlgcan") return Transport::kZlgcan;
   if (s == "hcan") return Transport::kHcan;
   if (s == "socketcan") return Transport::kSocketCan;
-  if (s == "zlgcantcp" || s == "zlg_tcp" || s == "zlgcan_tcp") return Transport::kZlgCanTcp;
   if (s == "usb") return Transport::kUsb;
   if (s == "rs485") return Transport::kRs485;
   AgilinkLogger::get().warnf(TAG, "[Warning] unknown device type '%s', using zlgcan", s.c_str());
@@ -249,16 +240,6 @@ class OmniHand2025Test : public ::testing::Test {
               HandType::LEFT, kUseProtocolDefaultIds, g_can_if);
 #else
           AgilinkLogger::get().warnf(TAG, "[Warning] SocketCAN requires Linux; skipping hand creation.");
-          hand_ = nullptr;
-#endif
-          break;
-        case Transport::kZlgCanTcp:
-#if OMNIHAND_ZLG_TCP_SUPPORTED
-          hand_ = OmniHand2025::createHandByZlgCanTcp(
-              HandType::LEFT, kUseProtocolDefaultIds, g_tcp_host, g_tcp_port,
-              static_cast<uint8_t>(g_channel_id));
-#else
-          AgilinkLogger::get().warnf(TAG, "[Warning] ZLG CANFD over TCP not supported on this platform.");
           hand_ = nullptr;
 #endif
           break;
@@ -1532,15 +1513,13 @@ static void PrintUsage(const char* prog) {
   AgilinkLogger::get().infof(TAG, "OmniHand 2025 Unified Test (CANFD + USB + RS485)");
   AgilinkLogger::get().infof(TAG, "Usage: %s [options] [-- gtest_options]", prog);
   AgilinkLogger::get().infof(TAG, "Options:");
-  AgilinkLogger::get().infof(TAG, "  -d, --device NAME  Backend: zlgcan | hcan | socketcan | zlgcantcp | usb | rs485 (default: zlgcan)");
+  AgilinkLogger::get().infof(TAG, "  -d, --device NAME  Backend: zlgcan | hcan | socketcan | usb | rs485 (default: zlgcan)");
   AgilinkLogger::get().infof(TAG, "  -f INTERVAL        Request interval ms (CAN: default 5, max 100; USB/RS485: default 500, max 500)");
   AgilinkLogger::get().infof(TAG, "  --device-id ID     Optional target ID [1,0x7f]; omitted means discover only");
-  AgilinkLogger::get().infof(TAG, "CAN options (zlgcan/hcan/socketcan/zlgcantcp):");
-  AgilinkLogger::get().infof(TAG, "  -c CHANNEL         CAN channel (zlgcan/hcan/zlgcantcp), default 0");
+  AgilinkLogger::get().infof(TAG, "CAN options (zlgcan/hcan/socketcan):");
+  AgilinkLogger::get().infof(TAG, "  -c CHANNEL         CAN channel (zlgcan/hcan), default 0");
   AgilinkLogger::get().infof(TAG, "  -i CANFD_ID        Device index (zlgcan/hcan), default 0");
   AgilinkLogger::get().infof(TAG, "  --can-if IFACE     SocketCAN iface (socketcan), default can0");
-  AgilinkLogger::get().infof(TAG, "  --tcp-host HOST    ZLG TCP host (zlgcantcp), default 192.168.0.178");
-  AgilinkLogger::get().infof(TAG, "  --tcp-port PORT    ZLG TCP port (zlgcantcp), default 8000");
   AgilinkLogger::get().infof(TAG, "USB/RS485 options:");
 #if defined(_WIN32)
   AgilinkLogger::get().infof(TAG, "  -p PORT            Serial port (USB default: COM3; RS485 default: COM5)");
@@ -1552,7 +1531,6 @@ static void PrintUsage(const char* prog) {
   AgilinkLogger::get().infof(TAG, "Examples:");
   AgilinkLogger::get().infof(TAG, "  %s -d zlgcan -c 0 -i 0", prog);
   AgilinkLogger::get().infof(TAG, "  %s -d socketcan --can-if can0", prog);
-  AgilinkLogger::get().infof(TAG, "  %s -d zlgcantcp --tcp-host 192.168.0.178 --tcp-port 8000", prog);
   AgilinkLogger::get().infof(TAG, "  %s -d usb -p /dev/ttyACM0", prog);
   AgilinkLogger::get().infof(TAG, "  %s -d rs485 -p /dev/ttyUSB0", prog);
   AgilinkLogger::get().flush();
@@ -1578,10 +1556,6 @@ int main(int argc, char** argv) {
       g_request_interval = std::stoi(argv[++i]);
     } else if ((arg == "--can-if") && i + 1 < argc) {
       g_can_if = argv[++i];
-    } else if ((arg == "--tcp-host") && i + 1 < argc) {
-      g_tcp_host = argv[++i];
-    } else if ((arg == "--tcp-port") && i + 1 < argc) {
-      g_tcp_port = static_cast<uint16_t>(std::stoi(argv[++i]));
     } else if (arg == "-p" && i + 1 < argc) {
       // Serial port for USB (/dev/ttyACM0) and RS485 (/dev/ttyUSB0).
       if (g_transport == Transport::kRs485) {
@@ -1615,9 +1589,6 @@ int main(int argc, char** argv) {
   switch (g_transport) {
     case Transport::kSocketCan:
       AgilinkLogger::get().infof(TAG, "  can_if=%s", g_can_if.c_str());
-      break;
-    case Transport::kZlgCanTcp:
-      AgilinkLogger::get().infof(TAG, "  %s:%d", g_tcp_host.c_str(), g_tcp_port);
       break;
     case Transport::kUsb:
       AgilinkLogger::get().infof(TAG, "  port=%s, baudrate=%d", g_usb_port.c_str(), g_baudrate);

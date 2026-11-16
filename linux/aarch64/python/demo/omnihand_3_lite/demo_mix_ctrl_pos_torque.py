@@ -7,7 +7,7 @@ OmniHand 3 Lite S (O4) - Mix Control Demo (Position + Torque)
 Demonstrates position+torque mixed control via mix_control_by_pt(),
 alternating between two sets of position/torque parameters.
 
-Supports connection types: ZLG CANFD, HCAN, ZLG TCP, SocketCAN.
+Supports connection types: ZLG CANFD, HCAN, SocketCAN.
 Run with -h or --help to see all available options and usage examples.
 """
 
@@ -33,18 +33,14 @@ def main():
         epilog=EXAMPLES,
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    parser.add_argument('-d', '--device', choices=['zlgcan', 'hcan', 'socketcan', 'zlgcan_tcp'], default='zlgcan',
-                        help='Device type: zlgcan, hcan, zlgcan_tcp, socketcan (Linux only), default: zlgcan')
+    parser.add_argument('-d', '--device', choices=['zlgcan', 'hcan', 'socketcan'], default='zlgcan',
+                        help='Device type: zlgcan, hcan, socketcan (Linux only), default: zlgcan')
     parser.add_argument('--canfd-device-id', type=int, default=0,
                         help='CANFD device index, default: 0')
     parser.add_argument('--canfd-channel-id', type=int, default=0,
                         help='CANFD channel index, default: 0')
     parser.add_argument('--can-interface', type=str, default='can0',
                         help='SocketCAN interface (Linux only), default: can0')
-    parser.add_argument('--host', type=str, default='192.168.0.178',
-                        help='ZLG CAN TCP host address, default: 192.168.0.178')
-    parser.add_argument('--port', type=int, default=8000,
-                        help='ZLG CAN TCP port, default: 8000')
     args = parser.parse_args()
 
     print("=" * 60)
@@ -57,13 +53,6 @@ def main():
             hand_device_id=OmniHand3Lite.kDefaultHandDeviceId,
             canfd_device_id=args.canfd_device_id,
             canfd_channel_id=args.canfd_channel_id
-        )
-    elif args.device == 'zlgcan_tcp':
-        hand = OmniHand3Lite.create_hand_by_zlgcan_tcp(
-            hand_type=HandType.LEFT,
-            hand_device_id=OmniHand3Lite.kDefaultHandDeviceId,
-            host=args.host,
-            port=args.port
         )
     elif args.device == 'socketcan':
         hand = OmniHand3Lite.create_hand_socketcan(

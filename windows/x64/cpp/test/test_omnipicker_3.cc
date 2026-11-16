@@ -7,17 +7,15 @@
  *
  * Usage:
  *   ./test_omnipicker_3 [-d TRANSPORT] [-c CHANNEL] [-i CANFD_ID] [-f INTERVAL]
- *                       [--device-id ID] [--can-if IF] [--tcp-host H] [--tcp-port P]
+ *                       [--device-id ID] [--can-if IF]
  *
- *   -d TRANSPORT     Backend: zlgcan | hcan | socketcan | zlgcantcp (default: zlgcan)
+ *   -d TRANSPORT     Backend: zlgcan | hcan | socketcan (default: zlgcan)
  *   --device-id ID   Hand device ID to address (default: 1). Unlike the O10 tests this
  *                    is only used to build requests: OP3 tests never call SetDeviceId(),
  *                    because writing the device id is inherently risky and a failed
  *                    restore leaves the unit unreachable.
  *   --can-if IF      SocketCAN interface name, socketcan only (default: can0)
- *   --tcp-host H     ZLG CANFD-over-TCP peer host, zlgcantcp only (default: 192.168.0.178)
- *   --tcp-port P     TCP port, zlgcantcp only (default: 8000)
- *   -c CHANNEL       CAN channel index for zlgcan / hcan / zlgcantcp (default: 0)
+ *   -c CHANNEL       CAN channel index for zlgcan / hcan (default: 0)
  *   -i CANFD_ID      Adapter device index for zlgcan / hcan (default: 0)
  *   -f INTERVAL      Request interval in ms (default: 5, max: 100)
  *
@@ -64,7 +62,6 @@ enum class CanfdTransport {
   kZlgcan,
   kHcan,
   kSocketCan,
-  kZlgCanTcp,
 };
 
 CanfdTransport g_transport = CanfdTransport::kZlgcan;
@@ -73,8 +70,6 @@ int g_canfd_id = 0;
 int g_request_interval = 5;
 int g_device_id = oh::OmniPicker3::kDefaultHandDeviceId;
 std::string g_can_if = "can0";
-std::string g_tcp_host = "192.168.0.178";
-uint16_t g_tcp_port = 8000;
 
 struct CapabilityResult {
   std::string name;
@@ -113,7 +108,6 @@ CanfdTransport ParseTransport(std::string s) {
   if (s == "zlgcan") return CanfdTransport::kZlgcan;
   if (s == "hcan") return CanfdTransport::kHcan;
   if (s == "socketcan") return CanfdTransport::kSocketCan;
-  if (s == "zlgcantcp" || s == "zlg_tcp" || s == "zlgcan_tcp") return CanfdTransport::kZlgCanTcp;
   AgilinkLogger::get().warnf(TAG, "[Warning] unknown -d %s, using zlgcan", s.c_str());
   return CanfdTransport::kZlgcan;
 }
@@ -150,14 +144,6 @@ std::unique_ptr<oh::OmniPicker3> CreateHandForTransport() {
       return OmniPicker3::createHandSocketCan(kFactoryHandType, device_id, g_can_if);
 #else
       AgilinkLogger::get().warnf(TAG, "[Warning] SocketCAN requires Linux; skipping hand creation.");
-      return nullptr;
-#endif
-    case CanfdTransport::kZlgCanTcp:
-#if OMNIHAND_ZLG_TCP_SUPPORTED
-      return OmniPicker3::createHandByZlgCanTcp(kFactoryHandType, device_id, g_tcp_host, g_tcp_port,
-                                                static_cast<uint8_t>(g_channel_id));
-#else
-      AgilinkLogger::get().warnf(TAG, "[Warning] ZLG CANFD over TCP not supported on this platform.");
       return nullptr;
 #endif
   }
@@ -937,10 +923,6 @@ int main(int argc, char** argv) {
       if (g_request_interval > 100) g_request_interval = 100;
     } else if (arg == "--can-if" && i + 1 < argc) {
       g_can_if = argv[++i];
-    } else if (arg == "--tcp-host" && i + 1 < argc) {
-      g_tcp_host = argv[++i];
-    } else if (arg == "--tcp-port" && i + 1 < argc) {
-      g_tcp_port = static_cast<uint16_t>(std::stoi(argv[++i]));
     } else if (arg == "--help" || arg == "-h") {
       // Printed through std::cout, not AgilinkLogger: help text is a synchronous
       // one-shot and must not carry the logger's tag/timestamp prefixes.
@@ -948,13 +930,11 @@ int main(int argc, char** argv) {
           << "OmniPicker 3 Test\n\n"
           << "Usage: " << argv[0] << " [options]\n\n"
           << "Options:\n"
-          << "  -d, --device NAME    zlgcan | hcan | socketcan | zlgcantcp (default: zlgcan)\n"
+          << "  -d, --device NAME    zlgcan | hcan | socketcan (default: zlgcan)\n"
           << "  --device-id ID       hand device ID to address (default: 1); never written by this suite\n"
-          << "  -c CHANNEL           CAN channel (zlgcan/hcan/zlgcantcp), default 0\n"
+          << "  -c CHANNEL           CAN channel (zlgcan/hcan), default 0\n"
           << "  -i CANFD_ID          adapter index (zlgcan/hcan), default 0\n"
           << "  --can-if IFACE       SocketCAN iface (socketcan), default can0\n"
-          << "  --tcp-host HOST      ZLG TCP host (zlgcantcp), default 192.168.0.178\n"
-          << "  --tcp-port PORT      ZLG TCP port (zlgcantcp), default 8000\n"
           << "  -f INTERVAL          request interval ms, default 5, max 100\n"
           << "\nExample:\n"
           << "  " << argv[0] << " -d zlgcan -i 0 -c 0 --id 1 -f 5\n"
@@ -965,7 +945,6 @@ int main(int argc, char** argv) {
           << "    -f 5       5 ms between requests\n"
           << "\nOther transports:\n"
           << "  " << argv[0] << " -d socketcan --can-if can0\n"
-          << "  " << argv[0] << " -d zlgcantcp --tcp-host 192.168.0.178 --tcp-port 8000\n"
           << "\nGoogleTest flags are forwarded, e.g. --gtest_filter=*Tactile*\n"
           << std::endl;
       return 0;
@@ -984,9 +963,6 @@ int main(int argc, char** argv) {
       break;
     case CanfdTransport::kSocketCan:
       AgilinkLogger::get().infof(TAG, "Transport: socketcan  can_if=%s", g_can_if.c_str());
-      break;
-    case CanfdTransport::kZlgCanTcp:
-      AgilinkLogger::get().infof(TAG, "Transport: zlgcantcp  %s:%d", g_tcp_host.c_str(), g_tcp_port);
       break;
   }
   AgilinkLogger::get().infof(TAG, "Channel ID: %d", g_channel_id);

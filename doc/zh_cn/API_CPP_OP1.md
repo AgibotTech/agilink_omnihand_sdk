@@ -11,7 +11,6 @@ OP1 是 1 自由度夹爪，C++ 接口类为 `agilink::omnihand::OmniPicker2025`
 | ZLG USB CANFD | `createHandByZlgcan(hand_type, hand_device_id, canfd_device_id, canfd_channel_id)` | Windows / Linux |
 | HCAN USB CANFD | `createHandByHcan(hand_type, hand_device_id, canfd_device_id, canfd_channel_id)` | Windows / Linux |
 | SocketCAN | `createHandSocketCan(hand_type, hand_device_id, "can0")` | Linux |
-| ZLG CANFD TCP | `createHandByZlgCanTcp(hand_type, hand_device_id, tcp_host, tcp_port, canfd_channel_id)` | Windows / Linux x64 |
 | USB 直连 | `createHandByUSB()` | Windows / Linux |
 
 CAN 连接需传入夹爪实际节点 ID，默认值为 `OmniPicker2025::kDefaultHandDeviceId`（1）。适配器和通道索引从 0 开始。工厂保留 `hand_type` 参数，示例使用 `HandType::LEFT`。ZLG 和 HCAN 工厂还支持用适配器序列号替代适配器索引。

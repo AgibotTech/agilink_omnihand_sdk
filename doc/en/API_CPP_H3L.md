@@ -9,7 +9,6 @@
 - Motor position range: 0-4096 (int16 motor ticks)
 - Supports CAN (ZLG USB CANFD / HCAN) communication
 - Supports SocketCAN (Linux only)
-- Supports ZLG CAN TCP (Linux x64 / Windows only)
 - **No tactile sensors** on the documented H3L hardware; U16 tactile methods remain as protocol/firmware compatibility APIs
 - Supports setting and reading four active joint angles in radians over CAN and RS485. An [offline kinematics solver](#kinematics-solver) also converts between active joint angles and motor positions without a device connection. Full active-plus-passive joint-angle kinematics is not supported.
 
@@ -155,19 +154,6 @@ static std::unique_ptr<OmniHand3Lite> createHandSocketCan(
     HandType hand_type,
     uint8_t hand_device_id,
     const std::string& can_interface = "can0");
-#endif
-```
-
-### ZLG CAN TCP (partial platform support)
-
-```cpp
-#if OMNIHAND_ZLG_TCP_SUPPORTED
-static std::unique_ptr<OmniHand3Lite> createHandByZlgCanTcp(
-    HandType hand_type,
-    uint8_t hand_device_id,
-    const std::string& tcp_host,
-    uint16_t tcp_port,
-    uint8_t canfd_channel_id = 0);
 #endif
 ```
 
