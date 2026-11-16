@@ -33,6 +33,8 @@ for %%n in (omnihand_server omnihand_client omnihand_web) do (
 )
 if exist "%INSTALL_DIR%\share\omnihand\frontend" rmdir /S /Q "%INSTALL_DIR%\share\omnihand\frontend"
 
+if exist "%INSTALL_DIR%\include\omnihand\omnihand_dex_umi.h" del /Q "%INSTALL_DIR%\include\omnihand\omnihand_dex_umi.h"
+
 REM Install C++ SDK
 if not exist "%INSTALL_DIR%" mkdir "%INSTALL_DIR%"
 if exist "%INSTALL_DIR%\include\omnihand\private_omnihand.h" del /Q "%INSTALL_DIR%\include\omnihand\private_omnihand.h"

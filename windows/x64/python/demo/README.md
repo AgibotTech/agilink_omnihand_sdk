@@ -1,6 +1,6 @@
 # Python Examples
 
-**API:** O10 and Dex UMI examples pass `hand_device_id` / `canfd_*` as integers; these match the Python binding (native side uses `uint8_t`). See `release/doc/en/API_PYTHON_O10.md`.
+**API:** O10 examples pass `hand_device_id` / `canfd_*` as integers; these match the Python binding (native side uses `uint8_t`). See `release/doc/en/API_PYTHON_O10.md`.
 
 ## OmniHand 2025 (10 DOF) Examples
 - `omnihand_2025/demo_get_hardware_info.py` - Get hardware information
@@ -48,16 +48,6 @@
 - `omnihand_3_lite/demo_socketcan.py` - SocketCAN example (Linux only)
 - `omnihand_3_lite/demo_zlgcan_tcp.py` - ZLG CAN TCP example
 
-## OmniHand Dex UMI (10 DOF, UMI Protocol) Examples
-- **Kinematics (Python):** `OmniHandDexUMI.get_all_active_joint_angles()`, `get_all_joint_angles()`, `get_all_joint_angles(...)` — same O10 solver as OmniHand 2025; read-only (no set-angle APIs).
-- `omnihand_dex_umi/demo_get_hardware_info.py` - Get hardware information
-- `omnihand_dex_umi/demo_tactile_sensor_raw.py` - Read tactile sensor raw data (uses Pn6 protocol)
-- `omnihand_dex_umi/demo_periodic_report.py` - Receive periodic reports (position and tactile sensor)
-- `omnihand_dex_umi/demo_umi_to_o10.py` - Control O10 hand using UMI position data
-- `omnihand_dex_umi/demo_canfd_id.py` - CANFD communication example (by device ID)
-- `omnihand_dex_umi/demo_canfd_serial.py` - CANFD communication example (by serial number)
-- `omnihand_dex_umi/demo_socketcan.py` - SocketCAN example (Linux only)
-
 ## Usage
 
 ```bash
@@ -68,5 +58,4 @@ pip list | findstr omnihand
 python omnihand_2025\demo_get_hardware_info.py
 python omnihand_pro_2025\demo_get_hardware_info.py
 python omnihand_3_lite\demo_get_hardware_info.py
-python omnihand_dex_umi\demo_get_hardware_info.py
 ```

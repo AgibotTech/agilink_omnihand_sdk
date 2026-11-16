@@ -103,20 +103,6 @@ set_target_properties(test_omnihand_pro_2025 PROPERTIES
 )
 add_test(NAME OmniHandPro2025Test COMMAND test_omnihand_pro_2025)
 
-# OmniHand Dex UMI Tests
-add_executable(test_omnihand_dex_umi test_omnihand_dex_umi.cc)
-target_link_libraries(
-  test_omnihand_dex_umi
-  PRIVATE
-  ${OMNIHAND_TARGET}
-  GTest::gtest
-  GTest::gtest_main
-)
-set_target_properties(test_omnihand_dex_umi PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY "${TEST_OUTPUT_DIR}"
-)
-add_test(NAME OmniHandDexUMITest COMMAND test_omnihand_dex_umi)
-
 # OmniHand 3 Lite (O4) Tests (conditionally)
 # Note: BUILD_OMNIHAND_3_LITE is defined in the main CMakeLists.txt
 if(BUILD_OMNIHAND_3_LITE)

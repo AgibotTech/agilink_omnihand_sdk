@@ -2,7 +2,7 @@
 
 本目录包含 AGILINK OmniHand SDK Python 接口的单元测试，使用 pytest 框架。
 
-**说明：** O10 / Dex UMI 工厂参数中的 `hand_device_id`、`canfd_device_id`、`canfd_channel_id` 在 Python 中为 `int`，绑定层传入 C++ 时为 `uint8_t`（见 `release/doc/zh_cn/API_PYTHON_O10.md`）。
+**说明：** O10 工厂参数中的 `hand_device_id`、`canfd_device_id`、`canfd_channel_id` 在 Python 中为 `int`，绑定层传入 C++ 时为 `uint8_t`（见 `release/doc/zh_cn/API_PYTHON_O10.md`）。
 
 ## 要求
 
@@ -45,12 +45,6 @@ pytest -v test_omnihand_pro_2025.py
 # O12 测试（直接使用 Python 运行 - 支持 -f 参数）
 python3 test_omnihand_pro_2025.py -f 0
 
-# UMI 测试（直接使用 pytest）
-pytest -v test_omnihand_dex_umi.py
-
-# UMI 测试（直接使用 Python）
-python3 test_omnihand_dex_umi.py
-
 # H3L 测试（直接使用 pytest）
 pytest -v test_omnihand_3_lite.py
 
@@ -69,7 +63,6 @@ python3 test_omnihand_3_ultra_m_t1_3.py -d socketcan --can-if can0
 **注意**：
 - 直接使用 Python 运行时，`-f` 参数指定请求间隔（毫秒，CAN 为 0-100ms，USB 为 0-500ms）。使用 `0` 表示禁用间隔限制。
 - 直接使用 `pytest` 时，使用环境变量：`OMNIHAND_REQUEST_INTERVAL=0 pytest -v test_omnihand_2025.py`
-- UMI 测试不支持 `-f` 间隔参数，因为 UMI 协议使用固定的周期上报。
 - 直接使用 Python 运行测试会自动启用详细模式（`-v`）以显示详细的测试结果。
 
 ### 运行特定测试
@@ -102,7 +95,6 @@ pytest -s
 - **test_omnihand_pro_2025.py**：OmniHand Pro 2025 (O12, 12 DOF) 的测试
 - **test_omnihand_3_lite.py**：OmniHand 3 Lite (H3L, 4 DOF) 的测试
 - **test_omnihand_3_ultra_m_t1_3.py**：OmniHand 3 Ultra M T1.3 (H3UM, 20 DOF) 的测试
-- **test_omnihand_dex_umi.py**：OmniHand Dex UMI (UMI 协议) 的测试
 
 ## 测试覆盖
 
@@ -119,7 +111,6 @@ pytest -s
 - 温度报告
 - 电流报告
 - 运动学求解器
-- UMI 特定功能（回调、上报频率）
 
 ## 注意事项
 

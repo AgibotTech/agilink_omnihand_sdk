@@ -14,7 +14,6 @@ This guide helps you get started with the OmniHand SDK in 5 minutes.
 | OmniHand 3 (O10) | 24V | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
 | OmniHand Pro 2025 (O12) | 24V | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
 | OmniHand 3 Lite (H3L) | 24V | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| OmniHand Dex UMI (O10 UMI) | 24V | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
 | OmniHand 3 Ultra M (H3UM) | 48V | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
 | OmniHandPicker 2025 (OP1) | 24V | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ |
 | OmniPicker 3 (OP3) | 24V | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
@@ -371,7 +370,6 @@ Paths below are relative to the release package's platform directory (`linux/x64
 | OmniHand 2025 & OmniHand 3 (O10) | `cpp/demo/omnihand_2025/` |
 | OmniHand Pro 2025 (O12) | `cpp/demo/omnihand_pro_2025/` |
 | OmniHand 3 Lite (H3L) | `cpp/demo/omnihand_3_lite/` |
-| OmniHand Dex UMI (O10 UMI) | `cpp/demo/omnihand_dex_umi/` |
 | OmniHand 3 Ultra M (H3UM) | `cpp/demo/omnihand_3_ultra_m/` |
 | OmniHandPicker 2025 (OP1) | `cpp/demo/omnipicker_2025/` |
 | OmniPicker 3 (OP3) | `cpp/demo/omnipicker_3/` |
@@ -383,7 +381,6 @@ Paths below are relative to the release package's platform directory (`linux/x64
 | OmniHand 2025 & OmniHand 3 (O10) | `python/demo/omnihand_2025/` |
 | OmniHand Pro 2025 (O12) | `python/demo/omnihand_pro_2025/` |
 | OmniHand 3 Lite (H3L) | `python/demo/omnihand_3_lite/` |
-| OmniHand Dex UMI (O10 UMI) | `python/demo/omnihand_dex_umi/` |
 
 ### ROS2 (Linux Only)
 
@@ -426,12 +423,7 @@ Paths below are relative to the release package's platform directory (`linux/x64
    - [H3L Kinematics C++ API](API_CPP_H3L.md#kinematics-solver) (pure computation, independent of physical connections)
    - [H3L Kinematics Python API](API_PYTHON_H3L.md#active-joint-angles-and-offline-solver) (pure computation, independent of physical connections)
 
-4. **OmniHand Dex UMI (O10 UMI)**
-
-   - [O10 UMI C++ API](API_CPP_O10_UMI.md)
-   - [O10 UMI Python API](API_PYTHON_UMI.md)
-
-5. **OmniHand 3 Ultra M (H3UM)**
+4. **OmniHand 3 Ultra M (H3UM)**
 
    - [H3UM C++ API](API_CPP_H3UM.md)
    - [H3UM Python API](API_PYTHON_H3UM.md)
@@ -439,11 +431,11 @@ Paths below are relative to the release package's platform directory (`linux/x64
    - [H3UM Kinematics C++ API](API_CPP_H3UM.md#kinematics-solver) (pure computation, independent of physical connections)
    - [H3UM Kinematics Python API](API_PYTHON_H3UM.md#kinematics-solver) (pure computation, independent of physical connections)
 
-6. **OmniHandPicker 2025 (OP1)**
+5. **OmniHandPicker 2025 (OP1)**
 
    - [OP1 C++ API](API_CPP_OP1.md)
 
-7. **OmniPicker 3 (OP3)**
+6. **OmniPicker 3 (OP3)**
 
    - [OP3 C++ API](API_CPP_OP3.md)
    - [OP3 Python API](API_PYTHON_OP3.md)

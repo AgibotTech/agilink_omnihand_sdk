@@ -28,7 +28,6 @@ OmniHand SDK 为 OmniHand 系列产品提供 C++、Python 控制接口、运动�
 - [OmniHand 3 Lite (H3L) 运动学 C++ API](doc/zh_cn/API_CPP_H3L.md#运动学求解器)（纯计算，与物理连接无关）
 - [OmniHandPicker 2025 (OP1) C++ API](doc/zh_cn/API_CPP_OP1.md)
 - [OmniPicker 3 (OP3) C++ API](doc/zh_cn/API_CPP_OP3.md)
-- [OmniHand Dex UMI (O10 UMI) C++ API](doc/zh_cn/API_CPP_O10_UMI.md)
 - [OmniHand 3 Ultra M（H3UM）C++ API](doc/zh_cn/API_CPP_H3UM.md)
 - [OmniHand 3 Ultra M（H3UM） 运动学 C++ API](doc/zh_cn/API_CPP_H3UM.md#运动学求解器)（纯计算，与物理连接无关）
 
@@ -42,7 +41,6 @@ OmniHand SDK 为 OmniHand 系列产品提供 C++、Python 控制接口、运动�
 - [OmniHand 3 Lite (H3L) Python API](doc/zh_cn/API_PYTHON_H3L.md)
 - [OmniHand 3 Lite (H3L) 运动学 Python API](doc/zh_cn/API_PYTHON_H3L.md#主动关节角与离线求解器)（纯计算，与物理连接无关）
 - [OmniPicker 3 (OP3) Python API](doc/zh_cn/API_PYTHON_OP3.md)
-- [OmniHand Dex UMI (O10 UMI) Python API](doc/zh_cn/API_PYTHON_UMI.md)
 - [OmniHand 3 Ultra M（H3UM）Python API](doc/zh_cn/API_PYTHON_H3UM.md)
 - [OmniHand 3 Ultra M（H3UM） 运动学 Python API](doc/zh_cn/API_PYTHON_H3UM.md#运动学求解器)（纯计算，与物理连接无关）
 

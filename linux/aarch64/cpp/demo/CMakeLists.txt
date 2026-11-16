@@ -49,7 +49,6 @@ endif()
 # Add subdirectories for each product
 add_subdirectory(omnihand_2025)
 add_subdirectory(omnihand_pro_2025)
-add_subdirectory(omnihand_dex_umi)
 # Add OmniPicker 3 demos conditionally
 if(BUILD_OMNI_PICKER_3)
   add_subdirectory(omnipicker_3)

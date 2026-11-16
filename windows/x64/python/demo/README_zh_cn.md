@@ -1,6 +1,6 @@
 # Python 示例
 
-**说明：** O10、Dex UMI 示例中 `hand_device_id`、`canfd_*` 以整数传入，与 Python 绑定一致（底层为 `uint8_t`）。详见 `release/doc/zh_cn/API_PYTHON_O10.md`。
+**说明：** O10 示例中 `hand_device_id`、`canfd_*` 以整数传入，与 Python 绑定一致（底层为 `uint8_t`）。详见 `release/doc/zh_cn/API_PYTHON_O10.md`。
 
 ## OmniHand 2025（10 自由度）示例
 - `omnihand_2025/demo_get_hardware_info.py` - 获取硬件信息
@@ -48,16 +48,6 @@
 - `omnihand_3_lite/demo_socketcan.py` - SocketCAN 示例（仅 Linux）
 - `omnihand_3_lite/demo_zlgcan_tcp.py` - ZLG CAN TCP 示例
 
-## OmniHand Dex UMI（10 自由度，UMI 协议）示例
-- **运动学（Python）：** `OmniHandDexUMI.get_all_active_joint_angles()`、`get_all_joint_angles()`、`get_all_joint_angles(...)` 与 O10 共用求解器，只读（无 set 角度类接口）。
-- `omnihand_dex_umi/demo_get_hardware_info.py` - 获取硬件信息
-- `omnihand_dex_umi/demo_tactile_sensor_raw.py` - 读取触觉原始数据（Pn6 协议）
-- `omnihand_dex_umi/demo_periodic_report.py` - 接收周期上报（位置与触觉）
-- `omnihand_dex_umi/demo_umi_to_o10.py` - 使用UMI位置数据控制O10灵巧手
-- `omnihand_dex_umi/demo_canfd_id.py` - CANFD通信示例（通过设备ID）
-- `omnihand_dex_umi/demo_canfd_serial.py` - CANFD通信示例（通过序列号）
-- `omnihand_dex_umi/demo_socketcan.py` - SocketCAN 示例（仅 Linux）
-
 ## 使用说明
 
 ```bash
@@ -68,5 +58,4 @@ pip list | findstr omnihand
 python omnihand_2025\demo_get_hardware_info.py
 python omnihand_pro_2025\demo_get_hardware_info.py
 python omnihand_3_lite\demo_get_hardware_info.py
-python omnihand_dex_umi\demo_get_hardware_info.py
 ```

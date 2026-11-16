@@ -1,12 +1,11 @@
 # AGILINK OmniHand SDK C++ 单元测试
 
-**说明：** **OmniHand 2025 (O10)** 与 **OmniHand Dex UMI** 的工厂方法及广播发现接口在 C++ 头文件中使用 `std::uint8_t` 表示 `hand_device_id` 与 `canfd_*` 索引；测试代码使用整型字面量，依赖隐式转换。详见 `release/doc/zh_cn/API_CPP_O10.md` 与 `API_CPP_O10_UMI.md`。
+**说明：** **OmniHand 2025 (O10)** 的工厂方法及广播发现接口在 C++ 头文件中使用 `std::uint8_t` 表示 `hand_device_id` 与 `canfd_*` 索引；测试代码使用整型字面量，依赖隐式转换。详见 `release/doc/zh_cn/API_CPP_O10.md`。
 
 本目录包含基于 GoogleTest 的单元测试，涵盖所有 OmniHand 产品：
 - **OmniHand 2025 (O10)** - 10 自由度，1D 触觉传感器
 - **OmniHand Pro 2025 (O12)** - 12 自由度，3D 触觉传感器
 - **OmniHand 3 Lite (H3L)** - 4 自由度，通过 OmniHand3LiteGesture 枚举进行手势控制
-- **OmniHand Dex UMI (O10 UMI)** - 10 自由度，UMI 协议
 
 ## 编译测试
 
@@ -50,9 +49,6 @@ ctest
 # 运行 O12 测试，自定义频率（5-500 Hz）
 ./cpp/test/test_omnihand_pro_2025 -f 33
 
-# 运行 O10 UMI 测试
-./cpp/test/test_omnihand_dex_umi
-
 # 运行 H3L 测试
 ./cpp/test/test_omnihand_3_lite
 ```
@@ -65,7 +61,6 @@ O10 和 O12 测试程序支持 `-f FREQ` 参数来设置 CAN 请求频率：
 - **默认值**：10 Hz
 - **用法**：`./test_omnihand_2025 -f 20`（设置频率为 20 Hz）
 
-**注意**：UMI 测试程序不支持频率参数（UMI 协议使用固定的周期上报）。
 
 ## 测试结构
 
@@ -105,7 +100,7 @@ O10 和 O12 测试程序支持 `-f FREQ` 参数来设置 CAN 请求频率：
 - [English Documentation](README.md)
 ## 时间戳接口测试
 
-时间戳测试放在 O10、O12、UMI、H3L、H3UM、OP3 各自原有测试程序中。
+时间戳测试放在 O10、O12、H3L、H3UM、OP3 各自原有测试程序中。
 连接对应设备后，用过滤器只执行时间戳接口测试，例如：
 
 ```sh

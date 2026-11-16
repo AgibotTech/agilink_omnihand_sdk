@@ -14,7 +14,6 @@
 | OmniHand 3 (O10) | 24V | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
 | OmniHand Pro 2025 (O12) | 24V | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
 | OmniHand 3 Lite (H3L) | 24V | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| OmniHand Dex UMI (O10 UMI) | 24V | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
 | OmniHand 3 Ultra M (H3UM) | 48V | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
 | OmniHandPicker 2025 (OP1) | 24V | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ |
 | OmniPicker 3 (OP3) | 24V | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
@@ -383,7 +382,6 @@ ros2 topic echo /o10/left/joint_current_states
 | OmniHand 2025 & OmniHand 3 (O10) | `cpp/demo/omnihand_2025/` |
 | OmniHand Pro 2025 (O12) | `cpp/demo/omnihand_pro_2025/` |
 | OmniHand 3 Lite (H3L) | `cpp/demo/omnihand_3_lite/` |
-| OmniHand Dex UMI (O10 UMI) | `cpp/demo/omnihand_dex_umi/` |
 | OmniHand 3 Ultra M (H3UM) | `cpp/demo/omnihand_3_ultra_m/` |
 | OmniHandPicker 2025 (OP1) | `cpp/demo/omnipicker_2025/` |
 | OmniPicker 3 (OP3) | `cpp/demo/omnipicker_3/` |
@@ -395,7 +393,6 @@ ros2 topic echo /o10/left/joint_current_states
 | OmniHand 2025 & OmniHand 3 (O10) | `python/demo/omnihand_2025/` |
 | OmniHand Pro 2025 (O12) | `python/demo/omnihand_pro_2025/` |
 | OmniHand 3 Lite (H3L) | `python/demo/omnihand_3_lite/` |
-| OmniHand Dex UMI (O10 UMI) | `python/demo/omnihand_dex_umi/` |
 
 ### ROS2（仅限 Linux）
 
@@ -438,12 +435,7 @@ ros2 topic echo /o10/left/joint_current_states
    - [H3L 运动学 C++ API](API_CPP_H3L.md#运动学求解器)（纯计算，与物理连接无关）
    - [H3L 运动学 Python API](API_PYTHON_H3L.md#主动关节角与离线求解器)（纯计算，与物理连接无关）
 
-4. **OmniHand Dex UMI (O10 UMI)**
-
-   - [O10 UMI C++ API](API_CPP_O10_UMI.md)
-   - [O10 UMI Python API](API_PYTHON_UMI.md)
-
-5. **OmniHand 3 Ultra M (H3UM)**
+4. **OmniHand 3 Ultra M (H3UM)**
 
    - [H3UM C++ API](API_CPP_H3UM.md)
    - [H3UM Python API](API_PYTHON_H3UM.md)
@@ -451,11 +443,11 @@ ros2 topic echo /o10/left/joint_current_states
    - [H3UM 运动学 C++ API](API_CPP_H3UM.md#运动学求解器)（纯计算，与物理连接无关）
    - [H3UM 运动学 Python API](API_PYTHON_H3UM.md#运动学求解器)（纯计算，与物理连接无关）
 
-6. **OmniHandPicker 2025 (OP1)**
+5. **OmniHandPicker 2025 (OP1)**
 
    - [OP1 C++ API](API_CPP_OP1.md)
 
-7. **OmniPicker 3 (OP3)**
+6. **OmniPicker 3 (OP3)**
 
    - [OP3 C++ API](API_CPP_OP3.md)
    - [OP3 Python API](API_PYTHON_OP3.md)

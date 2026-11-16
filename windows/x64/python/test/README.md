@@ -2,7 +2,7 @@
 
 This directory contains unit tests for the AGILINK OmniHand SDK Python interface, using pytest framework.
 
-**API note:** O10/Dex UMI factory parameters such as `hand_device_id`, `canfd_device_id`, and `canfd_channel_id` are passed as Python `int` and forwarded to C++ as `uint8_t` (see `release/doc/en/API_PYTHON_O10.md`).
+**API note:** O10 factory parameters such as `hand_device_id`, `canfd_device_id`, and `canfd_channel_id` are passed as Python `int` and forwarded to C++ as `uint8_t` (see `release/doc/en/API_PYTHON_O10.md`).
 
 ## Requirements
 
@@ -45,12 +45,6 @@ pytest -v test_omnihand_pro_2025.py
 # O12 tests (running directly with Python - supports -f parameter)
 python3 test_omnihand_pro_2025.py -f 0
 
-# UMI tests (using pytest directly)
-pytest -v test_omnihand_dex_umi.py
-
-# UMI tests (running directly with Python)
-python3 test_omnihand_dex_umi.py
-
 # H3L unified transport tests (default: zlgcan)
 pytest -v test_omnihand_3_lite.py
 python3 test_omnihand_3_lite.py -d hcan -c 0 -i 0
@@ -83,7 +77,6 @@ python test_omnipicker_3.py -d rs485 -P COM7 -b 460800
 **Note**: 
 - When running directly with Python, the `-f` parameter specifies the request interval in milliseconds (0-100ms for CAN, 0-500ms for USB). Use `0` to disable interval limiting.
 - When using `pytest` directly, use environment variable: `OMNIHAND_REQUEST_INTERVAL=0 pytest -v test_omnihand_2025.py`
-- UMI tests do not support the `-f` interval parameter, as the UMI protocol uses fixed periodic reports.
 - Running tests directly with Python automatically enables verbose mode (`-v`) to show detailed test results.
 
 ### Verbose output
@@ -107,7 +100,6 @@ The tests are organized similar to the C++ gtest structure:
 - **test_omnihand_3_lite.py**: Unified ZLG/HCAN/SocketCAN/ZLG-TCP/RS485 tests for OmniHand 3 Lite (H3L, 4 DOF)
 - **test_omnihand_3_ultra_m_t1_3.py**: ZLG/HCAN/SocketCAN hardware tests for OmniHand 3 Ultra M T1.3 (H3UM, 20 DOF)
 - **test_omnipicker_3.py**: Unified ZLG/HCAN/SocketCAN/ZLG-TCP/RS485 non-destructive tests for OmniPicker 3 (OP3, 1 DOF)
-- **test_omnihand_dex_umi.py**: Tests for OmniHand Dex UMI (UMI protocol)
 
 ## Test Coverage
 
@@ -124,7 +116,6 @@ Each test file covers:
 - Temperature reports
 - Current reports
 - Kinematics solver
-- UMI-specific features (callbacks, report frequencies)
 
 ## Notes
 

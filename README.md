@@ -28,7 +28,6 @@ The OmniHand SDK provides C++ and Python control APIs, kinematics solvers, and R
 - [OmniHand 3 Lite (H3L) Kinematics C++ API](doc/en/API_CPP_H3L.md#kinematics-solver) (pure computation, independent of physical connections)
 - [OmniHandPicker 2025 (OP1) C++ API](doc/en/API_CPP_OP1.md)
 - [OmniPicker 3 (OP3) C++ API](doc/en/API_CPP_OP3.md)
-- [OmniHand Dex UMI (O10 UMI) C++ API](doc/en/API_CPP_O10_UMI.md)
 - [OmniHand 3 Ultra M (H3UM) C++ API](doc/en/API_CPP_H3UM.md)
 - [OmniHand 3 Ultra M (H3UM) Kinematics C++ API](doc/en/API_CPP_H3UM.md#kinematics-solver) (pure computation, independent of physical connections)
 
@@ -42,7 +41,6 @@ The OmniHand SDK provides C++ and Python control APIs, kinematics solvers, and R
 - [OmniHand 3 Lite (H3L) Python API](doc/en/API_PYTHON_H3L.md)
 - [OmniHand 3 Lite (H3L) Kinematics Python API](doc/en/API_PYTHON_H3L.md#active-joint-angles-and-offline-solver) (pure computation, independent of physical connections)
 - [OmniPicker 3 (OP3) Python API](doc/en/API_PYTHON_OP3.md)
-- [OmniHand Dex UMI (O10 UMI) Python API](doc/en/API_PYTHON_UMI.md)
 - [OmniHand 3 Ultra M (H3UM) Python API](doc/en/API_PYTHON_H3UM.md)
 - [OmniHand 3 Ultra M (H3UM) Kinematics Python API](doc/en/API_PYTHON_H3UM.md#kinematics-solver) (pure computation, independent of physical connections)
 

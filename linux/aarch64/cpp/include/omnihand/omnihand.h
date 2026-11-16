@@ -4,7 +4,7 @@
 /**
  * @file omnihand.h
  * @brief OmniHand base class - common interface for all products
- * @note Users should use OmniHand2025, OmniHandPro2025, or OmniHandDexUMI instead
+ * @note Users should use OmniHand2025 or OmniHandPro2025 instead
  */
 
 #ifndef AGILINK_OMNIHAND_H
@@ -40,7 +40,7 @@ struct AGIBOT_EXPORT CommunicationLogOptions {
 /**
  * @brief OmniHand base class - common interface for all products
  * @note This is the base class containing only methods common to all products.
- *       Users should use product-specific classes: OmniHand2025, OmniHandPro2025, or OmniHandDexUMI.
+ *       Users should use product-specific classes: OmniHand2025 or OmniHandPro2025.
  *       However, this class must be exported (AGIBOT_EXPORT) to ensure methods like GetProductType()
  *       and Init() can be called through derived class pointers.
  */
@@ -687,7 +687,7 @@ class AGIBOT_EXPORT OmniHand {
  protected:
   /**
    * @brief Constructor - protected to prevent direct instantiation
-   * @note Users should use product-specific classes: OmniHand2025, OmniHandPro2025, or OmniHandDexUMI
+   * @note Users should use product-specific classes: OmniHand2025 or OmniHandPro2025
    */
   OmniHand() = default;
 

@@ -1,12 +1,11 @@
 # AGILINK OmniHand SDK C++ Unit Tests
 
-**API note:** For **OmniHand 2025 (O10)** and **OmniHand Dex UMI**, factory and broadcast APIs in the C++ headers use `std::uint8_t` for `hand_device_id` and `canfd_*` indices; tests use integer literals with implicit conversion. See `release/doc/en/API_CPP_O10.md` and `API_CPP_O10_UMI.md`.
+**API note:** For **OmniHand 2025 (O10)**, factory and broadcast APIs in the C++ headers use `std::uint8_t` for `hand_device_id` and `canfd_*` indices; tests use integer literals with implicit conversion. See `release/doc/en/API_CPP_O10.md`.
 
 This directory contains GoogleTest-based unit tests for all OmniHand products:
 - **OmniHand 2025 (O10)** - 10 DOF with 1D tactile sensors
 - **OmniHand Pro 2025 (O12)** - 12 DOF with 3D tactile sensors
 - **OmniHand 3 Lite (H3L)** - 4 DOF, gesture control via OmniHand3LiteGesture enum
-- **OmniHand Dex UMI (O10 UMI)** - 10 DOF with UMI protocol
 
 ## Building Tests
 
@@ -26,7 +25,7 @@ cmake --build build
 
 ## Running Tests
 
-Timestamped interfaces are tested in the existing O10, O12, UMI, H3L,
+Timestamped interfaces are tested in the existing O10, O12, H3L,
 H3UM and OP3 executables. Select them after connecting the corresponding device:
 
 ```sh
@@ -59,9 +58,6 @@ Or run individual test executables:
 # Run O12 tests with custom frequency (5-500 Hz)
 ./cpp/test/test_omnihand_pro_2025 -f 33
 
-# Run O10 UMI tests
-./cpp/test/test_omnihand_dex_umi
-
 # Run H3L tests
 ./cpp/test/test_omnihand_3_lite
 ```
@@ -74,7 +70,6 @@ O10 and O12 test programs support a `-f FREQ` parameter to set the CAN request f
 - **Default**: 10 Hz
 - **Usage**: `./test_omnihand_2025 -f 20` (sets frequency to 20 Hz)
 
-**Note**: UMI test program does not support frequency parameter (UMI protocol uses fixed periodic reports).
 
 ## Test Structure
 
