@@ -1,0 +1,3031 @@
+linux/x64/python/demo/omnihand_3_lite/demo_mix_ctrl_pos_vel_torque.py
+  s_62d7f790ba05bc::t_45792239f56959 10,36-37
+windows/x64/python/demo/omnihand_2025/demo_tactile_sensor_raw.py
+  s_62d7f790ba05bc::t_45792239f56959 11,87-88
+linux/x64/cpp/test/test_omnipicker_3.cc
+  s_62d7f790ba05bc::t_45792239f56959 10,12,18,933,935
+linux/x64/python/demo/omnihand_2025/demo_set_motion.py
+  s_62d7f790ba05bc::t_45792239f56959 7,110,112
+linux/x64/python/demo/omnihand_2025/demo_monitor_current.py
+  s_62d7f790ba05bc::t_45792239f56959 7,38-39
+doc/zh_cn/QUICK_START.md
+  s_62d7f790ba05bc::t_45792239f56959 168
+linux/aarch64/python/demo/omnihand_2025/demo_set_get_fist_reliability_csv.py
+  s_62d7f790ba05bc::t_45792239f56959 25
+linux/aarch64/python/test/README.md
+  s_62d7f790ba05bc::t_45792239f56959 95,97,99
+linux/aarch64/python/demo/omnihand_2025/demo_set_motor.py
+  s_62d7f790ba05bc::t_45792239f56959 7,39-40
+linux/aarch64/python/test/README_zh_cn.md
+  s_62d7f790ba05bc::t_45792239f56959 93
+windows/x64/python/demo/omnihand_2025/demo_set_motor.py
+  s_62d7f790ba05bc::t_45792239f56959 7,39-40
+linux/x64/python/demo/omnihand_2025/demo_set_motor.py
+  s_62d7f790ba05bc::t_45792239f56959 7,39-40
+windows/x64/python/test/test_omnihand_2025.py
+  s_62d7f790ba05bc::t_2b91a70da830af 8
+  s_62d7f790ba05bc::t_45792239f56959 11,18,25-26,38,71,585
+linux/x64/python/demo/omnihand_2025/demo_tactile_sensor_raw_reliability.py
+  s_62d7f790ba05bc::t_45792239f56959 33
+windows/x64/python/demo/omnihand_2025/demo_monitor_temperature.py
+  s_62d7f790ba05bc::t_45792239f56959 7,38-39
+windows/x64/cpp/test/test_omnipicker_3.cc
+  s_62d7f790ba05bc::t_45792239f56959 10,12,18,933,935
+windows/x64/python/test/README.md
+  s_62d7f790ba05bc::t_45792239f56959 95,97,99
+linux/x64/python/test/README_zh_cn.md
+  s_62d7f790ba05bc::t_45792239f56959 93
+linux/aarch64/python/demo/omnihand_2025/demo_get_hardware_info.py
+  s_62d7f790ba05bc::t_45792239f56959 7,39-40
+linux/x64/python/demo/omnihand_2025/demo_set_get_fist_reliability_csv.py
+  s_62d7f790ba05bc::t_45792239f56959 25
+windows/x64/python/demo/omnihand_2025/demo_100set_and_20tactile_reliability.py
+  s_62d7f790ba05bc::t_45792239f56959 33
+linux/x64/python/demo/omnihand_3_lite/demo_mix_ctrl_pos_torque.py
+  s_62d7f790ba05bc::t_45792239f56959 10,36-37
+windows/x64/python/demo/omnihand_2025/demo_tactile_sensor.py
+  s_62d7f790ba05bc::t_45792239f56959 7,38-39
+linux/x64/python/demo/omnihand_2025/demo_get_hardware_info.py
+  s_62d7f790ba05bc::t_45792239f56959 7,39-40
+windows/x64/python/demo/omnihand_2025/demo_get_hardware_info.py
+  s_62d7f790ba05bc::t_45792239f56959 7,39-40
+windows/x64/python/test/README_zh_cn.md
+  s_62d7f790ba05bc::t_45792239f56959 93
+windows/x64/python/test/test_omnihand_3_lite.py
+  s_62d7f790ba05bc::t_45792239f56959 15,27,59,215
+windows/x64/python/test/test_omnipicker_3.py
+  s_62d7f790ba05bc::t_45792239f56959 44,182
+linux/x64/python/test/README.md
+  s_62d7f790ba05bc::t_45792239f56959 95,97,99
+linux/aarch64/python/demo/omnihand_2025/demo_set_angle_and_tactile_sensor_reliability.py
+  s_62d7f790ba05bc::t_45792239f56959 33
+linux/aarch64/python/demo/omnihand_3_lite/demo_mix_ctrl_pos_vel_torque.py
+  s_62d7f790ba05bc::t_45792239f56959 10,36-37
+linux/x64/python/demo/omnihand_2025/demo_set_angle.py
+  s_62d7f790ba05bc::t_45792239f56959 18
+windows/x64/python/demo/omnihand_2025/demo_mix_ctrl_pos_torque.py
+  s_62d7f790ba05bc::t_45792239f56959 10,43-44
+windows/x64/python/demo/omnihand_2025/demo_all_tactile_sensor_raw_reliability.py
+  s_62d7f790ba05bc::t_45792239f56959 33
+linux/x64/python/test/test_omnihand_3_lite.py
+  s_62d7f790ba05bc::t_45792239f56959 15,27,59,215
+linux/x64/python/demo/omnihand_2025/demo_mix_ctrl_pos_torque.py
+  s_62d7f790ba05bc::t_45792239f56959 10,43-44
+linux/aarch64/python/demo/omnihand_2025/demo_monitor_temperature.py
+  s_62d7f790ba05bc::t_45792239f56959 7,38-39
+linux/x64/python/test/test_omnipicker_3.py
+  s_62d7f790ba05bc::t_45792239f56959 44,182
+linux/aarch64/cpp/test/test_omnihand_2025.cc
+  s_62d7f790ba05bc::t_45792239f56959 12,18,28-29,1516,1519-1520
+linux/aarch64/install.sh
+  s_62d7f790ba05bc::t_71746c4ea0b62a 35
+doc/en/API_CPP_H3UM.md
+  s_62d7f790ba05bc::t_45792239f56959 55
+linux/aarch64/python/demo/omnihand_2025/demo_all_tactile_sensor_raw_reliability.py
+  s_62d7f790ba05bc::t_45792239f56959 33
+windows/x64/python/demo/omnihand_2025/demo_set_get_fist_reliability_csv.py
+  s_62d7f790ba05bc::t_45792239f56959 25
+windows/x64/python/demo/omnihand_2025/demo_set_angle_and_tactile_sensor_reliability.py
+  s_62d7f790ba05bc::t_45792239f56959 33
+linux/x64/python/demo/omnihand_2025/demo_tactile_sensor_raw.py
+  s_62d7f790ba05bc::t_45792239f56959 11,87-88
+linux/aarch64/python/test/test_omnihand_2025.py
+  s_62d7f790ba05bc::t_45792239f56959 11,18,25-26,38,71,585
+  s_62d7f790ba05bc::t_2b91a70da830af 8
+linux/x64/python/demo/omnihand_2025/demo_monitor_error.py
+  s_62d7f790ba05bc::t_45792239f56959 7,38-39
+linux/x64/python/demo/omnihand_2025/demo_monitor_temperature.py
+  s_62d7f790ba05bc::t_45792239f56959 7,38-39
+windows/x64/python/demo/omnihand_2025/demo_set_get_reliability_csv.py
+  s_62d7f790ba05bc::t_45792239f56959 25
+doc/zh_cn/API_CPP_H3UM.md
+  s_62d7f790ba05bc::t_45792239f56959 55
+linux/x64/install.sh
+  s_62d7f790ba05bc::t_71746c4ea0b62a 35
+doc/zh_cn/API_PYTHON_H3UM.md
+  s_62d7f790ba05bc::t_45792239f56959 29
+linux/aarch64/python/demo/omnihand_3_lite/demo_mix_ctrl_pos_torque.py
+  s_62d7f790ba05bc::t_45792239f56959 10,36-37
+linux/aarch64/python/demo/omnihand_2025/demo_tactile_sensor_raw.py
+  s_62d7f790ba05bc::t_45792239f56959 11,87-88
+linux/aarch64/python/demo/omnihand_2025/demo_tactile_sensor_raw_reliability.py
+  s_62d7f790ba05bc::t_45792239f56959 33
+linux/aarch64/python/demo/omnihand_2025/demo_100set_and_20tactile_reliability.py
+  s_62d7f790ba05bc::t_45792239f56959 33
+linux/aarch64/python/demo/omnihand_2025/demo_mix_ctrl_pos_torque.py
+  s_62d7f790ba05bc::t_45792239f56959 10,43-44
+windows/x64/python/demo/omnihand_2025/demo_monitor_error.py
+  s_62d7f790ba05bc::t_45792239f56959 7,38-39
+windows/x64/python/demo/omnihand_3_lite/demo_mix_ctrl_pos_torque.py
+  s_62d7f790ba05bc::t_45792239f56959 10,36-37
+windows/x64/python/demo/omnihand_2025/demo_monitor_current.py
+  s_62d7f790ba05bc::t_45792239f56959 7,38-39
+doc/zh_cn/API_CPP_OP3.md
+  s_62d7f790ba05bc::t_2b91a70da830af 5,23
+linux/x64/python/demo/omnihand_2025/demo_tactile_sensor.py
+  s_62d7f790ba05bc::t_45792239f56959 7,38-39
+linux/aarch64/python/demo/omnihand_2025/demo_set_motion.py
+  s_62d7f790ba05bc::t_45792239f56959 7,110,112
+linux/aarch64/python/demo/omnihand_2025/demo_monitor_current.py
+  s_62d7f790ba05bc::t_45792239f56959 7,38-39
+linux/aarch64/python/test/test_omnihand_3_lite.py
+  s_62d7f790ba05bc::t_45792239f56959 15,27,59,215
+linux/aarch64/python/demo/omnihand_2025/demo_set_angle.py
+  s_62d7f790ba05bc::t_45792239f56959 18
+linux/x64/cpp/test/test_omnihand_2025.cc
+  s_62d7f790ba05bc::t_45792239f56959 12,18,28-29,1516,1519-1520
+linux/x64/python/demo/omnihand_2025/demo_100set_and_20tactile_reliability.py
+  s_62d7f790ba05bc::t_45792239f56959 33
+doc/zh_cn/API_PYTHON_OP3.md
+  s_62d7f790ba05bc::t_2b91a70da830af 6
+  s_62d7f790ba05bc::t_45792239f56959 79
+linux/aarch64/python/demo/omnihand_2025/demo_monitor_error.py
+  s_62d7f790ba05bc::t_45792239f56959 7,38-39
+windows/x64/python/demo/omnihand_2025/demo_mix_ctrl_pos_vel_torque.py
+  s_62d7f790ba05bc::t_45792239f56959 10,43-44
+windows/x64/python/demo/omnihand_2025/demo_set_angle.py
+  s_62d7f790ba05bc::t_45792239f56959 18
+doc/en/API_PYTHON_H3UM.md
+  s_62d7f790ba05bc::t_45792239f56959 29
+linux/aarch64/python/test/test_omnipicker_3.py
+  s_62d7f790ba05bc::t_45792239f56959 44,182
+linux/aarch64/python/demo/omnihand_2025/demo_set_get_reliability_csv.py
+  s_62d7f790ba05bc::t_45792239f56959 25
+linux/x64/python/demo/omnihand_2025/demo_set_angle_and_tactile_sensor_reliability.py
+  s_62d7f790ba05bc::t_45792239f56959 33
+doc/en/API_CPP_OP3.md
+  s_62d7f790ba05bc::t_2b91a70da830af 5,23
+linux/aarch64/cpp/test/test_omnipicker_3.cc
+  s_62d7f790ba05bc::t_45792239f56959 10,12,18,884,886
+linux/x64/python/test/test_omnihand_2025.py
+  s_62d7f790ba05bc::t_45792239f56959 11,18,25-26,38,71,585
+  s_62d7f790ba05bc::t_2b91a70da830af 8
+linux/x64/python/demo/omnihand_2025/demo_all_tactile_sensor_raw_reliability.py
+  s_62d7f790ba05bc::t_45792239f56959 33
+windows/x64/python/demo/omnihand_3_lite/demo_mix_ctrl_pos_vel_torque.py
+  s_62d7f790ba05bc::t_45792239f56959 10,36-37
+linux/aarch64/python/demo/omnihand_2025/demo_mix_ctrl_pos_vel_torque.py
+  s_62d7f790ba05bc::t_45792239f56959 10,43-44
+windows/x64/python/demo/omnihand_2025/demo_tactile_sensor_raw_reliability.py
+  s_62d7f790ba05bc::t_45792239f56959 33
+linux/x64/python/demo/omnihand_2025/demo_mix_ctrl_pos_vel_torque.py
+  s_62d7f790ba05bc::t_45792239f56959 10,43-44
+doc/en/API_PYTHON_OP3.md
+  s_62d7f790ba05bc::t_2b91a70da830af 6
+  s_62d7f790ba05bc::t_45792239f56959 79
+linux/aarch64/python/demo/omnihand_2025/demo_tactile_sensor.py
+  s_62d7f790ba05bc::t_45792239f56959 7,38-39
+linux/x64/python/demo/omnihand_2025/demo_set_get_reliability_csv.py
+  s_62d7f790ba05bc::t_45792239f56959 25
+doc/en/QUICK_START.md
+  s_62d7f790ba05bc::t_45792239f56959 156
+windows/x64/python/demo/omnihand_2025/demo_set_motion.py
+  s_62d7f790ba05bc::t_45792239f56959 7,110,112
+windows/x64/cpp/test/test_omnihand_2025.cc
+  s_62d7f790ba05bc::t_45792239f56959 12,18,28-29,1527,1530-1531
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "de6d7fb83aa90123f8e296aaea0f918463ccb64a",
+  "prompts": {},
+  "sessions": {
+    "s_62d7f790ba05bc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1b947-618f-72f1-be20-c6e2c733b4b5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.output_tokens": "4659402",
+        "tlab.session_started_at": "2026-11-16T14:16:39Z",
+        "tlab.token_usage.cache_read_tokens": "1038770771",
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.token_usage.input_tokens": "22869517"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "doc/en/API_CPP_H3L.md",
+      "new_path": "doc/en/API_CPP_H3L.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 14
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_H3UM.md",
+      "new_path": "doc/en/API_CPP_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_O10.md",
+      "new_path": "doc/en/API_CPP_O10.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_OP1.md",
+      "new_path": "doc/en/API_CPP_OP1.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_OP3.md",
+      "new_path": "doc/en/API_CPP_OP3.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON_H3L.md",
+      "new_path": "doc/en/API_PYTHON_H3L.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 27
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON_H3UM.md",
+      "new_path": "doc/en/API_PYTHON_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON_O10.md",
+      "new_path": "doc/en/API_PYTHON_O10.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON_O12.md",
+      "new_path": "doc/en/API_PYTHON_O12.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON_OP3.md",
+      "new_path": "doc/en/API_PYTHON_OP3.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/QUICK_START.md",
+      "new_path": "doc/en/QUICK_START.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_H3L.md",
+      "new_path": "doc/zh_cn/API_CPP_H3L.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 14
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_H3UM.md",
+      "new_path": "doc/zh_cn/API_CPP_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_O10.md",
+      "new_path": "doc/zh_cn/API_CPP_O10.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_OP1.md",
+      "new_path": "doc/zh_cn/API_CPP_OP1.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_OP3.md",
+      "new_path": "doc/zh_cn/API_CPP_OP3.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON_H3L.md",
+      "new_path": "doc/zh_cn/API_PYTHON_H3L.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 27
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON_H3UM.md",
+      "new_path": "doc/zh_cn/API_PYTHON_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON_O10.md",
+      "new_path": "doc/zh_cn/API_PYTHON_O10.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON_O12.md",
+      "new_path": "doc/zh_cn/API_PYTHON_O12.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON_OP3.md",
+      "new_path": "doc/zh_cn/API_PYTHON_OP3.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 6
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/QUICK_START.md",
+      "new_path": "doc/zh_cn/QUICK_START.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/demo/omnihand_2025/CMakeLists.txt",
+      "new_path": "linux/aarch64/cpp/demo/omnihand_2025/CMakeLists.txt",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 21
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/demo/omnihand_2025/O10_demo_zlgcan_tcp.cc",
+      "deletions": {
+        "human": 132
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/export_symbols.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/export_symbols.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/omnihand_2025.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/omnihand_2025.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 19
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/omnihand_3_lite.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/omnihand_3_lite.h",
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 26
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 32
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/omnihand_pro_2025.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/omnihand_pro_2025.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 19
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/omnipicker_2025.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/omnipicker_2025.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 19
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/omnipicker_3.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/omnipicker_3.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 19
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/test/test_omnihand_2025.cc",
+      "new_path": "linux/aarch64/cpp/test/test_omnihand_2025.cc",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      },
+      "deletions": {
+        "human": 2,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 34
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/test/test_omnipicker_3.cc",
+      "new_path": "linux/aarch64/cpp/test/test_omnipicker_3.cc",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 5
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 28
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/install.sh",
+      "new_path": "linux/aarch64/install.sh",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/README.md",
+      "new_path": "linux/aarch64/python/demo/README.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/README_zh_cn.md",
+      "new_path": "linux/aarch64/python/demo/README_zh_cn.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/lingchu/hand_receive_data/README.md",
+      "new_path": "linux/aarch64/python/demo/lingchu/hand_receive_data/README.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 20
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/lingchu/hand_receive_data/udp_receive_tcp_control.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 317
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_2025/demo_100set_and_20tactile_reliability.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_2025/demo_100set_and_20tactile_reliability.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_2025/demo_all_tactile_sensor_raw_reliability.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_2025/demo_all_tactile_sensor_raw_reliability.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_2025/demo_get_hardware_info.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_2025/demo_get_hardware_info.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 15
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_2025/demo_mix_ctrl_pos_torque.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_2025/demo_mix_ctrl_pos_torque.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_2025/demo_mix_ctrl_pos_vel_torque.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_2025/demo_mix_ctrl_pos_vel_torque.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_2025/demo_monitor_current.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_2025/demo_monitor_current.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_2025/demo_monitor_error.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_2025/demo_monitor_error.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_2025/demo_monitor_temperature.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_2025/demo_monitor_temperature.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_2025/demo_set_angle.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_2025/demo_set_angle.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_2025/demo_set_angle_and_tactile_sensor_reliability.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_2025/demo_set_angle_and_tactile_sensor_reliability.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_2025/demo_set_get_fist_reliability_csv.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_2025/demo_set_get_fist_reliability_csv.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_2025/demo_set_get_reliability_csv.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_2025/demo_set_get_reliability_csv.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_2025/demo_set_motion.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_2025/demo_set_motion.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 17
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_2025/demo_set_motor.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_2025/demo_set_motor.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_2025/demo_tactile_sensor.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_2025/demo_tactile_sensor.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_2025/demo_tactile_sensor_raw.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_2025/demo_tactile_sensor_raw.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_2025/demo_tactile_sensor_raw_reliability.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_2025/demo_tactile_sensor_raw_reliability.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_2025/demo_zlgcan_tcp.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 122
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_3_lite/demo_mix_ctrl_pos_torque.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_3_lite/demo_mix_ctrl_pos_torque.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 14
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_3_lite/demo_mix_ctrl_pos_vel_torque.py",
+      "new_path": "linux/aarch64/python/demo/omnihand_3_lite/demo_mix_ctrl_pos_vel_torque.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 14
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_3_lite/demo_zlgcan_tcp.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 150
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_pro_2025/demo_zlgcan_tcp.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 132
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/test/README.md",
+      "new_path": "linux/aarch64/python/test/README.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 6
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/test/README_zh_cn.md",
+      "new_path": "linux/aarch64/python/test/README_zh_cn.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/test/test_omnihand_2025.py",
+      "new_path": "linux/aarch64/python/test/test_omnihand_2025.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 8
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 27
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/test/test_omnihand_3_lite.py",
+      "new_path": "linux/aarch64/python/test/test_omnihand_3_lite.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 4
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 15
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/test/test_omnipicker_3.py",
+      "new_path": "linux/aarch64/python/test/test_omnipicker_3.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 15
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_2025/CMakeLists.txt",
+      "new_path": "linux/x64/cpp/demo/omnihand_2025/CMakeLists.txt",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 21
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_2025/O10_demo_zlgcan_tcp.cc",
+      "deletions": {
+        "human": 132
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/export_symbols.h",
+      "new_path": "linux/x64/cpp/include/omnihand/export_symbols.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnihand_2025.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnihand_2025.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 19
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 26
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 31
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnihand_pro_2025.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnihand_pro_2025.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 19
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnipicker_2025.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnipicker_2025.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 19
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnipicker_3.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnipicker_3.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 19
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/test/test_omnihand_2025.cc",
+      "new_path": "linux/x64/cpp/test/test_omnihand_2025.cc",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      },
+      "deletions": {
+        "human": 2,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 34
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/test/test_omnipicker_3.cc",
+      "new_path": "linux/x64/cpp/test/test_omnipicker_3.cc",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 5
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 28
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/install.sh",
+      "new_path": "linux/x64/install.sh",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/README.md",
+      "new_path": "linux/x64/python/demo/README.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/README_zh_cn.md",
+      "new_path": "linux/x64/python/demo/README_zh_cn.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/lingchu/hand_receive_data/README.md",
+      "new_path": "linux/x64/python/demo/lingchu/hand_receive_data/README.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 20
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/lingchu/hand_receive_data/udp_receive_tcp_control.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 317
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_2025/demo_100set_and_20tactile_reliability.py",
+      "new_path": "linux/x64/python/demo/omnihand_2025/demo_100set_and_20tactile_reliability.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_2025/demo_all_tactile_sensor_raw_reliability.py",
+      "new_path": "linux/x64/python/demo/omnihand_2025/demo_all_tactile_sensor_raw_reliability.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_2025/demo_get_hardware_info.py",
+      "new_path": "linux/x64/python/demo/omnihand_2025/demo_get_hardware_info.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 15
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_2025/demo_mix_ctrl_pos_torque.py",
+      "new_path": "linux/x64/python/demo/omnihand_2025/demo_mix_ctrl_pos_torque.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_2025/demo_mix_ctrl_pos_vel_torque.py",
+      "new_path": "linux/x64/python/demo/omnihand_2025/demo_mix_ctrl_pos_vel_torque.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_2025/demo_monitor_current.py",
+      "new_path": "linux/x64/python/demo/omnihand_2025/demo_monitor_current.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_2025/demo_monitor_error.py",
+      "new_path": "linux/x64/python/demo/omnihand_2025/demo_monitor_error.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_2025/demo_monitor_temperature.py",
+      "new_path": "linux/x64/python/demo/omnihand_2025/demo_monitor_temperature.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_2025/demo_set_angle.py",
+      "new_path": "linux/x64/python/demo/omnihand_2025/demo_set_angle.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_2025/demo_set_angle_and_tactile_sensor_reliability.py",
+      "new_path": "linux/x64/python/demo/omnihand_2025/demo_set_angle_and_tactile_sensor_reliability.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_2025/demo_set_get_fist_reliability_csv.py",
+      "new_path": "linux/x64/python/demo/omnihand_2025/demo_set_get_fist_reliability_csv.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_2025/demo_set_get_reliability_csv.py",
+      "new_path": "linux/x64/python/demo/omnihand_2025/demo_set_get_reliability_csv.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_2025/demo_set_motion.py",
+      "new_path": "linux/x64/python/demo/omnihand_2025/demo_set_motion.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 17
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_2025/demo_set_motor.py",
+      "new_path": "linux/x64/python/demo/omnihand_2025/demo_set_motor.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_2025/demo_tactile_sensor.py",
+      "new_path": "linux/x64/python/demo/omnihand_2025/demo_tactile_sensor.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_2025/demo_tactile_sensor_raw.py",
+      "new_path": "linux/x64/python/demo/omnihand_2025/demo_tactile_sensor_raw.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_2025/demo_tactile_sensor_raw_reliability.py",
+      "new_path": "linux/x64/python/demo/omnihand_2025/demo_tactile_sensor_raw_reliability.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_2025/demo_zlgcan_tcp.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 122
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_3_lite/demo_mix_ctrl_pos_torque.py",
+      "new_path": "linux/x64/python/demo/omnihand_3_lite/demo_mix_ctrl_pos_torque.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 14
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_3_lite/demo_mix_ctrl_pos_vel_torque.py",
+      "new_path": "linux/x64/python/demo/omnihand_3_lite/demo_mix_ctrl_pos_vel_torque.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 14
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_3_lite/demo_zlgcan_tcp.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 150
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_pro_2025/demo_zlgcan_tcp.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 132
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/test/README.md",
+      "new_path": "linux/x64/python/test/README.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 6
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/test/README_zh_cn.md",
+      "new_path": "linux/x64/python/test/README_zh_cn.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/test/test_omnihand_2025.py",
+      "new_path": "linux/x64/python/test/test_omnihand_2025.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 8
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 27
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/test/test_omnihand_3_lite.py",
+      "new_path": "linux/x64/python/test/test_omnihand_3_lite.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 4
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 15
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/test/test_omnipicker_3.py",
+      "new_path": "linux/x64/python/test/test_omnipicker_3.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 15
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/canfdnet-tcp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 687
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/canfdnet-udp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 659
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/canfdnet100-tcp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 352
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/canfdnet100-udp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 338
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/canfdnet30cascade-tcp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7833
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/canfdnet30cascade-udp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7413
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/canfdnet400u-tcp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1315
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/canfdnet400u-udp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1259
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/canfdnet600u-tcp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1593
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/canfdnet600u-udp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1509
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/canfdnet800u-tcp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2179
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/canfdnet800u-udp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1971
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/canfdwifi-tcp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 224
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/canfdwifi-udp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 210
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/default/canfdnet-tcp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 607
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/default/canfdnet-udp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 579
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/default/canfdnet100-tcp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 312
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/default/canfdnet100-udp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 298
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/default/canfdnet30cascade-tcp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 6633
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/default/canfdnet30cascade-udp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 6213
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/default/canfdnet400u-tcp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1219
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/default/canfdnet400u-udp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1163
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/default/canfdnet600u-tcp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1449
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/default/canfdnet600u-udp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1365
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/default/canfdnet800u-tcp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1891
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/default/canfdnet800u-udp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1779
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/default/canfdwifi-tcp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 224
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/bin/kerneldlls/devices_property/default/canfdwifi-udp.xml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 210
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_2025/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/demo/omnihand_2025/CMakeLists.txt",
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 20
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_2025/O10_demo_zlgcan_tcp.cc",
+      "deletions": {
+        "human": 132
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/device_context.h",
+      "new_path": "windows/x64/cpp/include/omnihand/device_context.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/export_symbols.h",
+      "new_path": "windows/x64/cpp/include/omnihand/export_symbols.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_2025.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_2025.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 19
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 27
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 28
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_pro_2025.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_pro_2025.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 19
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnipicker_2025.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnipicker_2025.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 19
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnipicker_3.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnipicker_3.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 19
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_2025.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_2025.cc",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 33
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnipicker_3.cc",
+      "new_path": "windows/x64/cpp/test/test_omnipicker_3.cc",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 5
+          }
+        ]
+      },
+      "deletions": {
+        "human": 2,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 27
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/README.md",
+      "new_path": "windows/x64/python/demo/README.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/README_zh_cn.md",
+      "new_path": "windows/x64/python/demo/README_zh_cn.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/lingchu/hand_receive_data/README.md",
+      "new_path": "windows/x64/python/demo/lingchu/hand_receive_data/README.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 20
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/lingchu/hand_receive_data/udp_receive_tcp_control.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 317
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_2025/demo_100set_and_20tactile_reliability.py",
+      "new_path": "windows/x64/python/demo/omnihand_2025/demo_100set_and_20tactile_reliability.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 6
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_2025/demo_all_tactile_sensor_raw_reliability.py",
+      "new_path": "windows/x64/python/demo/omnihand_2025/demo_all_tactile_sensor_raw_reliability.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 6
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_2025/demo_get_hardware_info.py",
+      "new_path": "windows/x64/python/demo/omnihand_2025/demo_get_hardware_info.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 14
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_2025/demo_mix_ctrl_pos_torque.py",
+      "new_path": "windows/x64/python/demo/omnihand_2025/demo_mix_ctrl_pos_torque.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 12
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_2025/demo_mix_ctrl_pos_vel_torque.py",
+      "new_path": "windows/x64/python/demo/omnihand_2025/demo_mix_ctrl_pos_vel_torque.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 12
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_2025/demo_monitor_current.py",
+      "new_path": "windows/x64/python/demo/omnihand_2025/demo_monitor_current.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 12
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_2025/demo_monitor_error.py",
+      "new_path": "windows/x64/python/demo/omnihand_2025/demo_monitor_error.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 12
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_2025/demo_monitor_temperature.py",
+      "new_path": "windows/x64/python/demo/omnihand_2025/demo_monitor_temperature.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 12
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_2025/demo_set_angle.py",
+      "new_path": "windows/x64/python/demo/omnihand_2025/demo_set_angle.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_2025/demo_set_angle_and_tactile_sensor_reliability.py",
+      "new_path": "windows/x64/python/demo/omnihand_2025/demo_set_angle_and_tactile_sensor_reliability.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 6
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_2025/demo_set_get_fist_reliability_csv.py",
+      "new_path": "windows/x64/python/demo/omnihand_2025/demo_set_get_fist_reliability_csv.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 6
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_2025/demo_set_get_reliability_csv.py",
+      "new_path": "windows/x64/python/demo/omnihand_2025/demo_set_get_reliability_csv.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 6
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_2025/demo_set_motion.py",
+      "new_path": "windows/x64/python/demo/omnihand_2025/demo_set_motion.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 17
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_2025/demo_set_motor.py",
+      "new_path": "windows/x64/python/demo/omnihand_2025/demo_set_motor.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 12
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_2025/demo_tactile_sensor.py",
+      "new_path": "windows/x64/python/demo/omnihand_2025/demo_tactile_sensor.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 12
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_2025/demo_tactile_sensor_raw.py",
+      "new_path": "windows/x64/python/demo/omnihand_2025/demo_tactile_sensor_raw.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 12
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_2025/demo_tactile_sensor_raw_reliability.py",
+      "new_path": "windows/x64/python/demo/omnihand_2025/demo_tactile_sensor_raw_reliability.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_2025/demo_zlgcan_tcp.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 122
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_3_lite/demo_mix_ctrl_pos_torque.py",
+      "new_path": "windows/x64/python/demo/omnihand_3_lite/demo_mix_ctrl_pos_torque.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_3_lite/demo_mix_ctrl_pos_vel_torque.py",
+      "new_path": "windows/x64/python/demo/omnihand_3_lite/demo_mix_ctrl_pos_vel_torque.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_3_lite/demo_zlgcan_tcp.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 150
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_pro_2025/demo_zlgcan_tcp.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 132
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/README.md",
+      "new_path": "windows/x64/python/test/README.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 6
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/README_zh_cn.md",
+      "new_path": "windows/x64/python/test/README_zh_cn.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_omnihand_2025.py",
+      "new_path": "windows/x64/python/test/test_omnihand_2025.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 8
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 27
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_omnihand_3_lite.py",
+      "new_path": "windows/x64/python/test/test_omnihand_3_lite.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 4
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 15
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_omnipicker_3.py",
+      "new_path": "windows/x64/python/test/test_omnipicker_3.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 15
+          }
+        ]
+      }
+    }
+  ]
+}
