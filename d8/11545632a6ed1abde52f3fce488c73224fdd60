@@ -1,0 +1,766 @@
+windows/x64/cpp/include/omnihand/omnihand.h
+  s_62d7f790ba05bc::t_c775d414d6c57b 7,45,663
+linux/aarch64/cpp/test/README_zh_cn.md
+  s_62d7f790ba05bc::t_a8267783cc93f4 3,101
+linux/x64/cpp/test/README_zh_cn.md
+  s_62d7f790ba05bc::t_7458dd1306b1f5 3,101
+windows/x64/cpp/test/README.md
+  s_62d7f790ba05bc::t_353a3f847495b2 3,30
+windows/x64/cpp/test/README_zh_cn.md
+  s_62d7f790ba05bc::t_9eca4a9ea33d10 3,103
+windows/x64/python/demo/README.md
+  s_62d7f790ba05bc::t_5b098f5c7b2d93 3
+windows/x64/python/demo/README_zh_cn.md
+  s_62d7f790ba05bc::t_98cc321efe3133 3
+windows/x64/python/test/README.md
+  s_62d7f790ba05bc::t_d0d09154c24246 5
+windows/x64/python/test/README_zh_cn.md
+  s_62d7f790ba05bc::t_30756d39cdc3d0 5
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "d811545632a6ed1abde52f3fce488c73224fdd60",
+  "prompts": {},
+  "sessions": {
+    "s_62d7f790ba05bc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1b947-618f-72f1-be20-c6e2c733b4b5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.session_started_at": "2026-11-16T13:54:07Z",
+        "tlab.token_usage.output_tokens": "4631738",
+        "tlab.token_usage.input_tokens": "22692372",
+        "tlab.token_usage.cache_read_tokens": "1034259789"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "README.md",
+      "new_path": "README.md",
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "README_zh_cn.md",
+      "new_path": "README_zh_cn.md",
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP.md",
+      "new_path": "doc/en/API_CPP.md",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 29
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_O10_UMI.md",
+      "deletions": {
+        "human": 425
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON.md",
+      "new_path": "doc/en/API_PYTHON.md",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 28
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON_UMI.md",
+      "deletions": {
+        "human": 480
+      }
+    },
+    {
+      "old_path": "doc/en/QUICK_START.md",
+      "new_path": "doc/en/QUICK_START.md",
+      "additions": {
+        "human": 3
+      },
+      "deletions": {
+        "human": 11
+      }
+    },
+    {
+      "old_path": "doc/en/SOCKETCAN_SETUP.md",
+      "new_path": "doc/en/SOCKETCAN_SETUP.md",
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP.md",
+      "new_path": "doc/zh_cn/API_CPP.md",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 30
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_O10_UMI.md",
+      "deletions": {
+        "human": 328
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON.md",
+      "new_path": "doc/zh_cn/API_PYTHON.md",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 28
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON_UMI.md",
+      "deletions": {
+        "human": 214
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/QUICK_START.md",
+      "new_path": "doc/zh_cn/QUICK_START.md",
+      "additions": {
+        "human": 3
+      },
+      "deletions": {
+        "human": 11
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/SOCKETCAN_SETUP.md",
+      "new_path": "doc/zh_cn/SOCKETCAN_SETUP.md",
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/demo/CMakeLists.txt",
+      "new_path": "linux/aarch64/cpp/demo/CMakeLists.txt",
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/demo/omnihand_dex_umi/CMakeLists.txt",
+      "deletions": {
+        "human": 31
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/demo/omnihand_dex_umi/UMI_demo_canfd_id.cc",
+      "deletions": {
+        "human": 247
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/demo/omnihand_dex_umi/UMI_demo_canfd_serial.cc",
+      "deletions": {
+        "human": 220
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/demo/omnihand_dex_umi/UMI_demo_socketcan.cc",
+      "deletions": {
+        "human": 238
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/omnihand.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/omnihand.h",
+      "additions": {
+        "human": 3
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/omnihand_dex_umi.h",
+      "deletions": {
+        "human": 239
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand/proto.h",
+      "new_path": "linux/aarch64/cpp/include/omnihand/proto.h",
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/test/CMakeLists.txt",
+      "new_path": "linux/aarch64/cpp/test/CMakeLists.txt",
+      "deletions": {
+        "human": 14
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/test/README.md",
+      "new_path": "linux/aarch64/cpp/test/README.md",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 7
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/test/README_zh_cn.md",
+      "new_path": "linux/aarch64/cpp/test/README_zh_cn.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "human": 7
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/test/test_omnihand_dex_umi.cc",
+      "deletions": {
+        "human": 258
+      }
+    },
+    {
+      "old_path": "linux/aarch64/install.sh",
+      "new_path": "linux/aarch64/install.sh",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/README.md",
+      "new_path": "linux/aarch64/python/demo/README.md",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 13
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/README_zh_cn.md",
+      "new_path": "linux/aarch64/python/demo/README_zh_cn.md",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 13
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_dex_umi/demo_canfd_id.py",
+      "deletions": {
+        "human": 277
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_dex_umi/demo_canfd_serial.py",
+      "deletions": {
+        "human": 278
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_dex_umi/demo_get_all_active_joint_angles.py",
+      "deletions": {
+        "human": 47
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_dex_umi/demo_get_hardware_info.py",
+      "deletions": {
+        "human": 80
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_dex_umi/demo_set_max_min_calibration.py",
+      "deletions": {
+        "human": 156
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_dex_umi/demo_socketcan.py",
+      "deletions": {
+        "human": 283
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_dex_umi/demo_tactile_sensor_raw.py",
+      "deletions": {
+        "human": 121
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/omnihand_dex_umi/demo_umi_to_o10.py",
+      "deletions": {
+        "human": 287
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/test/README.md",
+      "new_path": "linux/aarch64/python/test/README.md",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 10
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/test/README_zh_cn.md",
+      "new_path": "linux/aarch64/python/test/README_zh_cn.md",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 10
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/test/test_omnihand_dex_umi.py",
+      "deletions": {
+        "human": 192
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/CMakeLists.txt",
+      "new_path": "linux/x64/cpp/demo/CMakeLists.txt",
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_dex_umi/CMakeLists.txt",
+      "deletions": {
+        "human": 31
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_dex_umi/UMI_demo_canfd_id.cc",
+      "deletions": {
+        "human": 247
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_dex_umi/UMI_demo_canfd_serial.cc",
+      "deletions": {
+        "human": 220
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_dex_umi/UMI_demo_socketcan.cc",
+      "deletions": {
+        "human": 238
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnihand.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnihand.h",
+      "additions": {
+        "human": 3
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnihand_dex_umi.h",
+      "deletions": {
+        "human": 239
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/proto.h",
+      "new_path": "linux/x64/cpp/include/omnihand/proto.h",
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/test/CMakeLists.txt",
+      "new_path": "linux/x64/cpp/test/CMakeLists.txt",
+      "deletions": {
+        "human": 14
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/test/README.md",
+      "new_path": "linux/x64/cpp/test/README.md",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 7
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/test/README_zh_cn.md",
+      "new_path": "linux/x64/cpp/test/README_zh_cn.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "human": 7
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/test/test_omnihand_dex_umi.cc",
+      "deletions": {
+        "human": 258
+      }
+    },
+    {
+      "old_path": "linux/x64/install.sh",
+      "new_path": "linux/x64/install.sh",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/README.md",
+      "new_path": "linux/x64/python/demo/README.md",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 13
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/README_zh_cn.md",
+      "new_path": "linux/x64/python/demo/README_zh_cn.md",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 13
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_dex_umi/demo_canfd_id.py",
+      "deletions": {
+        "human": 277
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_dex_umi/demo_canfd_serial.py",
+      "deletions": {
+        "human": 278
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_dex_umi/demo_get_all_active_joint_angles.py",
+      "deletions": {
+        "human": 47
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_dex_umi/demo_get_hardware_info.py",
+      "deletions": {
+        "human": 80
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_dex_umi/demo_set_max_min_calibration.py",
+      "deletions": {
+        "human": 156
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_dex_umi/demo_socketcan.py",
+      "deletions": {
+        "human": 283
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_dex_umi/demo_tactile_sensor_raw.py",
+      "deletions": {
+        "human": 121
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/omnihand_dex_umi/demo_umi_to_o10.py",
+      "deletions": {
+        "human": 287
+      }
+    },
+    {
+      "old_path": "linux/x64/python/test/README.md",
+      "new_path": "linux/x64/python/test/README.md",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 10
+      }
+    },
+    {
+      "old_path": "linux/x64/python/test/README_zh_cn.md",
+      "new_path": "linux/x64/python/test/README_zh_cn.md",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 10
+      }
+    },
+    {
+      "old_path": "linux/x64/python/test/test_omnihand_dex_umi.py",
+      "deletions": {
+        "human": 192
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/demo/CMakeLists.txt",
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_dex_umi/CMakeLists.txt",
+      "deletions": {
+        "human": 31
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_dex_umi/UMI_demo_canfd_id.cc",
+      "deletions": {
+        "human": 247
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_dex_umi/UMI_demo_canfd_serial.cc",
+      "deletions": {
+        "human": 220
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_dex_umi/UMI_demo_socketcan.cc",
+      "deletions": {
+        "human": 238
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_dex_umi.h",
+      "deletions": {
+        "human": 225
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/proto.h",
+      "new_path": "windows/x64/cpp/include/omnihand/proto.h",
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "deletions": {
+        "human": 14
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/README.md",
+      "new_path": "windows/x64/cpp/test/README.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "human": 7
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/README_zh_cn.md",
+      "new_path": "windows/x64/cpp/test/README_zh_cn.md",
+      "additions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 7
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_dex_umi.cc",
+      "deletions": {
+        "human": 226
+      }
+    },
+    {
+      "old_path": "windows/x64/install.bat",
+      "new_path": "windows/x64/install.bat",
+      "additions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/README.md",
+      "new_path": "windows/x64/python/demo/README.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 12
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/README_zh_cn.md",
+      "new_path": "windows/x64/python/demo/README_zh_cn.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 12
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_dex_umi/demo_canfd_id.py",
+      "deletions": {
+        "human": 277
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_dex_umi/demo_canfd_serial.py",
+      "deletions": {
+        "human": 278
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_dex_umi/demo_get_all_active_joint_angles.py",
+      "deletions": {
+        "human": 47
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_dex_umi/demo_get_hardware_info.py",
+      "deletions": {
+        "human": 80
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_dex_umi/demo_socketcan.py",
+      "deletions": {
+        "human": 283
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_dex_umi/demo_tactile_sensor_raw.py",
+      "deletions": {
+        "human": 121
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_dex_umi/demo_umi_to_o10.py",
+      "deletions": {
+        "human": 287
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/README.md",
+      "new_path": "windows/x64/python/test/README.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 10
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/README_zh_cn.md",
+      "new_path": "windows/x64/python/test/README_zh_cn.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 10
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_omnihand_dex_umi.py",
+      "deletions": {
+        "human": 168
+      }
+    }
+  ]
+}
