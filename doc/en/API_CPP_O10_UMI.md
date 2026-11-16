@@ -7,7 +7,7 @@
 **Key Features:**
 - 10 active degrees of freedom
 - 1D tactile sensors (fingers and palm, no dorsum)
-- UMI protocol (Pn1-Pn8 registers)
+- UMI protocol (device information, position and tactile queries)
 - Active position query (no periodic reports)
 - Supports CAN (ZLG USB CANFD) communication only
 - Supports SocketCAN (Linux only)
@@ -285,40 +285,9 @@ std::vector<int16_t> GetAllJointMotorPosi() const;
 std::vector<double> GetAllActiveJointAngles() const;
 ```
 
-## Position Calibration
+## Factory Maintenance
 
-**Note**: UMI protocol supports position calibration via Pn7/Pn8 register. This is a write-only operation.
-
-```cpp
-/**
- * @brief Set minimum position calibration for all 10 joints (UMI Protocol Pn8=0x08, sub-register 0x00).
- * @note This is a write-only operation for position calibration.
- *       The device should be in minimum position when calling this function.
- */
-void SetMinPositionCalibration();
-
-/**
- * @brief Set minimum position calibration for a single joint (UMI Protocol Pn8=0x08, sub-register 0x01-0x0A).
- * @param joint_index Joint index (1-10, where 1 is the first joint)
- * @note This is a write-only operation for position calibration.
- */
-void SetMinPositionCalibration(unsigned char joint_index);
-
-/**
- * @brief Set maximum position calibration for all 10 joints (UMI Protocol Pn7=0x07, sub-register 0x00).
- * @note This is a write-only operation for position calibration.
- *       The device should be in maximum position when calling this function.
- */
-void SetMaxPositionCalibration();
-
-/**
- * @brief Set maximum position calibration for a single joint (UMI Protocol Pn7=0x07, sub-register 0x01-0x0A).
- * @param joint_index Joint index (1-10, where 1 is the first joint)
- * @note This is a write-only operation for position calibration.
- */
-void SetMaxPositionCalibration(unsigned char joint_index);
-```
-
+Factory calibration, zeroing and serial-number writes are available only through OmniHand-ToolBox. These maintenance operations are not part of the public SDK API.
 
 ## Tactile Sensor Data
 
@@ -381,8 +350,6 @@ void ShowDataDetails(bool show, DataDetailsLogCallback log_callback = nullptr) c
 
 2. **Active Position Query**: UMI protocol supports actively querying joint positions using `GetJointMotorPosi()` or `GetAllJointMotorPosi()`. Position values range from 0-4096.
 
-3. **Position Calibration**: Position calibration (min/max) is a write-only operation. The device should be in the appropriate position when calling calibration functions.
-
 ## Complete Example
 
 ```cpp
@@ -440,12 +407,6 @@ int main() {
 - **Pn6**: Tactile sensor data (read-only)
   - **Pn6.00**: Read all sensor data (6 sensors: Thumb, Index, Middle, Ring, Little, Palm, UMI has no Dorsum)
   - **Pn6.01~Pn6.06**: Read individual sensor data (sensor 1-6)
-- **Pn7**: Maximum position calibration (write-only)
-  - **Pn7.00**: Set all joints max position at once
-  - **Pn7.01~Pn7.0A**: Set individual joint max position (joint 1-10)
-- **Pn8**: Minimum position calibration (write-only)
-  - **Pn8.00**: Set all joints min position at once
-  - **Pn8.01~Pn8.0A**: Set individual joint min position (joint 1-10)
 
 ## Demo Files
 

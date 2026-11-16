@@ -237,16 +237,9 @@ std::vector<MixCtrl> MixControlByPVT(
 
 切换到不同的非打开姿态（ID 1–3，包括从打开姿态切换）时，SDK 先保持上一姿态的其他关节，将拇指 ABAD、MCP、PIP、DIP 四轴电机编码设为 `0`，等待 `200 ms` 后再执行目标姿态：T1.3 对应第 17–20 轴，T1.5 对应第 18–21 轴（从 1 开始计数）。T1.5 的第 17 轴拇指 ROLL 保持上一姿态。过渡失败则不发送目标；首次执行、重复同一姿态及切换到打开姿态不加过渡。ID 0 保留兼容，不参与过渡。
 
-## 零位与标定
+## 出厂维护
 
-```cpp
-bool SetAllMotor2Zero();
-bool SetMotor2Zero(unsigned char joint_motor_index);  // 范围由版本决定
-bool SetAxisHoming(uint8_t axis_index, int16_t position);
-bool SetAxisMinPos(uint8_t axis_index, int16_t min_position);
-bool SetAxisMaxPos(uint8_t axis_index, int16_t max_position);
-bool SaveParam();
-```
+出厂标定、标零、写 SN 等维护操作仅供 OmniHand-ToolBox 使用，不属于公开 SDK API。
 
 ## 触觉数据与 T1.5 板温
 

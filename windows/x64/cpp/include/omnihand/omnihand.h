@@ -159,38 +159,6 @@ class AGIBOT_EXPORT OmniHand {
     (void)broadcast;
   }
 
-  /**
-   * @brief Sets the current position of every motor as its zero position.
-   * @return true if the device reports success; false if unsupported or failed.
-   * @note Currently supported only by OmniHand 3 Ultra M (H3U_M).
-   */
-  virtual bool SetAllMotor2Zero() {
-    std::fprintf(stderr, "[WARN][OmniHand][SetAllMotor2Zero] unsupported by this product\n");
-    return false;
-  }
-
-  /**
-   * @brief Sets the current position of one motor as its zero position.
-   * @param joint_motor_index Joint motor index, starting from 1.
-   * @return true if the device reports success; false if unsupported or failed.
-   * @note Currently supported only by OmniHand 3 Ultra M (H3U_M).
-   */
-  virtual bool SetMotor2Zero(unsigned char joint_motor_index) {
-    (void)joint_motor_index;
-    std::fprintf(stderr, "[WARN][OmniHand][SetMotor2Zero] unsupported by this product\n");
-    return false;
-  }
-
-  /**
-   * @brief 0x0B/0x00: Calibrates all tactile sensors.
-   * @return true if the device reports success; false if unsupported or failed.
-   */
-  virtual bool CalibrateTactileSensor() {
-    std::fprintf(stderr,
-                 "[WARN][OmniHand][CalibrateTactileSensor] unsupported by this product\n");
-    return false;
-  }
-
   // ============ Current Threshold ============
   /**
    * @brief 0x03: Sets the current threshold of a single joint motor.

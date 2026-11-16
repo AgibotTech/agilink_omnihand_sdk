@@ -5,6 +5,9 @@
 #include "timestamp_test_utils.h"
 #include "agilink_logger.h"
 #include "omnihand/omnihand_3_ultra_m.h"
+#ifdef OMNIHAND_BUILD_INTERNAL_TESTS
+#include "omnihand/i_omnihand_calibrator.h"
+#endif
 #include <chrono>
 #include <memory>
 #include <sstream>
@@ -575,9 +578,13 @@ TEST_F(OmniHand3UltraMT1P3Test, GetAllJointMotorVelo) {
   }
 }
 
+#ifdef OMNIHAND_BUILD_INTERNAL_TESTS
 TEST_F(OmniHand3UltraMT1P3Test, AxisLimitPos) {
   if (hand_->Init()) {
-    auto limits = hand_->GetAxisLimitPos();
+    auto* maintenance =
+        dynamic_cast<agilink::omnihand::IOmniHandCalibrator*>(hand_.get());
+    ASSERT_NE(maintenance, nullptr);
+    auto limits = maintenance->GetAxisLimitPos();
     if (limits.empty()) {
       AgilinkLogger::get().warnf(TAG, "[GetAxisLimitPos] Failed: empty result");
       return;
@@ -593,7 +600,10 @@ TEST_F(OmniHand3UltraMT1P3Test, AxisLimitPos) {
 
 TEST_F(OmniHand3UltraMT1P3Test, ActualAxisPos) {
   if (hand_->Init()) {
-    auto actual_pos = hand_->GetAllActualAxisPos();
+    auto* maintenance =
+        dynamic_cast<agilink::omnihand::IOmniHandCalibrator*>(hand_.get());
+    ASSERT_NE(maintenance, nullptr);
+    auto actual_pos = maintenance->GetAllActualAxisPos();
     if (actual_pos.empty()) {
       AgilinkLogger::get().warnf(TAG, "[GetAllActualAxisPos] Failed: empty result");
       return;
@@ -602,10 +612,12 @@ TEST_F(OmniHand3UltraMT1P3Test, ActualAxisPos) {
                               ValuesToString(actual_pos).c_str());
     EXPECT_EQ(actual_pos.size(), 20);
 
-    auto single = hand_->GetSingleActualAxisPos(1);
+    auto single = maintenance->GetSingleActualAxisPos(1);
     AgilinkLogger::get().infof(TAG, "[GetSingleActualAxisPos] Joint 1: %d", static_cast<int>(single));
   }
 }
+
+#endif
 
 int main(int argc, char** argv) {
   std::vector<char*> gtest_args;

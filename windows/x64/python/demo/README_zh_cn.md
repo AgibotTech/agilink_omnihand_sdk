@@ -53,7 +53,6 @@
 - `omnihand_dex_umi/demo_get_hardware_info.py` - 获取硬件信息
 - `omnihand_dex_umi/demo_tactile_sensor_raw.py` - 读取触觉原始数据（Pn6 协议）
 - `omnihand_dex_umi/demo_periodic_report.py` - 接收周期上报（位置与触觉）
-- `omnihand_dex_umi/demo_set_max_min_calibration.py` - 设置最大/最小位置标定
 - `omnihand_dex_umi/demo_umi_to_o10.py` - 使用UMI位置数据控制O10灵巧手
 - `omnihand_dex_umi/demo_canfd_id.py` - CANFD通信示例（通过设备ID）
 - `omnihand_dex_umi/demo_canfd_serial.py` - CANFD通信示例（通过序列号）

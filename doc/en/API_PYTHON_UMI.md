@@ -7,7 +7,7 @@
 **Key Features:**
 - 10 active degrees of freedom
 - 1D tactile sensors (fingers and palm, no dorsum)
-- UMI protocol (Pn1-Pn8 registers)
+- UMI protocol (device information, position and tactile queries)
 - Active position query (no periodic reports)
 - Supports CAN (ZLG USB CANFD) communication only
 - Supports SocketCAN (Linux only)
@@ -309,27 +309,9 @@ def set_device_id(self, device_id: int) -> None:
     """
 ```
 
-## Position Calibration
+## Factory Maintenance
 
-**Note**: UMI protocol supports position calibration via Pn7 register. This is a write-only operation.
-
-```python
-def set_min_position_calibration(self) -> None:
-    """Set minimum position calibration (UMI Protocol Pn7, sub-register 0x00).
-    
-    Note:
-        This is a write-only operation for position calibration.
-        The device should be in minimum position when calling this function.
-    """
-
-def set_max_position_calibration(self) -> None:
-    """Set maximum position calibration (UMI Protocol Pn8, sub-register 0x00).
-    
-    Note:
-        This is a write-only operation for position calibration.
-        The device should be in maximum position when calling this function.
-    """
-```
+Factory calibration, zeroing and serial-number writes are available only through OmniHand-ToolBox. These maintenance operations are not part of the public SDK API.
 
 ## Position Query
 
@@ -429,8 +411,6 @@ def show_data_details(self, show: bool, callback: Callable[[str], None] | None =
 
 2. **Active Position Query**: UMI protocol supports actively querying joint positions using `get_joint_position()` or `get_all_joint_positions()`. Position values range from 0-4096.
 
-3. **Position Calibration**: Position calibration (min/max) is a write-only operation. The device should be in the appropriate position when calling calibration functions.
-
 ## Complete Example
 
 ```python
@@ -480,12 +460,6 @@ print(f"Tactile sensors: {len(tactile_data)} sensors")
 - **Pn6**: Tactile sensor data (read-only)
   - **Pn6.00**: Read all sensor data (6 sensors: Thumb, Index, Middle, Ring, Little, Palm, UMI has no Dorsum)
   - **Pn6.01~Pn6.06**: Read individual sensor data (sensor 1-6)
-- **Pn7**: Maximum position calibration (write-only)
-  - **Pn7.00**: Set all joints max position at once
-  - **Pn7.01~Pn7.0A**: Set individual joint max position (joint 1-10)
-- **Pn8**: Minimum position calibration (write-only)
-  - **Pn8.00**: Set all joints min position at once
-  - **Pn8.01~Pn8.0A**: Set individual joint min position (joint 1-10)
 
 ## Demo Files
 
@@ -497,7 +471,6 @@ The SDK release package includes ready-to-run Python demo scripts (under `python
 | CAN FD (connect by serial) | [demo_canfd_serial.py](../../../python/demo/omnihand_dex_umi/demo_canfd_serial.py) |
 | SocketCAN | [demo_socketcan.py](../../../python/demo/omnihand_dex_umi/demo_socketcan.py) |
 | Tactile sensor (raw data) | [demo_tactile_sensor_raw.py](../../../python/demo/omnihand_dex_umi/demo_tactile_sensor_raw.py) |
-| Max/Min position calibration | [demo_set_max_min_calibration.py](../../../python/demo/omnihand_dex_umi/demo_set_max_min_calibration.py) |
 | UMI teleoperate O10 | [demo_umi_to_o10.py](../../../python/demo/omnihand_dex_umi/demo_umi_to_o10.py) |
 | Active joint angles readout | [demo_get_all_active_joint_angles.py](../../../python/demo/omnihand_dex_umi/demo_get_all_active_joint_angles.py) |
 | Hardware info | [demo_get_hardware_info.py](../../../python/demo/omnihand_dex_umi/demo_get_hardware_info.py) |

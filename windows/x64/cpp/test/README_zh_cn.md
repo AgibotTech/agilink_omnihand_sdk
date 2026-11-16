@@ -24,6 +24,8 @@ cmake -DBUILD_CPP_TESTS=ON -B build
 cmake --build build
 ```
 
+内部协议和维护测试默认关闭。SDK 维护者可在源码构建时添加 `-DOMNIHAND_BUILD_INTERNAL_TESTS=ON`；这些测试需要内部头文件。
+
 ## 运行测试
 
 编译后，使用 CTest 运行测试：

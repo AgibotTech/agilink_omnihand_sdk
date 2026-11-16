@@ -277,19 +277,6 @@ class AGIBOT_EXPORT OmniPicker2025 : public OmniHand {
     ThrowUnsupported("UpdateFirmwareViaFlash");
   }
 
-  // ============ Calibration (Fibre protocol over USB) ============
-
-  /**
-   * @brief Trigger motor calibration (phase resistance, inductance, encoder offset).
-   * @note Enters STATE_CALIBRATION on the firmware. The motor runs the calibration
-   *       procedure automatically, saves config to flash, and reboots the device on success.
-   *       After reboot, the USB and CAN connections will be lost.
-   * @return true if the calibration request was sent successfully.
-   */
-  virtual bool StartMotorCalibration() {
-    ThrowUnsupported("StartMotorCalibration");
-  };
-
   /**
    * @brief Reboot the device via Fibre USB protocol.
    * @note After reboot, the USB and CAN connections will be lost. The caller must

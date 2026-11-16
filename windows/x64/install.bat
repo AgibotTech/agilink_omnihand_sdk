@@ -27,6 +27,8 @@ echo.
 
 REM Install C++ SDK
 if not exist "%INSTALL_DIR%" mkdir "%INSTALL_DIR%"
+if exist "%INSTALL_DIR%\include\omnihand\private_omnihand.h" del /Q "%INSTALL_DIR%\include\omnihand\private_omnihand.h"
+if exist "%INSTALL_DIR%\include\omnihand\i_omnihand_calibrator.h" del /Q "%INSTALL_DIR%\include\omnihand\i_omnihand_calibrator.h"
 for %%d in (include lib bin) do (
     xcopy /E /I /Y "%SCRIPT_DIR%cpp\%%d" "%INSTALL_DIR%\%%d" >nul
     if errorlevel 1 (

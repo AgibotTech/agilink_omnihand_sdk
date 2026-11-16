@@ -53,7 +53,6 @@
 - `omnihand_dex_umi/demo_get_hardware_info.py` - Get hardware information
 - `omnihand_dex_umi/demo_tactile_sensor_raw.py` - Read tactile sensor raw data (uses Pn6 protocol)
 - `omnihand_dex_umi/demo_periodic_report.py` - Receive periodic reports (position and tactile sensor)
-- `omnihand_dex_umi/demo_set_max_min_calibration.py` - Set max/min position calibration
 - `omnihand_dex_umi/demo_umi_to_o10.py` - Control O10 hand using UMI position data
 - `omnihand_dex_umi/demo_canfd_id.py` - CANFD communication example (by device ID)
 - `omnihand_dex_umi/demo_canfd_serial.py` - CANFD communication example (by serial number)

@@ -224,16 +224,9 @@ Presets store motor encoder values selected by the hand object's revision and si
 
 Switching to a different non-open pose (IDs 1–3, including switches from open) first retains the preceding pose's other joints and sets the four thumb ABAD, MCP, PIP, and DIP encoders to `0`, waits `200 ms`, then executes the target. These are axes 17–20 on T1.3 and 18–21 on T1.5 (1-based). T1.5 thumb ROLL at axis 17 retains its preceding value. A failed transition prevents the target command. First calls, repeated poses, and switches to open have no transition. ID 0 remains available for compatibility and does not participate in transitions.
 
-## Zero and Calibration
+## Factory Maintenance
 
-```cpp
-bool SetAllMotor2Zero();
-bool SetMotor2Zero(unsigned char joint_motor_index);  // revision-dependent range
-bool SetAxisHoming(uint8_t axis_index, int16_t position);
-bool SetAxisMinPos(uint8_t axis_index, int16_t min_position);
-bool SetAxisMaxPos(uint8_t axis_index, int16_t max_position);
-bool SaveParam();
-```
+Factory calibration, zeroing and serial-number writes are available only through OmniHand-ToolBox. These maintenance operations are not part of the public SDK API.
 
 ## Tactile Data and T1.5 Board Temperatures
 

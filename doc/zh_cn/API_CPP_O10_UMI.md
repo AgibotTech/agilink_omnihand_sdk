@@ -7,7 +7,7 @@
 **主要特性：**
 - 10 个主动自由度
 - 1D 触觉传感器（手指、手心，无手背）
-- UMI 协议（Pn1-Pn8 寄存器）
+- UMI 协议（设备信息、位置和触觉查询）
 - 主动查询位置信息（无周期上报）
 - 仅支持 CAN（ZLG USB CANFD）通信
 - 支持 SocketCAN（仅 Linux）
@@ -207,36 +207,9 @@ std::vector<int16_t> GetAllJointMotorPosi() const;
 std::vector<double> GetAllActiveJointAngles() const;
 ```
 
-### 位置校准
+### 出厂维护
 
-```cpp
-/**
- * @brief 设置所有10个关节的最小位置校准（UMI 协议 Pn8=0x08，子寄存器 0x00）
- * @note 这是位置校准的只写操作。设备应处于最小位置时调用此函数。
- */
-void SetMinPositionCalibration();
-
-/**
- * @brief 设置单个关节的最小位置校准（UMI 协议 Pn8=0x08，子寄存器 0x01-0x0A）
- * @param joint_index 关节索引（1-10，其中1为第一个关节）
- * @note 这是位置校准的只写操作。
- */
-void SetMinPositionCalibration(unsigned char joint_index);
-
-/**
- * @brief 设置所有10个关节的最大位置校准（UMI 协议 Pn7=0x07，子寄存器 0x00）
- * @note 这是位置校准的只写操作。设备应处于最大位置时调用此函数。
- */
-void SetMaxPositionCalibration();
-
-/**
- * @brief 设置单个关节的最大位置校准（UMI 协议 Pn7=0x07，子寄存器 0x01-0x0A）
- * @param joint_index 关节索引（1-10，其中1为第一个关节）
- * @note 这是位置校准的只写操作。
- */
-void SetMaxPositionCalibration(unsigned char joint_index);
-```
-
+出厂标定、标零、写 SN 等维护操作仅供 OmniHand-ToolBox 使用，不属于公开 SDK API。
 
 ### 触觉传感器数据
 
@@ -289,8 +262,6 @@ struct DeviceInfo {
 
 2. **主动查询位置**：UMI 协议支持通过 `GetJointMotorPosi()` 和 `GetAllJointMotorPosi()` 主动查询关节位置。
 
-3. **位置校准**：位置校准（最小/最大）是只写操作。调用校准函数时，设备应处于适当的位置。
-
 ## 完整示例
 
 ```cpp
@@ -339,12 +310,6 @@ int main() {
 - **Pn6**: 触觉传感器数据（只读）
   - **Pn6.00**: 读取所有传感器数据（6个传感器：Thumb, Index, Middle, Ring, Little, Palm，UMI无手背传感器）
   - **Pn6.01~Pn6.06**: 读取单个传感器数据（传感器1-6）
-- **Pn7**: 最大位置校准（只写）
-  - **Pn7.00**: 一次性设置所有关节的最大位置
-  - **Pn7.01~Pn7.0A**: 设置单个关节的最大位置（关节 1-10）
-- **Pn8**: 最小位置校准（只写）
-  - **Pn8.00**: 一次性设置所有关节的最小位置
-  - **Pn8.01~Pn8.0A**: 设置单个关节的最小位置（关节 1-10）
 
 ## Demo 文件
 

@@ -118,50 +118,6 @@ void controlSingleHand(std::unique_ptr<agilink::omnihand::OmniHand3UltraM>& hand
     msg += "]";
     AgilinkLogger::get().infof(TAG, "%s", msg.c_str());
   }
-
-  // ============ O20 Extended API ============
-  AgilinkLogger::get().infof(TAG, "\n=== O20 Extended API ===");
-
-  AgilinkLogger::get().infof(TAG, "\nAxis Limit Positions (Pn7 & Pn8):");
-  auto limits = hand->GetAxisLimitPos();
-  if (!limits.empty()) {
-    {
-      std::string msg = "  Max: [";
-      char buf[64];
-      for (size_t i = 0; i < limits.max_limits.size(); ++i) {
-        snprintf(buf, sizeof(buf), "%d", limits.max_limits[i]);
-        msg += buf;
-        if (i < limits.max_limits.size() - 1) msg += ", ";
-      }
-      msg += "]";
-      AgilinkLogger::get().infof(TAG, "%s", msg.c_str());
-    }
-    {
-      std::string msg = "  Min: [";
-      char buf[64];
-      for (size_t i = 0; i < limits.min_limits.size(); ++i) {
-        snprintf(buf, sizeof(buf), "%d", limits.min_limits[i]);
-        msg += buf;
-        if (i < limits.min_limits.size() - 1) msg += ", ";
-      }
-      msg += "]";
-      AgilinkLogger::get().infof(TAG, "%s", msg.c_str());
-    }
-  }
-
-  AgilinkLogger::get().infof(TAG, "\nActual Axis Positions (Pn23):");
-  auto actual_pos = hand->GetAllActualAxisPos();
-  {
-    std::string msg = "  [";
-    char buf[64];
-    for (size_t i = 0; i < actual_pos.size(); ++i) {
-      snprintf(buf, sizeof(buf), "%d", actual_pos[i]);
-      msg += buf;
-      if (i < actual_pos.size() - 1) msg += ", ";
-    }
-    msg += "]";
-    AgilinkLogger::get().infof(TAG, "%s", msg.c_str());
-  }
 }
 
 int main(int argc, char** argv) {

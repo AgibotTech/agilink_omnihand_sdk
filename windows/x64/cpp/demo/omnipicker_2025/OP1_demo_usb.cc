@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
   AgilinkLogger::get().infof(TAG, "%s", ToString(info).c_str());
 
   if (!info.motor.calib_valid) {
-    AgilinkLogger::get().errorf(TAG, "motor calibration is invalid; run StartMotorCalibration() first");
+    AgilinkLogger::get().errorf(TAG, "motor calibration is invalid; calibrate it in OmniHand-ToolBox first");
     return 2;
   }
 
@@ -117,11 +117,5 @@ int main(int argc, char** argv) {
   // std::cout << "[INFO][UPDATE_FIRMWARE_VIA_FLASH] update firmware success" << std::endl;
   // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-  AgilinkLogger::get().infof(TAG, "[INFO][START_MOTOR_CALIBRATION] start ...");
-  if (!picker->StartMotorCalibration()) {
-    AgilinkLogger::get().infof(TAG, "[ERROR][START_MOTOR_CALIBRATION] error start motor calibration");
-    return -1;
-  }
-  AgilinkLogger::get().infof(TAG, "[INFO][START_MOTOR_CALIBRATION] completed");
   return 0;
 }

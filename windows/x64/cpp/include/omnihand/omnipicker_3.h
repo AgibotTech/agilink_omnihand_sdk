@@ -262,15 +262,6 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
       std::optional<uint16_t> iq_limit_ma = std::nullopt);
 
   /**
-   * @brief 0x80/0x07: writes the production-test stroke calibration K and S.
-   * @return true only if the device replied to the write and a read-back matches the written values;
-   *         false for NaN/Inf input, no reply, an unreadable read-back, or a mismatch.
-   * @warning Overwrites factory calibration data on the device. Takes effect immediately and is
-   *          persisted, so avoid calling it repeatedly (e.g. in loops or CI) to spare flash endurance.
-   */
-  virtual bool SetProductionStrokeCalib(const StrokeCalib& calib);
-
-  /**
    * @brief 0x80/0x07: reads the production-test stroke calibration K and S.
    * @return The parameters, or std::nullopt on no reply or a reply that is not 8 bytes.
    */
@@ -295,13 +286,8 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
   std::vector<int16_t> GetHandGesture(int gesture_num) override;
 
  protected:
-  // Transport hooks for 0x80/0x07; the encode/verify logic lives once in the base class.
-  // Appended after the public virtuals so the vtable order of existing slots is unchanged.
+  // Shared reader for the production stroke calibration register.
   static constexpr size_t kStrokeCalibPayloadLen = 8;
-  // The firmware silently drops a write when |K| is below this, so the SDK rejects it first.
-  static constexpr float kStrokeCalibMinAbsK = 1.0f;
-  // Sends the write frame; true once the device replied (the ack format is not specified).
-  virtual bool WriteStrokeCalibRaw(const uint8_t* data, size_t len);
   // Sends the read frame; returns the reply payload verbatim, nullopt on no reply.
   virtual std::optional<std::vector<uint8_t>> ReadStrokeCalibRaw() const;
 
@@ -323,17 +309,8 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
   static constexpr uint8_t kDefaultHandDevideId = 0x01;
 
  public:
-  // Declared last so it takes a new vtable slot instead of shifting the existing ones.
   // 0x14 mode=5 read: stroke in 0.01 mm without moving the gripper; nullopt on failure.
   virtual std::optional<int16_t> GetStroke() const;
-
-  // 0x27/0x01: persists a 19-char SN (0x21..0x7E); true only on device status 0x00.
-  virtual bool SetProductSerialNumber(const std::string& sn);
-
- protected:
-  static constexpr size_t kProductSnLen = 19;
-  // Sends the 19 SN bytes as a 0x27/0x01 write; returns the reply payload, nullopt on no reply.
-  virtual std::optional<std::vector<uint8_t>> WriteProductSnRaw(const uint8_t* data, size_t len);
 };
 
 }  // namespace omnihand

@@ -204,38 +204,6 @@ TEST_F(OmniHandDexUMITest, GetAllJointMotorPosi) {
   EXPECT_EQ(positions.size(), agilink::omnihand::OmniHandDexUMI::kDegreesOfActiveFreedom);
 }
 
-// // Test position calibration (UMI specific)
-// // Warning: These tests perform actual calibration - use with caution
-// TEST_F(OmniHandDexUMITest, MinPositionCalibration) {
-//   ASSERT_TRUE(hand_->Init()) << "Failed to initialize device";
-  
-//   // Test all joints calibration
-//   hand_->SetMinPositionCalibration();
-//   std::cout << "[SetMinPositionCalibration] Minimum position calibration set for all joints" << std::endl;
-  
-//   // Test single joint calibration (joint 1-10)
-//   for (unsigned char joint_idx = 1; joint_idx <= 10; ++joint_idx) {
-//     hand_->SetMinPositionCalibration(joint_idx);
-//     std::cout << "[SetMinPositionCalibration] Minimum position calibration set for joint " 
-//               << static_cast<int>(joint_idx) << std::endl;
-//   }
-// }
-
-// TEST_F(OmniHandDexUMITest, MaxPositionCalibration) {
-//   ASSERT_TRUE(hand_->Init()) << "Failed to initialize device";
-  
-//   // Test all joints calibration
-//   hand_->SetMaxPositionCalibration();
-//   std::cout << "[SetMaxPositionCalibration] Maximum position calibration set for all joints" << std::endl;
-  
-//   // Test single joint calibration (joint 1-10)
-//   for (unsigned char joint_idx = 1; joint_idx <= 10; ++joint_idx) {
-//     hand_->SetMaxPositionCalibration(joint_idx);
-//     std::cout << "[SetMaxPositionCalibration] Maximum position calibration set for joint " 
-//               << static_cast<int>(joint_idx) << std::endl;
-//   }
-// }
-
 // Main function for gtest
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);

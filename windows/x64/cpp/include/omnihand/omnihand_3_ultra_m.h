@@ -22,7 +22,6 @@
 #include <vector>
 #include "omnihand/export_symbols.h"
 #include "omnihand/i_control_mode.h"
-#include "omnihand/i_omnihand_calibrator.h"
 #include "omnihand/i_tactile_sensor_3d_i16.h"
 #include "omnihand/i_tactile_sensor_1d_u16.h"
 #include "omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h"
@@ -189,8 +188,7 @@ inline std::string H3UMErrorReportToString(const JointMotorErrorReport& report) 
  *   name/index are still placeholder implementations.
  */
 class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
-                                      public IControlMode,
-                                      public IOmniHandCalibrator {
+                                      public IControlMode {
  public:
   // Constants
   static constexpr unsigned char kT1P3DegreesOfActiveFreedom = 20;
@@ -570,42 +568,6 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
    * @return Power interface board temperature in degrees Celsius.
    */
   virtual int16_t GetTemperatureOfPower() const = 0;
-
-  // ---- IOmniHandCalibrator interface ----
-
-  // Pn23 (0x17): Single axis actual (calibration) position
-  // int16_t, unit: 0.1 degree, range: -1800 ~ 1800 (i.e. -180.0° ~ 180.0°), default: 0
-  int16_t SetSingleActualAxisPos(uint8_t axis_index, int16_t position) override { (void)axis_index; (void)position; return 0; }
-  int16_t GetSingleActualAxisPos(uint8_t axis_index) const override { (void)axis_index; return 0; }
-
-  // Pn23 (0x17): All axes actual (calibration) positions
-  std::vector<int16_t> SetAllActualAxisPos(const std::vector<int16_t>& positions) override { (void)positions; return {}; }
-  std::vector<int16_t> GetAllActualAxisPos() const override { return {}; }
-
-  // Pn9 (0x09): Set axis homing (zero reference) position
-  // axis_index: 0=all axes (pos ignored), 1-20=single axis
-  bool SetAxisHoming(uint8_t axis_index, int16_t pos) override { (void)axis_index; (void)pos; return false; }
-
-  // Pn8 (0x08): Set single axis minimum position limit
-  // int16_t, unit: 0.1 degree, range: -1800 ~ 1800, default: 0
-  bool SetAxisMinPos(uint8_t axis_index, int16_t min_pos) override { (void)axis_index; (void)min_pos; return false; }
-
-  // Pn7 (0x07): Set single axis maximum position limit
-  // int16_t, unit: 0.1 degree, range: -1800 ~ 1800, default: 0
-  bool SetAxisMaxPos(uint8_t axis_index, int16_t max_pos) override { (void)axis_index; (void)max_pos; return false; }
-
-  // Get all axes position limits (Pn7 & Pn8)
-  AxisLimitPos GetAxisLimitPos() const override { return {}; }
-
-  // Clear all axis position limits (not supported on H3UM, always returns false)
-  bool ClearAllLimitPos() override { return false; }
-
-  // Pn10 (0x0A): Save parameters to flash
-  // Parameters set via Pn7~Pn9 are NOT persisted until this command is sent.
-  bool SaveParam() override { return false; }
-
-  // Pn24 (0x18): Start auto calibration for all motors
-  virtual bool StartAutoCalibration() { return false; }
 
   // Clear error report
   virtual void ClearAllErrorReport() {}

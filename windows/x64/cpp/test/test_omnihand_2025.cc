@@ -61,6 +61,9 @@
 #include <vector>
 #include "omnihand/export_symbols.h"
 #include "omnihand/omnihand_2025.h"
+#ifdef OMNIHAND_BUILD_INTERNAL_TESTS
+#include "omnihand/private_omnihand.h"
+#endif
 #include "agilink_logger.h"
 #include "timestamp_test_utils.h"
 
@@ -298,6 +301,11 @@ class OmniHand2025Test : public ::testing::Test {
       GTEST_SKIP() << TransportName(g_transport) << " device not available";
     }
 
+#ifdef OMNIHAND_BUILD_INTERNAL_TESTS
+    private_hand_ = dynamic_cast<agilink::omnihand::PrivateOmniHand*>(hand_.get());
+    ASSERT_NE(private_hand_, nullptr);
+#endif
+
     // A return value of zero means both protocols use their own defaults; it
     // is a valid restorable state. A positive value means their IDs agree.
     original_device_id_ = hand_->GetHandDeviceIdByBroadcast();
@@ -332,6 +340,9 @@ class OmniHand2025Test : public ::testing::Test {
     ASSERT_TRUE(device_available_);
   }
 
+#ifdef OMNIHAND_BUILD_INTERNAL_TESTS
+  agilink::omnihand::PrivateOmniHand* private_hand_ = nullptr;
+#endif
   std::unique_ptr<agilink::omnihand::OmniHand2025> hand_;
   bool device_available_ = false;
   bool device_id_change_attempted_ = false;
@@ -567,9 +578,9 @@ TEST_F(OmniHand2025Test, MixControlByPTAllWithTimestamp) {
 TEST_F(OmniHand2025Test, MixControlByPTSingleWithTimestamp) {
   RequireDevice();
   if (IsUsbOrRs485Transport()) {
-    const auto firmware = hand_->GetFwVersion();
+    const auto firmware = hand_->GetVendorInfo();
     ASSERT_EQ(firmware.dof, 10);
-    const auto version = firmware.software_version;
+    const auto version = firmware.softwareVersion;
     if (!(version > agilink::omnihand::Version(1, 2, 15) &&
           version < agilink::omnihand::Version(15, 0, 0))) {
       GTEST_SKIP() << "Private serial protocol has no single-joint mixed-control command";
@@ -604,9 +615,9 @@ TEST_F(OmniHand2025Test, MixControlByPVTAllWithTimestamp) {
 TEST_F(OmniHand2025Test, MixControlByPVTSingleWithTimestamp) {
   RequireDevice();
   if (IsUsbOrRs485Transport()) {
-    const auto firmware = hand_->GetFwVersion();
+    const auto firmware = hand_->GetVendorInfo();
     ASSERT_EQ(firmware.dof, 10);
-    const auto version = firmware.software_version;
+    const auto version = firmware.softwareVersion;
     if (!(version > agilink::omnihand::Version(1, 2, 15) &&
           version < agilink::omnihand::Version(15, 0, 0))) {
       GTEST_SKIP() << "Private serial protocol has no single-joint mixed-control command";
@@ -1177,6 +1188,7 @@ TEST_F(OmniHand2025Test, KinematicsSolver) {
 }
 
 // ============================================================================
+#ifdef OMNIHAND_BUILD_INTERNAL_TESTS
 // StreamCmd Tests (USB private protocol, 0x01~0xCD)
 // ============================================================================
 
@@ -1188,14 +1200,13 @@ TEST_F(OmniHand2025Test, StreamCmdPowerState) {
   EXPECT_EQ(hand_->GetFrameRecvTimeout(), g_frame_recv_timeout);
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing power state commands(0x01/0x02):");
-  EXPECT_TRUE(hand_->SetPowerState(1));
-  EXPECT_LE(hand_->GetPowerState(), 2u);
+  EXPECT_TRUE(private_hand_->SetPowerState(1));
+  EXPECT_LE(private_hand_->GetPowerState(), 2u);
 
   // 0x03/0x04/0x05: SetAxisHoming + SetId + SaveParam, too dangerous
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Skipping axis homing and ID commands (0x03/0x04/0x05) due to potential hardware risk.");
-  // EXPECT_TRUE(hand_->SetAxisHoming(0, 0));
-  // EXPECT_TRUE(hand_->SetId(0));
-  // EXPECT_TRUE(hand_->SaveParam());
+  // EXPECT_TRUE(private_hand_->SetId(0));
+  // EXPECT_TRUE(private_hand_->SaveParam());
 }
 
 // 0x06/0x07: Single axis position
@@ -1204,11 +1215,11 @@ TEST_F(OmniHand2025Test, StreamCmdSingleAxisPos) {
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing single axis pos commands(0x06/0x07):");
   for (int i = 1; i <= agilink::omnihand::OmniHand2025::kDegreesOfActiveFreedom; ++i) {
-    uint16_t origin_pos = hand_->GetSingleAxisPos(i);
+    uint16_t origin_pos = private_hand_->GetSingleAxisPos(i);
     uint16_t target_pos = 512;
-    uint16_t reply_pos = hand_->SetSingleAxisPos(i, target_pos);
+    uint16_t reply_pos = private_hand_->SetSingleAxisPos(i, target_pos);
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));  // Wait for the position to take effect
-    uint16_t read_pos = hand_->GetSingleAxisPos(i);
+    uint16_t read_pos = private_hand_->GetSingleAxisPos(i);
     AgilinkLogger::get().infof(TAG, "  Joint %d: origin=%u, set=%u, reply=%u, read=%u",
                                i, origin_pos, target_pos, reply_pos, read_pos);
     EXPECT_LE(reply_pos, 4096u) << "invalid reply position for joint " << i;
@@ -1222,11 +1233,11 @@ TEST_F(OmniHand2025Test, StreamCmdAllAxisPos) {
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing all axis pos commands(0x08/0x09):");
   std::vector<uint16_t> positions(10, 1024);
-  const auto resp = hand_->SetAllAxisPos(positions);
+  const auto resp = private_hand_->SetAllAxisPos(positions);
   EXPECT_FALSE(resp.positions.empty());
   EXPECT_EQ(resp.positions.size(), 10u);
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));  // Wait for the position to take effect
-  const auto all_pos = hand_->GetAllAxisPos();
+  const auto all_pos = private_hand_->GetAllAxisPos();
   ASSERT_FALSE(all_pos.empty()) << "GetAllAxisPos timed out";
   EXPECT_EQ(all_pos.size(), 10u);
   for (size_t i = 0; i < resp.positions.size(); ++i) {
@@ -1242,7 +1253,7 @@ TEST_F(OmniHand2025Test, StreamCmdCurrentVelTemp) {
   RequireDevice();
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing all axis current commands(0x0A):");
-  const auto all_current = hand_->GetAllAxisCurrent();
+  const auto all_current = private_hand_->GetAllAxisCurrent();
   ASSERT_FALSE(all_current.empty()) << "GetAllAxisCurrent timed out";
   EXPECT_EQ(all_current.size(), 10u);
   {
@@ -1254,7 +1265,7 @@ TEST_F(OmniHand2025Test, StreamCmdCurrentVelTemp) {
   }
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing all axis velocity commands(0x0B):");
-  const auto all_velocity = hand_->GetAllAxisVelocity();
+  const auto all_velocity = private_hand_->GetAllAxisVelocity();
   ASSERT_FALSE(all_velocity.empty()) << "GetAllAxisVelocity timed out";
   EXPECT_EQ(all_velocity.size(), 10u);
   {
@@ -1266,7 +1277,7 @@ TEST_F(OmniHand2025Test, StreamCmdCurrentVelTemp) {
   }
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing all axis temperature commands(0x0C):");
-  const auto all_temp = hand_->GetAllAxisTemp();
+  const auto all_temp = private_hand_->GetAllAxisTemp();
   ASSERT_FALSE(all_temp.empty()) << "GetAllAxisTemp timed out";
   EXPECT_EQ(all_temp.size(), 10u);
   {
@@ -1283,12 +1294,12 @@ TEST_F(OmniHand2025Test, StreamCmdErrorAndAction) {
   RequireDevice();
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing all axis error code commands(0x0D):");
-  EXPECT_GE(hand_->GetErrorCode(), 0u);
-  (void)hand_->ClearError();
+  EXPECT_GE(private_hand_->GetErrorCode(), 0u);
+  (void)private_hand_->ClearError();
 
   // // 0x0F (dangerous action)
   // AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing all axis action commands(0x0F):");
-  // (void)hand_->PlayAction(1);
+  // (void)private_hand_->PlayAction(1);
 }
 
 // 0x10: Position range
@@ -1296,7 +1307,7 @@ TEST_F(OmniHand2025Test, StreamCmdPosRange) {
   RequireDevice();
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing all axis pos range commands(0x10):");
-  const auto pos_range = hand_->GetAllAxisPosRange();
+  const auto pos_range = private_hand_->GetAllAxisPosRange();
   ASSERT_FALSE(pos_range.empty()) << "GetAllAxisPosRange timed out";
   EXPECT_EQ(pos_range.size(), 10u);
   {
@@ -1315,7 +1326,7 @@ TEST_F(OmniHand2025Test, StreamCmdTactileSensors) {
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing all axis tactile sensors commands(0x11):");
   for (int i = 1; i <= 7; ++i) {
-    const auto fingertip0 = hand_->GetFingertipSensor(i);
+    const auto fingertip0 = private_hand_->GetFingertipSensor(i);
     EXPECT_FALSE(fingertip0.empty());
     {
       std::string msg = "  Sensor " + std::to_string(i) + ": ";
@@ -1327,17 +1338,17 @@ TEST_F(OmniHand2025Test, StreamCmdTactileSensors) {
   }
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing all axis tactile sensors commands(0x12):");
-  const auto fingertipA = hand_->GetAllFingertipSensorA();
+  const auto fingertipA = private_hand_->GetAllFingertipSensorA();
   ASSERT_FALSE(fingertipA.empty()) << "GetAllFingertipSensorA timed out";
   EXPECT_EQ(fingertipA.size(), 48u);
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing all axis tactile sensors commands(0x13):");
-  const auto fingertipB = hand_->GetAllFingertipSensorB();
+  const auto fingertipB = private_hand_->GetAllFingertipSensorB();
   ASSERT_FALSE(fingertipB.empty()) << "GetAllFingertipSensorB timed out";
   EXPECT_EQ(fingertipB.size(), 32u);
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing all axis tactile sensors commands(0x14):");
-  const auto fingertipC = hand_->GetAllFingertipSensorC();
+  const auto fingertipC = private_hand_->GetAllFingertipSensorC();
   ASSERT_FALSE(fingertipC.empty()) << "GetAllFingertipSensorC timed out";
   EXPECT_EQ(fingertipC.size(), 50u);
 }
@@ -1347,13 +1358,13 @@ TEST_F(OmniHand2025Test, StreamCmdTactileSensors) {
 //   REQUIRE_USB();
 
 //   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing control mode commands(0x15):");
-//   EXPECT_TRUE(hand_->SetRunMode(1, static_cast<uint8_t>(agilink::omnihand::ControlMode::SERVO)));
+//   EXPECT_TRUE(private_hand_->SetRunMode(1, static_cast<uint8_t>(agilink::omnihand::ControlMode::SERVO)));
 
 //   // 0x16~0x19 actual axis pos: too dangerous
 //   AgilinkLogger::get().infof(TAG, "[StreamCmd] Skipping actual axis position commands (0x16~0x19) due to potential hardware risk.");
-//   // EXPECT_LE(hand_->SetSingleActualAxisPos(1, 2048), 4096u);
+//   // EXPECT_LE(private_hand_->SetSingleActualAxisPos(1, 2048), 4096u);
 //   // std::vector<uint16_t> actual_positions(10, 2048);
-//   // const auto actual_resp = hand_->SetAllActualAxisPos(actual_positions);
+//   // const auto actual_resp = private_hand_->SetAllActualAxisPos(actual_positions);
 //   // EXPECT_EQ(actual_resp.size(), 10u);
 // }
 
@@ -1362,24 +1373,24 @@ TEST_F(OmniHand2025Test, StreamCmdLoadData) {
   RequireDevice();
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing all axis load data commands(0x1A):");
-  const auto load = hand_->GetAllLoadData();
+  const auto load = private_hand_->GetAllLoadData();
   ASSERT_FALSE(load.empty()) << "GetAllLoadData timed out";
   EXPECT_EQ(load.size(), 10u);
 
   // 0x1B~0x1D limits: too dangerous
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Skipping axis limit position commands (0x1B~0x1D) due to potential hardware risk.");
-  // EXPECT_TRUE(hand_->SetAxisMinPos(1, 100));
-  // EXPECT_TRUE(hand_->SetAxisMaxPos(1, 4000));
-  // EXPECT_TRUE(hand_->ClearAllLimitPos());
+  // EXPECT_TRUE(private_hand_->SetAxisMinPos(1, 100));
+  // EXPECT_TRUE(private_hand_->SetAxisMaxPos(1, 4000));
+  // EXPECT_TRUE(private_hand_->ClearAllLimitPos());
 
   // 0x20~0x25 protections: too dangerous
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Skipping protection commands (0x20~0x25) due to potential hardware risk.");
-  // EXPECT_TRUE(hand_->SetAllRunSpeed(std::vector<int16_t>(10, 0)));
-  // EXPECT_TRUE(hand_->SetOverloadTorque(1, 0));
-  // EXPECT_TRUE(hand_->SetOverloadProtectionTime(1, 0));
-  // EXPECT_TRUE(hand_->SetProtectedTorque(1, 0));
-  // EXPECT_TRUE(hand_->SetMinTorque(1, 0));
-  // EXPECT_TRUE(hand_->SetProtectiveCurrent(1, 0));
+  // EXPECT_TRUE(private_hand_->SetAllRunSpeed(std::vector<int16_t>(10, 0)));
+  // EXPECT_TRUE(private_hand_->SetOverloadTorque(1, 0));
+  // EXPECT_TRUE(private_hand_->SetOverloadProtectionTime(1, 0));
+  // EXPECT_TRUE(private_hand_->SetProtectedTorque(1, 0));
+  // EXPECT_TRUE(private_hand_->SetMinTorque(1, 0));
+  // EXPECT_TRUE(private_hand_->SetProtectiveCurrent(1, 0));
 }
 
 // 0x26/0x27: Motor and sensor IDs
@@ -1387,7 +1398,7 @@ TEST_F(OmniHand2025Test, StreamCmdMotorSensorIds) {
   RequireDevice();
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing all axis ID commands(0x26):");
-  const auto motor_ids = hand_->GetAllElectricMotorId();
+  const auto motor_ids = private_hand_->GetAllElectricMotorId();
   ASSERT_FALSE(motor_ids.empty()) << "GetAllElectricMotorId timed out";
   EXPECT_EQ(motor_ids.size(), 10u);
   {
@@ -1400,7 +1411,7 @@ TEST_F(OmniHand2025Test, StreamCmdMotorSensorIds) {
   }
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing all axis ID commands(0x27):");
-  const auto sensor_ids = hand_->GetAllSensorId();
+  const auto sensor_ids = private_hand_->GetAllSensorId();
   ASSERT_FALSE(sensor_ids.empty()) << "GetAllSensorId timed out";
   EXPECT_EQ(sensor_ids.size(), 7u);
   {
@@ -1414,7 +1425,7 @@ TEST_F(OmniHand2025Test, StreamCmdMotorSensorIds) {
 
   // 0x28 set all axis CVP upload interval (dangerous)
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Skipping all axis CVP upload interval command (0x28) due to potential hardware risk.");
-  // EXPECT_TRUE(hand_->SetAllAxisCvpUploadInterval(100));
+  // EXPECT_TRUE(private_hand_->SetAllAxisCvpUploadInterval(100));
 }
 
 // 0x29: CVP data
@@ -1422,7 +1433,7 @@ TEST_F(OmniHand2025Test, StreamCmdCVP) {
   RequireDevice();
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing all axis CVP commands(0x29):");
-  const auto cvp = hand_->GetAllAxisCvp();
+  const auto cvp = private_hand_->GetAllAxisCvp();
   ASSERT_FALSE(cvp.empty()) << "GetAllAxisCvp timed out";
   EXPECT_EQ(cvp.size(), 60u);
 }
@@ -1432,7 +1443,7 @@ TEST_F(OmniHand2025Test, StreamCmdAxisLimits) {
   RequireDevice();
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing all axis limit position commands(0x30):");
-  const auto axis_limits = hand_->GetAxisLimitPos();
+  const auto axis_limits = private_hand_->GetAxisLimitPos();
   ASSERT_FALSE(axis_limits.min_limits.empty()) << "GetAxisLimitPos timed out";
   EXPECT_EQ(axis_limits.min_limits.size(), 10u);
   EXPECT_EQ(axis_limits.max_limits.size(), 10u);
@@ -1448,7 +1459,7 @@ TEST_F(OmniHand2025Test, StreamCmdAxisLimits) {
 
   // 0x31 set right/left hand type (dangerous)
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Skipping right/left hand type command (0x31) due to potential hardware risk.");
-  // EXPECT_TRUE(hand_->SetRightOrLeft(0));
+  // EXPECT_TRUE(private_hand_->SetRightOrLeft(0));
 }
 
 // 0x32: Pos/speed/cur data
@@ -1460,11 +1471,11 @@ TEST_F(OmniHand2025Test, StreamCmdPosSpeedCur) {
   std::vector<int16_t> ps_speeds(10, 0);
   std::vector<uint16_t> ps_torques(10, 0);
   const agilink::omnihand::SetAllAxisPosResponse pos_speed_torque_resp =
-      hand_->SetPosSpeedTorqueData(ps_positions, ps_speeds, ps_torques);
+      private_hand_->SetPosSpeedTorqueData(ps_positions, ps_speeds, ps_torques);
   ASSERT_FALSE(pos_speed_torque_resp.positions.empty()) << "SetPosSpeedTorqueData failed";
   EXPECT_EQ(pos_speed_torque_resp.positions.size(), 10u);
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-  const auto all_pos_after_ps = hand_->GetAllAxisPos();
+  const auto all_pos_after_ps = private_hand_->GetAllAxisPos();
   ASSERT_FALSE(all_pos_after_ps.empty()) << "GetAllAxisPos after SetPosSpeedTorqueData timed out";
   EXPECT_EQ(all_pos_after_ps.size(), 10u);
   for (size_t i = 0; i < pos_speed_torque_resp.positions.size(); ++i) {
@@ -1477,17 +1488,17 @@ TEST_F(OmniHand2025Test, StreamCmdPosSpeedCur) {
 
   // 0x33 finger tactile force + threshold: no work
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Skipping finger tactile force command (0x33) due to no response.");
-  // const auto tactile_force = hand_->GetFingerTactileForce();
+  // const auto tactile_force = private_hand_->GetFingerTactileForce();
   // if (tactile_force.empty()) GTEST_SKIP() << "GetFingerTactileForce timeout";
   // EXPECT_EQ(tactile_force.size(), 35u);
 
   // 0x34 set temperature threshold (dangerous)
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Skipping temperature threshold command (0x34) due to potential hardware risk.");
-  // EXPECT_TRUE(hand_->SetTemperatureThreshold(80));
+  // EXPECT_TRUE(private_hand_->SetTemperatureThreshold(80));
 
   // 0x80 set control source (dangerous)
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Skipping control source command (0x80) due to potential hardware risk.");
-  // (void)hand_->SetControlSource(0);
+  // (void)private_hand_->SetControlSource(0);
 }
 
 // 0x81: Control source query
@@ -1495,8 +1506,8 @@ TEST_F(OmniHand2025Test, StreamCmdControlSource) {
   RequireDevice();
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing control source query command(0x81):");
-  EXPECT_EQ(hand_->GetControlSource(), 0u);
-  AgilinkLogger::get().infof(TAG, "  Control Source: %d", static_cast<int>(hand_->GetControlSource()));
+  EXPECT_EQ(private_hand_->GetControlSource(), 0u);
+  AgilinkLogger::get().infof(TAG, "  Control Source: %d", static_cast<int>(private_hand_->GetControlSource()));
 }
 
 // 0xC2: Product serial number
@@ -1505,11 +1516,9 @@ TEST_F(OmniHand2025Test, StreamCmdProductSerialNumber) {
 
   // 0xC1 set product serial number (dangerous)
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Skipping set product serial number command (0xC1) due to potential hardware risk.");
-  // std::vector<uint8_t> serial_number(19, 0);
-  // (void)hand_->SetProductSerialNumber(serial_number);
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing get product serial number command(0xC2):");
-  const auto prod_serial = hand_->GetProductSerialNumber();
+  const auto prod_serial = private_hand_->GetProductSerialNumber();
   EXPECT_FALSE(prod_serial.ToString().empty());
   AgilinkLogger::get().infof(TAG, "  Product Serial Number: %s", prod_serial.ToString().c_str());
 }
@@ -1519,10 +1528,12 @@ TEST_F(OmniHand2025Test, StreamCmdFirmwareVersion) {
   RequireDevice();
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing get firmware version command(0xCD):");
-  const auto fw = hand_->GetFwVersion();
+  const auto fw = private_hand_->GetFwVersion();
   EXPECT_EQ(fw.dof, 10);
   AgilinkLogger::get().infof(TAG, "  Firmware Version: %s", fw.ToString().c_str());
 }
+
+#endif
 
 // ============================================================================
 // Main

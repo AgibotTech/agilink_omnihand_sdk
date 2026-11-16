@@ -7,7 +7,7 @@
 **主要特性：**
 - 10 个主动自由度
 - 1D 触觉传感器（手指、手心，无手背）
-- UMI 协议（Pn1-Pn8 寄存器）
+- UMI 协议（设备信息、位置和触觉查询）
 - 主动查询位置信息（无周期上报）
 - 仅支持 CAN（ZLG USB CANFD）通信
 - 支持 SocketCAN（仅 Linux）
@@ -96,23 +96,9 @@ def create_hand_by_hcan(hand_type: HandType,
 
 ## UMI 特有接口
 
-### 位置校准
+### 出厂维护
 
-```python
-def set_min_position_calibration(self) -> None:
-    """设置最小位置校准（UMI 协议 Pn7，子寄存器 0x00）。
-    
-    Note:
-        这是位置校准的只写操作。设备应处于最小位置时调用此函数。
-    """
-
-def set_max_position_calibration(self) -> None:
-    """设置最大位置校准（UMI 协议 Pn7，子寄存器 0x01）。
-    
-    Note:
-        这是位置校准的只写操作。设备应处于最大位置时调用此函数。
-    """
-```
+出厂标定、标零、写 SN 等维护操作仅供 OmniHand-ToolBox 使用，不属于公开 SDK API。
 
 ### 位置查询
 
@@ -178,8 +164,6 @@ def get_tactile_sensor_data_raw(self, eFinger: Finger) -> TactileSensorData:
 
 2. **主动查询位置**：UMI 协议支持通过 `get_joint_position()` 或 `get_all_joint_positions()` 主动查询关节位置。位置值范围为 0-4096。
 
-3. **位置校准**：位置校准（最小/最大）是只写操作。调用校准函数时，设备应处于适当的位置。
-
 ## 完整示例
 
 ```python
@@ -221,7 +205,6 @@ SDK 发布包中提供了可直接运行的 Python demo 脚本（位于 `python/
 | CAN FD（按串号连接） | [demo_canfd_serial.py](../../../python/demo/omnihand_dex_umi/demo_canfd_serial.py) |
 | SocketCAN | [demo_socketcan.py](../../../python/demo/omnihand_dex_umi/demo_socketcan.py) |
 | 触觉传感器（原始数据） | [demo_tactile_sensor_raw.py](../../../python/demo/omnihand_dex_umi/demo_tactile_sensor_raw.py) |
-| 最大最小位置标定 | [demo_set_max_min_calibration.py](../../../python/demo/omnihand_dex_umi/demo_set_max_min_calibration.py) |
 | UMI 遥操 O10 | [demo_umi_to_o10.py](../../../python/demo/omnihand_dex_umi/demo_umi_to_o10.py) |
 | 主动关节角度读取 | [demo_get_all_active_joint_angles.py](../../../python/demo/omnihand_dex_umi/demo_get_all_active_joint_angles.py) |
 | 硬件信息 | [demo_get_hardware_info.py](../../../python/demo/omnihand_dex_umi/demo_get_hardware_info.py) |

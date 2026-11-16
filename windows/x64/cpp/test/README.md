@@ -24,6 +24,8 @@ cmake -DBUILD_CPP_TESTS=ON -B build
 cmake --build build
 ```
 
+Internal protocol and maintenance cases are excluded by default. SDK maintainers can enable them in a source build with `-DOMNIHAND_BUILD_INTERNAL_TESTS=ON`; these cases require the internal headers.
+
 ## Running Tests
 
 Timestamped interfaces are tested in the existing O10, O12, UMI, H3L,

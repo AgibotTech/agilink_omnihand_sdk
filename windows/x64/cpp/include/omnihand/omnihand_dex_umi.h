@@ -182,33 +182,6 @@ class AGIBOT_EXPORT OmniHandDexUMI : public OmniHand, public IO10TactileSensor1D
    */
   virtual std::vector<int16_t> GetAllJointMotorPosi() const = 0;
 
-  // ============ UMI-Specific Interfaces ============
-  /**
-   * @brief Set minimum position calibration for all 10 joints (UMI Protocol Pn8=0x08, sub-register 0x00).
-   * @note This is a write-only operation for position calibration.
-   */
-  virtual void SetMinPositionCalibration() = 0;
-
-  /**
-   * @brief Set minimum position calibration for a single joint (UMI Protocol Pn8=0x08, sub-register 0x01-0x0A).
-   * @param joint_index Joint index (1-10, where 1 is the first joint)
-   * @note This is a write-only operation for position calibration.
-   */
-  virtual void SetMinPositionCalibration(unsigned char joint_index) = 0;
-
-  /**
-   * @brief Set maximum position calibration for all 10 joints (UMI Protocol Pn7=0x07, sub-register 0x00).
-   * @note This is a write-only operation for position calibration.
-   */
-  virtual void SetMaxPositionCalibration() = 0;
-
-  /**
-   * @brief Set maximum position calibration for a single joint (UMI Protocol Pn7=0x07, sub-register 0x01-0x0A).
-   * @param joint_index Joint index (1-10, where 1 is the first joint)
-   * @note This is a write-only operation for position calibration.
-   */
-  virtual   void SetMaxPositionCalibration(unsigned char joint_index) = 0;
-
   // GetAllTactileSensorDataRaw and GetTactileSensorDataRaw are inherited from IO10TactileSensor1D
 
  protected:
