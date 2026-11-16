@@ -1,0 +1,821 @@
+linux/x64/install.sh
+  s_62d7f790ba05bc::t_0fa95652263ca1 29-35
+windows/x64/install.bat
+  s_62d7f790ba05bc::t_0fa95652263ca1 28-35
+linux/aarch64/install.sh
+  s_62d7f790ba05bc::t_0fa95652263ca1 29-35
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "cea8577e72a93d08d89ec57ec7fd8d5693860058",
+  "prompts": {},
+  "sessions": {
+    "s_62d7f790ba05bc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1b947-618f-72f1-be20-c6e2c733b4b5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.token_usage.output_tokens": "4597275",
+        "tlab.token_usage.cache_read_tokens": "1024976181",
+        "tlab.session_started_at": "2026-11-16T12:55:45Z",
+        "tlab.token_usage.input_tokens": "22570556"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "doc/en/API_CPP.md",
+      "new_path": "doc/en/API_CPP.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_PYTHON.md",
+      "new_path": "doc/en/API_PYTHON.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_SERVER.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 223
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_SERVER_REST.md",
+      "deletions": {
+        "human": 370
+      }
+    },
+    {
+      "old_path": "doc/en/API_SERVER_WS.md",
+      "deletions": {
+        "human": 381
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP.md",
+      "new_path": "doc/zh_cn/API_CPP.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_PYTHON.md",
+      "new_path": "doc/zh_cn/API_PYTHON.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_SERVER.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 209
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_SERVER_REST.md",
+      "deletions": {
+        "human": 412
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_SERVER_WS.md",
+      "deletions": {
+        "human": 377
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand_client/client_types.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 36
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand_client/rest_client.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 55
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand_client/value.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 19
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand_client/websocket_client.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 69
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand_server/server.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 60
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/include/omnihand_web/data_value.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 110
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/share/cmake/omnihand/Findomnihand.cmake",
+      "new_path": "linux/aarch64/cpp/share/cmake/omnihand/Findomnihand.cmake",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 63
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/test/CMakeLists.txt",
+      "new_path": "linux/aarch64/cpp/test/CMakeLists.txt",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/cpp/test/test_omnihand_server.cc",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 153
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/frontend/configs/config.json",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/frontend/docs/index.html",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 23
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/frontend/docs/openapi.yml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 836
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/frontend/index.html",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 397
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/frontend/scripts/client.js",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1068
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/install.sh",
+      "new_path": "linux/aarch64/install.sh",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 8
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/server/demo_rest_client.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 70
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/demo/server/demo_ws_client.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 68
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/omnihand_server/__init__.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/omnihand_server/__main__.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 35
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/omnihand_server/readme.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 60
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/aarch64/python/test/test_omnihand_server.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 72
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand_client/client_types.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 36
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand_client/rest_client.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 55
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand_client/value.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 19
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand_client/websocket_client.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 69
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand_server/server.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 60
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand_web/data_value.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 110
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/share/cmake/omnihand/Findomnihand.cmake",
+      "new_path": "linux/x64/cpp/share/cmake/omnihand/Findomnihand.cmake",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 63
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/test/CMakeLists.txt",
+      "new_path": "linux/x64/cpp/test/CMakeLists.txt",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/test/test_omnihand_server.cc",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 153
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/frontend/configs/config.json",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/frontend/docs/index.html",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 23
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/frontend/docs/openapi.yml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 836
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/frontend/index.html",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 397
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/frontend/scripts/client.js",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1068
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/install.sh",
+      "new_path": "linux/x64/install.sh",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 8
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/server/demo_rest_client.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 70
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/demo/server/demo_ws_client.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 68
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/omnihand_server/__init__.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/omnihand_server/__main__.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 35
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/omnihand_server/readme.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 60
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/python/test/test_omnihand_server.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 72
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_client/client_types.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 36
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_client/rest_client.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 55
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_client/value.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 19
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_client/websocket_client.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 69
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_server/server.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 60
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand_web/data_value.h",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 110
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/share/cmake/omnihand/Findomnihand.cmake",
+      "new_path": "windows/x64/cpp/share/cmake/omnihand/Findomnihand.cmake",
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 62
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 13
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_server.cc",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 153
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/frontend/configs/config.json",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/frontend/docs/index.html",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 23
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/frontend/docs/openapi.yml",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 836
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/frontend/index.html",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 397
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/frontend/scripts/client.js",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1068
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/install.bat",
+      "new_path": "windows/x64/install.bat",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 8
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 4
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/server/demo_rest_client.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 70
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/server/demo_ws_client.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 68
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_omnihand_server.py",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 72
+          }
+        ]
+      }
+    }
+  ]
+}
