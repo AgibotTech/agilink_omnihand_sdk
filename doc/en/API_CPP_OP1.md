@@ -22,6 +22,10 @@ USB direct uses the Fibre USB protocol and does not take a COM port. See [Quick 
 
 RS485 uses the firmware's custom serial protocol, with defaults of 115200 baud and 8N1, rather than Modbus. Enable `rs485_mode` and disable `modbus_mode` in the device configuration. Match the firmware baud rate. Each SDK instance exclusively owns its serial port; use separate ports for multiple devices.
 
+Hardware prerequisite: [section 5.2 of the official manual](https://cn.agilink-ai.com/OmniPicker/20.html) describes a DIP-equipped V1.2 board that defaults to CAN/CAN-FD. Power off, set switches 1 and 2 ON and 3–6 OFF, then power on for RS485. These switches select the electrical interface; the SDK cannot switch them.
+
+Configure firmware parameters over USB, then disable the motor, save the configuration, and reboot. On firmware 3.3.5 and later, also check `modbus_mode=False` and `uart_stopbits=0` to match this API. Earlier firmware uses fixed 115200 baud and 8N1.
+
 ```cpp
 auto picker = OmniPicker2025::createHandByRs485(
     HandType::LEFT, 1, "COM3", 115200);  // Linux: "/dev/ttyUSB0"
@@ -37,6 +41,10 @@ if (feedback) {
 Creation queries the addressed node and returns null if opening the port fails or the node does not respond. Node IDs range from 1 to 127; 0 selects the default ID 1 without broadcast discovery. The RS485 address is the firmware's `can_node_id`. Change it over USB with `SetCanNodeId()`, which saves the configuration automatically; power-cycle the device to apply it.
 
 `SendFrameSyncByRs485()` reuses the `Op1CanfdCtrlFrame` and `Op1CanfdStateFrame` fields below, returning `std::nullopt` on timeout or communication failure. The default receive timeout is 100 ms and can be changed with `SetFrameRecvTimeout()`. Calls block the calling thread, so use an application worker thread. `ShowDeviceInfo()` provides device type, node ID, and firmware version; other fields retain defaults.
+
+The official RS485 command table lists velocity and force in a different order from firmware. The SDK follows firmware and the CAN payload definition: position, velocity, force, acceleration, deceleration.
+
+Ensure firmware homing is complete before commanding motion. Before homing, firmware returns device information instead of state; the serial protocol has no message type field to distinguish these reliably.
 
 ## CANFD Control and Feedback
 

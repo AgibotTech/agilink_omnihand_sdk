@@ -22,6 +22,10 @@ USB 直连使用 Fibre USB 协议，不传 COM 端口。安装和接线见[快�
 
 RS485 使用固件的自定义串口协议，默认 115200、8N1，不使用 Modbus。设备需启用 `rs485_mode`、关闭 `modbus_mode`；波特率必须与固件配置一致。每个 SDK 实例独占一个串口，多设备请使用不同端口。
 
+硬件前置条件：按[官网用户手册第 5.2 节](https://cn.agilink-ai.com/OmniPicker/20.html)，带拨码开关的 V1.2 控制板默认使用 CAN/CAN-FD。切换 RS485 时应先断电，将 1、2 拨到 ON，3–6 全部拨到 OFF，再上电。拨码选择电气通道，SDK 无法代替硬件切换。
+
+固件参数通过 USB 配置，修改后需失能、保存配置并重启。3.3.5 及之后的固件还需确认 `modbus_mode=False`、`uart_stopbits=0`，使协议和停止位匹配本接口；更早版本的串口使用固定 115200、8N1。
+
 ```cpp
 auto picker = OmniPicker2025::createHandByRs485(
     HandType::LEFT, 1, "COM3", 115200);  // Linux: "/dev/ttyUSB0"
@@ -37,6 +41,10 @@ if (feedback) {
 创建时会查询指定节点的信息，串口打开失败或节点未响应时返回空指针。节点 ID 范围为 1–127，传 0 使用默认 ID 1，不进行广播发现。RS485 地址沿用固件的 `can_node_id`；通过 USB 的 `SetCanNodeId()` 修改时会自动保存配置，重新上电生效。
 
 `SendFrameSyncByRs485()` 复用下文的 `Op1CanfdCtrlFrame` 和 `Op1CanfdStateFrame`，超时或通信失败返回 `std::nullopt`。默认接收超时为 100 ms，可用 `SetFrameRecvTimeout()` 调整；接口同步等待，请在应用工作线程中调用。`ShowDeviceInfo()` 返回设备类型、节点 ID 和固件版本，其他字段保持默认值。
+
+官网 RS485 下行表格的速度、力矩列顺序与固件不一致；SDK 按固件及 CAN 负载定义使用“位置、速度、力矩、加速度、减速度”的顺序。
+
+发送运动命令前请确保固件已完成归零。未归零时固件会返回设备信息，串口协议没有类型字段，无法可靠地将其与状态反馈区分。
 
 ## CANFD 控制与反馈
 

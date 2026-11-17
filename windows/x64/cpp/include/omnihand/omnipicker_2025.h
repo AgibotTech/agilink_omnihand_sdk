@@ -323,7 +323,10 @@ class AGIBOT_EXPORT OmniPicker2025 : public OmniHand {
   virtual Op1DeviceInfo ShowDeviceInfo() const = 0;
 
   // ============ Factory Methods ============
-  // Each instance owns its port; use the firmware's custom RS485 mode (8N1).
+  // Each instance owns its port; uses custom RS485 framing (8N1).
+  // V1.2 DIP-equipped board: switches 1/2 ON, 3-6 OFF before power-on.
+  // Firmware: rs485_mode=1, modbus_mode=0; save and reboot after changes.
+  // Match the device's baud rate/node ID; uart_stopbits=0 means one stop bit.
   static std::unique_ptr<OmniPicker2025> createHandByRs485(
       HandType hand_type, uint8_t hand_device_id,
       const std::string& serial_port, uint32_t baudrate = 115200,
