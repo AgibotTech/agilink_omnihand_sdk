@@ -16,7 +16,7 @@ OP1 是 1 自由度夹爪，C++ 接口类为 `agilink::omnihand::OmniPicker2025`
 
 CAN 连接需传入夹爪实际节点 ID，默认值为 `OmniPicker2025::kDefaultHandDeviceId`（1）。适配器和通道索引从 0 开始。工厂保留 `hand_type` 参数，示例使用 `HandType::LEFT`。ZLG 和 HCAN 工厂还支持用适配器序列号替代适配器索引。
 
-USB 直连使用 Fibre USB 协议，不传 COM 端口。安装和接线见[快速入门](QUICK_START.md)，Linux CAN 配置见 [SocketCAN 配置](SOCKETCAN_SETUP.md)。
+USB 直连使用 Fibre USB 协议，SDK 创建接口使用 USB 序列号；demo 也支持用 `-p` 指定 COM／tty 端口，内部映射到对应的 USB 序列号。安装和接线见[快速入门](QUICK_START.md)，Linux CAN 配置见 [SocketCAN 配置](SOCKETCAN_SETUP.md)。
 
 ## C++ 示例
 
@@ -24,6 +24,8 @@ USB 直连使用 Fibre USB 协议，不传 COM 端口。安装和接线见[快�
 
 ```shell
 ./demo_omnipicker_2025 -d usb
+./demo_omnipicker_2025 -d usb -p COM4
+./demo_omnipicker_2025 -d usb -p /dev/ttyACM0
 ./demo_omnipicker_2025 -d usb --serial USB_SERIAL
 ./demo_omnipicker_2025 -d hcan -i 0 -c 0 --device-id 1
 ./demo_omnipicker_2025 -d zlgcan -i 0 -c 0 --device-id 1
@@ -34,7 +36,7 @@ USB 直连使用 Fibre USB 协议，不传 COM 端口。安装和接线见[快�
 
 Windows 可执行文件后缀为 `.exe`，Linux 串口可使用 `/dev/ttyUSB0`；SocketCAN 仅适用于 Linux。`--help` 显示完整参数。示例仅演示常规控制与信息读取，不包含固件更新、标定、标零、写 SN 或出厂参数写入。
 
-USB 使用 `--serial` 选择设备，不接受 COM 端口。USB 通过预设手势发送半开目标（底层为 MIT 控制）；CAN 发送单节点半开目标并打印应答；RS485 不传 `--position` 时只读取信息，传入 0–255 时控制开合并打印应答。CAN／RS485 应答中的位置在指令到达时采样，不代表已到达目标；USB 不提供实测位置反馈。
+USB 使用 `-p PORT` 或 `--serial USB_SERIAL` 选择设备，两者不能同时指定；均省略时选择第一台设备。端口匹配失败时报错，不会回退连接其他设备。USB 不需要波特率，不接受 `-b`。USB 通过预设手势发送半开目标（底层为 MIT 控制）；CAN 发送单节点半开目标并打印应答；RS485 不传 `--position` 时只读取信息，传入 0–255 时控制开合并打印应答。CAN／RS485 应答中的位置在指令到达时采样，不代表已到达目标；USB 不提供实测位置反馈。
 
 编译方式参见 [CMakeLists.txt](../../../cpp/demo/omnipicker_2025/CMakeLists.txt)。
 

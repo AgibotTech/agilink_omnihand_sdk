@@ -16,7 +16,7 @@ OP1 is a 1-DOF gripper. Its C++ interface is `agilink::omnihand::OmniPicker2025`
 
 For CAN connections, pass the gripper's actual node ID; the default is `OmniPicker2025::kDefaultHandDeviceId` (1). Adapter and channel indices start at 0. `hand_type` is retained in the factory signature; the example uses `HandType::LEFT`. ZLG and HCAN factories also accept an adapter serial number instead of its index.
 
-USB direct uses the Fibre USB protocol and does not take a COM port. See [Quick Start](QUICK_START.md) for installation and wiring, or [SocketCAN Setup](SOCKETCAN_SETUP.md) for Linux CAN configuration.
+USB direct uses the Fibre USB protocol. SDK factories select a device by USB serial number; the demo also accepts a COM/tty port with `-p` and maps it to the corresponding USB serial number. See [Quick Start](QUICK_START.md) for installation and wiring, or [SocketCAN Setup](SOCKETCAN_SETUP.md) for Linux CAN configuration.
 
 ## C++ Demo
 
@@ -24,6 +24,8 @@ All transports share [demo_omnipicker_2025.cc](../../../cpp/demo/omnipicker_2025
 
 ```shell
 ./demo_omnipicker_2025 -d usb
+./demo_omnipicker_2025 -d usb -p COM4
+./demo_omnipicker_2025 -d usb -p /dev/ttyACM0
 ./demo_omnipicker_2025 -d usb --serial USB_SERIAL
 ./demo_omnipicker_2025 -d hcan -i 0 -c 0 --device-id 1
 ./demo_omnipicker_2025 -d zlgcan -i 0 -c 0 --device-id 1
@@ -34,7 +36,7 @@ All transports share [demo_omnipicker_2025.cc](../../../cpp/demo/omnipicker_2025
 
 Windows executables use the `.exe` suffix; Linux serial ports can use `/dev/ttyUSB0`. SocketCAN is Linux-only. Use `--help` for all options. Demos cover normal control and information queries; they do not update firmware, calibrate, set zero offsets, write serial numbers, or write factory parameters.
 
-USB selects a device with `--serial`, not a COM port, and sends a half-open gesture through MIT control. CAN sends a single-node half-open target and prints the reply. RS485 reads information unless `--position` is supplied; values from 0 to 255 command the gripper and print the reply. CAN/RS485 reply positions are sampled when the command arrives, before the target is reached. USB does not report measured position.
+USB selects a device with either `-p PORT` or `--serial USB_SERIAL`; these options cannot be combined. Omit both to select the first device. An unmatched port produces an error without falling back to another device. USB does not need a baud rate and rejects `-b`. It sends a half-open gesture through MIT control. CAN sends a single-node half-open target and prints the reply. RS485 reads information unless `--position` is supplied; values from 0 to 255 command the gripper and print the reply. CAN/RS485 reply positions are sampled when the command arrives, before the target is reached. USB does not report measured position.
 
 See [CMakeLists.txt](../../../cpp/demo/omnipicker_2025/CMakeLists.txt) for build instructions.
 

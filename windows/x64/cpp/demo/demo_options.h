@@ -264,7 +264,8 @@ inline std::shared_ptr<agilink::omnihand::DeviceContext> MakeContext(
     context->socket_can = second ? options.second_can_if : options.can_if;
   } else if (native_usb && options.device == "usb") {
     if (!options.port.empty() || options.baudrate != 0) {
-      throw std::invalid_argument("Native USB uses --serial, not -p or -b");
+      throw std::invalid_argument(
+          "Native USB requires port resolution and does not use a baud rate");
     }
     context->usb = agilink::omnihand::UsbConnectionInfo{options.serial};
   } else {
