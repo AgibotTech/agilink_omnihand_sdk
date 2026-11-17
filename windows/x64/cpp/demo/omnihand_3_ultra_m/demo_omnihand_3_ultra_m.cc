@@ -72,8 +72,14 @@ void ReadSensors(agilink::omnihand::OmniHand3UltraM& hand) {
                 << ' ' << force.force.z << '\n';
     }
   } else if (auto* tactile = hand.GetTactileSensor1D()) {
-    for (const auto finger : tactile->GetSensorOrder()) {
-      const auto data = tactile->GetTactileSensorDataRaw(finger);
+    // Some firmware only replies to whole-hand pressure queries.
+    const auto all_data = tactile->GetAllTactileSensorDataRaw();
+    if (all_data.size() != tactile->GetSensorOrder().size()) {
+      std::cerr << "Incomplete pressure data\n";
+      return;
+    }
+    for (const auto& data : all_data) {
+      const auto finger = data.sensor_id_;
       if (data.data_.empty() ||
           data.data_.size() != tactile->GetNumOfTactilePoints(finger)) {
         std::cerr << agilink::omnihand::ToString(finger)
