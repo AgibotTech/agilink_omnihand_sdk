@@ -88,7 +88,7 @@ def read_sensors(hand):
     # Read raw tactile data once. Some T1.5 firmware only replies to whole-hand
     # queries; T1.3 returns XYZ points, while T1.5 returns uint16 pressure values.
     sensors = hand.get_all_tactile_sensor_data_raw()
-    if len(sensors) != hand.get_num_of_tactile_sensors():
+    if len(sensors) != len(hand.get_sensor_order()):
         print("Incomplete tactile data", file=sys.stderr)
         return
     for sensor in sensors:

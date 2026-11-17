@@ -60,7 +60,7 @@ python3 test_omnihand_3_lite.py -d hcan --request-interval 5 --model s
 
 # H3UM tests (automatically detect T1.3/T1.5; device ID defaults to 0)
 pytest -sv test_omnihand_3_ultra_m.py
-python3 test_omnihand_3_ultra_m.py -d zlgcan -i 0 -c 1
+python3 test_omnihand_3_ultra_m.py -d zlgcan -i 0 -c 1 --hand right
 python3 test_omnihand_3_ultra_m.py -d hcan -i 0 -c 0 --device-id 0
 python3 test_omnihand_3_ultra_m.py -d socketcan --can-if can0
 
@@ -97,6 +97,9 @@ The tests are organized similar to the C++ gtest structure:
 - **test_omnihand_pro_2025.py**: Tests for OmniHand Pro 2025 (O12, 12 DOF)
 - **test_omnihand_3_lite.py**: Unified ZLG/HCAN/SocketCAN/RS485 tests for OmniHand 3 Lite (H3L, 4 DOF)
 - **test_omnihand_3_ultra_m.py**: ZLG/HCAN/SocketCAN hardware tests for H3UM T1.3/T1.5 (20/21 DOF). Motion tests use the SDK SIDE_FIST/OPEN presets; tactile tests read whole-hand XYZ/uint16 data according to the detected revision. Set `OMNIHAND_DEVICE_ID` when addressing a specific hand through pytest.
+
+H3UM defaults to the left hand. Select the physical hand with `--hand right`
+(`--hand-type right` also works), or `OMNIHAND_HAND_TYPE=right` when using pytest.
 - **test_omnipicker_3.py**: Unified ZLG/HCAN/SocketCAN/RS485 non-destructive tests for OmniPicker 3 (OP3, 1 DOF)
 
 ## Test Coverage

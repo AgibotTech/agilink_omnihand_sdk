@@ -55,7 +55,7 @@ python3 test_omnihand_3_lite.py -d hcan --request-interval 5 --model s
 
 # H3UM 测试（自动识别 T1.3/T1.5，设备 ID 默认为 0）
 pytest -sv test_omnihand_3_ultra_m.py
-python3 test_omnihand_3_ultra_m.py -d zlgcan -i 0 -c 1
+python3 test_omnihand_3_ultra_m.py -d zlgcan -i 0 -c 1 --hand right
 python3 test_omnihand_3_ultra_m.py -d hcan -i 0 -c 0 --device-id 0
 python3 test_omnihand_3_ultra_m.py -d socketcan --can-if can0
 ```
@@ -95,6 +95,9 @@ pytest -s
 - **test_omnihand_pro_2025.py**：OmniHand Pro 2025 (O12, 12 DOF) 的测试
 - **test_omnihand_3_lite.py**：OmniHand 3 Lite (H3L, 4 DOF) 的测试
 - **test_omnihand_3_ultra_m.py**：H3UM T1.3/T1.5（20/21 自由度）的 ZLG/HCAN/SocketCAN 硬件测试。动作使用 SDK 的“侧握拳／打开”预设；触觉按识别的版本整手读取 XYZ／uint16 数据。通过 pytest 指定设备 ID 时可设置 `OMNIHAND_DEVICE_ID` 环境变量。
+
+H3UM 默认按左手创建；右手需指定 `--hand right`（也接受 `--hand-type right`）。
+通过 pytest 运行时可设置 `OMNIHAND_HAND_TYPE=right`。
 
 ## 测试覆盖
 

@@ -29,6 +29,8 @@ static std::string g_can_interface = "can0";
 static uint8_t g_can_device_index = 0;
 static uint8_t g_can_channel = 0;
 static uint8_t g_device_id = 0;  // Discover the address and detect the revision.
+static agilink::omnihand::HandType g_hand_type =
+    agilink::omnihand::HandType::LEFT;
 
 static int GetRequestInterval() {
   return g_request_interval;
@@ -54,22 +56,26 @@ class OmniHand3UltraMTest : public ::testing::Test {
     std::string device_type = GetDeviceType();
     if (device_type == "hcan") {
       hand_ = agilink::omnihand::OmniHand3UltraM::createHandByHcan(
-          agilink::omnihand::HandType::LEFT, g_device_id,
+          g_hand_type, g_device_id,
           g_can_device_index, g_can_channel);
       AgilinkLogger::get().infof(TAG, "Using HCAN device");
 #ifdef __linux__
     } else if (device_type == "socketcan") {
       hand_ = agilink::omnihand::OmniHand3UltraM::createHandSocketCan(
-          agilink::omnihand::HandType::LEFT, g_device_id, g_can_interface);
+          g_hand_type, g_device_id, g_can_interface);
       AgilinkLogger::get().infof(TAG, "Using SocketCAN device (%s)", g_can_interface.c_str());
 #endif
     } else {
       hand_ = agilink::omnihand::OmniHand3UltraM::createHandByZlgcan(
-          agilink::omnihand::HandType::LEFT, g_device_id,
+          g_hand_type, g_device_id,
           g_can_device_index, g_can_channel);
       AgilinkLogger::get().infof(TAG, "Using ZLG CAN device");
     }
     if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
+    AgilinkLogger::get().infof(
+        TAG, "Hand: %s, active DOF: %u",
+        g_hand_type == agilink::omnihand::HandType::LEFT ? "left" : "right",
+        static_cast<unsigned>(hand_->GetDoA()));
     int request_interval = GetRequestInterval();
     hand_->SetRequestInterval(request_interval);
     if (hand_->GetRevision() == agilink::omnihand::h3um::H3UMRevision::T1P5) {
@@ -645,6 +651,21 @@ int main(int argc, char** argv) {
                                    device_type.c_str());
         return 1;
       }
+    } else if (arg == "--hand" || arg == "--hand-type") {
+      if (i + 1 == argc) {
+        AgilinkLogger::get().errorf(TAG, "Missing value for %s", arg.c_str());
+        return 1;
+      }
+      const std::string side = argv[++i];
+      if (side == "left") {
+        g_hand_type = agilink::omnihand::HandType::LEFT;
+      } else if (side == "right") {
+        g_hand_type = agilink::omnihand::HandType::RIGHT;
+      } else {
+        AgilinkLogger::get().errorf(TAG, "%s must be left or right", arg.c_str());
+        return 1;
+      }
+      continue;
     } else if (arg == "--can-if") {
       if (i + 1 == argc || argv[i + 1][0] == '\0' || argv[i + 1][0] == '-') {
         AgilinkLogger::get().errorf(TAG, "Missing interface name for --can-if");
@@ -682,13 +703,14 @@ int main(int argc, char** argv) {
       }
       continue;
     } else if (arg == "--help" || arg == "-h") {
-      AgilinkLogger::get().infof(TAG, "Usage: %s [-f INTERVAL] [-d DEVICE] [-i INDEX] [-c CHANNEL] [--can-if INTERFACE] [--device-id ID]", argv[0]);
+      AgilinkLogger::get().infof(TAG, "Usage: %s [-f INTERVAL] [-d DEVICE] [-i INDEX] [-c CHANNEL] [--can-if INTERFACE] [--device-id ID] [--hand left|right]", argv[0]);
       AgilinkLogger::get().infof(TAG, "  --device-id       Target hand ID (0-127, default: 0 for discovery); revision is detected automatically");
       AgilinkLogger::get().infof(TAG, "  -f INTERVAL       Set CAN request interval (0-100ms, default: 5ms)");
       AgilinkLogger::get().infof(TAG, "  -d DEVICE         Set CAN device type (zlgcan, hcan or socketcan, default: zlgcan)");
       AgilinkLogger::get().infof(TAG, "  -i INDEX          CAN adapter index (0-255, default: 0)");
       AgilinkLogger::get().infof(TAG, "  -c CHANNEL        CAN channel index (0-255, default: 0)");
       AgilinkLogger::get().infof(TAG, "  --can-if NAME     SocketCAN interface name (default: can0)");
+      AgilinkLogger::get().infof(TAG, "  --hand SIDE       left or right (default: left; alias: --hand-type)");
       return 0;
     }
     gtest_args.push_back(argv[i]);

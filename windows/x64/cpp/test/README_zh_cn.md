@@ -51,7 +51,13 @@ ctest
 
 # 运行 H3L 测试
 ./cpp/test/test_omnihand_3_lite
+
+# H3UM：同时选择实物左右手、CAN 适配器索引及通道
+./bin/omnihand/test/test_omnihand_3_ultra_m -d zlgcan -i 0 -c 1 --hand right
 ```
+
+H3UM 默认为 `--hand left`，右手须指定 `--hand right`，也接受 `--hand-type`。
+左右手决定预设动作和角度换算表；T1.3/T1.5 版本识别与左右手选择相互独立。
 
 ### 请求频率参数
 

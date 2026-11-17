@@ -8,7 +8,7 @@ This mirrors the safe public-API checks in
 
 Examples:
 
-    python test_omnihand_3_ultra_m.py -d zlgcan -i 0 -c 1
+    python test_omnihand_3_ultra_m.py -d zlgcan -i 0 -c 1 --hand right
     python test_omnihand_3_ultra_m.py -d hcan --device-id 0
     python test_omnihand_3_ultra_m.py -d socketcan --can-if can0
     OMNIHAND_DEVICE_TYPE=zlgcan pytest -sv test_omnihand_3_ultra_m.py
@@ -84,7 +84,7 @@ def _apply_environment():
 
 def _apply_direct_cli():
     """Consume device options before forwarding remaining arguments to pytest."""
-    argv = sys.argv[:]
+    argv = ["--hand-type" if arg == "--hand" else arg for arg in sys.argv]
     for options, cast in ((_STR_OPTIONS, str), (_INT_OPTIONS, lambda x: int(x, 0))):
         for _env_name, flag, attr in options:
             while flag in argv:
@@ -329,9 +329,9 @@ def test_all_tactile_sensor_data_raw(tactile_hand):
     # Whole-hand queries also support T1.5 firmware without single-region replies.
     sensors = _require_vector(
         tactile_hand.get_all_tactile_sensor_data_raw(),
-        tactile_hand.get_num_of_tactile_sensors(), "GetAllTactileSensorDataRaw",
+        len(tactile_hand.get_sensor_order()), "GetAllTactileSensorDataRaw",
     )
-    assert len({sensor.sensor_id for sensor in sensors}) == len(sensors)
+    assert {sensor.sensor_id for sensor in sensors} == set(tactile_hand.get_sensor_order())
     for sensor in sensors:
         if tactile_hand.get_revision() == H3UMRevision.T1P5:
             values = sensor.data
@@ -347,7 +347,7 @@ def test_all_tactile_sensor_resultant_forces(tactile_hand):
         pytest.skip("3D resultant forces require T1.3")
     forces = _require_vector(
         tactile_hand.get_all_tactile_sensor_resultant_forces(),
-        tactile_hand.get_num_of_tactile_sensors(),
+        len(tactile_hand.get_sensor_order()),
         "GetAllTactileSensorResultantForces",
     )
     for sensor in forces:
