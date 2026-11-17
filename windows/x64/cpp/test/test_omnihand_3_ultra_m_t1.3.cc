@@ -24,8 +24,9 @@ constexpr auto kMotorPositionRange =
 static int g_request_interval = 5;
 static std::string g_device_type = "zlgcan";
 static std::string g_can_interface = "can0";
-static bool g_revision_t1p5 = false;
-static uint8_t g_device_id = 9;  // Preserve the existing T1.3 test default.
+static uint8_t g_can_device_index = 0;
+static uint8_t g_can_channel = 0;
+static uint8_t g_device_id = 0;  // Discover the address and detect the revision.
 
 static int GetRequestInterval() {
   return g_request_interval;
@@ -50,26 +51,23 @@ class OmniHand3UltraMT1P3Test : public ::testing::Test {
   void SetUp() override {
     std::string device_type = GetDeviceType();
     if (device_type == "hcan") {
-      hand_ = g_revision_t1p5 ?
-          agilink::omnihand::OmniHand3UltraM::createHandT1P5ByHcan(
-              agilink::omnihand::HandType::LEFT, g_device_id, 0, 0) :
-          agilink::omnihand::OmniHand3UltraM::createHandByHcan(
-              agilink::omnihand::HandType::LEFT, g_device_id, 0, 0);
+      hand_ = agilink::omnihand::OmniHand3UltraM::createHandByHcan(
+          agilink::omnihand::HandType::LEFT, g_device_id,
+          g_can_device_index, g_can_channel);
       AgilinkLogger::get().infof(TAG, "Using HCAN device");
 #ifdef __linux__
     } else if (device_type == "socketcan") {
-      hand_ = g_revision_t1p5 ?
-          agilink::omnihand::OmniHand3UltraM::createHandT1P5SocketCan(
-              agilink::omnihand::HandType::LEFT, g_device_id, g_can_interface) :
-          agilink::omnihand::OmniHand3UltraM::createHandSocketCan(
-              agilink::omnihand::HandType::LEFT, g_device_id, g_can_interface);
+      hand_ = agilink::omnihand::OmniHand3UltraM::createHandSocketCan(
+          agilink::omnihand::HandType::LEFT, g_device_id, g_can_interface);
       AgilinkLogger::get().infof(TAG, "Using SocketCAN device (%s)", g_can_interface.c_str());
 #endif
     } else {
       hand_ = agilink::omnihand::OmniHand3UltraM::createHandByZlgcan(
-          agilink::omnihand::HandType::LEFT, g_device_id, 0, 0);
+          agilink::omnihand::HandType::LEFT, g_device_id,
+          g_can_device_index, g_can_channel);
       AgilinkLogger::get().infof(TAG, "Using ZLG CAN device");
     }
+    if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
     int request_interval = GetRequestInterval();
     hand_->SetRequestInterval(request_interval);
     if (hand_->GetRevision() == agilink::omnihand::h3um::H3UMRevision::T1P5) {
@@ -386,9 +384,8 @@ TEST_F(OmniHand3UltraMT1P3Test, GetVendorInfo) {
       return;
     }
     const uint8_t doa = hand_->GetDoA();
-    EXPECT_EQ(doa, 20);
+    EXPECT_EQ(doa, vendor_info.dof);
     EXPECT_EQ(hand_->GetNumOfJointMotors(), doa);
-    EXPECT_EQ(hand_->GetRevision(), agilink::omnihand::h3um::H3UMRevision::T1P3);
     const auto joint_names = hand_->GetJointNames();
     EXPECT_EQ(joint_names.size(), doa);
   }
@@ -399,7 +396,7 @@ TEST_F(OmniHand3UltraMT1P3Test, GetDeviceInfo) {
     auto device_info = hand_->GetDeviceInfo();
     AgilinkLogger::get().infof(TAG, "[GetDeviceInfo] %s", device_info.ToString().c_str());
     if (device_info.hand_device_id != 0) {
-      EXPECT_EQ(device_info.hand_device_id, 9);
+      EXPECT_EQ(device_info.hand_device_id, hand_->GetHandDeviceId());
     }
   }
 }
@@ -413,16 +410,16 @@ TEST_F(OmniHand3UltraMT1P3Test, GetNonPrivateHandDeviceIdByBroadcast) {
 }
 
 TEST_F(OmniHand3UltraMT1P3Test, MixControlRejectsInvalidArguments) {
-  constexpr size_t kDof = agilink::omnihand::OmniHand3UltraM::kT1P3DegreesOfActiveFreedom;
-  const std::vector<int16_t> valid(kDof, 0);
-  const std::vector<int16_t> short_values(kDof - 1, 0);
+  const size_t dof = hand_->GetDoA();
+  const std::vector<int16_t> valid(dof, 0);
+  const std::vector<int16_t> short_values(dof - 1, 0);
 
   EXPECT_TRUE(hand_->MixControlByPT(short_values, short_values).empty());
   EXPECT_TRUE(hand_->MixControlByPVT(valid, short_values, valid).empty());
 
   const auto invalid_pt = hand_->MixControlByPT(0, 0, 0);
   EXPECT_EQ(invalid_pt.ctrl_mode_, 0);
-  const auto invalid_pvt = hand_->MixControlByPVT(static_cast<uint8_t>(kDof + 1), 0, 0, 0);
+  const auto invalid_pvt = hand_->MixControlByPVT(static_cast<uint8_t>(dof + 1), 0, 0, 0);
   EXPECT_EQ(invalid_pvt.ctrl_mode_, 0);
 }
 
@@ -448,6 +445,9 @@ TEST_F(OmniHand3UltraMT1P3Test, MixControlRejectsInvalidArguments) {
 
 TEST_F(OmniHand3UltraMT1P3Test, GestureDance) {
   if (!hand_->Init()) return;
+  if (hand_->GetRevision() != agilink::omnihand::h3um::H3UMRevision::T1P3) {
+    GTEST_SKIP() << "These gestures use the T1.3 motor layout";
+  }
 
   constexpr size_t MOTOR_TOTAL_COUNT = 20;
 
@@ -494,14 +494,14 @@ TEST_F(OmniHand3UltraMT1P3Test, GestureDance) {
 TEST_F(OmniHand3UltraMT1P3Test, ControlMode) {
   if (hand_->Init()) {
     auto current_modes = hand_->GetAllControlMode();
-    if (current_modes.empty() || current_modes.size() != 20) {
-      AgilinkLogger::get().warnf(TAG, "[GetAllControlMode] Failed: got %zu modes, expected 20",
-                                current_modes.size());
+    if (current_modes.empty() || current_modes.size() != hand_->GetDoA()) {
+      AgilinkLogger::get().warnf(TAG, "[GetAllControlMode] Failed: got %zu modes, expected %u",
+                                current_modes.size(), static_cast<unsigned>(hand_->GetDoA()));
       return;
     }
     AgilinkLogger::get().infof(TAG, "[GetAllControlMode] Control Modes: %s",
                               ValuesToString(current_modes).c_str());
-    EXPECT_EQ(current_modes.size(), 20);
+    EXPECT_EQ(current_modes.size(), hand_->GetDoA());
   }
 }
 
@@ -515,9 +515,9 @@ TEST_F(OmniHand3UltraMT1P3Test, ErrorReport) {
       reports << "J" << (i + 1) << ":["
               << agilink::omnihand::H3UMErrorReportToString(error_reports[i]) << "]";
     }
-    AgilinkLogger::get().infof(TAG, "[GetAllErrorReport] Error Reports (20 joints): %s",
+    AgilinkLogger::get().infof(TAG, "[GetAllErrorReport] Error Reports: %s",
                               reports.str().c_str());
-    EXPECT_EQ(error_reports.size(), 20);
+    EXPECT_EQ(error_reports.size(), hand_->GetDoA());
   }
 }
 
@@ -542,7 +542,7 @@ TEST_F(OmniHand3UltraMT1P3Test, TemperatureReport) {
     }
     AgilinkLogger::get().infof(TAG, "[GetAllTemperatureReport] Temperature Reports (C): %s",
                               reports.str().c_str());
-    EXPECT_EQ(temp_reports.size(), 20);
+    EXPECT_EQ(temp_reports.size(), hand_->GetDoA());
   }
 }
 
@@ -557,21 +557,21 @@ TEST_F(OmniHand3UltraMT1P3Test, CurrentReport) {
     }
     AgilinkLogger::get().infof(TAG, "[GetAllCurrentReport] Current Reports (mA): %s",
                               reports.str().c_str());
-    EXPECT_EQ(current_reports.size(), 20);
+    EXPECT_EQ(current_reports.size(), hand_->GetDoA());
   }
 }
 
 TEST_F(OmniHand3UltraMT1P3Test, GetAllJointMotorVelo) {
   if (hand_->Init()) {
     auto current_velocities = hand_->GetAllJointMotorVelo();
-    if (current_velocities.empty() || current_velocities.size() != 20) {
-      AgilinkLogger::get().warnf(TAG, "[GetAllJointMotorVelo] Failed: got %zu velocities, expected 20",
-                                current_velocities.size());
+    if (current_velocities.empty() || current_velocities.size() != hand_->GetDoA()) {
+      AgilinkLogger::get().warnf(TAG, "[GetAllJointMotorVelo] Failed: got %zu velocities, expected %u",
+                                current_velocities.size(), static_cast<unsigned>(hand_->GetDoA()));
       return;
     }
     AgilinkLogger::get().infof(TAG, "[GetAllJointMotorVelo] Current Velocities: %s",
                               ValuesToString(current_velocities).c_str());
-    EXPECT_EQ(current_velocities.size(), 20);
+    EXPECT_EQ(current_velocities.size(), hand_->GetDoA());
   }
 }
 
@@ -590,8 +590,8 @@ TEST_F(OmniHand3UltraMT1P3Test, AxisLimitPos) {
                               ValuesToString(limits.min_limits).c_str());
     AgilinkLogger::get().infof(TAG, "[GetAxisLimitPos] Max Limits (0.1 deg): %s",
                               ValuesToString(limits.max_limits).c_str());
-    EXPECT_EQ(limits.min_limits.size(), 20);
-    EXPECT_EQ(limits.max_limits.size(), 20);
+    EXPECT_EQ(limits.min_limits.size(), hand_->GetDoA());
+    EXPECT_EQ(limits.max_limits.size(), hand_->GetDoA());
   }
 }
 
@@ -607,7 +607,7 @@ TEST_F(OmniHand3UltraMT1P3Test, ActualAxisPos) {
     }
     AgilinkLogger::get().infof(TAG, "[GetAllActualAxisPos] Actual Positions (0.1 deg): %s",
                               ValuesToString(actual_pos).c_str());
-    EXPECT_EQ(actual_pos.size(), 20);
+    EXPECT_EQ(actual_pos.size(), hand_->GetDoA());
 
     auto single = maintenance->GetSingleActualAxisPos(1);
     AgilinkLogger::get().infof(TAG, "[GetSingleActualAxisPos] Joint 1: %d", static_cast<int>(single));
@@ -649,37 +649,50 @@ int main(int argc, char** argv) {
                                    device_type.c_str());
         return 1;
       }
-    } else if (arg == "-c" && i + 1 < argc) {
-      g_can_interface = argv[i + 1];
-      ++i;
-      continue;
-    } else if (arg == "--revision" && i + 1 < argc) {
-      const std::string revision = argv[++i];
-      if (revision != "1.3" && revision != "1.5") {
-        AgilinkLogger::get().errorf(TAG, "--revision must be 1.3 or 1.5");
+    } else if (arg == "--can-if") {
+      if (i + 1 == argc || argv[i + 1][0] == '\0' || argv[i + 1][0] == '-') {
+        AgilinkLogger::get().errorf(TAG, "Missing interface name for --can-if");
         return 1;
       }
-      g_revision_t1p5 = revision == "1.5";
+      g_can_interface = argv[++i];
       continue;
-    } else if (arg == "--device-id" && i + 1 < argc) {
+    } else if (arg == "--revision") {
+      AgilinkLogger::get().errorf(TAG, "Revision is detected automatically; --revision is not supported");
+      return 1;
+    } else if (arg == "--device-id" || arg == "-i" || arg == "-c") {
+      if (i + 1 == argc) {
+        AgilinkLogger::get().errorf(TAG, "Missing value for %s", arg.c_str());
+        return 1;
+      }
       try {
         size_t consumed = 0;
         const std::string value = argv[++i];
-        const int id = std::stoi(value, &consumed);
-        if (consumed != value.size() || id < 1 || id > 0x7f) return 1;
-        g_device_id = static_cast<uint8_t>(id);
+        const int number = std::stoi(value, &consumed);
+        const int maximum = arg == "--device-id" ? 0x7f : 0xff;
+        if (consumed != value.size() || number < 0 || number > maximum) {
+          AgilinkLogger::get().errorf(TAG, "%s must be an integer in [0, %d]", arg.c_str(), maximum);
+          return 1;
+        }
+        if (arg == "--device-id") {
+          g_device_id = static_cast<uint8_t>(number);
+        } else if (arg == "-i") {
+          g_can_device_index = static_cast<uint8_t>(number);
+        } else {
+          g_can_channel = static_cast<uint8_t>(number);
+        }
       } catch (const std::exception&) {
-        AgilinkLogger::get().errorf(TAG, "--device-id must be an integer in [1, 127]");
+        AgilinkLogger::get().errorf(TAG, "Invalid value for %s", arg.c_str());
         return 1;
       }
       continue;
     } else if (arg == "--help" || arg == "-h") {
-      AgilinkLogger::get().infof(TAG, "Usage: %s [-f INTERVAL] [-d DEVICE] [-c CAN_INTERFACE] [--revision 1.3|1.5] [--device-id ID]", argv[0]);
-      AgilinkLogger::get().infof(TAG, "  --revision        Revision for timestamp tests (default: 1.3)");
-      AgilinkLogger::get().infof(TAG, "  --device-id       Target hand ID (1-127, default: 9); does not write the device ID");
+      AgilinkLogger::get().infof(TAG, "Usage: %s [-f INTERVAL] [-d DEVICE] [-i INDEX] [-c CHANNEL] [--can-if INTERFACE] [--device-id ID]", argv[0]);
+      AgilinkLogger::get().infof(TAG, "  --device-id       Target hand ID (0-127, default: 0 for discovery); revision is detected automatically");
       AgilinkLogger::get().infof(TAG, "  -f INTERVAL       Set CAN request interval (0-100ms, default: 5ms)");
       AgilinkLogger::get().infof(TAG, "  -d DEVICE         Set CAN device type (zlgcan, hcan or socketcan, default: zlgcan)");
-      AgilinkLogger::get().infof(TAG, "  -c CAN_INTERFACE  Set SocketCAN interface name (default: can0)");
+      AgilinkLogger::get().infof(TAG, "  -i INDEX          CAN adapter index (0-255, default: 0)");
+      AgilinkLogger::get().infof(TAG, "  -c CHANNEL        CAN channel index (0-255, default: 0)");
+      AgilinkLogger::get().infof(TAG, "  --can-if NAME     SocketCAN interface name (default: can0)");
       return 0;
     }
     gtest_args.push_back(argv[i]);
