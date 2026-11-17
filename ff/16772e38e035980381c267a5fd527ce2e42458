@@ -1,0 +1,81 @@
+doc/zh_cn/API_CPP_OP1.md
+  s_62d7f790ba05bc::t_7210564a0bccb0 15,19-36,38-39,110,124
+  s_62d7f790ba05bc::t_e27d58d1d88e65 37
+doc/en/API_CPP_OP1.md
+  s_62d7f790ba05bc::t_7210564a0bccb0 15,19-36,38-39,110,124
+  s_62d7f790ba05bc::t_debc0c7f6e805d 37
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "ff16772e38e035980381c267a5fd527ce2e42458",
+  "prompts": {},
+  "sessions": {
+    "s_62d7f790ba05bc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1b947-618f-72f1-be20-c6e2c733b4b5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.session_started_at": "2026-11-17T00:55:25Z",
+        "tlab.token_usage.output_tokens": "4746376",
+        "tlab.token_usage.input_tokens": "23440236",
+        "tlab.token_usage.cache_read_tokens": "1055294811",
+        "tlab.token_usage.cache_creation_tokens": "0"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "doc/en/API_CPP_OP1.md",
+      "new_path": "doc/en/API_CPP_OP1.md",
+      "additions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 23
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_OP1.md",
+      "new_path": "doc/zh_cn/API_CPP_OP1.md",
+      "additions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 23
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnipicker_2025.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnipicker_2025.h",
+      "additions": {
+        "human": 12
+      }
+    }
+  ]
+}
