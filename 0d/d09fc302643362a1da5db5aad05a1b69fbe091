@@ -1,0 +1,165 @@
+windows/x64/python/test/README_zh_cn.md
+  s_62d7f790ba05bc::t_93dc39832d3024 56-60,97
+windows/x64/python/demo/omnihand_3_ultra_m/demo_omnihand_3_ultra_m.py
+  s_62d7f790ba05bc::t_70d13477dc3329 1-142
+windows/x64/python/demo/README.md
+  s_62d7f790ba05bc::t_ea27d276d955ba 50-65
+windows/x64/python/demo/README_zh_cn.md
+  s_62d7f790ba05bc::t_63024ef880ecba 50-64
+windows/x64/python/test/README.md
+  s_62d7f790ba05bc::t_c75b9b57803664 61-65,99
+windows/x64/python/test/test_omnihand_3_ultra_m.py
+  s_62d7f790ba05bc::t_4379b99705d55b 4,7,11-14,32-38,50,54,66,119-124,159,161,167-169,179,185-202,219,222-223,229-230,234-236,241-243,245-246,249-251,255,261-288,290,295,297,307,309,314,316,321,323,328-357
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "0dd09fc302643362a1da5db5aad05a1b69fbe091",
+  "prompts": {},
+  "sessions": {
+    "s_62d7f790ba05bc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1b947-618f-72f1-be20-c6e2c733b4b5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.output_tokens": "5091920",
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.session_started_at": "2026-11-17T12:26:19Z",
+        "tlab.token_usage.cache_read_tokens": "1116929395",
+        "tlab.token_usage.input_tokens": "25880241"
+      }
+    }
+  },
+  "changes": [
+    {
+      "new_path": "windows/x64/python/demo/omnihand_3_ultra_m/demo_omnihand_3_ultra_m.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 142
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/demo_omnihand_3_ultra_m.cc",
+      "new_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/demo_omnihand_3_ultra_m.cc",
+      "additions": {
+        "human": 8
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "additions": {
+        "human": 5
+      },
+      "deletions": {
+        "human": 14
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_firmware_load.cc",
+      "deletions": {
+        "human": 164
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_3_ultra_m.cc",
+      "additions": {
+        "human": 163
+      },
+      "deletions": {
+        "human": 167
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/README.md",
+      "new_path": "windows/x64/python/demo/README.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 16
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/README_zh_cn.md",
+      "new_path": "windows/x64/python/demo/README_zh_cn.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 15
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/README.md",
+      "new_path": "windows/x64/python/test/README.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 6
+          }
+        ]
+      },
+      "deletions": {
+        "human": 5
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/README_zh_cn.md",
+      "new_path": "windows/x64/python/test/README_zh_cn.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 6
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 5
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_omnihand_3_ultra_m_t1_3.py",
+      "new_path": "windows/x64/python/test/test_omnihand_3_ultra_m.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 130
+          }
+        ]
+      },
+      "deletions": {
+        "human": 2,
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 41
+          }
+        ]
+      }
+    }
+  ]
+}
