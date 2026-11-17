@@ -1,0 +1,526 @@
+doc/en/API_CPP_H3UM.md
+  s_62d7f790ba05bc::t_89899b99bba05a 295-312,315-316
+  s_62d7f790ba05bc::t_aebb0cda765b43 313
+  s_62d7f790ba05bc::t_6d52523dc84e9a 314
+doc/zh_cn/API_CPP_OP3.md
+  s_62d7f790ba05bc::t_6d52523dc84e9a 21
+  s_62d7f790ba05bc::t_89899b99bba05a 7-19,22-23
+  s_62d7f790ba05bc::t_aebb0cda765b43 20
+doc/zh_cn/API_CPP_H3UM.md
+  s_62d7f790ba05bc::t_aebb0cda765b43 326
+  s_62d7f790ba05bc::t_89899b99bba05a 308-325,328-329
+  s_62d7f790ba05bc::t_6d52523dc84e9a 327
+doc/en/API_CPP_O10.md
+  s_62d7f790ba05bc::t_89899b99bba05a 647,649,651-663
+  s_62d7f790ba05bc::t_aebb0cda765b43 664
+doc/en/API_CPP_OP1.md
+  s_62d7f790ba05bc::t_be91cd4794f341 21-22,24-25,33-34,40
+  s_62d7f790ba05bc::t_89899b99bba05a 23,26-32,35-36,38-39
+  s_62d7f790ba05bc::t_6d52523dc84e9a 37
+doc/zh_cn/API_CPP_OP1.md
+  s_62d7f790ba05bc::t_6d52523dc84e9a 37
+  s_62d7f790ba05bc::t_be91cd4794f341 21-22,24-25,33-34,40
+  s_62d7f790ba05bc::t_89899b99bba05a 23,26-32,35-36,38-39
+doc/en/API_CPP_OP3.md
+  s_62d7f790ba05bc::t_8b663fb7b9a1ce 7-19,22-23
+  s_62d7f790ba05bc::t_aebb0cda765b43 20
+  s_62d7f790ba05bc::t_6d52523dc84e9a 21
+doc/en/SOCKETCAN_SETUP.md
+  s_62d7f790ba05bc::t_8b663fb7b9a1ce 79-80
+doc/en/API_CPP_H3L.md
+  s_62d7f790ba05bc::t_89899b99bba05a 378,380-393
+  s_62d7f790ba05bc::t_aebb0cda765b43 394
+doc/en/API_CPP_O12.md
+  s_62d7f790ba05bc::t_89899b99bba05a 701,703,705-715
+  s_62d7f790ba05bc::t_aebb0cda765b43 716
+doc/zh_cn/API_CPP_O10.md
+  s_62d7f790ba05bc::t_aebb0cda765b43 612
+  s_62d7f790ba05bc::t_89899b99bba05a 595,597,599-611
+doc/zh_cn/SOCKETCAN_SETUP.md
+  s_62d7f790ba05bc::t_89899b99bba05a 78-79
+doc/zh_cn/API_CPP_H3L.md
+  s_62d7f790ba05bc::t_aebb0cda765b43 394
+  s_62d7f790ba05bc::t_89899b99bba05a 378,380-393
+doc/zh_cn/API_CPP_O12.md
+  s_62d7f790ba05bc::t_aebb0cda765b43 431
+  s_62d7f790ba05bc::t_89899b99bba05a 416,418,420-430
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "ef1faa1ff25a03112f1f75b8e80a1436986bafeb",
+  "prompts": {},
+  "sessions": {
+    "s_62d7f790ba05bc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1b947-618f-72f1-be20-c6e2c733b4b5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.session_started_at": "2026-11-17T01:48:08Z",
+        "tlab.token_usage.cache_read_tokens": "1080428711",
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.token_usage.input_tokens": "23977022",
+        "tlab.token_usage.output_tokens": "4896138"
+      }
+    }
+  },
+  "changes": [
+    {
+      "new_path": "windows/x64/cpp/demo/demo_options.h",
+      "additions": {
+        "human": 296
+      }
+    },
+    {
+      "new_path": "windows/x64/cpp/demo/omnihand_2025/demo_omnihand_2025.cc",
+      "additions": {
+        "human": 118
+      }
+    },
+    {
+      "new_path": "windows/x64/cpp/demo/omnihand_3_lite/demo_omnihand_3_lite.cc",
+      "additions": {
+        "human": 118
+      }
+    },
+    {
+      "new_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/demo_omnihand_3_ultra_m.cc",
+      "additions": {
+        "human": 182
+      }
+    },
+    {
+      "new_path": "windows/x64/cpp/demo/omnihand_pro_2025/demo_omnihand_pro_2025.cc",
+      "additions": {
+        "human": 106
+      }
+    },
+    {
+      "new_path": "windows/x64/cpp/demo/omnipicker_2025/demo_omnipicker_2025.cc",
+      "additions": {
+        "human": 94
+      }
+    },
+    {
+      "new_path": "windows/x64/cpp/demo/omnipicker_3/demo_omnipicker_3.cc",
+      "additions": {
+        "human": 124
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_H3L.md",
+      "new_path": "doc/en/API_CPP_H3L.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 16
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 5
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_H3UM.md",
+      "new_path": "doc/en/API_CPP_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 22
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_O10.md",
+      "new_path": "doc/en/API_CPP_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 16
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 9
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_O12.md",
+      "new_path": "doc/en/API_CPP_O12.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 14
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_OP1.md",
+      "new_path": "doc/en/API_CPP_OP1.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 20
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_OP3.md",
+      "new_path": "doc/en/API_CPP_OP3.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 17
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/SOCKETCAN_SETUP.md",
+      "new_path": "doc/en/SOCKETCAN_SETUP.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 5
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_H3L.md",
+      "new_path": "doc/zh_cn/API_CPP_H3L.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 16
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 5
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_H3UM.md",
+      "new_path": "doc/zh_cn/API_CPP_H3UM.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 22
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_O10.md",
+      "new_path": "doc/zh_cn/API_CPP_O10.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 16
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 9
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_O12.md",
+      "new_path": "doc/zh_cn/API_CPP_O12.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 14
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 7
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_OP1.md",
+      "new_path": "doc/zh_cn/API_CPP_OP1.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 20
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_OP3.md",
+      "new_path": "doc/zh_cn/API_CPP_OP3.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 17
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/SOCKETCAN_SETUP.md",
+      "new_path": "doc/zh_cn/SOCKETCAN_SETUP.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 5
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_2025/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/demo/omnihand_2025/CMakeLists.txt",
+      "additions": {
+        "human": 5
+      },
+      "deletions": {
+        "human": 39
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_2025/O10_demo_canfd_id.cc",
+      "deletions": {
+        "human": 345
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_2025/O10_demo_canfd_serial.cc",
+      "deletions": {
+        "human": 327
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_2025/O10_demo_ota.cc",
+      "deletions": {
+        "human": 265
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_2025/O10_demo_rs485.cc",
+      "deletions": {
+        "human": 243
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_2025/O10_demo_socketcan.cc",
+      "deletions": {
+        "human": 320
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_lite/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/demo/omnihand_3_lite/CMakeLists.txt",
+      "additions": {
+        "human": 5
+      },
+      "deletions": {
+        "human": 14
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_lite/O4_demo_canfd_id.cc",
+      "deletions": {
+        "human": 289
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_lite/O4_demo_canfd_serial.cc",
+      "deletions": {
+        "human": 192
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/CMakeLists.txt",
+      "additions": {
+        "human": 6
+      },
+      "deletions": {
+        "human": 29
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/T1P5_motor_ota.md",
+      "deletions": {
+        "human": 112
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/h3u_m_demo_canfd_id.cc",
+      "deletions": {
+        "human": 176
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/h3u_m_demo_canfd_serial.cc",
+      "deletions": {
+        "human": 131
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/h3u_m_demo_socketcan.cc",
+      "deletions": {
+        "human": 131
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_3_ultra_m/h3u_m_demo_xense.cc",
+      "deletions": {
+        "human": 72
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_pro_2025/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/demo/omnihand_pro_2025/CMakeLists.txt",
+      "additions": {
+        "human": 5
+      },
+      "deletions": {
+        "human": 25
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_pro_2025/O12_demo_canfd_id.cc",
+      "deletions": {
+        "human": 372
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_pro_2025/O12_demo_canfd_serial.cc",
+      "deletions": {
+        "human": 277
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnihand_pro_2025/O12_demo_socketcan.cc",
+      "deletions": {
+        "human": 320
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnipicker_2025/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/demo/omnipicker_2025/CMakeLists.txt",
+      "additions": {
+        "human": 5
+      },
+      "deletions": {
+        "human": 19
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnipicker_2025/OP1_demo_canfd_id.cc",
+      "deletions": {
+        "human": 55
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnipicker_2025/OP1_demo_rs485.cc",
+      "deletions": {
+        "human": 50
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnipicker_2025/OP1_demo_usb.cc",
+      "deletions": {
+        "human": 121
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnipicker_3/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/demo/omnipicker_3/CMakeLists.txt",
+      "additions": {
+        "human": 5
+      },
+      "deletions": {
+        "human": 14
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnipicker_3/OP3_demo_canfd_id.cc",
+      "deletions": {
+        "human": 519
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnipicker_3/OP3_demo_rs485.cc",
+      "deletions": {
+        "human": 490
+      }
+    }
+  ]
+}
