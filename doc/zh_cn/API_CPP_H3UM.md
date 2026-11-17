@@ -311,8 +311,8 @@ int16_t GetTemperatureOfPower() const;
 
 ```shell
 ./demo_omnihand_3_ultra_m -d zlgcan -i 0 -c 0
-./demo_omnihand_3_ultra_m -d hcan --serial ADAPTER_SERIAL --revision 1.5
-./demo_omnihand_3_ultra_m -d socketcan --can-if can0 --revision 1.3
+./demo_omnihand_3_ultra_m -d hcan --serial ADAPTER_SERIAL
+./demo_omnihand_3_ultra_m -d socketcan --can-if can0
 ./demo_omnihand_3_ultra_m -d zlgcan -c 0 --hand both
 ./demo_omnihand_3_ultra_m -d zlgcan --xense
 ```
@@ -321,7 +321,7 @@ Windows 可执行文件后缀为 `.exe`，Linux 串口可使用 `/dev/ttyUSB0`�
 
 `--hand both` 在同一 CAN 适配器上使用 `-c` 指定通道及其下一通道；两个适配器可用 `--serial`、`--second-serial` 指定，分别使用同一通道号。
 
-未指定 `--revision` 时自动识别 T1.3/T1.5。`--xense` 仅在 SDK 启用 Xense 支持时可用，只读取视触觉数据，不执行普通动作。
+示例默认使用 `--device-id 0` 自动发现地址并识别 T1.3/T1.5，不再提供 `--revision` 参数。自动发现时每个所选 CAN 通道只能连接一只手；共用总线时请显式指定 `--device-id`。`--xense` 仅在 SDK 启用 Xense 支持时可用，只读取视触觉数据，不执行普通动作。
 
 示例读取当前姿态，只将小指 PIP 关节依次设为 0.35、0.7 rad，并读取运动后的反馈；同一流程适用于 T1.3、T1.5。随后读取电机温度、电流和错误；T1.3 读取各区域的三维触觉点与合力，T1.5 读取 U16 压力点及手掌／电源板温度。
 

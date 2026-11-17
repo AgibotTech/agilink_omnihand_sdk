@@ -298,8 +298,8 @@ All transports share [demo_omnihand_3_ultra_m.cc](../../../cpp/demo/omnihand_3_u
 
 ```shell
 ./demo_omnihand_3_ultra_m -d zlgcan -i 0 -c 0
-./demo_omnihand_3_ultra_m -d hcan --serial ADAPTER_SERIAL --revision 1.5
-./demo_omnihand_3_ultra_m -d socketcan --can-if can0 --revision 1.3
+./demo_omnihand_3_ultra_m -d hcan --serial ADAPTER_SERIAL
+./demo_omnihand_3_ultra_m -d socketcan --can-if can0
 ./demo_omnihand_3_ultra_m -d zlgcan -c 0 --hand both
 ./demo_omnihand_3_ultra_m -d zlgcan --xense
 ```
@@ -308,7 +308,7 @@ Windows executables use the `.exe` suffix; Linux serial ports can use `/dev/ttyU
 
 `--hand both` uses `-c` and the next channel on one CAN adapter. With `--serial` and `--second-serial`, both adapters use the selected channel number.
 
-Omit `--revision` to detect T1.3/T1.5 automatically. `--xense` requires an SDK built with Xense support and reads visual tactile data instead of running normal motion.
+The demo defaults to `--device-id 0` to discover the address and detect T1.3/T1.5 automatically; there is no `--revision` option. Each selected CAN channel must contain one hand for discovery; use an explicit `--device-id` on a shared bus. `--xense` requires an SDK built with Xense support and reads visual tactile data instead of running normal motion.
 
 The demo reads the current pose, moves only the pinky PIP joint to 0.35 and 0.7 rad, and reads feedback after each move. The same flow supports T1.3 and T1.5. It then reads motor temperatures, currents and errors; T1.3 reads 3D tactile points and resultant forces, while T1.5 reads U16 pressure points and palm/power board temperatures.
 

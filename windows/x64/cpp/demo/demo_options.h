@@ -38,7 +38,6 @@ struct Options {
   bool verbose = false;
   int position = -1;
   std::string model = "s";
-  std::string revision;
   bool xense = false;
 };
 
@@ -62,7 +61,8 @@ inline bool HelpRequested(int argc, char** argv) {
 
 inline void PrintUsage(const char* program,
                        std::initializer_list<std::string_view> devices,
-                       const char* extra_help = "") {
+                       const char* extra_help = "",
+                       uint8_t default_id = 1) {
   std::cout << "Usage: " << program << " [options]\n"
             << "  -d, --device NAME  Transport:";
   for (const auto device : devices) {
@@ -71,7 +71,8 @@ inline void PrintUsage(const char* program,
   std::cout
       << " (default: " << *devices.begin() << ")\n"
       << "  --hand SIDE        left | right | both (default: left)\n"
-      << "  --device-id ID     Target ID [1,127]; never writes device ID\n"
+      << "  --device-id ID     Target ID [" << (default_id == 0 ? 0 : 1)
+      << ",127]; never writes device ID\n"
       << "  -f MS              Request interval after connection\n"
       << "  -t MS              Receive timeout after connection\n"
       << "  -v, --verbose      Print raw communication frames\n";
@@ -170,7 +171,8 @@ inline Options ParseOptions(int argc, char** argv,
       options.hand = value;
       hand_set = true;
     } else if (arg == "--id" || arg == "--device-id") {
-      options.device_id = static_cast<uint8_t>(ParseValue(value, 1, 127));
+      options.device_id = static_cast<uint8_t>(
+          ParseValue(value, default_id == 0 ? 0 : 1, 127));
     } else if (can && arg == "-i") {
       options.adapter_index = static_cast<uint8_t>(ParseValue(value, 0, 255));
       index_set = true;
@@ -199,8 +201,6 @@ inline Options ParseOptions(int argc, char** argv,
       options.position = ParseValue(value, 0, 255);
     } else if (arg == "--model" && Contains(extras, arg)) {
       options.model = value;
-    } else if (arg == "--revision" && Contains(extras, arg)) {
-      options.revision = value;
     } else {
       throw std::invalid_argument("Unsupported option: " + std::string(arg));
     }
@@ -231,10 +231,6 @@ inline Options ParseOptions(int argc, char** argv,
   }
   if (options.model != "s" && options.model != "m") {
     throw std::invalid_argument("Model must be s or m");
-  }
-  if (!options.revision.empty() && options.revision != "1.3" &&
-      options.revision != "1.5") {
-    throw std::invalid_argument("Revision must be 1.3 or 1.5");
   }
   return options;
 }

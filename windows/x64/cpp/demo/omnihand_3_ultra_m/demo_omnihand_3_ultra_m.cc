@@ -18,11 +18,6 @@ namespace {
 std::unique_ptr<agilink::omnihand::OmniHand3UltraM> CreateHand(
     const demo::Options& options, bool second = false) {
   auto context = demo::MakeContext(options, second);
-  if (!options.revision.empty()) {
-    context->h3um_revision = options.revision == "1.5"
-                                 ? agilink::omnihand::h3um::H3UMRevision::T1P5
-                                 : agilink::omnihand::h3um::H3UMRevision::T1P3;
-  }
   // CreateHand initializes the connection; no separate Init() is needed.
   auto hand =
       agilink::omnihand::OmniHand3UltraM::CreateHand(std::move(context));
@@ -144,14 +139,14 @@ int main(int argc, char** argv) {
   if (demo::HelpRequested(argc, argv)) {
     demo::PrintUsage(
         argv[0], {"zlgcan", "hcan", "socketcan"},
-        "  --revision 1.3|1.5 H3UM revision (default: automatic)\n"
-        "  --xense           Read visual tactile data instead of motion\n");
+        "  Device ID defaults to 0: discover address and detect T1.3/T1.5.\n"
+        "  --xense           Read visual tactile data instead of motion\n", 0);
     return 0;
   }
   try {
     const auto options =
         demo::ParseOptions(argc, argv, {"zlgcan", "hcan", "socketcan"},
-                           {"--revision", "--xense"}, 9);
+                           {"--xense"}, 0);
     if (options.xense && options.hand == "both") {
       throw std::invalid_argument("Xense demo reads one hand per process");
     }
