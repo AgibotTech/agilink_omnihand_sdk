@@ -11,6 +11,7 @@
 #include <cassert>
 #include <iostream>
 #include <vector>
+#include "omnihand/device_context.h"
 
 #include "omnihand/export_symbols.h"
 #include "omnihand/utils.h"
@@ -90,6 +91,9 @@ enum class OmniHand2025Gesture : int {
  * @brief OmniHand 2025 kinematics solver
  */
 class AGIBOT_EXPORT OmniHand2025Solver {
+ protected:
+  const std::shared_ptr<DeviceContext> device_context_;
+
  private:
   bool hand_type_;  ///< true=left hand, false=right hand
   std::vector<int> actuator_max_;
@@ -146,6 +150,7 @@ class AGIBOT_EXPORT OmniHand2025Solver {
    * @param hand_type true=left hand, false=right hand
    */
   OmniHand2025Solver(const bool &hand_type);
+  OmniHand2025Solver(std::shared_ptr<DeviceContext> context, const bool &hand_type);
 
   ~OmniHand2025Solver();
 

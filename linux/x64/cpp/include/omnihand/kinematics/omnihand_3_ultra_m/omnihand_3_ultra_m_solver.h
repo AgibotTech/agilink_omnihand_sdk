@@ -25,12 +25,12 @@
 namespace agilink {
 namespace omnihand {
 
+namespace h3um {
+
 enum class H3UMRevision : uint8_t {
   T1P3 = 20,
   T1P5 = 21,
 };
-
-namespace h3um {
 
 /**
  * @brief H3UM T1.3 active-joint enum, in motor-index / GetJointNames() order.

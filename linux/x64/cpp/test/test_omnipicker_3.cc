@@ -41,7 +41,7 @@
 #include <vector>
 
 // Deliberately not <windows.h>: it defines an ERROR macro (via wingdi.h) that collides
-// with OmniLogger<>::Level::ERROR in agilink_logger.h below. Only _isatty is needed, and
+// with LogLevel::ERROR in agilink_logger.h below. Only _isatty is needed, and
 // <io.h> provides it on its own. GoogleTest has already enabled VT processing on the
 // console by the time this file's summary runs, so no SetConsoleMode call is required.
 #if defined(_WIN32)

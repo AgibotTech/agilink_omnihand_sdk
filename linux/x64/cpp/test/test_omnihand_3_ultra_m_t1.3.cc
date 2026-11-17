@@ -5,6 +5,9 @@
 #include "timestamp_test_utils.h"
 #include "agilink_logger.h"
 #include "omnihand/omnihand_3_ultra_m.h"
+#ifdef OMNIHAND_BUILD_INTERNAL_TESTS
+#include "omnihand/i_omnihand_calibrator.h"
+#endif
 #include <chrono>
 #include <memory>
 #include <sstream>
@@ -63,16 +66,13 @@ class OmniHand3UltraMT1P3Test : public ::testing::Test {
       AgilinkLogger::get().infof(TAG, "Using SocketCAN device (%s)", g_can_interface.c_str());
 #endif
     } else {
-      hand_ = g_revision_t1p5 ?
-          agilink::omnihand::OmniHand3UltraM::createHandT1P5ByZlgcan(
-              agilink::omnihand::HandType::LEFT, g_device_id, 0, 0) :
-          agilink::omnihand::OmniHand3UltraM::createHandByZlgcan(
-              agilink::omnihand::HandType::LEFT, g_device_id, 0, 0);
+      hand_ = agilink::omnihand::OmniHand3UltraM::createHandByZlgcan(
+          agilink::omnihand::HandType::LEFT, g_device_id, 0, 0);
       AgilinkLogger::get().infof(TAG, "Using ZLG CAN device");
     }
     int request_interval = GetRequestInterval();
     hand_->SetRequestInterval(request_interval);
-    if (hand_->GetRevision() == agilink::omnihand::H3UMRevision::T1P5) {
+    if (hand_->GetRevision() == agilink::omnihand::h3um::H3UMRevision::T1P5) {
       mix_ctrl_current_ma_ =
           agilink::omnihand::OmniHand3UltraM::kT1P5MixCtrlTorqueRange.default_value;
     }
@@ -120,7 +120,7 @@ TEST_F(OmniHand3UltraMT1P3Test, GetTemperatureOfPalmWithTimestamp) {
   if (!hand_ || !hand_->Init()) {
     GTEST_SKIP() << "Device not available";
   }
-  if (hand_->GetRevision() != agilink::omnihand::H3UMRevision::T1P5) {
+  if (hand_->GetRevision() != agilink::omnihand::h3um::H3UMRevision::T1P5) {
     GTEST_SKIP() << "Board temperature requires T1.5";
   }
   const auto sample = hand_->GetTemperatureOfPalmWithTimestamp();
@@ -133,7 +133,7 @@ TEST_F(OmniHand3UltraMT1P3Test, GetTemperatureOfPowerWithTimestamp) {
   if (!hand_ || !hand_->Init()) {
     GTEST_SKIP() << "Device not available";
   }
-  if (hand_->GetRevision() != agilink::omnihand::H3UMRevision::T1P5) {
+  if (hand_->GetRevision() != agilink::omnihand::h3um::H3UMRevision::T1P5) {
     GTEST_SKIP() << "Board temperature requires T1.5";
   }
   const auto sample = hand_->GetTemperatureOfPowerWithTimestamp();
@@ -388,7 +388,7 @@ TEST_F(OmniHand3UltraMT1P3Test, GetVendorInfo) {
     const uint8_t doa = hand_->GetDoA();
     EXPECT_EQ(doa, 20);
     EXPECT_EQ(hand_->GetNumOfJointMotors(), doa);
-    EXPECT_EQ(hand_->GetRevision(), agilink::omnihand::H3UMRevision::T1P3);
+    EXPECT_EQ(hand_->GetRevision(), agilink::omnihand::h3um::H3UMRevision::T1P3);
     const auto joint_names = hand_->GetJointNames();
     EXPECT_EQ(joint_names.size(), doa);
   }
@@ -575,9 +575,13 @@ TEST_F(OmniHand3UltraMT1P3Test, GetAllJointMotorVelo) {
   }
 }
 
+#ifdef OMNIHAND_BUILD_INTERNAL_TESTS
 TEST_F(OmniHand3UltraMT1P3Test, AxisLimitPos) {
   if (hand_->Init()) {
-    auto limits = hand_->GetAxisLimitPos();
+    auto* maintenance =
+        dynamic_cast<agilink::omnihand::IOmniHandCalibrator*>(hand_.get());
+    ASSERT_NE(maintenance, nullptr);
+    auto limits = maintenance->GetAxisLimitPos();
     if (limits.empty()) {
       AgilinkLogger::get().warnf(TAG, "[GetAxisLimitPos] Failed: empty result");
       return;
@@ -593,7 +597,10 @@ TEST_F(OmniHand3UltraMT1P3Test, AxisLimitPos) {
 
 TEST_F(OmniHand3UltraMT1P3Test, ActualAxisPos) {
   if (hand_->Init()) {
-    auto actual_pos = hand_->GetAllActualAxisPos();
+    auto* maintenance =
+        dynamic_cast<agilink::omnihand::IOmniHandCalibrator*>(hand_.get());
+    ASSERT_NE(maintenance, nullptr);
+    auto actual_pos = maintenance->GetAllActualAxisPos();
     if (actual_pos.empty()) {
       AgilinkLogger::get().warnf(TAG, "[GetAllActualAxisPos] Failed: empty result");
       return;
@@ -602,10 +609,12 @@ TEST_F(OmniHand3UltraMT1P3Test, ActualAxisPos) {
                               ValuesToString(actual_pos).c_str());
     EXPECT_EQ(actual_pos.size(), 20);
 
-    auto single = hand_->GetSingleActualAxisPos(1);
+    auto single = maintenance->GetSingleActualAxisPos(1);
     AgilinkLogger::get().infof(TAG, "[GetSingleActualAxisPos] Joint 1: %d", static_cast<int>(single));
   }
 }
+
+#endif
 
 int main(int argc, char** argv) {
   std::vector<char*> gtest_args;

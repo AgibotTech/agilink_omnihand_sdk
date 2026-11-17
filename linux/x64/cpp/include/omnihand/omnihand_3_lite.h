@@ -19,7 +19,6 @@
 #include "omnihand/export_symbols.h"
 #include "omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h"
 #include "omnihand/omnihand.h"
-#include "omnihand/private_omnihand.h"
 #include "omnihand/proto.h"
 #include "omnihand/ota_types.h"
 #include "omnihand/utils.h"
@@ -37,16 +36,25 @@ namespace omnihand {
  * @note Full active-plus-passive joint kinematics (GetAllJointAngles) is not implemented.
  * @note Gesture control is available via SetHandGesture() with OmniHand3LiteGesture enum.
  */
-class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, public ITactileSensor1DU16 {
+class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public ITactileSensor1DU16 {
  public:
   // Constants
   static constexpr unsigned char kDegreesOfActiveFreedom = 4;  // DoA
-  static constexpr uint8_t kDegreesOfPassiveFreedom = 5; // DoP
+  static constexpr uint8_t kDegreesOfPassiveFreedom = 7; // DoP
   static constexpr uint8_t kDefaultHandDeviceId = 1u;
+
+  virtual uint16_t GetPrivateHandDeviceIdByBroadcast() = 0;
+  virtual uint16_t GetPrivateHandDeviceId() = 0;
 
   virtual ~OmniHand3Lite() = default;
 
   // ============ Factory Methods ============
+  // A zero device ID selects the product's default address.
+  // Creates this product from one context; retains its identity and callback.
+  // Invalid configuration/reuse throws; initialization failure returns nullptr.
+  static std::unique_ptr<OmniHand3Lite> CreateHand(
+      std::shared_ptr<DeviceContext> context);
+
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by canfd_device_id
    * @param hand_type Hand type (left/right)
@@ -202,23 +210,7 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
    */
   [[deprecated("Use SetJointMotorPosi() instead.")]]
   virtual uint16_t SetSingleAxisPos(uint8_t axis_index,
-                                    uint16_t position) override = 0;
-
-  /**
-   * @deprecated Use SetAllJointMotorPosi() instead.
-   */
-  [[deprecated("Use SetAllJointMotorPosi() instead.")]]
-  virtual SetAllAxisPosResponse SetAllAxisPos(
-      const std::vector<uint16_t>& positions) override = 0;
-
-  /**
-   * @deprecated Use MixControlByPVT() instead.
-   */
-  [[deprecated("Use MixControlByPVT() instead.")]]
-  virtual SetAllAxisPosResponse SetPosSpeedTorqueData(
-      const std::vector<uint16_t>& positions,
-      const std::vector<int16_t>& speeds,
-      const std::vector<uint16_t>& torques) override = 0;
+                                    uint16_t position) = 0;
 
   /**
    * @brief Update one H3L-S tactile sensor through the hand's CAN FD or serial connection.
@@ -299,6 +291,8 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
     return kMixCtrlTorqueRange;
   }
 
+  // H3L-S: SDK/URDF angle limits are mechanical limits (rad).
+  // Refer to the product specification for motor limit ranges.
   static constexpr FloatBound GetMinMaxActivateJointAngle(
       uint8_t joint_motor_index, HandType hand_type,
       h3l::H3LModel model = h3l::H3LModel::H3L_S) {
@@ -322,6 +316,10 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
   std::vector<int16_t> GetHandGesture(int gesture_num) override;
 
  protected:
+  OmniHand3Lite() = default;
+  explicit OmniHand3Lite(std::shared_ptr<DeviceContext> context)
+      : OmniHand(std::move(context)) {}
+
   /**
    * @brief Initialize base class members and kinematics solver
    * @param device_id Device ID
