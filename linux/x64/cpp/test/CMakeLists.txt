@@ -9,12 +9,18 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Option to enable/disable tests
 option(BUILD_CPP_TESTS "Build C++ unit tests" ON)
+option(OMNIHAND_BUILD_INTERNAL_TESTS "Build internal maintenance and protocol tests" OFF)
 option(BUILD_OMNIHAND_3_LITE "Build OmniHand 3 Lite tests" ON)
 option(BUILD_OMNIHAND_3_ULTRA_M "Build OmniHand 3 Ultra M tests" ON)
 option(BUILD_OMNI_PICKER_3 "Build OmniPicker 3 tests" ON)
 
 if(NOT BUILD_CPP_TESTS)
   return()
+endif()
+
+if(OMNIHAND_BUILD_INTERNAL_TESTS)
+  add_compile_definitions(OMNIHAND_BUILD_INTERNAL_TESTS)
+  include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../src/internal")
 endif()
 
 # GoogleTest: prefer cpp/third_party/googletest-1.14.0 in repo and use add_subdirectory directly,
@@ -74,7 +80,6 @@ else()
   set(OMNIHAND_TARGET omnihand)
 endif()
 
-# Set output directory for test executables
 # Always use the top-level binary directory to ensure consistent output location
 get_filename_component(TOP_LEVEL_BINARY_DIR "${CMAKE_BINARY_DIR}" DIRECTORY)
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)

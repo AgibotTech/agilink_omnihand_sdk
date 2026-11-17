@@ -15,6 +15,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include "omnihand/device_context.h"
 
 #include "omnihand/export_symbols.h"
 #include "omnihand/utils.h"
@@ -93,6 +94,7 @@ enum class OmniHandPro2025Gesture : int {
 
 class AGIBOT_EXPORT OmniHandPro2025Solver {
  private:
+  const std::shared_ptr<DeviceContext> device_context_;
   bool is_left_hand_; ///< True for left-hand, false for right-hand
   std::vector<double> motor_max_ = {0.0, 0.0, 0.0, 0.0, 10e-3, 0.0,
                                     0.0, 0.0, 0.0, 0.0, 10e-3, 10e-3};
@@ -289,6 +291,7 @@ class AGIBOT_EXPORT OmniHandPro2025Solver {
 
  public:
   OmniHandPro2025Solver(const bool &is_left_hand);
+  OmniHandPro2025Solver(std::shared_ptr<DeviceContext> context, const bool &is_left_hand);
   ~OmniHandPro2025Solver();
 
   // check if the joint position is within the defined limits,if not, modify.

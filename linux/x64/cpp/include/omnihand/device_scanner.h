@@ -3,7 +3,7 @@
 
 /**
  * @file device_scanner.h
- * @brief CANFD device scanner (public API)
+ * @brief Device scanners (public API)
  * @author SDK Team
  * @date 2025
  **/
@@ -26,6 +26,10 @@ AGIBOT_EXPORT std::vector<ScannedCanfdDeviceInfo> ScanHcanDevices();
 AGIBOT_EXPORT std::vector<ScannedCanfdDeviceInfo> ScanSocketCanDevices();
 #endif
 AGIBOT_EXPORT std::vector<ScannedSerialDeviceInfo> ScanSerialDevices();
+
+// Lists accessible native USB devices with readable USB serial numbers.
+// Currently supports OmniPicker 2025. Does not claim interfaces.
+AGIBOT_EXPORT std::vector<ScannedUsbDeviceInfo> ScanUsbDevices();
 
 }  // namespace omnihand
 }  // namespace agilink
