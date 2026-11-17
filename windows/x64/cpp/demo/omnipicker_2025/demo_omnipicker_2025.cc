@@ -9,6 +9,8 @@
 #include <string>
 #include <thread>
 
+#include "agilink_logger.h"
+
 #ifdef _WIN32
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -28,7 +30,6 @@
 namespace {
 
 std::string ResolveUsbSerial(const std::string& port) {
-  const auto usb_devices = agilink::omnihand::ScanUsbDevices();
 #ifdef _WIN32
   const auto raw_devices = SetupDiGetClassDevsA(
       nullptr, "USB", nullptr, DIGCF_PRESENT | DIGCF_ALLCLASSES);
@@ -69,12 +70,7 @@ std::string ResolveUsbSerial(const std::string& port) {
       }
       constexpr char kUsbPrefix[] = "USB\\VID_1001&PID_03EF\\";
       if (_strnicmp(instance_id, kUsbPrefix, sizeof(kUsbPrefix) - 1) == 0) {
-        for (const auto& device : usb_devices) {
-          if (_stricmp(instance_id + sizeof(kUsbPrefix) - 1,
-                       device.serial_number.c_str()) == 0) {
-            return device.serial_number;
-          }
-        }
+        return instance_id + sizeof(kUsbPrefix) - 1;
       }
       DEVINST parent = 0;
       if (CM_Get_Parent(&parent, node, 0) != CR_SUCCESS) {
@@ -88,19 +84,21 @@ std::string ResolveUsbSerial(const std::string& port) {
     if (device.port != port) {
       continue;
     }
+    constexpr char kUsbId[] = "USB VID:PID=1001:03ef ";
+    if (device.hardware_id.compare(0, sizeof(kUsbId) - 1, kUsbId) != 0) {
+      break;
+    }
     const auto start = device.hardware_id.find("SNR=");
     if (start == std::string::npos) {
       break;
     }
     const auto serial = device.hardware_id.substr(start + 4);
-    for (const auto& usb_device : usb_devices) {
-      if (usb_device.serial_number == serial) {
-        return serial;
-      }
+    if (!serial.empty()) {
+      return serial;
     }
   }
 #endif
-  throw std::invalid_argument("No accessible OP1 USB device matches port " +
+  throw std::invalid_argument("No OP1 USB port matches " +
                               port + "; use --serial USB_SERIAL if needed");
 }
 
@@ -189,6 +187,7 @@ int main(int argc, char** argv) {
     }
     return 0;
   } catch (const std::exception& error) {
+    agilink::AgilinkLogger::get().flush();
     std::cerr << error.what() << '\n';
     return 1;
   }

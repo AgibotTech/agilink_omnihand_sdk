@@ -166,7 +166,7 @@ AGIBOT_EXPORT std::ostream& operator<<(std::ostream& os, const Op1CanfdStateFram
 
 struct AGIBOT_EXPORT Op1MotorInfo {
   uint32_t error_code{0};     ///< Motor error code (0 = no error)
-  uint32_t ctrl_mode{0};      ///< Control mode
+  uint8_t ctrl_mode{0};       ///< Control mode
   float current_limit{0};     ///< Current limit (A)
   float velocity_limit{0};    ///< Velocity limit (rad/s)
   float pos_gain{0};          ///< Position gain
