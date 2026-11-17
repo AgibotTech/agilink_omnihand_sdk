@@ -196,14 +196,6 @@ MixCtrl MixControlByPT(uint8_t joint_motor_index,
 std::vector<MixCtrl> MixControlByPT(
     const std::vector<int16_t>& positions,
     const std::vector<int16_t>& torques);
-
-MixCtrl MixControlByPVT(uint8_t joint_motor_index,
-                        int16_t position, int16_t velocity,
-                        int16_t torque);
-std::vector<MixCtrl> MixControlByPVT(
-    const std::vector<int16_t>& positions,
-    const std::vector<int16_t>& velocities,
-    const std::vector<int16_t>& torques);
 ```
 
 Torque is transmitted directly as a signed 16-bit current value in mA. Call `hand->GetMinMaxDefaultMixCtrlTorque(joint_motor_index)` on the constructed hand: T1.3 reports range `0..10000` and default `1000`; T1.5 reports range `0..2000` and default `1900`. Motor indices start at `1`; an index outside the hand's actual joint count returns `{0, 0, 0}`. This is now a `const` instance method; replace previous class-qualified static calls with calls through the hand object.

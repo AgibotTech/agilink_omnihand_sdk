@@ -20,6 +20,7 @@ import math
 import os
 import sys
 import time
+import weakref
 
 # Use the installed package rather than the adjacent source package.
 _python_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -175,7 +176,9 @@ def hand():
         f"recv_timeout={FRAME_RECV_TIMEOUT}ms"
     )
     try:
-        yield instance
+        # Only this fixture owns the connection: pytest can retain test locals
+        # in skip/failure tracebacks after teardown.
+        yield weakref.proxy(instance)
     finally:
         del instance
 

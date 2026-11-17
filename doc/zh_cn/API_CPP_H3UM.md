@@ -209,14 +209,6 @@ MixCtrl MixControlByPT(uint8_t joint_motor_index,
 std::vector<MixCtrl> MixControlByPT(
     const std::vector<int16_t>& positions,
     const std::vector<int16_t>& torques);
-
-MixCtrl MixControlByPVT(uint8_t joint_motor_index,
-                        int16_t position, int16_t velocity,
-                        int16_t torque);
-std::vector<MixCtrl> MixControlByPVT(
-    const std::vector<int16_t>& positions,
-    const std::vector<int16_t>& velocities,
-    const std::vector<int16_t>& torques);
 ```
 
 力矩按有符号 16 位电流值直接下发，单位为 mA。通过构造后的对象调用 `hand->GetMinMaxDefaultMixCtrlTorque(joint_motor_index)`：T1.3 返回范围 `0..10000`、默认值 `1000`；T1.5 返回范围 `0..2000`、默认值 `1900`。电机索引从 `1` 开始，超出实际关节数时返回 `{0, 0, 0}`。该接口现为 `const` 成员函数，原先通过类名调用的静态写法需改为通过手对象调用。
