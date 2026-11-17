@@ -1,7 +1,6 @@
 // Copyright (c) 2026, Agibot Co., Ltd.
 // AGILINK OmniHand SDK is licensed under Mulan PSL v2.
 
-#include <algorithm>
 #include <chrono>
 #include <cstddef>
 #include <iostream>
@@ -44,22 +43,25 @@ void ReadSensors(agilink::omnihand::OmniHand2025& hand) {
               << '\n';
   }
 
-  if (!hand.InitTactilePointsMap()) {
-    std::cerr << "Tactile metadata unavailable\n";
-    return;
-  }
-  for (const auto finger : hand.GetSensorOrder()) {
-    const auto data = hand.GetTactileSensorDataRaw(finger);
-    const size_t expected = hand.GetNumOfTactilePoints(finger);
-    if (data.data_.empty() || data.data_.size() != expected) {
-      std::cerr << agilink::omnihand::ToString(finger)
-                << ": incomplete tactile data\n";
-      continue;
+  // Read downsampled tactile data for all sensors in one call.
+  const auto tactile = hand.GetAllTactileSensorData();
+  std::cout << "Downsampled tactile data:\n";
+  for (const auto& sensor : tactile) {
+    std::cout << agilink::omnihand::ToString(sensor.sensor_id_) << ':';
+    for (const auto value : sensor.data_) {
+      std::cout << ' ' << +value;
     }
-    std::cout << agilink::omnihand::ToString(finger) << ": "
-              << data.data_.size() << " tactile points, first values:";
-    for (size_t i = 0; i < std::min(size_t{8}, data.data_.size()); ++i) {
-      std::cout << ' ' << +data.data_[i];
+    std::cout << '\n';
+  }
+
+  // Raw data retains full resolution and requires firmware/transport support.
+  // Unsupported reads are reported by the SDK.
+  const auto raw_tactile = hand.GetAllTactileSensorDataRaw();
+  std::cout << "Raw tactile data:\n";
+  for (const auto& sensor : raw_tactile) {
+    std::cout << agilink::omnihand::ToString(sensor.sensor_id_) << ':';
+    for (const auto value : sensor.data_) {
+      std::cout << ' ' << +value;
     }
     std::cout << '\n';
   }
