@@ -305,6 +305,28 @@ int16_t GetTemperatureOfPower() const;
 
 板温接口仅支持 T1.5。T1.3 调用上述两个接口及其带时间戳版本时，温度值直接返回 `0`，不发送 CAN 请求。
 
+## C++ 示例
+
+各连接方式共用 [demo_omnihand_3_ultra_m.cc](../../../cpp/demo/omnihand_3_ultra_m/demo_omnihand_3_ultra_m.cc)，构建目标为 `demo_omnihand_3_ultra_m`：
+
+```shell
+./demo_omnihand_3_ultra_m -d zlgcan -i 0 -c 0
+./demo_omnihand_3_ultra_m -d hcan --serial ADAPTER_SERIAL --revision 1.5
+./demo_omnihand_3_ultra_m -d socketcan --can-if can0 --revision 1.3
+./demo_omnihand_3_ultra_m -d zlgcan -c 0 --hand both
+./demo_omnihand_3_ultra_m -d zlgcan --xense
+```
+
+Windows 可执行文件后缀为 `.exe`，Linux 串口可使用 `/dev/ttyUSB0`；SocketCAN 仅适用于 Linux。`--help` 显示完整参数。示例仅演示常规控制与信息读取，不包含固件更新、标定、标零、写 SN 或出厂参数写入。
+
+`--hand both` 在同一 CAN 适配器上使用 `-c` 指定通道及其下一通道；两个适配器可用 `--serial`、`--second-serial` 指定，分别使用同一通道号。
+
+未指定 `--revision` 时自动识别 T1.3/T1.5。`--xense` 仅在 SDK 启用 Xense 支持时可用，只读取视触觉数据，不执行普通动作。
+
+示例读取当前姿态，只将小指 PIP 关节依次设为 0.35、0.7 rad，并读取运动后的反馈；同一流程适用于 T1.3、T1.5。随后读取电机温度、电流和错误；T1.3 读取各区域的三维触觉点与合力，T1.5 读取 U16 压力点及手掌／电源板温度。
+
+编译方式参见 [CMakeLists.txt](../../../cpp/demo/omnihand_3_ultra_m/CMakeLists.txt)。
+
 ## 相关文档
 
 - [C++ API 总览](API_CPP.md)

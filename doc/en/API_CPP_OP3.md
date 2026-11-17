@@ -4,6 +4,23 @@
 
 **OmniPicker 3 (OP3)** is a 1-DOF gripper supporting ZLG CAN FD, HCAN, SocketCAN, and RS485. Include `omnihand/omnipicker_3.h`; the former `omni_picker_3.h` name is no longer public.
 
+## C++ Demo
+
+All transports share [demo_omnipicker_3.cc](../../../cpp/demo/omnipicker_3/demo_omnipicker_3.cc), built as `demo_omnipicker_3`:
+
+```shell
+./demo_omnipicker_3 -d zlgcan -i 0 -c 0 --device-id 1
+./demo_omnipicker_3 -d hcan --serial ADAPTER_SERIAL
+./demo_omnipicker_3 -d socketcan --can-if can0
+./demo_omnipicker_3 -d rs485 -p COM5
+```
+
+Windows executables use the `.exe` suffix; Linux serial ports can use `/dev/ttyUSB0`. SocketCAN is Linux-only. Use `--help` for all options. Demos cover normal control and information queries; they do not update firmware, calibrate, set zero offsets, write serial numbers, or write factory parameters.
+
+The demo covers motor position control, a 50 mm stroke with speed/current limits, gentle gripping with a 1000 mA limit, and motor temperature/current/error and both tactile-region queries. It reads sensors after gripping and opens again at the end. Tactile output previews the first 8 points; the returned vector contains the complete data.
+
+See [CMakeLists.txt](../../../cpp/demo/omnipicker_3/CMakeLists.txt) for build instructions.
+
 ## Factory Methods
 
 ```cpp

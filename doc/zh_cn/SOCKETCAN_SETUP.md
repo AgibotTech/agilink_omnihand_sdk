@@ -75,11 +75,8 @@ ip -details link show can0
 
 **C++：**
 
-```cmake
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  add_executable(demo_omnihand_2025_socketcan O10_demo_socketcan.cc)
-  target_link_libraries(demo_omnihand_2025_socketcan PRIVATE ${OMNIHAND_TARGET})
-endif()
+```shell
+./demo_omnihand_2025 -d socketcan --can-if can0 --hand left
 ```
 
 ```cpp

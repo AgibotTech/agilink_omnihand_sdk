@@ -375,12 +375,23 @@ int main() {
 }
 ```
 
-## Demo Files
+## C++ Demo
 
-| Demo | Path |
-|------|------|
-| CAN FD (connect by ID) | [H3L_demo_canfd_id.cc](../../../cpp/demo/omnihand_3_lite/H3L_demo_canfd_id.cc) |
-| CAN FD (connect by serial) | [H3L_demo_canfd_serial.cc](../../../cpp/demo/omnihand_3_lite/H3L_demo_canfd_serial.cc) |
+All transports share [demo_omnihand_3_lite.cc](../../../cpp/demo/omnihand_3_lite/demo_omnihand_3_lite.cc), built as `demo_omnihand_3_lite`:
+
+```shell
+./demo_omnihand_3_lite -d zlgcan -i 0 -c 0 --model s
+./demo_omnihand_3_lite -d hcan --serial ADAPTER_SERIAL --model m
+./demo_omnihand_3_lite -d socketcan --can-if can0 --hand right
+./demo_omnihand_3_lite -d rs485 -p COM5
+./demo_omnihand_3_lite -d zlgcan -c 0 --hand both
+```
+
+Windows executables use the `.exe` suffix; Linux serial ports can use `/dev/ttyUSB0`. SocketCAN is Linux-only. Use `--help` for all options. Demos cover normal control and information queries; they do not update firmware, calibrate, set zero offsets, write serial numbers, or write factory parameters.
+
+`--hand both` uses `-c` and the next channel on one CAN adapter. With `--serial` and `--second-serial`, both adapters use the selected channel number. Serial connections require different ports via `-p` and `--second-port`.
+
+The demo runs the PRAYER and SIDE_FIST gestures and reads joint-angle feedback. Gestures adapt to the selected model and hand side. It then reads motor temperatures, currents and errors, initializes tactile metadata, and reads raw U16 pressure data with an 8-point preview per region.
 
 See [CMakeLists.txt](../../../cpp/demo/omnihand_3_lite/CMakeLists.txt) for build instructions.
 

@@ -592,17 +592,24 @@ int main() {
 }
 ```
 
-## Demo 文件
+## C++ 示例
 
-SDK 发布包中提供了可直接编译运行的 C++ demo 源码：
+各连接方式共用 [demo_omnihand_2025.cc](../../../cpp/demo/omnihand_2025/demo_omnihand_2025.cc)，构建目标为 `demo_omnihand_2025`：
 
-| Demo | 路径 |
-|------|------|
-| CAN FD（按 ID 连接） | [O10_demo_canfd_id.cc](../../../cpp/demo/omnihand_2025/O10_demo_canfd_id.cc) |
-| CAN FD（按串号连接） | [O10_demo_canfd_serial.cc](../../../cpp/demo/omnihand_2025/O10_demo_canfd_serial.cc) |
-| SocketCAN | [O10_demo_socketcan.cc](../../../cpp/demo/omnihand_2025/O10_demo_socketcan.cc) |
-| RS485 串口 | [O10_demo_rs485.cc](../../../cpp/demo/omnihand_2025/O10_demo_rs485.cc) |
-| OTA 升级 | [O10_demo_ota.cc](../../../cpp/demo/omnihand_2025/O10_demo_ota.cc) |
+```shell
+./demo_omnihand_2025 -d zlgcan -i 0 -c 0 --hand left
+./demo_omnihand_2025 -d hcan --serial ADAPTER_SERIAL --hand right
+./demo_omnihand_2025 -d socketcan --can-if can0
+./demo_omnihand_2025 -d usb -p COM3
+./demo_omnihand_2025 -d rs485 -p COM5
+./demo_omnihand_2025 -d zlgcan -c 0 --hand both
+```
+
+Windows 可执行文件后缀为 `.exe`，Linux 串口可使用 `/dev/ttyUSB0`；SocketCAN 仅适用于 Linux。`--help` 显示完整参数。示例仅演示常规控制与信息读取，不包含固件更新、标定、标零、写 SN 或出厂参数写入。
+
+`--hand both` 在同一 CAN 适配器上使用 `-c` 指定通道及其下一通道；两个适配器可用 `--serial`、`--second-serial` 指定，分别使用同一通道号。串口双手需用 `-p`、`--second-port` 指定不同端口。
+
+示例读取当前姿态，只将食指 PIP 关节依次设为 0.35、0.7 rad，并读取运动后的反馈；其余关节沿用初始读数。随后读取电机温度、电流、错误和各区域的一维触觉原始数据，只预览每个区域前 8 个点。
 
 编译方式参见 [CMakeLists.txt](../../../cpp/demo/omnihand_2025/CMakeLists.txt)。
 

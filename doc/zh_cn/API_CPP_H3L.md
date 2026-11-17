@@ -375,12 +375,23 @@ int main() {
 }
 ```
 
-## Demo 文件
+## C++ 示例
 
-| Demo | 路径 |
-|------|------|
-| CAN FD（按 ID 连接） | [H3L_demo_canfd_id.cc](../../../cpp/demo/omnihand_3_lite/H3L_demo_canfd_id.cc) |
-| CAN FD（按串号连接） | [H3L_demo_canfd_serial.cc](../../../cpp/demo/omnihand_3_lite/H3L_demo_canfd_serial.cc) |
+各连接方式共用 [demo_omnihand_3_lite.cc](../../../cpp/demo/omnihand_3_lite/demo_omnihand_3_lite.cc)，构建目标为 `demo_omnihand_3_lite`：
+
+```shell
+./demo_omnihand_3_lite -d zlgcan -i 0 -c 0 --model s
+./demo_omnihand_3_lite -d hcan --serial ADAPTER_SERIAL --model m
+./demo_omnihand_3_lite -d socketcan --can-if can0 --hand right
+./demo_omnihand_3_lite -d rs485 -p COM5
+./demo_omnihand_3_lite -d zlgcan -c 0 --hand both
+```
+
+Windows 可执行文件后缀为 `.exe`，Linux 串口可使用 `/dev/ttyUSB0`；SocketCAN 仅适用于 Linux。`--help` 显示完整参数。示例仅演示常规控制与信息读取，不包含固件更新、标定、标零、写 SN 或出厂参数写入。
+
+`--hand both` 在同一 CAN 适配器上使用 `-c` 指定通道及其下一通道；两个适配器可用 `--serial`、`--second-serial` 指定，分别使用同一通道号。串口双手需用 `-p`、`--second-port` 指定不同端口。
+
+示例依次执行 PRAYER、SIDE_FIST 两个预设手势，并读取关节角度反馈；手势随所选型号和左右手适配。随后读取电机温度、电流、错误，并初始化触觉点数、读取各区域的 U16 原始压力数据，只预览前 8 个点。
 
 编译方式参见 [CMakeLists.txt](../../../cpp/demo/omnihand_3_lite/CMakeLists.txt)。
 

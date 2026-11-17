@@ -18,6 +18,26 @@ CAN 连接需传入夹爪实际节点 ID，默认值为 `OmniPicker2025::kDefaul
 
 USB 直连使用 Fibre USB 协议，不传 COM 端口。安装和接线见[快速入门](QUICK_START.md)，Linux CAN 配置见 [SocketCAN 配置](SOCKETCAN_SETUP.md)。
 
+## C++ 示例
+
+各连接方式共用 [demo_omnipicker_2025.cc](../../../cpp/demo/omnipicker_2025/demo_omnipicker_2025.cc)，构建目标为 `demo_omnipicker_2025`：
+
+```shell
+./demo_omnipicker_2025 -d usb
+./demo_omnipicker_2025 -d usb --serial USB_SERIAL
+./demo_omnipicker_2025 -d hcan -i 0 -c 0 --device-id 1
+./demo_omnipicker_2025 -d zlgcan -i 0 -c 0 --device-id 1
+./demo_omnipicker_2025 -d socketcan --can-if can0 --device-id 1
+./demo_omnipicker_2025 -d rs485 -p COM3 --device-id 1
+./demo_omnipicker_2025 -d rs485 -p COM3 --device-id 1 --position 128
+```
+
+Windows 可执行文件后缀为 `.exe`，Linux 串口可使用 `/dev/ttyUSB0`；SocketCAN 仅适用于 Linux。`--help` 显示完整参数。示例仅演示常规控制与信息读取，不包含固件更新、标定、标零、写 SN 或出厂参数写入。
+
+USB 使用 `--serial` 选择设备，不接受 COM 端口。USB 通过预设手势发送半开目标（底层为 MIT 控制）；CAN 发送单节点半开目标并打印应答；RS485 不传 `--position` 时只读取信息，传入 0–255 时控制开合并打印应答。CAN／RS485 应答中的位置在指令到达时采样，不代表已到达目标；USB 不提供实测位置反馈。
+
+编译方式参见 [CMakeLists.txt](../../../cpp/demo/omnipicker_2025/CMakeLists.txt)。
+
 ## RS485 控制与反馈
 
 RS485 使用固件的自定义串口协议，默认 115200、8N1，不使用 Modbus。设备需启用 `rs485_mode`、关闭 `modbus_mode`；波特率必须与固件配置一致。每个 SDK 实例独占一个串口，多设备请使用不同端口。

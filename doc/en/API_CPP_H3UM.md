@@ -292,6 +292,28 @@ int16_t GetTemperatureOfPower() const;
 
 Board temperatures are supported only on T1.5. On T1.3, both getters and their timestamped variants return a temperature value of `0` without sending a CAN request.
 
+## C++ Demo
+
+All transports share [demo_omnihand_3_ultra_m.cc](../../../cpp/demo/omnihand_3_ultra_m/demo_omnihand_3_ultra_m.cc), built as `demo_omnihand_3_ultra_m`:
+
+```shell
+./demo_omnihand_3_ultra_m -d zlgcan -i 0 -c 0
+./demo_omnihand_3_ultra_m -d hcan --serial ADAPTER_SERIAL --revision 1.5
+./demo_omnihand_3_ultra_m -d socketcan --can-if can0 --revision 1.3
+./demo_omnihand_3_ultra_m -d zlgcan -c 0 --hand both
+./demo_omnihand_3_ultra_m -d zlgcan --xense
+```
+
+Windows executables use the `.exe` suffix; Linux serial ports can use `/dev/ttyUSB0`. SocketCAN is Linux-only. Use `--help` for all options. Demos cover normal control and information queries; they do not update firmware, calibrate, set zero offsets, write serial numbers, or write factory parameters.
+
+`--hand both` uses `-c` and the next channel on one CAN adapter. With `--serial` and `--second-serial`, both adapters use the selected channel number.
+
+Omit `--revision` to detect T1.3/T1.5 automatically. `--xense` requires an SDK built with Xense support and reads visual tactile data instead of running normal motion.
+
+The demo reads the current pose, moves only the pinky PIP joint to 0.35 and 0.7 rad, and reads feedback after each move. The same flow supports T1.3 and T1.5. It then reads motor temperatures, currents and errors; T1.3 reads 3D tactile points and resultant forces, while T1.5 reads U16 pressure points and palm/power board temperatures.
+
+See [CMakeLists.txt](../../../cpp/demo/omnihand_3_ultra_m/CMakeLists.txt) for build instructions.
+
 ## Related Documentation
 
 - [C++ API index](API_CPP.md)
