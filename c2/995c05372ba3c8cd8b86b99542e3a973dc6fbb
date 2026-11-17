@@ -1,0 +1,72 @@
+windows/x64/python/test/test_omnihand_3_ultra_m.py
+  s_62d7f790ba05bc::t_6d53983f51f32e 23,179-181
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "c2995c05372ba3c8cd8b86b99542e3a973dc6fbb",
+  "prompts": {},
+  "sessions": {
+    "s_62d7f790ba05bc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1b947-618f-72f1-be20-c6e2c733b4b5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.output_tokens": "5171778",
+        "tlab.token_usage.input_tokens": "26436894",
+        "tlab.token_usage.cache_read_tokens": "1133218031",
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.session_started_at": "2026-11-17T14:26:43Z"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "doc/en/API_CPP_H3UM.md",
+      "new_path": "doc/en/API_CPP_H3UM.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 8
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_H3UM.md",
+      "new_path": "doc/zh_cn/API_CPP_H3UM.md",
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 8
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_omnihand_3_ultra_m.py",
+      "new_path": "windows/x64/python/test/test_omnihand_3_ultra_m.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 4
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 1
+          }
+        ]
+      }
+    }
+  ]
+}
