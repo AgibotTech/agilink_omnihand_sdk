@@ -1,0 +1,26 @@
+windows/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc
+  h_b60f00b173c94b 27-29,54-56,60-61,66-67,70,387,399,413-415,422,448-450,497-499,504,518,520,545,560,567-569,574,593-594,610,652-654,657,659-666,670-682,684,689-690,693-695
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "7a5daab4bb19f671c4c07edd5373b9f4ba1d1141",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc",
+      "additions": {
+        "human": 66
+      },
+      "deletions": {
+        "human": 53
+      }
+    }
+  ]
+}
