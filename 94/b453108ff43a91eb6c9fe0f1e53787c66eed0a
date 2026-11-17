@@ -1,0 +1,23 @@
+windows/x64/cpp/test/CMakeLists.txt
+  h_b60f00b173c94b 23
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "94b453108ff43a91eb6c9fe0f1e53787c66eed0a",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "additions": {
+        "human": 1
+      }
+    }
+  ]
+}
