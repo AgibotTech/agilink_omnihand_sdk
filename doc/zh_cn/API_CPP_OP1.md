@@ -12,10 +12,31 @@ OP1 是 1 自由度夹爪，C++ 接口类为 `agilink::omnihand::OmniPicker2025`
 | HCAN USB CANFD | `createHandByHcan(hand_type, hand_device_id, canfd_device_id, canfd_channel_id)` | Windows / Linux |
 | SocketCAN | `createHandSocketCan(hand_type, hand_device_id, "can0")` | Linux |
 | USB 直连 | `createHandByUSB()` | Windows / Linux |
+| RS485 | `createHandByRs485(hand_type, hand_device_id, serial_port, baudrate)` | Windows / Linux |
 
 CAN 连接需传入夹爪实际节点 ID，默认值为 `OmniPicker2025::kDefaultHandDeviceId`（1）。适配器和通道索引从 0 开始。工厂保留 `hand_type` 参数，示例使用 `HandType::LEFT`。ZLG 和 HCAN 工厂还支持用适配器序列号替代适配器索引。
 
-USB 直连使用 Fibre USB 协议，不传 COM 端口；不支持 RS485。安装和接线见[快速入门](QUICK_START.md)，Linux CAN 配置见 [SocketCAN 配置](SOCKETCAN_SETUP.md)。
+USB 直连使用 Fibre USB 协议，不传 COM 端口。安装和接线见[快速入门](QUICK_START.md)，Linux CAN 配置见 [SocketCAN 配置](SOCKETCAN_SETUP.md)。
+
+## RS485 控制与反馈
+
+RS485 使用固件的自定义串口协议，默认 115200、8N1，不使用 Modbus。设备需启用 `rs485_mode`、关闭 `modbus_mode`；波特率必须与固件配置一致。每个 SDK 实例独占一个串口，多设备请使用不同端口。
+
+```cpp
+auto picker = OmniPicker2025::createHandByRs485(
+    HandType::LEFT, 1, "COM3", 115200);  // Linux: "/dev/ttyUSB0"
+if (!picker) {
+  return 1;
+}
+const auto feedback = picker->SendFrameSyncByRs485({128, 1, 1, 1, 1});
+if (feedback) {
+  std::cout << ToString(*feedback) << '\n';
+}
+```
+
+创建时会查询指定节点的信息，串口打开失败或节点未响应时返回空指针。节点 ID 范围为 1–127，传 0 使用默认 ID 1，不进行广播发现。RS485 地址沿用固件的 `can_node_id`；通过 USB 的 `SetCanNodeId()` 修改时会自动保存配置，重新上电生效。
+
+`SendFrameSyncByRs485()` 复用下文的 `Op1CanfdCtrlFrame` 和 `Op1CanfdStateFrame`，超时或通信失败返回 `std::nullopt`。默认接收超时为 100 ms，可用 `SetFrameRecvTimeout()` 调整；接口同步等待，请在应用工作线程中调用。`ShowDeviceInfo()` 返回设备类型、节点 ID 和固件版本，其他字段保持默认值。
 
 ## CANFD 控制与反馈
 
@@ -86,7 +107,7 @@ int main() {
 
 ## 预设开合位置
 
-CAN 和 USB 均支持带类型的 `OmniPicker2025Gesture` 接口：
+CAN、RS485 和 USB 均支持带类型的 `OmniPicker2025Gesture` 接口：
 
 | 手势枚举 | 目标开合比例 |
 |----------|--------------|
@@ -100,7 +121,7 @@ const float target_ratio = picker->GetHandGesture(gesture);
 const float result = picker->SetHandGesture(gesture);
 ```
 
-`GetHandGesture()` 只返回预设目标比例，不查询设备。CAN 的 `SetHandGesture()` 返回反馈开合比例，失败返回 -1；USB 返回请求比例，不是实测反馈。两者返回值均不能用于判断已经到位。
+`GetHandGesture()` 只返回预设目标比例，不查询设备。CAN 和 RS485 的 `SetHandGesture()` 返回反馈开合比例，失败返回 -1；USB 返回请求比例，不是实测反馈。返回值均不能用于判断已经到位。
 
 CAN 预设手势使用 255 档的速度、力度、加速度和减速度。需要自行控制这些参数时，使用 `SendFrameSyncByCanfd()`。
 

@@ -12,10 +12,31 @@ OP1 is a 1-DOF gripper. Its C++ interface is `agilink::omnihand::OmniPicker2025`
 | HCAN USB CANFD | `createHandByHcan(hand_type, hand_device_id, canfd_device_id, canfd_channel_id)` | Windows / Linux |
 | SocketCAN | `createHandSocketCan(hand_type, hand_device_id, "can0")` | Linux |
 | USB direct | `createHandByUSB()` | Windows / Linux |
+| RS485 | `createHandByRs485(hand_type, hand_device_id, serial_port, baudrate)` | Windows / Linux |
 
 For CAN connections, pass the gripper's actual node ID; the default is `OmniPicker2025::kDefaultHandDeviceId` (1). Adapter and channel indices start at 0. `hand_type` is retained in the factory signature; the example uses `HandType::LEFT`. ZLG and HCAN factories also accept an adapter serial number instead of its index.
 
-USB direct uses the Fibre USB protocol and does not take a COM port. RS485 is not supported. See [Quick Start](QUICK_START.md) for installation and wiring, or [SocketCAN Setup](SOCKETCAN_SETUP.md) for Linux CAN configuration.
+USB direct uses the Fibre USB protocol and does not take a COM port. See [Quick Start](QUICK_START.md) for installation and wiring, or [SocketCAN Setup](SOCKETCAN_SETUP.md) for Linux CAN configuration.
+
+## RS485 Control and Feedback
+
+RS485 uses the firmware's custom serial protocol, with defaults of 115200 baud and 8N1, rather than Modbus. Enable `rs485_mode` and disable `modbus_mode` in the device configuration. Match the firmware baud rate. Each SDK instance exclusively owns its serial port; use separate ports for multiple devices.
+
+```cpp
+auto picker = OmniPicker2025::createHandByRs485(
+    HandType::LEFT, 1, "COM3", 115200);  // Linux: "/dev/ttyUSB0"
+if (!picker) {
+  return 1;
+}
+const auto feedback = picker->SendFrameSyncByRs485({128, 1, 1, 1, 1});
+if (feedback) {
+  std::cout << ToString(*feedback) << '\n';
+}
+```
+
+Creation queries the addressed node and returns null if opening the port fails or the node does not respond. Node IDs range from 1 to 127; 0 selects the default ID 1 without broadcast discovery. The RS485 address is the firmware's `can_node_id`. Change it over USB with `SetCanNodeId()`, which saves the configuration automatically; power-cycle the device to apply it.
+
+`SendFrameSyncByRs485()` reuses the `Op1CanfdCtrlFrame` and `Op1CanfdStateFrame` fields below, returning `std::nullopt` on timeout or communication failure. The default receive timeout is 100 ms and can be changed with `SetFrameRecvTimeout()`. Calls block the calling thread, so use an application worker thread. `ShowDeviceInfo()` provides device type, node ID, and firmware version; other fields retain defaults.
 
 ## CANFD Control and Feedback
 
@@ -86,7 +107,7 @@ The enum names above match the SDK spelling. A response does not mean motion is 
 
 ## Preset Opening Positions
 
-Both CAN and USB support the typed `OmniPicker2025Gesture` API:
+CAN, RS485, and USB support the typed `OmniPicker2025Gesture` API:
 
 | Gesture | Target opening ratio |
 |---------|----------------------|
@@ -100,7 +121,7 @@ const float target_ratio = picker->GetHandGesture(gesture);
 const float result = picker->SetHandGesture(gesture);
 ```
 
-`GetHandGesture()` returns the preset target ratio without querying the device. On CAN, `SetHandGesture()` returns the feedback opening ratio or -1 on failure; on USB it returns the requested ratio, not measured feedback. Neither return value confirms arrival.
+`GetHandGesture()` returns the preset target ratio without querying the device. On CAN and RS485, `SetHandGesture()` returns the feedback opening ratio or -1 on failure; on USB it returns the requested ratio, not measured feedback. No return value confirms arrival.
 
 CAN preset gestures use speed, force, acceleration, and deceleration settings of 255. Use `SendFrameSyncByCanfd()` when these settings need to be controlled.
 

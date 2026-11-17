@@ -237,6 +237,12 @@ class AGIBOT_EXPORT OmniPicker2025 : public OmniHand {
     ThrowUnsupported("SendFrameSyncByCanfd");
   };
 
+  // RS485 uses the same command and feedback bytes as CAN, with serial framing.
+  virtual std::optional<Op1CanfdStateFrame> SendFrameSyncByRs485(
+      const Op1CanfdCtrlFrame& frame) {
+    ThrowUnsupported("SendFrameSyncByRs485");
+  }
+
   /**
    * @brief Sends one CANFD FD broadcast frame (CAN ID=0, 64 bytes) to up to 8 OP1 nodes simultaneously.
    *
@@ -317,6 +323,12 @@ class AGIBOT_EXPORT OmniPicker2025 : public OmniHand {
   virtual Op1DeviceInfo ShowDeviceInfo() const = 0;
 
   // ============ Factory Methods ============
+  // Each instance owns its port; use the firmware's custom RS485 mode (8N1).
+  static std::unique_ptr<OmniPicker2025> createHandByRs485(
+      HandType hand_type, uint8_t hand_device_id,
+      const std::string& serial_port, uint32_t baudrate = 115200,
+      CommunicationLogOptions log_options = {});
+
   static std::unique_ptr<OmniPicker2025> createHandByUSB(
       CommunicationLogOptions log_options = {});
   // Exact USB descriptor serial number from ScanUsbDevices(); no fallback to
