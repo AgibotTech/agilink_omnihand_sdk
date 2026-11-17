@@ -1,0 +1,84 @@
+doc/en/API_CPP_OP1.md
+  s_62d7f790ba05bc::t_dd9030a691a1a0 25-28,45
+  s_62d7f790ba05bc::t_3ec69acfa266a8 47-48
+  s_62d7f790ba05bc::t_da4218e23cad52 46
+doc/zh_cn/API_CPP_OP1.md
+  s_62d7f790ba05bc::t_dd9030a691a1a0 25-28,45
+  s_62d7f790ba05bc::t_3ec69acfa266a8 47-48
+  s_62d7f790ba05bc::t_3fdeeaf57f6e40 46
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "837c21642580bb5863284bffe176bee4b6606369",
+  "prompts": {},
+  "sessions": {
+    "s_62d7f790ba05bc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1b947-618f-72f1-be20-c6e2c733b4b5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.input_tokens": "23514378",
+        "tlab.token_usage.output_tokens": "4778144",
+        "tlab.token_usage.cache_read_tokens": "1062667684",
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.session_started_at": "2026-11-17T01:25:01Z"
+      }
+    }
+  },
+  "changes": [
+    {
+      "new_path": "windows/x64/cpp/demo/omnipicker_2025/OP1_demo_rs485.cc",
+      "additions": {
+        "human": 50
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_OP1.md",
+      "new_path": "doc/en/API_CPP_OP1.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 8
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_OP1.md",
+      "new_path": "doc/zh_cn/API_CPP_OP1.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 8
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnipicker_2025/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/demo/omnipicker_2025/CMakeLists.txt",
+      "additions": {
+        "human": 7
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnipicker_2025.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnipicker_2025.h",
+      "additions": {
+        "human": 4
+      },
+      "deletions": {
+        "human": 1
+      }
+    }
+  ]
+}
