@@ -12,7 +12,7 @@ OP1 是 1 自由度夹爪，C++ 接口类为 `agilink::omnihand::OmniPicker2025`
 | HCAN USB CANFD | `createHandByHcan(hand_type, hand_device_id, canfd_device_id, canfd_channel_id)` | Windows / Linux |
 | SocketCAN | `createHandSocketCan(hand_type, hand_device_id, "can0")` | Linux |
 | USB 直连 | `createHandByUSB()` | Windows / Linux |
-| RS485 | `createHandByRs485(hand_type, hand_device_id, serial_port, baudrate)` | Windows / Linux |
+| RS485 | `createHandByRs485(hand_type, hand_device_id, serial_port)` | Windows / Linux |
 
 CAN 连接需传入夹爪实际节点 ID，默认值为 `OmniPicker2025::kDefaultHandDeviceId`（1）。适配器和通道索引从 0 开始。工厂保留 `hand_type` 参数，示例使用 `HandType::LEFT`。ZLG 和 HCAN 工厂还支持用适配器序列号替代适配器索引。
 
@@ -42,7 +42,9 @@ USB 使用 `-p PORT` 或 `--serial USB_SERIAL` 选择设备，两者不能同时
 
 ## RS485 控制与反馈
 
-RS485 使用固件的自定义串口协议，默认 115200、8N1，不使用 Modbus。设备需启用 `rs485_mode`、关闭 `modbus_mode`；波特率必须与固件配置一致。每个 SDK 实例独占一个串口，多设备请使用不同端口。
+RS485 使用固件的自定义串口协议，SDK 固定为 115200、8N1，不使用 Modbus。设备需启用 `rs485_mode`、关闭 `modbus_mode`，并将固件波特率设为 115200。每个 SDK 实例独占一个串口，多设备请使用不同端口。
+
+OP1 使用 `CreateHand(context)` 时，串口连接信息只需填写模式和端口；demo 也不需要波特率参数。旧 `createHandByRs485()` 的波特率入参可省略，显式传入时只接受 115200。
 
 硬件前置条件：按[官网用户手册第 5.2 节](https://cn.agilink-ai.com/OmniPicker/20.html)，带拨码开关的 V1.2 控制板默认使用 CAN/CAN-FD。切换 RS485 时应先断电，将 1、2 拨到 ON，3–6 全部拨到 OFF，再上电。拨码选择电气通道，SDK 无法代替硬件切换。
 
@@ -50,7 +52,7 @@ RS485 使用固件的自定义串口协议，默认 115200、8N1，不使用 Mod
 
 ```cpp
 auto picker = OmniPicker2025::createHandByRs485(
-    HandType::LEFT, 1, "COM3", 115200);  // Linux: "/dev/ttyUSB0"
+    HandType::LEFT, 1, "COM3");  // Linux: "/dev/ttyUSB0"
 if (!picker) {
   return 1;
 }

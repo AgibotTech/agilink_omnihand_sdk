@@ -154,9 +154,9 @@ int main(int argc, char** argv) {
       throw std::invalid_argument("--position needs RS485");
     }
     if (options.device == "usb" && !options.port.empty()) {
-      if (!options.serial.empty() || options.baudrate != 0) {
+      if (!options.serial.empty()) {
         throw std::invalid_argument(
-            "USB -p PORT cannot be combined with --serial or -b");
+            "USB -p PORT cannot be combined with --serial");
       }
       options.serial = ResolveUsbSerial(options.port);
       options.port.clear();

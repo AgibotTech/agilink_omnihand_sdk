@@ -32,7 +32,6 @@ struct Options {
   std::string second_port;
   std::string can_if = "can0";
   std::string second_can_if = "can1";
-  uint32_t baudrate = 0;
   int request_interval = -1;
   int recv_timeout = -1;
   bool verbose = false;
@@ -87,7 +86,6 @@ inline void PrintUsage(const char* program,
   if (Contains(devices, "rs485") || Contains(devices, "usb")) {
     std::cout
         << "  -p, --port PORT    Serial port for RS485 or USB serial\n"
-        << "  -b, --baudrate B   Serial baud rate (default: SDK default)\n"
         << "  --second-port PORT Second serial port for both mode\n";
   }
   if (Contains(devices, "socketcan")) {
@@ -186,8 +184,6 @@ inline Options ParseOptions(int argc, char** argv,
       options.port = value;
     } else if (serial && arg == "--second-port") {
       options.second_port = value;
-    } else if (serial && (arg == "-b" || arg == "--baudrate")) {
-      options.baudrate = ParseValue(value, 1, 2147483647);
     } else if (socketcan && arg == "--can-if") {
       options.can_if = value;
     } else if (socketcan && arg == "--second-can-if") {
@@ -259,7 +255,7 @@ inline std::shared_ptr<agilink::omnihand::DeviceContext> MakeContext(
   } else if (options.device == "socketcan") {
     context->socket_can = second ? options.second_can_if : options.can_if;
   } else if (native_usb && options.device == "usb") {
-    if (!options.port.empty() || options.baudrate != 0) {
+    if (!options.port.empty()) {
       throw std::invalid_argument(
           "Native USB requires port resolution and does not use a baud rate");
     }
@@ -273,7 +269,7 @@ inline std::shared_ptr<agilink::omnihand::DeviceContext> MakeContext(
         options.device == "rs485"
             ? agilink::omnihand::SerialConnectionInfo::Mode::RS485
             : agilink::omnihand::SerialConnectionInfo::Mode::USB,
-        port, options.baudrate};
+        port};
   }
   return context;
 }

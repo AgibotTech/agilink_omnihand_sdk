@@ -145,7 +145,7 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
    * @param hand_type Hand type; stored and returned by GetHandType() but not used in any OP3 control logic -- any value is accepted
    * @param hand_device_id Hand device ID
    * @param uart_port Serial port path (e.g., "/dev/ttyUSB0" or "COM3")
-   * @param baudrate Baud rate (default 460800)
+   * @param baudrate Compatibility parameter; must be 460800.
    * @return A unique pointer to OmniPicker3 instance
    */
   static std::unique_ptr<OmniPicker3> createHandByRs485(

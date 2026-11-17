@@ -26,6 +26,8 @@ Each product has its own interface class (`OmniHand2025`, `OmniHandPro2025`, `Om
 
 ## Common Enums and Data Structures
 
+`SerialConnectionInfo` contains only the serial mode and port. The SDK fixes the baud rate internally; see each product's documentation for its value. `CreateHand(context)` and C++ demos do not take a baud-rate option. Legacy factory signatures retain their baud-rate argument for source compatibility and reject values other than the product's fixed rate.
+
 All products share common enums and data structures. These are documented in each product-specific API document, but here's a quick reference:
 
 ### ProductType (for reference only, not used in new API)

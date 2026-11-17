@@ -94,7 +94,7 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public IO10TactileSensor1D{
    * @param hand_type Hand type (left/right)
    * @param hand_device_id 0 uses protocol defaults (standard=1, private=9); nonzero initializes both target IDs.
    * @param uart_port Serial port path (e.g., "/dev/ttyUSB0")
-   * @param baudrate Baud rate (default 460800)
+   * @param baudrate Compatibility parameter; must be 460800.
    * @return A unique pointer to OmniHand2025 instance
    */
   static std::unique_ptr<OmniHand2025> createHandByRs485(
@@ -110,7 +110,7 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public IO10TactileSensor1D{
    * @param hand_type Hand type (left/right)
    * @param hand_device_id 0 uses protocol defaults (standard=1, private=9); nonzero initializes both target IDs.
    * @param uart_port Serial port path (e.g., "/dev/ttyACM0" or "COM3")
-   * @param baudrate Baud rate (default 460800)
+   * @param baudrate Compatibility parameter; must be 460800.
    * @return A unique pointer to OmniHand2025 instance
    */
   static std::unique_ptr<OmniHand2025> createHandByUsb(

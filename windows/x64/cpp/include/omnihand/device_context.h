@@ -38,6 +38,7 @@ struct CanConnectionInfo {
   std::string serial_number;
 };
 
+// Baud rate is fixed internally: OP1 RS485 uses 115200; other products use 460800.
 struct SerialConnectionInfo {
   enum class Mode {
     USB,
@@ -45,7 +46,6 @@ struct SerialConnectionInfo {
   };
   Mode mode = Mode::USB;
   std::string port;
-  uint32_t baud_rate = 0;
 };
 
 struct UsbConnectionInfo {

@@ -12,7 +12,7 @@ OP1 is a 1-DOF gripper. Its C++ interface is `agilink::omnihand::OmniPicker2025`
 | HCAN USB CANFD | `createHandByHcan(hand_type, hand_device_id, canfd_device_id, canfd_channel_id)` | Windows / Linux |
 | SocketCAN | `createHandSocketCan(hand_type, hand_device_id, "can0")` | Linux |
 | USB direct | `createHandByUSB()` | Windows / Linux |
-| RS485 | `createHandByRs485(hand_type, hand_device_id, serial_port, baudrate)` | Windows / Linux |
+| RS485 | `createHandByRs485(hand_type, hand_device_id, serial_port)` | Windows / Linux |
 
 For CAN connections, pass the gripper's actual node ID; the default is `OmniPicker2025::kDefaultHandDeviceId` (1). Adapter and channel indices start at 0. `hand_type` is retained in the factory signature; the example uses `HandType::LEFT`. ZLG and HCAN factories also accept an adapter serial number instead of its index.
 
@@ -42,7 +42,9 @@ See [CMakeLists.txt](../../../cpp/demo/omnipicker_2025/CMakeLists.txt) for build
 
 ## RS485 Control and Feedback
 
-RS485 uses the firmware's custom serial protocol, with defaults of 115200 baud and 8N1, rather than Modbus. Enable `rs485_mode` and disable `modbus_mode` in the device configuration. Match the firmware baud rate. Each SDK instance exclusively owns its serial port; use separate ports for multiple devices.
+RS485 uses the firmware's custom serial protocol, fixed at 115200 baud and 8N1 in the SDK, rather than Modbus. Enable `rs485_mode`, disable `modbus_mode`, and set the firmware baud rate to 115200. Each SDK instance exclusively owns its serial port; use separate ports for multiple devices.
+
+With OP1's `CreateHand(context)`, serial connection information needs only the mode and port; the demo also needs no baud-rate option. The legacy `createHandByRs485()` baud-rate argument can be omitted and accepts only 115200 when supplied explicitly.
 
 Hardware prerequisite: [section 5.2 of the official manual](https://cn.agilink-ai.com/OmniPicker/20.html) describes a DIP-equipped V1.2 board that defaults to CAN/CAN-FD. Power off, set switches 1 and 2 ON and 3–6 OFF, then power on for RS485. These switches select the electrical interface; the SDK cannot switch them.
 
@@ -50,7 +52,7 @@ Configure firmware parameters over USB, then disable the motor, save the configu
 
 ```cpp
 auto picker = OmniPicker2025::createHandByRs485(
-    HandType::LEFT, 1, "COM3", 115200);  // Linux: "/dev/ttyUSB0"
+    HandType::LEFT, 1, "COM3");  // Linux: "/dev/ttyUSB0"
 if (!picker) {
   return 1;
 }
