@@ -1,0 +1,1053 @@
+linux/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 8-10,69-70,75,123,136,391,578,581-584,600-603,612,617
+  s_7a2efc242d50e3::t_8ecad1b96e3cd6 618
+linux/x64/cpp/include/omnihand/device_context.h
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 1-102
+linux/x64/README_zh_cn.md
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 1
+linux/x64/cpp/demo/omnihand_3_lite/demo_omnihand_3_lite.cc
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 1-118
+linux/x64/cpp/demo/omnipicker_2025/demo_omnipicker_2025.cc
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 1-194
+linux/x64/cpp/test/test_omnihand_3_lite.cc
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 16-18,965,971-973,976-977,1083
+  s_7a2efc242d50e3::t_57846fc5e905bc 1084
+linux/x64/cpp/include/omnihand/omnihand_pro_2025.h
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 46-50,398-401
+linux/x64/cpp/demo/omnihand_pro_2025/CMakeLists.txt
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 4-8
+linux/x64/cpp/demo/omnihand_2025/CMakeLists.txt
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 4-8
+linux/x64/cpp/demo/omnihand_3_lite/CMakeLists.txt
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 4-8
+linux/x64/cpp/demo/omnihand_pro_2025/demo_omnihand_pro_2025.cc
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 1-106
+linux/x64/cpp/include/omnihand/kinematics/omnihand_2025/omnihand_2025_solver.h
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 14,94-96,153
+linux/x64/cpp/include/omnihand/omnihand.h
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 14,18,21,25,34,51-52,567-570,665-666,719,727
+linux/x64/cpp/demo/omnihand_3_ultra_m/CMakeLists.txt
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 4-8,12
+linux/x64/cpp/include/omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 28-29
+linux/x64/cpp/include/omnihand/omnipicker_3.h
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 53-58,148,276-280,291-294
+linux/x64/cpp/test/README.md
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 26-27
+linux/x64/cpp/test/README_zh_cn.md
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 26-27
+linux/x64/cpp/include/omnihand/omnihand_3_ultra_m.h
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 191,204-205,215-219,333,361,380,423-428,541-543,552,561
+linux/x64/cpp/include/omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 82-83,144-148,152,158
+linux/x64/cpp/include/omnihand/utils.h
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 36,112-115
+  s_7a2efc242d50e3::t_6e674d5116fc75 116-117
+linux/x64/cpp/demo/omnihand_3_ultra_m/demo_omnihand_3_ultra_m.cc
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 1-177
+linux/x64/cpp/include/omnihand/omnihand_2025.h
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 34,42-46,52-56,97,113,281-284,295,299
+linux/x64/cpp/include/agilink_logger.h
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 16,20,54-55,61-62,68-72
+  s_7a2efc242d50e3::t_06a8dd8da6e31c 73
+linux/x64/README.md
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 1
+linux/x64/cpp/test/test_omnihand_2025.cc
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 60-62,285-289,324-326,562,564,599,601,1172,1184-1185,1189-1190,1199,1201,1203,1217,1221,1237,1249,1261,1278-1279,1283,1291,1310,1322,1327,1332,1342,1346,1348,1357,1363-1365,1369-1374,1382,1395,1409,1417,1427,1443,1455,1459,1472,1478,1482,1490-1491,1502,1512,1517
+  s_7a2efc242d50e3::t_a7ffdbf7fdcce2 1518
+linux/x64/cpp/demo/omnipicker_3/demo_omnipicker_3.cc
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 1-124
+linux/x64/install.sh
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 29-30
+linux/x64/cpp/demo/omnipicker_3/CMakeLists.txt
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 4-8
+linux/x64/cpp/include/omnihand/omnihand_3_lite.h
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 39,43,46-48,52-57,213,294-295,319-322
+linux/x64/cpp/include/omnihand/omnipicker_2025.h
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 169,240-245,314-318,326-334,337-341,458-461
+linux/x64/cpp/demo/demo_options.h
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 1-289
+linux/x64/VERSION
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 1
+linux/x64/cpp/include/omnihand/kinematics/omnihand_pro_2025/omnihand_pro_2025_solver.h
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 18,97,294
+linux/x64/cpp/include/omnilogger.h
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 9,16-17,20-23,25-26,31,33,41,46,49,57,68-69,79,88,91,106-107,111-122,124-128,130-153,156-242,244-245,247,250-252,254,262-263,265-266,269,271,274,282-317,320,325,330-343,345,347-349,351-466,471,475,479,483,487,491,495,499,503,507,515-516,529,539,549,559,569-635,643,653-670,674,677,683-685,688-709,715-716,720,724,728-729,731-732,736-757,762-767,771-784,786,788-815,818-820,824-848,850-855,857-861,863-901,903,905-912,914-926,930-947,949-958,960,963-990,992-998,1000-1004,1006-1010,1012,1015-1024,1026-1037,1039,1042-1092,1095,1097-1101,1105-1111,1119-1120,1124-1185,1188-1205,1208,1210-1218
+linux/x64/cpp/include/omnihand/device_scanner.h
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 6,30-32
+  s_7a2efc242d50e3::t_6a8f8cdd01e418 33
+linux/x64/cpp/demo/omnipicker_2025/CMakeLists.txt
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 4-11
+linux/x64/cpp/test/CMakeLists.txt
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 12,21-25
+linux/x64/cpp/test/test_omnipicker_3.cc
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 44
+linux/x64/cpp/demo/omnihand_2025/demo_omnihand_2025.cc
+  s_7a2efc242d50e3::t_cf3e56ef8edb01 1-120
+linux/x64/cpp/lib/libomnihand.so.1
+  s_7a2efc242d50e3::t_451436af0a1271 1
+linux/x64/ros2/humble/lib/libomnihand.so.1
+  s_7a2efc242d50e3::t_2e4cd3e7438613 1
+linux/x64/ros2/humble/lib/omnihand_node/scripts/omnihand_3_ultra_m/joint_cmd.py
+  s_7a2efc242d50e3::t_b6c8766ef98c8e 10-11,20-21,29,38-40,48-49,76,78,80-82
+linux/x64/ros2/humble/lib/omnihand_node/scripts/omnihand_3_ultra_m/joint_control_mode_pub.py
+  s_7a2efc242d50e3::t_91ac809f52edb1 12-13,27,36,40,46-48,50,53-54,57-58,69,71,75-77
+linux/x64/ros2/humble/lib/omnihand_node/scripts/omnihand_3_ultra_m/joint_current_threshold_pub.py
+  s_7a2efc242d50e3::t_5c5af9ddd270d7 10-11,25,34,38,44-47,50-51,54-55,66,68,72-74
+linux/x64/ros2/humble/lib/omnihand_node/scripts/omnihand_3_ultra_m/joint_info.py
+  s_7a2efc242d50e3::t_d3e33ce04c2323 1-58
+linux/x64/ros2/humble/share/ament_index/resource_index/package_run_dependencies/omnihand_node
+  s_7a2efc242d50e3::t_c7e658433eb215 1
+linux/x64/ros2/humble/share/colcon-core/packages/omnihand_node
+  s_7a2efc242d50e3::t_14ff9b4bcd5ca9 1
+linux/x64/ros2/humble/share/omnihand_node/config/omnihand_3_ultra_m_node.yaml
+  s_7a2efc242d50e3::t_29e5c122153b2d 5-7,19,28,38,46
+linux/x64/ros2/humble/share/omnihand_node/demo/CMakeLists.txt
+  s_7a2efc242d50e3::t_969125c3f1746d 10,22
+linux/x64/ros2/humble/share/omnihand_node/demo/package.xml
+  s_7a2efc242d50e3::t_06cb8a5e231f8f 12
+linux/x64/ros2/humble/share/omnihand_node/demo/ros2_joint_cmd_demo.cpp
+  s_7a2efc242d50e3::t_e993f8677fdde4 83,91,96,99-100,118,358-365
+linux/x64/ros2/humble/share/omnihand_node/demo/ros2_mix_ctrl_pos_torque_demo.cpp
+  s_7a2efc242d50e3::t_9e1943a3dcebac 67,70,131,362-370
+linux/x64/ros2/humble/share/omnihand_node/demo/ros2_mix_ctrl_pos_vel_torque_demo.cpp
+  s_7a2efc242d50e3::t_d0a1bfa12f17d8 70,73,134,368-376
+linux/x64/ros2/humble/share/omnihand_node/demo/ros_demo_utils.hpp
+  s_7a2efc242d50e3::t_3abfcfae964dd8 1-2,4-5,7-10,13-16,37-102,107
+linux/x64/ros2/humble/share/omnihand_node/package.xml
+  s_7a2efc242d50e3::t_216c174a31406a 13
+linux/x64/ros2/humble/share/omnihand_pro_2025_node_msgs/rust/Cargo.toml
+  s_7a2efc242d50e3::t_ece75d1c4fa964 13,16
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "0f6ef1dc12016efa250d1d3d5316c8495d15ac81",
+  "prompts": {},
+  "sessions": {
+    "s_7a2efc242d50e3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3e330251-142a-488e-b74a-37fd32febcca",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "gaowenfeng <gaowenfeng@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.cache_read_tokens": "3024728",
+        "tlab.session_started_at": "2026-11-17T08:58:43Z",
+        "tlab.token_usage.cache_creation_tokens": "304417",
+        "tlab.token_usage.input_tokens": "10397",
+        "tlab.token_usage.output_tokens": "13533"
+      }
+    }
+  },
+  "changes": [
+    {
+      "new_path": "linux/x64/cpp/demo/demo_options.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 289
+          }
+        ]
+      }
+    },
+    {
+      "new_path": "linux/x64/cpp/demo/omnihand_2025/demo_omnihand_2025.cc",
+      "additions": {
+        "human": 1,
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 119
+          }
+        ]
+      }
+    },
+    {
+      "new_path": "linux/x64/cpp/demo/omnihand_3_lite/demo_omnihand_3_lite.cc",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 118
+          }
+        ]
+      }
+    },
+    {
+      "new_path": "linux/x64/cpp/demo/omnihand_3_ultra_m/demo_omnihand_3_ultra_m.cc",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 177
+          }
+        ]
+      }
+    },
+    {
+      "new_path": "linux/x64/cpp/demo/omnihand_pro_2025/demo_omnihand_pro_2025.cc",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 106
+          }
+        ]
+      }
+    },
+    {
+      "new_path": "linux/x64/cpp/demo/omnipicker_2025/demo_omnipicker_2025.cc",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 194
+          }
+        ]
+      }
+    },
+    {
+      "new_path": "linux/x64/cpp/demo/omnipicker_3/demo_omnipicker_3.cc",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 124
+          }
+        ]
+      }
+    },
+    {
+      "new_path": "linux/x64/cpp/include/omnihand/device_context.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 102
+          }
+        ]
+      }
+    },
+    {
+      "new_path": "linux/x64/ros2/humble/lib/omnihand_node/scripts/omnihand_3_ultra_m/joint_info.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 58
+          }
+        ]
+      }
+    },
+    {
+      "new_path": "linux/x64/ros2/humble/share/omnihand_node/demo/ros_demo_utils.hpp",
+      "additions": {
+        "human": 26,
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 81
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/README.md",
+      "new_path": "linux/x64/README.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "linux/x64/README_zh_cn.md",
+      "new_path": "linux/x64/README_zh_cn.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "linux/x64/VERSION",
+      "new_path": "linux/x64/VERSION",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_2025/CMakeLists.txt",
+      "new_path": "linux/x64/cpp/demo/omnihand_2025/CMakeLists.txt",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 5
+          }
+        ]
+      },
+      "deletions": {
+        "human": 39
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_2025/O10_demo_canfd_id.cc",
+      "deletions": {
+        "human": 345
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_2025/O10_demo_canfd_serial.cc",
+      "deletions": {
+        "human": 327
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_2025/O10_demo_ota.cc",
+      "deletions": {
+        "human": 265
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_2025/O10_demo_rs485.cc",
+      "deletions": {
+        "human": 243
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_2025/O10_demo_socketcan.cc",
+      "deletions": {
+        "human": 320
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_3_lite/CMakeLists.txt",
+      "new_path": "linux/x64/cpp/demo/omnihand_3_lite/CMakeLists.txt",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 5
+          }
+        ]
+      },
+      "deletions": {
+        "human": 14
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_3_lite/O4_demo_canfd_id.cc",
+      "deletions": {
+        "human": 289
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_3_lite/O4_demo_canfd_serial.cc",
+      "deletions": {
+        "human": 192
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_3_ultra_m/CMakeLists.txt",
+      "new_path": "linux/x64/cpp/demo/omnihand_3_ultra_m/CMakeLists.txt",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 6
+          }
+        ]
+      },
+      "deletions": {
+        "human": 29
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_3_ultra_m/T1P5_motor_ota.md",
+      "deletions": {
+        "human": 112
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_3_ultra_m/h3u_m_demo_canfd_id.cc",
+      "deletions": {
+        "human": 220
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_3_ultra_m/h3u_m_demo_canfd_serial.cc",
+      "deletions": {
+        "human": 131
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_3_ultra_m/h3u_m_demo_socketcan.cc",
+      "deletions": {
+        "human": 131
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_3_ultra_m/h3u_m_demo_xense.cc",
+      "deletions": {
+        "human": 72
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_pro_2025/CMakeLists.txt",
+      "new_path": "linux/x64/cpp/demo/omnihand_pro_2025/CMakeLists.txt",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 5
+          }
+        ]
+      },
+      "deletions": {
+        "human": 25
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_pro_2025/O12_demo_canfd_id.cc",
+      "deletions": {
+        "human": 372
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_pro_2025/O12_demo_canfd_serial.cc",
+      "deletions": {
+        "human": 277
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnihand_pro_2025/O12_demo_socketcan.cc",
+      "deletions": {
+        "human": 320
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnipicker_2025/CMakeLists.txt",
+      "new_path": "linux/x64/cpp/demo/omnipicker_2025/CMakeLists.txt",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 8
+          }
+        ]
+      },
+      "deletions": {
+        "human": 14
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnipicker_2025/OP1_demo_canfd_id.cc",
+      "deletions": {
+        "human": 55
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnipicker_2025/OP1_demo_usb.cc",
+      "deletions": {
+        "human": 127
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnipicker_3/CMakeLists.txt",
+      "new_path": "linux/x64/cpp/demo/omnipicker_3/CMakeLists.txt",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 5
+          }
+        ]
+      },
+      "deletions": {
+        "human": 14
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnipicker_3/OP3_demo_canfd_id.cc",
+      "deletions": {
+        "human": 519
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/demo/omnipicker_3/OP3_demo_rs485.cc",
+      "deletions": {
+        "human": 490
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/agilink_logger.h",
+      "new_path": "linux/x64/cpp/include/agilink_logger.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 12
+          }
+        ]
+      },
+      "deletions": {
+        "human": 6
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/device_scanner.h",
+      "new_path": "linux/x64/cpp/include/omnihand/device_scanner.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 5
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/i_omnihand_calibrator.h",
+      "deletions": {
+        "human": 100
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/kinematics/omnihand_2025/omnihand_2025_solver.h",
+      "new_path": "linux/x64/cpp/include/omnihand/kinematics/omnihand_2025/omnihand_2025_solver.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 5
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h",
+      "new_path": "linux/x64/cpp/include/omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 9
+          }
+        ]
+      },
+      "deletions": {
+        "human": 7
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h",
+      "new_path": "linux/x64/cpp/include/omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/kinematics/omnihand_pro_2025/omnihand_pro_2025_solver.h",
+      "new_path": "linux/x64/cpp/include/omnihand/kinematics/omnihand_pro_2025/omnihand_pro_2025_solver.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 3
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnihand.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnihand.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 15
+          }
+        ]
+      },
+      "deletions": {
+        "human": 39
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnihand_2025.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnihand_2025.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 19
+          }
+        ]
+      },
+      "deletions": {
+        "human": 6,
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnihand_3_lite.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 18
+          }
+        ]
+      },
+      "deletions": {
+        "human": 20
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnihand_3_ultra_m.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 22
+          }
+        ]
+      },
+      "deletions": {
+        "human": 80
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnihand_pro_2025.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnihand_pro_2025.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 9
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnipicker_2025.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnipicker_2025.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 30
+          }
+        ]
+      },
+      "deletions": {
+        "human": 14
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/omnipicker_3.h",
+      "new_path": "linux/x64/cpp/include/omnihand/omnipicker_3.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 16
+          }
+        ]
+      },
+      "deletions": {
+        "human": 17,
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/private_omnihand.h",
+      "deletions": {
+        "human": 429
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnihand/utils.h",
+      "new_path": "linux/x64/cpp/include/omnihand/utils.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 7
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/include/omnilogger.h",
+      "new_path": "linux/x64/cpp/include/omnilogger.h",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 898
+          }
+        ]
+      },
+      "deletions": {
+        "human": 258
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/test/CMakeLists.txt",
+      "new_path": "linux/x64/cpp/test/CMakeLists.txt",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 6
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/test/README.md",
+      "new_path": "linux/x64/cpp/test/README.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/test/README_zh_cn.md",
+      "new_path": "linux/x64/cpp/test/README_zh_cn.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/test/test_omnihand_2025.cc",
+      "new_path": "linux/x64/cpp/test/test_omnihand_2025.cc",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 66
+          }
+        ]
+      },
+      "deletions": {
+        "human": 55
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/test/test_omnihand_3_lite.cc",
+      "new_path": "linux/x64/cpp/test/test_omnihand_3_lite.cc",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 11
+          }
+        ]
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc",
+      "new_path": "linux/x64/cpp/test/test_omnihand_3_ultra_m_t1.3.cc",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 21
+          }
+        ]
+      },
+      "deletions": {
+        "human": 12
+      }
+    },
+    {
+      "old_path": "linux/x64/cpp/test/test_omnipicker_3.cc",
+      "new_path": "linux/x64/cpp/test/test_omnipicker_3.cc",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "linux/x64/install.sh",
+      "new_path": "linux/x64/install.sh",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/ros2/humble/lib/omnihand_node/scripts/omnihand_3_ultra_m/joint_cmd.py",
+      "new_path": "linux/x64/ros2/humble/lib/omnihand_node/scripts/omnihand_3_ultra_m/joint_cmd.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 15
+          }
+        ]
+      },
+      "deletions": {
+        "human": 13
+      }
+    },
+    {
+      "old_path": "linux/x64/ros2/humble/lib/omnihand_node/scripts/omnihand_3_ultra_m/joint_control_mode_pub.py",
+      "new_path": "linux/x64/ros2/humble/lib/omnihand_node/scripts/omnihand_3_ultra_m/joint_control_mode_pub.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 18
+          }
+        ]
+      },
+      "deletions": {
+        "human": 12
+      }
+    },
+    {
+      "old_path": "linux/x64/ros2/humble/lib/omnihand_node/scripts/omnihand_3_ultra_m/joint_current_threshold_pub.py",
+      "new_path": "linux/x64/ros2/humble/lib/omnihand_node/scripts/omnihand_3_ultra_m/joint_current_threshold_pub.py",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 18
+          }
+        ]
+      },
+      "deletions": {
+        "human": 13
+      }
+    },
+    {
+      "old_path": "linux/x64/ros2/humble/share/ament_index/resource_index/package_run_dependencies/omnihand_node",
+      "new_path": "linux/x64/ros2/humble/share/ament_index/resource_index/package_run_dependencies/omnihand_node",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "linux/x64/ros2/humble/share/colcon-core/packages/omnihand_node",
+      "new_path": "linux/x64/ros2/humble/share/colcon-core/packages/omnihand_node",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 1
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "linux/x64/ros2/humble/share/omnihand_node/config/omnihand_3_ultra_m_node.yaml",
+      "new_path": "linux/x64/ros2/humble/share/omnihand_node/config/omnihand_3_ultra_m_node.yaml",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 7
+          }
+        ]
+      },
+      "deletions": {
+        "human": 47
+      }
+    },
+    {
+      "old_path": "linux/x64/ros2/humble/share/omnihand_node/demo/CMakeLists.txt",
+      "new_path": "linux/x64/ros2/humble/share/omnihand_node/demo/CMakeLists.txt",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "linux/x64/ros2/humble/share/omnihand_node/demo/package.xml",
+      "new_path": "linux/x64/ros2/humble/share/omnihand_node/demo/package.xml",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/ros2/humble/share/omnihand_node/demo/ros2_joint_cmd_demo.cpp",
+      "new_path": "linux/x64/ros2/humble/share/omnihand_node/demo/ros2_joint_cmd_demo.cpp",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 14
+          }
+        ]
+      },
+      "deletions": {
+        "human": 10
+      }
+    },
+    {
+      "old_path": "linux/x64/ros2/humble/share/omnihand_node/demo/ros2_mix_ctrl_pos_torque_demo.cpp",
+      "new_path": "linux/x64/ros2/humble/share/omnihand_node/demo/ros2_mix_ctrl_pos_torque_demo.cpp",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 12
+          }
+        ]
+      },
+      "deletions": {
+        "human": 10
+      }
+    },
+    {
+      "old_path": "linux/x64/ros2/humble/share/omnihand_node/demo/ros2_mix_ctrl_pos_vel_torque_demo.cpp",
+      "new_path": "linux/x64/ros2/humble/share/omnihand_node/demo/ros2_mix_ctrl_pos_vel_torque_demo.cpp",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 12
+          }
+        ]
+      },
+      "deletions": {
+        "human": 10
+      }
+    },
+    {
+      "old_path": "linux/x64/ros2/humble/share/omnihand_node/demo/ros_multi_array_demo.hpp",
+      "deletions": {
+        "human": 31
+      }
+    },
+    {
+      "old_path": "linux/x64/ros2/humble/share/omnihand_node/package.xml",
+      "new_path": "linux/x64/ros2/humble/share/omnihand_node/package.xml",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 1
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "linux/x64/ros2/humble/share/omnihand_pro_2025_node_msgs/rust/Cargo.toml",
+      "new_path": "linux/x64/ros2/humble/share/omnihand_pro_2025_node_msgs/rust/Cargo.toml",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_7a2efc242d50e3",
+            "lines": 2
+          }
+        ]
+      },
+      "deletions": {
+        "human": 2
+      }
+    }
+  ]
+}
