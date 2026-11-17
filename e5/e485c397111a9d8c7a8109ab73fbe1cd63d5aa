@@ -1,0 +1,92 @@
+windows/x64/cpp/test/README.md
+  h_b60f00b173c94b 65-67,70-73
+windows/x64/cpp/test/README_zh_cn.md
+  h_b60f00b173c94b 54-56,59-61
+windows/x64/cpp/test/test_omnihand_3_ultra_m.cc
+  h_b60f00b173c94b 32-33,59,65,70,75-78,654-668,706,713
+windows/x64/python/demo/omnihand_3_ultra_m/demo_omnihand_3_ultra_m.py
+  h_b60f00b173c94b 91
+windows/x64/python/test/README.md
+  h_b60f00b173c94b 63,100-102
+windows/x64/python/test/README_zh_cn.md
+  h_b60f00b173c94b 58,99-101
+windows/x64/python/test/test_omnihand_3_ultra_m.py
+  h_b60f00b173c94b 11,87,332,334,350
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "e5e485c397111a9d8c7a8109ab73fbe1cd63d5aa",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/test/README.md",
+      "new_path": "windows/x64/cpp/test/README.md",
+      "additions": {
+        "human": 7
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/README_zh_cn.md",
+      "new_path": "windows/x64/cpp/test/README_zh_cn.md",
+      "additions": {
+        "human": 6
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_3_ultra_m.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_3_ultra_m.cc",
+      "additions": {
+        "human": 26
+      },
+      "deletions": {
+        "human": 4
+      }
+    },
+    {
+      "old_path": "windows/x64/python/demo/omnihand_3_ultra_m/demo_omnihand_3_ultra_m.py",
+      "new_path": "windows/x64/python/demo/omnihand_3_ultra_m/demo_omnihand_3_ultra_m.py",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/README.md",
+      "new_path": "windows/x64/python/test/README.md",
+      "additions": {
+        "human": 4
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/README_zh_cn.md",
+      "new_path": "windows/x64/python/test/README_zh_cn.md",
+      "additions": {
+        "human": 4
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_omnihand_3_ultra_m.py",
+      "new_path": "windows/x64/python/test/test_omnihand_3_ultra_m.py",
+      "additions": {
+        "human": 5
+      },
+      "deletions": {
+        "human": 5
+      }
+    }
+  ]
+}
