@@ -282,6 +282,7 @@ TEST_F(OmniHand3UltraMTest, SetAllActiveJointAnglesWithTimestamp) {
   }
 }
 
+// H3UM mixed-control tests cover the supported PT mode only.
 TEST_F(OmniHand3UltraMTest, MixControlByPTAllWithTimestamp) {
   if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
   for (const auto gesture : kTestGestures) {
@@ -314,45 +315,6 @@ TEST_F(OmniHand3UltraMTest, MixControlByPTSingleWithTimestamp) {
     EXPECT_EQ(sample.value.joint_index_, kTestJointIndex);
     EXPECT_TRUE(sample.value.tgt_posi_.has_value());
     EXPECT_TRUE(sample.value.tgt_torque_.has_value());
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-  }
-}
-
-TEST_F(OmniHand3UltraMTest, MixControlByPVTAllWithTimestamp) {
-  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
-  for (const auto gesture : kTestGestures) {
-    SCOPED_TRACE(static_cast<int>(gesture));
-    const auto targets = hand_->GetHandGesture(gesture);
-    ASSERT_EQ(targets.size(), hand_->GetDoA());
-    const auto sample = hand_->MixControlByPVTWithTimestamp(
-        targets, std::vector<int16_t>(targets.size(), 50),
-        std::vector<int16_t>(targets.size(), mix_ctrl_current_ma_));
-    ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(
-        sample.timestamp_us, "MixControlByPVTAllWithTimestamp", TAG));
-    ASSERT_EQ(sample.value.size(), targets.size());
-    for (const auto& feedback : sample.value) {
-      EXPECT_TRUE(feedback.tgt_posi_.has_value());
-      EXPECT_TRUE(feedback.tgt_torque_.has_value());
-      EXPECT_TRUE(feedback.tgt_velo_.has_value());
-    }
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-  }
-}
-
-TEST_F(OmniHand3UltraMTest, MixControlByPVTSingleWithTimestamp) {
-  if (!hand_ || !hand_->Init()) GTEST_SKIP() << "Device not available";
-  for (const auto gesture : kTestGestures) {
-    SCOPED_TRACE(static_cast<int>(gesture));
-    const auto targets = hand_->GetHandGesture(gesture);
-    ASSERT_EQ(targets.size(), hand_->GetDoA());
-    const auto sample = hand_->MixControlByPVTWithTimestamp(
-        kTestJointIndex, targets[kTestJointIndex - 1], 50, mix_ctrl_current_ma_);
-    ASSERT_TRUE(timestamp_test::ValidateAndPrintTimestamp(
-        sample.timestamp_us, "MixControlByPVTSingleWithTimestamp", TAG));
-    EXPECT_EQ(sample.value.joint_index_, kTestJointIndex);
-    EXPECT_TRUE(sample.value.tgt_posi_.has_value());
-    EXPECT_TRUE(sample.value.tgt_torque_.has_value());
-    EXPECT_TRUE(sample.value.tgt_velo_.has_value());
     std::this_thread::sleep_for(std::chrono::seconds(1));
   }
 }
@@ -436,12 +398,12 @@ TEST_F(OmniHand3UltraMTest, MixControlRejectsInvalidArguments) {
   const std::vector<int16_t> short_values(dof - 1, 0);
 
   EXPECT_TRUE(hand_->MixControlByPT(short_values, short_values).empty());
-  EXPECT_TRUE(hand_->MixControlByPVT(valid, short_values, valid).empty());
+  EXPECT_TRUE(hand_->MixControlByPT(valid, short_values).empty());
 
   const auto invalid_pt = hand_->MixControlByPT(0, 0, 0);
   EXPECT_EQ(invalid_pt.ctrl_mode_, 0);
-  const auto invalid_pvt = hand_->MixControlByPVT(static_cast<uint8_t>(dof + 1), 0, 0, 0);
-  EXPECT_EQ(invalid_pvt.ctrl_mode_, 0);
+  const auto invalid_pt_high = hand_->MixControlByPT(static_cast<uint8_t>(dof + 1), 0, 0);
+  EXPECT_EQ(invalid_pt_high.ctrl_mode_, 0);
 }
 
 // TEST_F(OmniHand3UltraMTest, SetDeviceId) {

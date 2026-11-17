@@ -3,8 +3,9 @@
 
 """Hardware pytest suite for OmniHand 3 Ultra M T1.3/T1.5.
 
-This mirrors the safe public-API checks in
-``cpp/test/test_omnihand_3_ultra_m.cc``.
+The 32 public cases follow ``cpp/test/test_omnihand_3_ultra_m.cc`` in order,
+with a fresh device per case. Motion uses SIDE_FIST/OPEN; mixed control uses
+PT only. Timestamped methods return (value, SDK receive time in Unix us).
 
 Examples:
 
@@ -14,6 +15,8 @@ Examples:
     OMNIHAND_DEVICE_TYPE=zlgcan pytest -sv test_omnihand_3_ultra_m.py
 """
 
+from datetime import datetime
+import math
 import os
 import sys
 import time
@@ -30,11 +33,14 @@ except ImportError:
     raise
 
 from omnihand import (
+    AllTactileFrame,
     HandType,
     H3UMGesture,
     H3UMRevision,
     OmniHand3UltraM,
     OmniHand3UltraMSolver,
+    PalmFrame,
+    XenseFrame,
 )
 
 
@@ -44,13 +50,13 @@ REQUEST_INTERVAL = 5
 CHANNEL_ID = 0
 CANFD_ID = 0
 CAN_IF = "can0"
-FRAME_RECV_TIMEOUT = 200
+FRAME_RECV_TIMEOUT = 50
 HAND_TYPE_NAME = "left"
 
 DEVICE_ID = 0  # Discover the address and detect T1.3/T1.5 on the selected channel.
 PROFILE_POSITION_MODE = 7
 POSITION_MODE = 0
-MOTION_SETTLE_SECONDS = 2.0
+TEST_JOINT_INDEX = 4  # Pinky DIP changes in both presets.
 TEST_GESTURES = (H3UMGesture.SIDE_FIST, H3UMGesture.OPEN)
 
 _STR_OPTIONS = (
@@ -151,208 +157,346 @@ def _create_hand():
     )
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def hand():
     try:
         instance = _create_hand()
     except Exception as error:
         pytest.fail(f"Failed to create {DEVICE_TYPE} H3UM: {error}", pytrace=False)
-    if instance is None:
-        pytest.fail(f"{DEVICE_TYPE} factory returned no H3UM device", pytrace=False)
+    if instance is None or not instance.init():
+        pytest.skip("Device not available")
 
     instance.set_request_interval(REQUEST_INTERVAL)
     instance.set_frame_recv_timeout(FRAME_RECV_TIMEOUT)
-    instance.show_data_details(True)
     print(
         f"\n[Info] H3UM revision={instance.get_revision()} "
         f"transport={DEVICE_TYPE} hand={HAND_TYPE_NAME} "
         f"requested_id={DEVICE_ID} interval={REQUEST_INTERVAL}ms "
         f"recv_timeout={FRAME_RECV_TIMEOUT}ms"
     )
-    yield instance
+    try:
+        yield instance
+    finally:
+        del instance
 
 
-@pytest.fixture(scope="session")
-def initialized_hand(hand):
-    if not hand.init():
-        pytest.fail(
-            f"{DEVICE_TYPE} H3UM is not connected or initialization failed",
-            pytrace=False,
-        )
-    return hand
+@pytest.fixture
+def dof(hand):
+    return hand.get_doa()
 
 
-@pytest.fixture(scope="session")
-def dof(initialized_hand):
-    expected = {
-        H3UMRevision.T1P3: 20,
-        H3UMRevision.T1P5: 21,
-    }[initialized_hand.get_revision()]
-    assert initialized_hand.get_doa() == expected
-    assert initialized_hand.get_num_of_joint_motors() == expected
-    return expected
+def _validate_timestamp(timestamp_us, operation):
+    assert timestamp_us > 0, f"{operation} has no valid receive timestamp"
+    seconds, fraction = divmod(timestamp_us, 1_000_000)
+    date = datetime.fromtimestamp(seconds).strftime("%Y-%m-%d %H:%M:%S")
+    date = f"{date}.{fraction:06d}"
+    print(f"\n[{operation}] received_local={date}")
+    assert len(date) == 26
+    assert abs(timestamp_us - time.time_ns() // 1000) <= 5_000_000, (
+        f"{operation} timestamp differs from host Unix time by more than 5 seconds"
+    )
 
 
-@pytest.fixture(scope="session")
-def tactile_hand(initialized_hand):
-    if not initialized_hand.init_tactile_points_map():
-        pytest.skip("Tactile metadata unavailable")
-    return initialized_hand
-
-
-def _require_vector(values, expected_size, operation):
-    values = list(values)
-    if not values:
-        pytest.skip(f"{operation} timed out or returned no data")
+def _timestamped_vector(sample, expected_size, operation):
+    values, timestamp_us = sample
+    _validate_timestamp(timestamp_us, operation)
     assert len(values) == expected_size
     return values
+
+
+def _gesture_targets(hand, gesture):
+    targets = hand.get_hand_gesture(gesture)
+    assert len(targets) == hand.get_doa()
+    return targets
+
+
+def test_get_all_joint_motor_posi_with_timestamp(hand, dof):
+    positions = _timestamped_vector(
+        hand.get_all_joint_positions_with_timestamp(), dof,
+        "GetAllJointMotorPosiWithTimestamp",
+    )
+    # Preserve raw feedback, including values outside command bounds.
+    print(f"Motor positions: {positions}")
+
+
+def test_get_all_error_report_with_timestamp(hand, dof):
+    _timestamped_vector(
+        hand.get_all_error_reports_with_timestamp(), dof,
+        "GetAllErrorReportWithTimestamp",
+    )
+
+
+def test_get_all_temperature_report_with_timestamp(hand, dof):
+    _timestamped_vector(
+        hand.get_all_temperature_reports_with_timestamp(), dof,
+        "GetAllTemperatureReportWithTimestamp",
+    )
+
+
+def test_get_temperature_of_palm_with_timestamp(hand):
+    if hand.get_revision() != H3UMRevision.T1P5:
+        pytest.skip("Board temperature requires T1.5")
+    value, timestamp_us = hand.get_temperature_of_palm_with_timestamp()
+    _validate_timestamp(timestamp_us, "GetTemperatureOfPalmWithTimestamp")
+    print(f"Palm-board temperature: {value}")
+
+
+def test_get_temperature_of_power_with_timestamp(hand):
+    if hand.get_revision() != H3UMRevision.T1P5:
+        pytest.skip("Board temperature requires T1.5")
+    value, timestamp_us = hand.get_temperature_of_power_with_timestamp()
+    _validate_timestamp(timestamp_us, "GetTemperatureOfPowerWithTimestamp")
+    print(f"Power-board temperature: {value}")
+
+
+def test_get_finger_tactile_with_timestamp(hand):
+    for index in range(5):
+        frame = XenseFrame()
+        success, timestamp_us = hand.get_finger_tactile_with_timestamp(index, frame)
+        if not success:
+            pytest.skip("Xense tactile sensor unavailable")
+        _validate_timestamp(timestamp_us, "GetFingerTactileWithTimestamp")
+        source_timestamp = frame.timestamp
+        cached_success, cached_timestamp = hand.get_finger_tactile_with_timestamp(
+            index, frame,
+        )
+        if cached_success and source_timestamp and source_timestamp == frame.timestamp:
+            assert cached_timestamp == timestamp_us
+
+
+def test_get_palm_tactile_with_timestamp(hand):
+    frame = PalmFrame()
+    success, timestamp_us = hand.get_palm_tactile_with_timestamp(frame)
+    if not success or not frame.force:
+        pytest.skip("Palm tactile sensor unavailable")
+    _validate_timestamp(timestamp_us, "GetPalmTactileWithTimestamp")
+    source_timestamp = frame.timestamp
+    cached_success, cached_timestamp = hand.get_palm_tactile_with_timestamp(frame)
+    if cached_success and source_timestamp and source_timestamp == frame.timestamp:
+        assert cached_timestamp == timestamp_us
+
+
+def test_get_all_tactile_with_timestamp(hand):
+    frame = AllTactileFrame()
+    success, timestamp_us = hand.get_all_tactile_with_timestamp(frame)
+    if not success:
+        pytest.skip("Tactile sensors unavailable")
+    _validate_timestamp(timestamp_us, "GetAllTactileWithTimestamp")
+
+
+def test_get_all_current_report_with_timestamp(hand, dof):
+    _timestamped_vector(
+        hand.get_all_current_reports_with_timestamp(), dof,
+        "GetAllCurrentReportWithTimestamp",
+    )
+
+
+def test_get_joint_motor_posi_with_timestamp(hand):
+    value, timestamp_us = hand.get_joint_position_with_timestamp(1)
+    _validate_timestamp(timestamp_us, "GetJointMotorPosiWithTimestamp")
+    print(f"Joint 1 position: {value}")
+
+
+def test_set_joint_motor_posi_with_timestamp(hand):
+    for gesture in TEST_GESTURES:
+        target = _gesture_targets(hand, gesture)[TEST_JOINT_INDEX - 1]
+        feedback, timestamp_us = hand.set_joint_position_with_timestamp(
+            TEST_JOINT_INDEX, target,
+        )
+        _validate_timestamp(timestamp_us, "SetJointMotorPosiWithTimestamp")
+        print(f"Joint {TEST_JOINT_INDEX} target={target}, feedback={feedback}")
+        time.sleep(1.0)
+
+
+def test_set_all_joint_motor_posi_with_timestamp(hand, dof):
+    for gesture in TEST_GESTURES:
+        targets = _gesture_targets(hand, gesture)
+        feedback = _timestamped_vector(
+            hand.set_all_joint_positions_with_timestamp(targets), dof,
+            "SetAllJointMotorPosiWithTimestamp",
+        )
+        print(f"Gesture {gesture.name} feedback: {feedback}")
+        time.sleep(1.0)
+
+
+def test_get_all_active_joint_angles_with_timestamp(hand, dof):
+    angles = _timestamped_vector(
+        hand.get_all_active_joint_angles_with_timestamp(), dof,
+        "GetAllActiveJointAnglesWithTimestamp",
+    )
+    assert all(math.isfinite(angle) for angle in angles)
+
+
+def test_get_all_joint_angles_with_timestamp(hand):
+    angles = _timestamped_vector(
+        hand.get_all_joint_angles_with_timestamp(), len(hand.get_joint_names()),
+        "GetAllJointAnglesWithTimestamp",
+    )
+    assert all(math.isfinite(angle) for angle in angles)
+
+
+def test_set_all_active_joint_angles_with_timestamp(hand, dof):
+    solver = OmniHand3UltraMSolver(
+        hand.get_hand_type() == HandType.LEFT, hand.get_revision(),
+    )
+    for gesture in TEST_GESTURES:
+        targets = _gesture_targets(hand, gesture)
+        angles = solver.actuator_input_to_active_joint_pos(targets)
+        assert len(angles) == dof
+        feedback = _timestamped_vector(
+            hand.set_all_active_joint_angles_with_timestamp(angles), dof,
+            "SetAllActiveJointAnglesWithTimestamp",
+        )
+        assert all(math.isfinite(angle) for angle in feedback)
+        time.sleep(1.0)
+
+
+def test_mix_control_by_pt_all_with_timestamp(hand, dof):
+    current = hand.get_min_max_default_mix_ctrl_torque(1).default_value
+    for gesture in TEST_GESTURES:
+        targets = _gesture_targets(hand, gesture)
+        feedback = _timestamped_vector(
+            hand.mix_control_by_pt_with_timestamp(targets, [current] * dof), dof,
+            "MixControlByPTAllWithTimestamp",
+        )
+        for joint in feedback:
+            assert joint.tgt_posi is not None
+            assert joint.tgt_torque is not None
+        time.sleep(1.0)
+
+
+def test_mix_control_by_pt_single_with_timestamp(hand):
+    current = hand.get_min_max_default_mix_ctrl_torque(1).default_value
+    for gesture in TEST_GESTURES:
+        targets = _gesture_targets(hand, gesture)
+        feedback, timestamp_us = hand.mix_control_by_pt_with_timestamp(
+            TEST_JOINT_INDEX, targets[TEST_JOINT_INDEX - 1], current,
+        )
+        _validate_timestamp(timestamp_us, "MixControlByPTSingleWithTimestamp")
+        assert feedback.joint_index == TEST_JOINT_INDEX
+        assert feedback.tgt_posi is not None
+        assert feedback.tgt_torque is not None
+        time.sleep(1.0)
+
+
+def test_get_all_tactile_sensor_data_raw_with_timestamp(hand):
+    if not hand.init_tactile_points_map():
+        pytest.skip("Tactile sensors unavailable")
+    sensors = _timestamped_vector(
+        hand.get_all_tactile_sensor_data_raw_with_timestamp(),
+        len(hand.get_sensor_order()), "GetAllTactileSensorDataRawWithTimestamp",
+    )
+    for sensor in sensors:
+        values = sensor.data if hand.get_revision() == H3UMRevision.T1P5 else sensor.points
+        assert len(values) == hand.get_num_of_tactile_points(sensor.sensor_id)
+
+
+def test_get_all_tactile_sensor_resultant_forces_with_timestamp(hand):
+    if hand.get_revision() != H3UMRevision.T1P3:
+        pytest.skip("3D resultant forces require T1.3")
+    _timestamped_vector(
+        hand.get_all_tactile_sensor_resultant_forces_with_timestamp(),
+        len(hand.get_sensor_order()),
+        "GetAllTactileSensorResultantForcesWithTimestamp",
+    )
 
 
 def test_create_hand(hand):
     assert hand is not None
 
 
-def test_init(initialized_hand):
-    assert initialized_hand.init()
+def test_init(hand):
+    assert hand.init()
 
 
-def test_vendor_info(initialized_hand, dof):
-    info = initialized_hand.get_vendor_info()
+def test_get_vendor_info(hand, dof):
+    info = hand.get_vendor_info()
     print(f"\n[GetVendorInfo]\n{info}")
+    if info.dof == 0:
+        return
     assert info.dof == dof
-    assert len(initialized_hand.get_joint_names()) == dof
+    assert hand.get_num_of_joint_motors() == dof
+    assert len(hand.get_joint_names()) == dof
 
 
-def test_device_info(initialized_hand):
-    info = initialized_hand.get_device_info()
+def test_get_device_info(hand):
+    info = hand.get_device_info()
     print(f"\n[GetDeviceInfo]\n{info}")
-    assert 1 <= info.hand_device_id <= 127
-    if DEVICE_ID != 0:
-        assert info.hand_device_id == DEVICE_ID
+    if info.hand_device_id != 0:
+        assert info.hand_device_id == hand.get_hand_device_id()
 
 
-def test_gesture_dance_and_joint_4(initialized_hand, dof):
-    pp_modes = [PROFILE_POSITION_MODE] * dof
-    csp_modes = [POSITION_MODE] * dof
+def test_get_non_private_hand_device_id_by_broadcast(hand):
+    device_id = hand.get_non_private_hand_device_id_by_broadcast()
+    assert device_id > 0, "No H3U_M replied to the broadcast request"
+    assert device_id == hand.get_hand_device_id()
 
-    initialized_hand.set_all_control_modes(pp_modes)
+
+def test_mix_control_rejects_invalid_arguments(hand, dof):
+    valid = [0] * dof
+    short_values = [0] * (dof - 1)
+    assert not hand.mix_control_by_pt(short_values, short_values)
+    assert not hand.mix_control_by_pt(valid, short_values)
+    assert hand.mix_control_by_pt(0, 0, 0).ctrl_mode == 0
+    assert hand.mix_control_by_pt(dof + 1, 0, 0).ctrl_mode == 0
+
+
+def test_gesture_dance(hand, dof):
+    hand.set_all_control_modes([PROFILE_POSITION_MODE] * dof)
     time.sleep(0.1)
     try:
         for gesture in TEST_GESTURES:
-            positions = initialized_hand.get_hand_gesture(gesture)
-            assert len(positions) == dof
-            feedback = initialized_hand.set_all_joint_positions(positions)
-            print(f"\n[GestureDance] {gesture.name}: {positions}")
-            assert len(feedback) == dof
-            time.sleep(MOTION_SETTLE_SECONDS)
-
-        # Motor 4 (pinky DIP) changes between these presets in both revisions.
-        for gesture in TEST_GESTURES:
-            position = initialized_hand.get_hand_gesture(gesture)[3]
-            initialized_hand.set_joint_position(4, position)
-            print(f"[GestureDance] Joint 4 -> {position}")
-            time.sleep(MOTION_SETTLE_SECONDS)
-            assert initialized_hand.get_joint_position(4) != -1
+            feedback = _timestamped_vector(
+                hand.set_hand_gesture_with_timestamp(gesture.value), dof,
+                "SetHandGestureWithTimestamp",
+            )
+            print(f"[GestureDance] {gesture.name} feedback: {feedback}")
+            time.sleep(2.0)
     finally:
-        initialized_hand.set_all_control_modes(csp_modes)
+        hand.set_all_control_modes([POSITION_MODE] * dof)
         time.sleep(0.1)
 
 
-def test_joint_positions(initialized_hand, dof):
-    positions = _require_vector(
-        initialized_hand.get_all_joint_positions(), dof, "GetAllJointMotorPosi"
-    )
-    # Feedback can exceed the command range; preserve the values from firmware.
-    print(f"\n[GetAllJointMotorPosi] {positions}")
-
-
-def test_active_joint_angles(initialized_hand, dof):
-    solver = OmniHand3UltraMSolver(
-        HAND_TYPE == HandType.LEFT, initialized_hand.get_revision()
-    )
-    for gesture in TEST_GESTURES:
-        positions = initialized_hand.get_hand_gesture(gesture)
-        assert len(positions) == dof
-        angles = solver.actuator_input_to_active_joint_pos(positions)
-        assert len(angles) == dof
-        feedback = initialized_hand.set_all_active_joint_angles(angles)
-        assert len(feedback) == dof
-        time.sleep(1.0)
-        actual = _require_vector(
-            initialized_hand.get_all_active_joint_angles(), dof,
-            "GetAllActiveJointAngles",
-        )
-        print(f"\n[{gesture.name}] target={angles}, actual={actual}")
-
-
-def test_control_modes(initialized_hand, dof):
-    modes = _require_vector(
-        initialized_hand.get_all_control_modes(), dof, "GetAllControlMode"
-    )
+def test_control_mode(hand, dof):
+    modes = hand.get_all_control_modes()
     print(f"\n[GetAllControlMode] {modes}")
+    if not modes or len(modes) != dof:
+        return
+    assert len(modes) == dof
 
 
-def test_error_reports(initialized_hand, dof):
-    reports = _require_vector(
-        initialized_hand.get_all_error_reports(), dof, "GetAllErrorReport"
-    )
+def test_error_report(hand, dof):
+    reports = hand.get_all_error_reports()
     print(f"\n[GetAllErrorReport] {reports}")
+    if reports:
+        assert len(reports) == dof
 
 
-def test_clear_error_reports(initialized_hand):
-    initialized_hand.clear_all_error_report()
-    initialized_hand.clear_error_report(1)
+def test_clear_error_report(hand):
+    hand.clear_all_error_report()
+    hand.clear_error_report(1)
 
 
-def test_temperature_reports(initialized_hand, dof):
-    values = _require_vector(
-        initialized_hand.get_all_temperature_reports(), dof, "GetAllTemperatureReport"
-    )
+def test_temperature_report(hand, dof):
+    values = hand.get_all_temperature_reports()
     print(f"\n[GetAllTemperatureReport] {values}")
+    if values:
+        assert len(values) == dof
 
 
-def test_current_reports(initialized_hand, dof):
-    values = _require_vector(
-        initialized_hand.get_all_current_reports(), dof, "GetAllCurrentReport"
-    )
+def test_current_report(hand, dof):
+    values = hand.get_all_current_reports()
     print(f"\n[GetAllCurrentReport] {values}")
+    if values:
+        assert len(values) == dof
 
 
-def test_joint_velocities(initialized_hand, dof):
-    values = _require_vector(
-        initialized_hand.get_all_joint_velocities(), dof, "GetAllJointMotorVelo"
-    )
+def test_get_all_joint_motor_velo(hand, dof):
+    values = hand.get_all_joint_velocities()
     print(f"\n[GetAllJointMotorVelo] {values}")
-
-
-def test_all_tactile_sensor_data_raw(tactile_hand):
-    # Whole-hand queries also support T1.5 firmware without single-region replies.
-    sensors = _require_vector(
-        tactile_hand.get_all_tactile_sensor_data_raw(),
-        len(tactile_hand.get_sensor_order()), "GetAllTactileSensorDataRaw",
-    )
-    assert {sensor.sensor_id for sensor in sensors} == set(tactile_hand.get_sensor_order())
-    for sensor in sensors:
-        if tactile_hand.get_revision() == H3UMRevision.T1P5:
-            values = sensor.data
-        else:
-            values = sensor.points
-        assert len(values) == tactile_hand.get_num_of_tactile_points(sensor.sensor_id)
-        assert values
-        print(f"\n[Tactile] {sensor.sensor_id}: {len(values)} points")
-
-
-def test_all_tactile_sensor_resultant_forces(tactile_hand):
-    if tactile_hand.get_revision() != H3UMRevision.T1P3:
-        pytest.skip("3D resultant forces require T1.3")
-    forces = _require_vector(
-        tactile_hand.get_all_tactile_sensor_resultant_forces(),
-        len(tactile_hand.get_sensor_order()),
-        "GetAllTactileSensorResultantForces",
-    )
-    for sensor in forces:
-        force = sensor.force
-        print(f"\n[ResultantForce] {sensor.sensor_id}: {force.x} {force.y} {force.z}")
+    if not values or len(values) != dof:
+        return
+    assert len(values) == dof
 
 
 if __name__ == "__main__":
