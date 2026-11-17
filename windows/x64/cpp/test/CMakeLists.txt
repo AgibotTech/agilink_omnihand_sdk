@@ -20,6 +20,7 @@ endif()
 
 if(OMNIHAND_BUILD_INTERNAL_TESTS)
   add_compile_definitions(OMNIHAND_BUILD_INTERNAL_TESTS)
+  include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../src/internal")
 endif()
 
 # GoogleTest: prefer cpp/third_party/googletest-1.14.0 in repo and use add_subdirectory directly,
