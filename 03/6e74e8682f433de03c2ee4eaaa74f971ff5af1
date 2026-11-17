@@ -1,0 +1,38 @@
+windows/x64/cpp/demo/omnipicker_2025/demo_omnipicker_2025.cc
+  h_b60f00b173c94b 12-13,73,87-90,96-97,101,190
+windows/x64/cpp/include/omnihand/omnipicker_2025.h
+  h_b60f00b173c94b 169
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "036e74e8682f433de03c2ee4eaaa74f971ff5af1",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "old_path": "windows/x64/cpp/demo/omnipicker_2025/demo_omnipicker_2025.cc",
+      "new_path": "windows/x64/cpp/demo/omnipicker_2025/demo_omnipicker_2025.cc",
+      "additions": {
+        "human": 11
+      },
+      "deletions": {
+        "human": 12
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnipicker_2025.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnipicker_2025.h",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 1
+      }
+    }
+  ]
+}
