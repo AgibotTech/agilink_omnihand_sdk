@@ -1,0 +1,154 @@
+doc/zh_cn/API_CPP.md
+  s_62d7f790ba05bc::t_7879529a887546 29
+  s_62d7f790ba05bc::t_75bd70e6c99623 30
+doc/en/API_CPP_OP1.md
+  s_62d7f790ba05bc::t_7879529a887546 15,47,55
+  s_62d7f790ba05bc::t_75bd70e6c99623 45
+  s_62d7f790ba05bc::t_c7bcd13ea9554f 46
+doc/en/API_CPP.md
+  s_62d7f790ba05bc::t_75bd70e6c99623 30
+  s_62d7f790ba05bc::t_7879529a887546 29
+doc/zh_cn/API_CPP_OP1.md
+  s_62d7f790ba05bc::t_75bd70e6c99623 45
+  s_62d7f790ba05bc::t_7879529a887546 15,47,55
+  s_62d7f790ba05bc::t_26eeed961a6f74 46
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "196ff1d5b7ecac5ce58bdd2c7d773243d8d7af89",
+  "prompts": {},
+  "sessions": {
+    "s_62d7f790ba05bc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1b947-618f-72f1-be20-c6e2c733b4b5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.output_tokens": "4986907",
+        "tlab.token_usage.cache_read_tokens": "1096444576",
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.token_usage.input_tokens": "24954899",
+        "tlab.session_started_at": "2026-11-17T06:45:56Z"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "doc/en/API_CPP.md",
+      "new_path": "doc/en/API_CPP.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/en/API_CPP_OP1.md",
+      "new_path": "doc/en/API_CPP_OP1.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 5
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP.md",
+      "new_path": "doc/zh_cn/API_CPP.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_OP1.md",
+      "new_path": "doc/zh_cn/API_CPP_OP1.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 5
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 3
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/demo_options.h",
+      "new_path": "windows/x64/cpp/demo/demo_options.h",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 6
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnipicker_2025/demo_omnipicker_2025.cc",
+      "new_path": "windows/x64/cpp/demo/omnipicker_2025/demo_omnipicker_2025.cc",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/device_context.h",
+      "new_path": "windows/x64/cpp/include/omnihand/device_context.h",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnihand_2025.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnihand_2025.h",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/include/omnihand/omnipicker_3.h",
+      "new_path": "windows/x64/cpp/include/omnihand/omnipicker_3.h",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 1
+      }
+    }
+  ]
+}
