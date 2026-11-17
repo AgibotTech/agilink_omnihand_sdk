@@ -1,0 +1,97 @@
+doc/zh_cn/API_CPP_OP1.md
+  s_62d7f790ba05bc::t_c000bf64e96630 19,27-28,39
+doc/en/API_CPP_OP1.md
+  s_62d7f790ba05bc::t_c000bf64e96630 19,27-28,39
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.14.2",
+  "base_commit_sha": "5d9e20a9bd883404dbb18c5a3a3cf8511431569a",
+  "prompts": {},
+  "sessions": {
+    "s_62d7f790ba05bc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1b947-618f-72f1-be20-c6e2c733b4b5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "xuqigui <xuqigui@agibot.com>",
+      "custom_attributes": {
+        "tlab.token_usage.input_tokens": "24087345",
+        "tlab.token_usage.cache_creation_tokens": "0",
+        "tlab.token_usage.cache_read_tokens": "1081697634",
+        "tlab.session_started_at": "2026-11-17T03:51:10Z",
+        "tlab.token_usage.output_tokens": "4904927"
+      }
+    }
+  },
+  "changes": [
+    {
+      "old_path": "doc/en/API_CPP_OP1.md",
+      "new_path": "doc/en/API_CPP_OP1.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 4
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "doc/zh_cn/API_CPP_OP1.md",
+      "new_path": "doc/zh_cn/API_CPP_OP1.md",
+      "additions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 4
+          }
+        ]
+      },
+      "deletions": {
+        "ai": [
+          {
+            "session_id": "s_62d7f790ba05bc",
+            "lines": 2
+          }
+        ]
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/demo_options.h",
+      "new_path": "windows/x64/cpp/demo/demo_options.h",
+      "additions": {
+        "human": 2
+      },
+      "deletions": {
+        "human": 1
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnipicker_2025/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/demo/omnipicker_2025/CMakeLists.txt",
+      "additions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/demo/omnipicker_2025/demo_omnipicker_2025.cc",
+      "new_path": "windows/x64/cpp/demo/omnipicker_2025/demo_omnipicker_2025.cc",
+      "additions": {
+        "human": 103
+      },
+      "deletions": {
+        "human": 2
+      }
+    }
+  ]
+}
