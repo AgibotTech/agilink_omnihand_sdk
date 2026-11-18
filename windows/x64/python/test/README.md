@@ -38,11 +38,12 @@ python3 test_omnihand_2025.py -d rs485 -p /dev/ttyUSB0
 OMNIHAND_DEVICE_TYPE=usb OMNIHAND_USB_PORT=/dev/ttyACM0 pytest -v test_omnihand_2025.py
 OMNIHAND_DEVICE_TYPE=rs485 OMNIHAND_RS485_PORT=/dev/ttyUSB0 pytest -v test_omnihand_2025.py
 
-# O12 tests (using pytest directly)
+# O12 tests (default: zlgcan; supports zlgcan, hcan, and Linux SocketCAN)
 pytest -v test_omnihand_pro_2025.py
-
-# O12 tests (running directly with Python - supports -f parameter)
+python3 test_omnihand_pro_2025.py -d hcan -i 0 -c 0
+python3 test_omnihand_pro_2025.py -d socketcan --can-if can0
 python3 test_omnihand_pro_2025.py -f 0
+OMNIHAND_DEVICE_TYPE=hcan pytest -v test_omnihand_pro_2025.py
 
 # H3L unified transport tests (default: zlgcan)
 pytest -v test_omnihand_3_lite.py

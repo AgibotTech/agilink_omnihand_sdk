@@ -27,6 +27,16 @@ Internal protocol and maintenance cases are excluded by default. SDK maintainers
 
 ## Running Tests
 
+OP3 supports ZLG CAN, HCAN, SocketCAN (Linux), and RS485. Choose the
+transport with `-d`; RS485 uses 460800 baud and requires a serial port:
+
+```sh
+test_omnipicker_3 -d hcan
+test_omnipicker_3 -d rs485 -p /dev/ttyUSB0
+test_omnipicker_3 -d rs485 /dev/ttyUSB0
+test_omnipicker_3.exe -d rs485 -p COM7
+```
+
 Timestamped interfaces are tested in the existing O10, O12, H3L,
 H3UM and OP3 executables. Select them after connecting the corresponding device:
 
