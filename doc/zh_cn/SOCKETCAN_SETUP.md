@@ -75,11 +75,8 @@ ip -details link show can0
 
 **C++：**
 
-```cmake
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  add_executable(demo_omnihand_2025_socketcan O10_demo_socketcan.cc)
-  target_link_libraries(demo_omnihand_2025_socketcan PRIVATE ${OMNIHAND_TARGET})
-endif()
+```shell
+./demo_omnihand_2025 -d socketcan --can-if can0 --hand left
 ```
 
 ```cpp
@@ -109,14 +106,12 @@ hand.set_all_active_joint_angles([0.0] * 10)  # O10, radians
 - [C++ API 索引](API_CPP.md)  
 - [OmniHand 2025 (O10) C++ API](API_CPP_O10.md)  
 - [OmniHand Pro 2025 (O12) C++ API](API_CPP_O12.md)  
-- [OmniHand Dex UMI C++ API](API_CPP_O10_UMI.md)
 
 **Python**
 
 - [Python API 索引](API_PYTHON.md)  
 - [OmniHand 2025 (O10) Python API](API_PYTHON_O10.md)  
 - [OmniHand Pro 2025 (O12) Python API](API_PYTHON_O12.md)  
-- [OmniHand Dex UMI Python API](API_PYTHON_UMI.md)
 
 **ROS2（仅 Linux）**
 

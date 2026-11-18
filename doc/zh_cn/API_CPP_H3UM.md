@@ -1,13 +1,8 @@
-# OmniHand 3 Ultra M（H3UM T1.3/T1.5）C++ API
+# OmniHand 3 Ultra M（H3UM）C++ API
 
 ## 概述
 
-`OmniHand3UltraM` 通过 CAN FD 支持两个 H3UM 版本。T1.3 有 20 个主动关节并使用 Xense 触觉 SoC；T1.5 有 21 个主动关节，触觉数据直接通过 CAN FD 获取。电机位置使用 `[0, 4096]` 协议值，主动关节角单位为弧度。
-
-| 版本 | 主动关节数 | 默认设备 ID | 工厂函数前缀 |
-|------|-----------|-------------|---------------|
-| T1.3 | 20 | 9 | `createHandBy*` / `createHandSocketCan` |
-| T1.5 | 21 | 1 | `createHandT1P5By*` / `createHandT1P5SocketCan` |
+`OmniHand3UltraM` 使用统一工厂函数连接所支持的 H3UM 硬件。SDK 自动发现设备地址，读取主动关节数，再选择协议解析、运动学标定和触觉接口。电机位置使用 `[0, 4096]` 协议值，主动关节角单位为弧度。
 
 ## 包含头文件
 
@@ -18,61 +13,58 @@ using namespace agilink::omnihand;
 
 ## 工厂函数
 
-T1.3 工厂函数可在通信参数后接受一个可选的触觉 SoC 端点：
-
 ```cpp
-const std::string& tactile_soc_ip = OmniHand3UltraM::kDefaultTactileSocIp;
-uint16_t tactile_soc_port = OmniHand3UltraM::kDefaultTactileSocPort;
+auto hand = OmniHand3UltraM::createHandByZlgcan(
+    HandType::LEFT, kBroadcastHandDeviceId, 0);
+if (hand && hand->Init()) {
+  const auto joint_count = hand->GetNumOfJointMotors();
+  const auto joint_names = hand->GetJointNames();
+}
 ```
 
-默认值为 `192.168.99.2:19009`。SDK 在构造期间探测该端点，仅在可通信时初始化 Xense 和手掌服务。使用标准端点的应用无需传入这两个参数。
+`hand_device_id` 显式传入 `kBroadcastHandDeviceId`（`0`）时启用自动发现：SDK 广播读取设备信息（`0x02/0x00`），仅在无回复时探测旧设备地址 `9`，再单独读取自由度寄存器（`0x01/0x06`）。收到有效的 20 或 21 关节回复后选择对应实现；读取失败或自由度不受支持时返回 `nullptr`。
+
+显式传入任意非零设备 ID（包括 `kT1P3DefaultHandDeviceId`，即 `9`）时，跳过广播和地址回退，但仍读取自由度。设备地址不决定硬件版本：有效的 20 或 21 关节回复决定对应实现，读取失败或自由度不受支持时返回 `nullptr`。
+
+自动发现适用于所选 CAN 通道只有一台 H3UM 的场景。同一总线上有多台设备时，请显式传入目标设备 ID，此时跳过广播和旧地址回退。关节数和顺序应通过 `GetNumOfJointMotors()` 与 `GetJointNames()` 获取。
 
 ```cpp
 static std::unique_ptr<OmniHand3UltraM> createHandByZlgcan(
     HandType hand_type, uint8_t hand_device_id,
     uint8_t canfd_device_id, uint8_t canfd_channel_id = 0,
-    const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort);
+    bool show_data_details = false);
 
 static std::unique_ptr<OmniHand3UltraM> createHandByZlgcan(
     HandType hand_type, uint8_t hand_device_id,
     const std::string& usbcanfd_serial_number,
     uint8_t canfd_channel_id = 0,
-    const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort);
+    bool show_data_details = false);
 
 static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
     HandType hand_type, uint8_t hand_device_id,
     uint8_t canfd_device_id, uint8_t canfd_channel_id = 0,
-    const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-    uint16_t tactile_soc_port = kDefaultTactileSocPort);
+    bool show_data_details = false);
 
 static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
     HandType hand_type, uint8_t hand_device_id,
     const std::string& hcan_serial_number,
     uint8_t canfd_channel_id = 0,
-    const std::string& tactile_soc_ip = kDefaultTactileSocIp,
+    bool show_data_details = false);
+```
+
+Linux 下的 `createHandSocketCan` 使用相同的自动识别流程。按适配器序列号或 SocketCAN 接口创建时，设备 ID 显式传入 `kBroadcastHandDeviceId` 即可启用自动发现。
+
+末尾的 `show_data_details` 默认值为 `false`。需要在连接前注册设备日志回调时，通过 `DeviceContext::SetLogCallback()` 配合 `CreateHand(context)` 使用。
+
+T1.3 默认使用外部触觉 SoC 地址 `192.168.99.2:19009`。创建后调用 `AttachTactileSoc(ip, port)` 可更换地址：先等待旧触觉线程退出，再初始化新地址，五指扫描异步执行。IP 为空时断开该服务。断开成功或端点探测成功返回 `true`；T1.5、不合法的非空端点或探测失败返回 `false`。
+
+```cpp
+bool AttachTactileSoc(
+    const std::string& tactile_soc_ip,
     uint16_t tactile_soc_port = kDefaultTactileSocPort);
 ```
 
-`createHandByZlgCanTcp(...)` 和 Linux 下的 `createHandSocketCan(...)` 也使用相同的最后两个触觉端点参数。
-
-T1.5 使用独立工厂函数，不接收触觉 SoC 参数：
-
-```cpp
-createHandT1P5ByZlgcan(...);
-createHandT1P5ByZlgCanTcp(...);
-createHandT1P5ByHcan(...);
-createHandT1P5SocketCan(...);  // Linux
-```
-
-可在运行时查询实例版本和关节顺序：
-
-```cpp
-H3UMRevision GetRevision() const;
-std::vector<std::string> GetJointNames() const;
-uint8_t GetNumOfJointMotors() const;
-```
+已移除专用的 `createHandT1P5ByZlgcan` 创建接口，请使用 `createHandByZlgcan` 自动识别版本。`GetRevision()` 仍可用于诊断和离线模型选择。
 
 ## 设备信息与地址
 
@@ -182,6 +174,33 @@ bool started = hand->PlaySequence(std::move(source));
 
 SDK 在启动时校验数据，播放时只缓存相邻两步。读取函数应只读内存；播放期间原数据保持不变，未解析的动作/手势需提前解析，`none` 步骤需由上层明确处理。SDK 持有数据所有者直到 `StopSequence()`，停止后释放自己的引用。
 
+## 运动学求解器
+
+`agilink::omnihand::h3um::OmniHand3UltraMSolver` 用于主动关节角与电机位置的离线换算，无需连接设备。
+
+```cpp
+#include "omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h"
+
+using namespace agilink::omnihand;
+using namespace agilink::omnihand::h3um;
+
+OmniHand3UltraMSolver solver(true, H3UMRevision::T1P5);  // Left T1.5; use T1P3 for T1.3.
+std::vector<int16_t> motor_positions(solver.GetActiveJointCount(), 0);
+auto angles = solver.ActuatorInput2ActiveJointPos(motor_positions);
+auto actuator = solver.ActiveJointPos2ActuatorInput(angles);
+```
+
+单参数构造 `OmniHand3UltraMSolver(is_left_hand)` 默认使用 T1.3。T1.3 向量必须包含 20 个值，T1.5 必须包含 21 个值，顺序与对应版本设备的 `GetJointNames()` 一致。角度单位为弧度，电机输入使用 `[0, 4096]` 协议值。向量长度不正确时，换算返回空向量。
+
+单关节换算使用从 0 开始的索引（T1.3 为 `0..19`，T1.5 为 `0..20`）：
+
+```cpp
+int16_t SingleActiveJointPos2ActuatorInput(std::size_t joint_index, double rad) const;
+double SingleActuatorInput2ActiveJointPos(std::size_t joint_index, int16_t actuator_input) const;
+```
+
+以上方法仅进行数值计算。需要将换算结果下发到设备时，请另外调用 `SetAllJointMotorPosi`。
+
 ## 混合控制
 
 ```cpp
@@ -190,32 +209,35 @@ MixCtrl MixControlByPT(uint8_t joint_motor_index,
 std::vector<MixCtrl> MixControlByPT(
     const std::vector<int16_t>& positions,
     const std::vector<int16_t>& torques);
-
-MixCtrl MixControlByPVT(uint8_t joint_motor_index,
-                        int16_t position, int16_t velocity,
-                        int16_t torque);
-std::vector<MixCtrl> MixControlByPVT(
-    const std::vector<int16_t>& positions,
-    const std::vector<int16_t>& velocities,
-    const std::vector<int16_t>& torques);
 ```
 
-力矩按有符号 16 位电流值直接下发，单位为 mA。`GetMinMaxDefaultMixCtrlTorque()` 返回范围 `0..10000`、默认值 `1000`。
+力矩按有符号 16 位电流值直接下发，单位为 mA。通过构造后的对象调用 `hand->GetMinMaxDefaultMixCtrlTorque(joint_motor_index)`：T1.3 返回范围 `0..10000`、默认值 `1000`；T1.5 返回范围 `0..2000`、默认值 `1900`。电机索引从 `1` 开始，超出实际关节数时返回 `{0, 0, 0}`。该接口现为 `const` 成员函数，原先通过类名调用的静态写法需改为通过手对象调用。
 
-## 零位与标定
+## 预设手势
 
-```cpp
-bool SetAllMotor2Zero();
-bool SetMotor2Zero(unsigned char joint_motor_index);  // 范围由版本决定
-bool SetAxisHoming(uint8_t axis_index, int16_t position);
-bool SetAxisMinPos(uint8_t axis_index, int16_t min_position);
-bool SetAxisMaxPos(uint8_t axis_index, int16_t max_position);
-bool SaveParam();
-```
+通过 `GetHandGesture(int)` 获取电机编码，或调用 `SetHandGesture(int)` 执行手势；也可使用 `h3um::H3UMGesture` 枚举重载。
+
+| ID | 枚举 | 姿态 | 版本 |
+| --- | --- | --- | --- |
+| 0 | `H3U_M_GESTURE_ALL_ZERO` | 电机编码全零 | T1.3 / T1.5 |
+| 1 | `H3U_M_GESTURE_FRONT_FIST` | 正握拳 | T1.3 / T1.5 |
+| 2 | `H3U_M_GESTURE_SIDE_FIST` | 侧握拳 | T1.3 / T1.5 |
+| 3 | `H3U_M_GESTURE_FINGER_HEART` | 比心 | T1.3 / T1.5 |
+| 4 | `H3U_M_GESTURE_OPEN` | 打开 | T1.3 / T1.5 |
+
+预设以电机编码保存，由手对象的版本及左右手选择对应数据：T1.3 返回 20 轴，T1.5 返回 21 轴。两版复用相同手势 ID，无需调用者区分；独立使用 Solver 时需传入版本和左右手。
+
+切换到不同的非打开姿态（ID 1–3，包括从打开姿态切换）时，SDK 先保持上一姿态的其他关节，将拇指 ABAD、MCP、PIP、DIP 四轴电机编码设为 `0`，等待 `200 ms` 后再执行目标姿态：T1.3 对应第 17–20 轴，T1.5 对应第 18–21 轴（从 1 开始计数）。T1.5 的第 17 轴拇指 ROLL 保持上一姿态。过渡失败则不发送目标；首次执行、重复同一姿态及切换到打开姿态不加过渡。ID 0 保留兼容，不参与过渡。
+
+## 出厂维护
+
+出厂标定、标零、写 SN 等维护操作仅供 OmniHand-ToolBox 使用，不属于公开 SDK API。
 
 ## 触觉数据与 T1.5 板温
 
-T1.3 使用 Xense 触觉 SoC 接口：
+### T1.3：Xense 触觉 SoC
+
+T1.3 使用以下 Xense 触觉 SoC 接口：
 
 ```cpp
 bool GetFingerTactile(uint8_t finger_index, XenseFrame& frame); // 0=拇指 .. 4=小指
@@ -225,16 +247,77 @@ bool GetAllTactile(AllTactileFrame& frame);
 
 `XenseFrame::timestamp` 单位为纳秒。`PalmFrame` 包含力场、`resultant[3]` 和触觉服务提供的 `timestamp`。
 
-T1.5 使用通用 Raw 触觉接口，并可获取六个传感器的合力：
+### T1.3：3D 触觉力降采样与合力
+
+T1.3 通过 CAN 获取六个传感器的降采样 3D 触觉力和合力。以下方法属于 `ITactileSensor3DI16`，通过 `hand->GetTactileSensor3D()` 获取该接口：
 
 ```cpp
 TactileSensorData3DI16 GetTactileSensorDataRaw(Finger sensor) const;
 std::vector<TactileSensorData3DI16> GetAllTactileSensorDataRaw() const;
 TactileSensorResultantForce3DI16 GetTactileSensorResultantForce(Finger sensor) const;
 std::vector<TactileSensorResultantForce3DI16> GetAllTactileSensorResultantForces() const;
+```
+
+```cpp
+if (auto* tactile = hand->GetTactileSensor3D()) {
+  auto data = tactile->GetTactileSensorDataRaw(Finger::THUMB);
+  auto forces = tactile->GetAllTactileSensorResultantForces();
+}
+```
+
+`TactileSensorData3DI16::points` 保存降采样后各点的有符号 16 位 XYZ 分量；合力通过独立的合力接口获取。
+
+### T1.5：1D U16 触觉
+
+T1.5 使用独立的 `ITactileSensor1DU16` 接口，通过 `hand->GetTactileSensor1D()` 获取：
+
+```cpp
+TactileSensorDataU16 GetTactileSensorData(Finger sensor) const;
+TactileSensorDataU16 GetTactileSensorDataRaw(Finger sensor) const;
+std::vector<TactileSensorDataU16> GetAllTactileSensorDataRaw() const;
+```
+
+```cpp
+if (auto* tactile = hand->GetTactileSensor1D()) {
+  auto data = tactile->GetTactileSensorDataRaw(Finger::THUMB);
+  auto all_data = tactile->GetAllTactileSensorDataRaw();
+}
+```
+
+`TactileSensorDataU16::data_` 保存每点的 `uint16_t` 压力值。T1.5 不提供上述 T1.3 的 3D 触觉力及合力接口。两个触觉接口获取函数返回的指针均随手对象存活；不支持的维度返回 `nullptr`。
+
+### T1.5：板温
+
+以下方法直接通过手对象调用：
+
+```cpp
 int16_t GetTemperatureOfPalm() const;
 int16_t GetTemperatureOfPower() const;
 ```
+
+板温接口仅支持 T1.5。T1.3 调用上述两个接口及其带时间戳版本时，温度值直接返回 `0`，不发送 CAN 请求。
+
+## C++ 示例
+
+各连接方式共用 [demo_omnihand_3_ultra_m.cc](../../../cpp/demo/omnihand_3_ultra_m/demo_omnihand_3_ultra_m.cc)，构建目标为 `demo_omnihand_3_ultra_m`：
+
+```shell
+./demo_omnihand_3_ultra_m -d zlgcan -i 0 -c 0
+./demo_omnihand_3_ultra_m -d hcan --serial ADAPTER_SERIAL
+./demo_omnihand_3_ultra_m -d socketcan --can-if can0
+./demo_omnihand_3_ultra_m -d zlgcan -c 0 --hand both
+./demo_omnihand_3_ultra_m -d zlgcan --xense
+```
+
+Windows 可执行文件后缀为 `.exe`，Linux 串口可使用 `/dev/ttyUSB0`；SocketCAN 仅适用于 Linux。`--help` 显示完整参数。示例仅演示常规控制与信息读取，不包含固件更新、标定、标零、写 SN 或出厂参数写入。
+
+`--hand both` 在同一 CAN 适配器上使用 `-c` 指定通道及其下一通道；两个适配器可用 `--serial`、`--second-serial` 指定，分别使用同一通道号。
+
+示例默认使用 `--device-id 0` 自动发现地址并识别 T1.3/T1.5，不再提供 `--revision` 参数。自动发现时每个所选 CAN 通道只能连接一只手；共用总线时请显式指定 `--device-id`。`--xense` 仅在 SDK 启用 Xense 支持时可用，只读取视触觉数据，不执行普通动作。
+
+示例读取当前姿态，只将小指 PIP 关节依次设为 0.35、0.7 rad，并读取运动后的反馈；同一流程适用于 T1.3、T1.5。随后读取电机温度、电流和错误；T1.3 读取各区域的三维触觉点与合力，T1.5 读取 U16 压力点及手掌／电源板温度。
+
+编译方式参见 [CMakeLists.txt](../../../cpp/demo/omnihand_3_ultra_m/CMakeLists.txt)。
 
 ## 相关文档
 

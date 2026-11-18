@@ -9,7 +9,6 @@
 - 电机位置范围：0–4096（int16 电机 ticks）
 - 支持 CAN（ZLG USB CANFD / HCAN）通信
 - 支持 SocketCAN（仅 Linux）
-- 支持 ZLG CAN TCP（仅 Linux x64 / Windows）
 - 支持 RS485 通信（默认波特率 460800）
 - 支持 6 个 U16 一维触觉传感器：五指和掌心
 - 支持主动关节角控制，并可通过 `OmniHand3LiteSolver` 离线进行电机位置/角度换算
@@ -141,31 +140,6 @@ def create_hand_socketcan(hand_type: HandType,
     """
 ```
 
-### ZLG CAN TCP（仅部分平台）
-
-```python
-@staticmethod
-def create_hand_by_zlgcan_tcp(hand_type: HandType,
-                hand_device_id: int,
-                tcp_host: str,
-                tcp_port: int,
-                canfd_channel_id: int = 0) -> 'OmniHand3Lite':
-    """创建灵巧手对象（ZLG CANFD over TCP）。
-
-    仅支持 Windows 和 Linux x64（不支持 Linux aarch64/arm64）。
-
-    Args:
-        hand_type: 手型。
-        hand_device_id: 手部设备 ID。
-        tcp_host: TCP 服务器 IP 或主机名。
-        tcp_port: TCP 服务器端口。
-        canfd_channel_id: CAN 通道索引，默认为 0。
-
-    Returns:
-        OmniHand3Lite: 灵巧手实例。
-    """
-```
-
 ### RS485
 
 ```python
@@ -271,6 +245,19 @@ class OmniHand3LiteSolver:
     def set_hand_gesture(self, gesture: OmniHand3LiteGesture) -> List[int]: ...
 ```
 
+> **H3L-S 限位声明**：SDK 及 URDF 中的角度限制均为机械限位，电机限位范围以对应型号的规格书为准。以下为 SDK 主动关节角范围，单位为弧度（rad），角度值仅供参考；URDF 使用更高精度的小数。
+
+| 数组索引（从 0 开始） | 主动关节 | SDK 角度范围（rad） | 约合角度 |
+|---|---|---|---|
+| 0 | 中指/无名指/小指联动 PIP | [0, 1.396263] | 0°～80° |
+| 1 | 食指 PIP | [0, 1.396263] | 0°～80° |
+| 2 | 拇指 PIP | [0, 1.169370] | 0°～67° |
+| 3 | 拇指外展/内收 | [0, 1.570796] | 0°～90° |
+
+左右手使用相同的角度顺序、正方向和范围，无需手动取负；电机编码方向差异由 SDK 的 Solver 处理。电机位置的 `[0, 4096]` 是协议值范围，不代表规格书规定的电机限位。
+
+`set_all_active_joint_angles`、`get_all_active_joint_angles` 及求解器均使用上述四值顺序。单参数构造 `OmniHand3LiteSolver(is_left_hand)` 默认使用 H3L-S；求解器单关节索引为 `0..3`，手对象的 `get_min_max_activate_joint_angle` 使用电机编号 `1..4`。
+
 上述求解器接口仅执行本地计算，不与设备通信。H3L 目前没有包含主动、
 被动关节的完整关节角运动学。
 
@@ -295,6 +282,8 @@ def get_all_current_thresholds(self) -> List[int]: ...
 ```
 
 ### 混合控制
+
+支持 PT（位置+电流）和 PVT（位置+速度+电流）混控，可单轴或批量控制。
 
 ```python
 def mix_control_by_pt(self, positions: List[int], torques: List[int]) -> List[MixCtrl]: ...
@@ -452,7 +441,7 @@ def set_frame_send_timeout(self, milliseconds: int) -> None: ...
 def get_frame_send_timeout(self) -> int: ...
 ```
 
-发送超时仅适用于 CAN 传输。RS485 实现中的 setter 不执行操作，getter 返回 `0`。
+发送超时适用于 CAN 和 RS485；在 RS485 下用于设置每次串口写入的超时时间。
 
 ### 调试功能
 
@@ -504,7 +493,6 @@ SDK 发布包中提供了可直接运行的 Python demo 脚本（位于 `python/
 | CAN FD（按 ID 连接） | [demo_canfd_id.py](../../../python/demo/omnihand_3_lite/demo_canfd_id.py) |
 | CAN FD（按串号连接） | [demo_canfd_serial.py](../../../python/demo/omnihand_3_lite/demo_canfd_serial.py) |
 | SocketCAN | [demo_socketcan.py](../../../python/demo/omnihand_3_lite/demo_socketcan.py) |
-| ZLG CAN TCP | [demo_zlgcan_tcp.py](../../../python/demo/omnihand_3_lite/demo_zlgcan_tcp.py) |
 | 电机位置控制 | [demo_set_motor.py](../../../python/demo/omnihand_3_lite/demo_set_motor.py) |
 | 硬件信息 | [demo_get_hardware_info.py](../../../python/demo/omnihand_3_lite/demo_get_hardware_info.py) |
 | 双手控制（多 CAN） | [demo_set_motor_via_multicans.py](../../../python/demo/omnihand_3_lite/demo_set_motor_via_multicans.py) |

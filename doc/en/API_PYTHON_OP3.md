@@ -3,7 +3,7 @@
 ## Overview
 
 `OmniPicker3` is the Python interface for the 1-DOF OmniPicker 3 gripper. It
-supports ZLG CAN FD, HCAN, ZLG CAN TCP, Linux SocketCAN, and RS485.
+supports ZLG CAN FD, HCAN, Linux SocketCAN, and RS485.
 
 The Python surface intentionally excludes persistent or maintenance operations:
 
@@ -62,10 +62,6 @@ OmniPicker3.create_hand_by_hcan(
     canfd_channel_id=0,
 )
 
-OmniPicker3.create_hand_by_zlgcan_tcp(
-    hand_type, hand_device_id, host, port, canfd_channel_id=0
-)
-
 OmniPicker3.create_hand_socketcan(
     hand_type=HandType.UNKNOWN,
     hand_device_id=1,
@@ -80,8 +76,7 @@ OmniPicker3.create_hand_by_rs485(
 )
 ```
 
-ZLG CAN TCP is available on Windows and Linux x64. SocketCAN is available only
-on Linux. OP3 does not distinguish left and right hands; use
+SocketCAN is available only on Linux. OP3 does not distinguish left and right hands; use
 `HandType.UNKNOWN` unless an application needs to retain a side label.
 
 ## Initialization and Information
@@ -270,7 +265,7 @@ picker.set_broadcast(False)
 picker.show_data_details(True)
 ```
 
-RS485 ignores the frame-send timeout and returns `0` from its getter.
+On RS485, the frame-send timeout controls the timeout for each serial write.
 `set_broadcast()` changes the request addressing mode in the SDK and does not
 write a new device ID.
 

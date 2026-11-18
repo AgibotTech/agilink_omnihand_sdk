@@ -33,7 +33,7 @@ struct TimestampedResult {
 constexpr uint8_t kBroadcastHandDeviceId = 0x00;
 constexpr uint16_t kPrivateBroadcastHandDeviceId = 0x7FF;
 
-// Optional sink for ShowDataDetails traffic; when empty, SDK logs to stdout.
+// Device WARN/ERROR and optional communication details; empty uses global output.
 using DataDetailsLogCallback = std::function<void(const std::string& line)>;
 
 struct UInt8Bound {
@@ -107,6 +107,12 @@ struct ScannedCanfdDeviceInfo {
   uint8_t num_channels{0};
   std::string serial_number;
   std::string dev_name;
+};
+
+// Native USB devices supported by the SDK. The descriptor serial number is
+// distinct from the device's application-level SN.
+struct ScannedUsbDeviceInfo {
+  std::string serial_number;
 };
 
 struct ScannedSerialDeviceInfo {

@@ -13,7 +13,8 @@
 
 **解决方案：**
 
-#### 检查硬件连接
+#### 检查适配器是否被系统识别
+
 ```bash
 # Linux: 检查设备是否被识别
 lsusb | grep -i zlg
@@ -84,26 +85,44 @@ groups  # 应包含 'dialout' 和 'plugdev'
 **解决方案：**
 
 #### 检查 CANFD 参数
+
+以下以 O10 为例。先初始化适配器，再通过广播查询设备地址；查询成功后，对象会缓存查询到的协议地址。
+
 ```python
-# 验证 hand_device_id 与实际设备匹配
-info = hand.get_device_info()
-print(f"实际设备 ID: {info.hand_device_id}")
+from omnihand import HandType, OmniHand2025
 
-# 如果不匹配，使用正确的 ID 创建
-hand = OmniHand2025.create_hand_by_zlgcan(HandType.LEFT, actual_id, 0, 0)
+hand = OmniHand2025.create_hand_by_zlgcan(
+    hand_type=HandType.LEFT, hand_device_id=1,
+    canfd_device_id=0, canfd_channel_id=0,
+)
 
-# 或按序列号创建（重启后稳定；内部会先扫描再打开）：
-hand = OmniHand2025.create_hand_by_zlgcan(HandType.LEFT, 1, usbcanfd_serial_number="YOUR_DEVICE_SN", canfd_channel_id=0)
+# 按适配器序列号选择时，用以下调用替换上面的创建语句。
+# hand = OmniHand2025.create_hand_by_zlgcan(
+#     hand_type=HandType.LEFT, hand_device_id=1,
+#     usbcanfd_serial_number="YOUR_DEVICE_SN", canfd_channel_id=0,
+# )
+
+if hand is None or not hand.init():
+    raise RuntimeError("无法初始化 O10 适配器")
+
+discovery_result = hand.get_hand_device_id_by_broadcast()
+if discovery_result < 0:
+    raise RuntimeError("设备地址查询失败或协议地址不一致")
+print(f"O10 地址查询结果: {discovery_result}")
 ```
+
+`0` 表示 O10 的默认协议地址组合；正数表示自定义地址。后续通信使用对象缓存的地址，无需重新创建对象。
 
 > **关于 `canfd_channel_id` 说明**：
 > - 双通道适配器（USBCANFD-200U）：`can0` → `channel_id=0`，`can1` → `channel_id=1`
 > - 单通道适配器（USBCANFD-100U）：始终使用 `channel_id=0`
 
-#### 检查电源
-- 确保 24V 电源稳定
-- 检查电源连接是否松动
-- 灵巧手上的 LED 应亮起
+#### 检查电源与 CAN 接线
+
+- 确保电源稳定：H3UM 使用 48V，其他产品使用 24V。
+- 检查电源连接是否松动。
+- 确认灵巧手上的 LED 亮起。
+- 如果 LED 已亮但 CAN 通信仍无响应，先断电，尝试交换 CAN_H 与 CAN_L，再重新上电测试通信。
 
 #### 降低通信频率
 ```python
@@ -111,7 +130,7 @@ hand = OmniHand2025.create_hand_by_zlgcan(HandType.LEFT, 1, usbcanfd_serial_numb
 hand.set_request_interval(100)  # 请求间隔 100ms
 
 # 增加响应超时阈值
-hand.set_request_timeout(500)  # 每次请求超时 500ms
+hand.set_frame_recv_timeout(500)  # 每次请求超时 500ms
 ```
 
 ---
@@ -125,39 +144,46 @@ hand.set_request_timeout(500)  # 每次请求超时 500ms
 **解决方案：**
 
 #### 检查控制模式
+
+控制模式接口因产品而异。O10 没有绑定 `set_all_control_modes()`；O12、H3UM 接收逐关节模式数组，支持的模式见各产品 API。
+
+以下仅针对已初始化的 O12 对象 `o12_hand`，将各关节设为位置模式：
+
 ```python
-# 使用伺服模式（推荐）或位置模式
 from omnihand import ControlMode
 
-# 伺服模式 - 带速度/力矩限制的平滑运动
-hand.set_all_control_mode(ControlMode.SERVO)
-
-# 或位置模式 - 直接位置控制
-hand.set_all_control_mode(ControlMode.POSITIONTION)
+modes = [int(ControlMode.POSITION)] * o12_hand.get_doa()
+o12_hand.set_all_control_modes(modes)
 ```
 
-#### 检查位置范围
+参见 [O12 Python API](API_PYTHON_O12.md)、[H3UM Python API](API_PYTHON_H3UM.md)。
+
+#### 检查位置反馈与目标数据
+
+先读取已初始化对象 `hand` 的当前位置，并确认反馈数量与主动关节数一致：
+
 ```python
-# 有效范围通常是 0-4096
-# 警告：由于手指机械限位，部分电机无法达到极限值（0 或 4096）
-# 使用极限值可能导致电机堵转或触发保护
-
-# 从安全的中间位置开始（demo 中测试过的值）
-safe_pos = [2048, 2048, 4096, 2048, 4096, 4096, 2048, 4096, 2048, 4096]
-hand.set_all_joint_motor_posi(safe_pos)
-
-# 或使用关节角度接口（推荐，自动处理限位）
-angles = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-hand.set_all_active_joint_angles(angles)
+positions = hand.get_all_joint_positions()
+if len(positions) != hand.get_doa():
+    raise RuntimeError("位置反馈数量与主动关节数不一致")
+print(positions)
 ```
+
+电机编码控制使用 `set_all_joint_positions()`，角度控制使用 `set_all_active_joint_angles()`。目标数据须匹配产品、左右手和硬件版本，并符合该产品的关节数量与机械约束。`0`、`4096` 或全零 rad 均不能视为所有产品通用的安全位置；请参照对应产品 API 及预设手势。
 
 #### 检查错误状态
 ```python
 # 读取错误报告
-errors = hand.get_all_error_report()
-for i, err in enumerate(errors):
-    if err:
-        print(f"关节 {i+1} 错误: {err}")
+errors = hand.get_all_error_reports()
+for i, err in enumerate(errors, start=1):
+    flags = {
+        name: getattr(err, name)
+        for name in (
+            "stalled", "overheat", "over_current", "motor_except", "commu_except"
+        )
+    }
+    if any(flags.values()):
+        print(f"关节 {i} 错误: {flags}")
 ```
 
 ---
@@ -171,16 +197,24 @@ for i, err in enumerate(errors):
 **解决方案：**
 
 #### 重新安装包
+
+在发布包的平台目录（`linux/x64`、`linux/aarch64` 或 `windows/x64`）运行，使用与应用程序相同的 Python 解释器。pip 会从本地 `python/` 目录选择兼容的 wheel，无需用通配符指定全部文件。
+
+**Linux：**
+
 ```bash
-# 卸载并重新安装
-pip uninstall omnihand
-pip install python/omnihand-*.whl
+python3 --version
+python3 -m pip install --force-reinstall --no-deps --no-index --find-links=python omnihand
 ```
 
-#### 检查 Python 版本
-```bash
-python3 --version  # 应为 3.10+
+**Windows：**
+
+```powershell
+python --version
+python -m pip install --force-reinstall --no-deps --no-index --find-links=python omnihand
 ```
+
+当前发布包提供 CPython 3.10–3.14 的 wheel，请同时确认 Python 版本、操作系统和架构匹配。
 
 #### 安装测试依赖（运行测试时需要）
 ```bash
@@ -276,10 +310,7 @@ int main() {
 **解决方案：**
 
 ```bash
-# 先 source ROS2
-source /opt/ros/humble/setup.bash
-
-# 再 source omnihand
+# 自动加载匹配的 ROS2 环境与 OmniHand 包
 source ros2/setup.bash
 
 # 验证包
@@ -308,7 +339,7 @@ cat /etc/udev/rules.d/99-omnihand-usb.rules
 # 检查用户组
 groups $USER
 
-# 测试设备访问
+# 检查 SDK 是否可导入（不连接设备）
 python3 -c "from omnihand import OmniHand2025; print('OK')"
 ```
 
@@ -336,12 +367,14 @@ pip show omnihand
    - 硬件型号（O10/O12，适配器类型）
 
 2. **检查日志：**
+   对已初始化的 `hand` 对象开启 C++ SDK 收发明细：
+
    ```python
-   # 启用详细输出
-   import logging
-   logging.basicConfig(level=logging.DEBUG)
+   hand.show_data_details(True)
    ```
 
+   日志默认输出到标准输出，请保留完整的发送、接收与错误信息。
+
 3. **联系支持：**
-   - 邮箱：support@agibot.com
+   - 邮箱：xuqigui@agibot.com
    - 请附上收集到的信息

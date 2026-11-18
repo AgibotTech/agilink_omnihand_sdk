@@ -5,29 +5,27 @@
 Unified hardware tests for OmniHand 2025 (O10): CANFD transports + USB/RS485.
 
 Merged from test_omnihand_2025.py / test_omnihand_2025_canfd.py /
-test_omnihand_2025_usb.py / test_omnihand_2025_zlgcan_tcp.py.
+test_omnihand_2025_usb.py.
 
 Transport is selected with -d (or OMNIHAND_DEVICE_TYPE):
-  zlgcan | hcan | socketcan | zlgcantcp | usb | rs485   (default: zlgcan)
+  zlgcan | hcan | socketcan | usb | rs485   (default: zlgcan)
 
 Usage:
   python3 test_omnihand_2025.py [options]
   OMNIHAND_DEVICE_TYPE=hcan python3 -m pytest test_omnihand_2025.py
 
 Common options:
-  -d TRANSPORT   Backend: zlgcan | hcan | socketcan | zlgcantcp | usb | rs485
+  -d TRANSPORT   Backend: zlgcan | hcan | socketcan | usb | rs485
                  (default: zlgcan)
   -f INTERVAL    Request interval ms. CAN default 5 (max 100), USB/RS485
                  default 500 (max 500). 0 disables interval limiting.
   --device-id ID Optional target hand ID in [1, 0x7f] (alias: --id). When
                  omitted, only discover/cache current IDs; no ID is written.
 
-CAN options (zlgcan / hcan / socketcan / zlgcantcp):
-  -c CHANNEL     CAN channel index (zlgcan/hcan/zlgcantcp), default 0
+CAN options (zlgcan / hcan / socketcan):
+  -c CHANNEL     CAN channel index (zlgcan/hcan), default 0
   -i CANFD_ID    Adapter device index (zlgcan/hcan), default 0
   --can-if IF    SocketCAN interface name (socketcan), default can0
-  --tcp-host H   ZLG CANFD-over-TCP host (zlgcantcp), default 192.168.0.178
-  --tcp-port P   TCP port (zlgcantcp), default 8000
 
 USB/RS485 options:
   -p PORT        Serial port (USB default: /dev/ttyACM0, Windows COM3;
@@ -37,14 +35,13 @@ USB/RS485 options:
 
 Environment variables (take priority over defaults, work with pytest):
   OMNIHAND_DEVICE_TYPE, OMNIHAND_REQUEST_INTERVAL, OMNIHAND_CHANNEL_ID,
-  OMNIHAND_CANFD_ID, OMNIHAND_CAN_IF, OMNIHAND_TCP_HOST, OMNIHAND_TCP_PORT,
+  OMNIHAND_CANFD_ID, OMNIHAND_CAN_IF,
   OMNIHAND_USB_PORT, OMNIHAND_RS485_PORT, OMNIHAND_BAUDRATE,
   OMNIHAND_FRAME_RECV_TIMEOUT, OMNIHAND_TARGET_DEVICE_ID
 
 Examples:
   python3 test_omnihand_2025.py -d zlgcan -c 0 -i 0
   python3 test_omnihand_2025.py -d socketcan --can-if can0
-  python3 test_omnihand_2025.py -d zlgcantcp --tcp-host 192.168.0.178 --tcp-port 8000
   python3 test_omnihand_2025.py -d usb -p /dev/ttyACM0
   python3 test_omnihand_2025.py -d rs485 -p /dev/ttyUSB0
   OMNIHAND_DEVICE_TYPE=usb pytest -v test_omnihand_2025.py
@@ -71,7 +68,7 @@ from omnihand import OmniHand2025, Finger, HandType
 # ---------------------------------------------------------------------------
 # Configuration (env vars take priority over defaults, CLI args parsed below)
 # ---------------------------------------------------------------------------
-CAN_TRANSPORTS = ("zlgcan", "hcan", "socketcan", "zlgcantcp")
+CAN_TRANSPORTS = ("zlgcan", "hcan", "socketcan")
 TRANSPORTS = CAN_TRANSPORTS + ("usb", "rs485")
 
 DEVICE_TYPE = "zlgcan"
@@ -80,8 +77,6 @@ CANFD_ID = 0
 # None = use transport default (CAN: 5ms, USB/RS485: 500ms)
 REQUEST_INTERVAL = None
 CAN_IF = "can0"
-TCP_HOST = "192.168.0.178"
-TCP_PORT = 8000
 if platform.system() == "Windows":
     USB_PORT = "COM3"
     RS485_PORT = "COM5"
@@ -96,14 +91,12 @@ TARGET_DEVICE_ID = None
 _STR_OPTIONS = (
     ("OMNIHAND_DEVICE_TYPE", "-d", "DEVICE_TYPE"),
     ("OMNIHAND_CAN_IF", "--can-if", "CAN_IF"),
-    ("OMNIHAND_TCP_HOST", "--tcp-host", "TCP_HOST"),
     ("OMNIHAND_USB_PORT", "-p", "USB_PORT"),
     ("OMNIHAND_RS485_PORT", "-p", "RS485_PORT"),
 )
 _INT_OPTIONS = (
     ("OMNIHAND_CHANNEL_ID", "-c", "CHANNEL_ID"),
     ("OMNIHAND_CANFD_ID", "-i", "CANFD_ID"),
-    ("OMNIHAND_TCP_PORT", "--tcp-port", "TCP_PORT"),
     ("OMNIHAND_BAUDRATE", "-b", "BAUDRATE"),
     ("OMNIHAND_FRAME_RECV_TIMEOUT", "-t", "FRAME_RECV_TIMEOUT"),
     ("OMNIHAND_REQUEST_INTERVAL", "-f", "REQUEST_INTERVAL"),
@@ -194,14 +187,6 @@ def hand():
             hand_type=HandType.LEFT,
             hand_device_id=0,
             can_interface=CAN_IF,
-        )
-    elif DEVICE_TYPE == "zlgcantcp":
-        h = OmniHand2025.create_hand_by_zlgcan_tcp(
-            hand_type=HandType.LEFT,
-            hand_device_id=0,
-            host=TCP_HOST,
-            port=TCP_PORT,
-            canfd_channel_id=CHANNEL_ID,
         )
     elif DEVICE_TYPE in ("usb", "rs485"):
         port = serial_port()
@@ -586,8 +571,6 @@ if __name__ == "__main__":
     os.environ["OMNIHAND_CHANNEL_ID"] = str(CHANNEL_ID)
     os.environ["OMNIHAND_CANFD_ID"] = str(CANFD_ID)
     os.environ["OMNIHAND_CAN_IF"] = CAN_IF
-    os.environ["OMNIHAND_TCP_HOST"] = TCP_HOST
-    os.environ["OMNIHAND_TCP_PORT"] = str(TCP_PORT)
     os.environ["OMNIHAND_USB_PORT"] = USB_PORT
     os.environ["OMNIHAND_RS485_PORT"] = RS485_PORT
     os.environ["OMNIHAND_BAUDRATE"] = str(BAUDRATE)
@@ -599,14 +582,12 @@ if __name__ == "__main__":
 
     print("=== OmniHand 2025 Test ===")
     print(f"Transport:        {DEVICE_TYPE}")
-    if DEVICE_TYPE in ("zlgcan", "hcan", "zlgcantcp"):
+    if DEVICE_TYPE in ("zlgcan", "hcan"):
         print(f"Channel ID:       {CHANNEL_ID}")
     if DEVICE_TYPE in ("zlgcan", "hcan"):
         print(f"CANFD ID:         {CANFD_ID}")
     if DEVICE_TYPE == "socketcan":
         print(f"CAN Interface:    {CAN_IF}")
-    if DEVICE_TYPE == "zlgcantcp":
-        print(f"TCP:              {TCP_HOST}:{TCP_PORT}")
     if is_serial_transport():
         print(f"Port:             {serial_port()}")
         print(f"Baudrate:         {BAUDRATE}")

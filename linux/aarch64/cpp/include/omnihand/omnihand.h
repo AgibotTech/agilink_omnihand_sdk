@@ -4,23 +4,25 @@
 /**
  * @file omnihand.h
  * @brief OmniHand base class - common interface for all products
- * @note Users should use OmniHand2025, OmniHandPro2025, or OmniHandDexUMI instead
+ * @note Users should use OmniHand2025 or OmniHandPro2025 instead
  */
 
 #ifndef AGILINK_OMNIHAND_H
 #define AGILINK_OMNIHAND_H
 
-#include <cstdio>
 #include <cstdint>
+#include <cstdio>
 #include <memory>
 #include <string>
 #include <vector>
+#include "omnihand/device_context.h"
 #include "omnihand/export_symbols.h"
-#include "omnihand/proto.h"
 #include "omnihand/ota_types.h"
+#include "omnihand/proto.h"
 #include "omnihand/utils.h"
 
 #define OMNIHAND_HAS_JOINT_ANGLES_FROM_MOTOR_POSITIONS 1
+#define OMNIHAND_HAS_DEVICE_LOG_CALLBACK 1
 
 namespace agilink {
 namespace omnihand {
@@ -29,7 +31,7 @@ namespace omnihand {
 struct MixCtrl;
 struct JointMotorErrorReport;
 
-/** Initial per-device communication logging applied before constructor-time requests. */
+/** Initial device log callback and communication-detail switch, applied before constructor-time requests. */
 struct AGIBOT_EXPORT CommunicationLogOptions {
   bool enabled = false;
   DataDetailsLogCallback callback = nullptr;
@@ -40,12 +42,14 @@ struct AGIBOT_EXPORT CommunicationLogOptions {
 /**
  * @brief OmniHand base class - common interface for all products
  * @note This is the base class containing only methods common to all products.
- *       Users should use product-specific classes: OmniHand2025, OmniHandPro2025, or OmniHandDexUMI.
+ *       Users should use product-specific classes: OmniHand2025 or OmniHandPro2025.
  *       However, this class must be exported (AGIBOT_EXPORT) to ensure methods like GetProductType()
  *       and Init() can be called through derived class pointers.
  */
 class AGIBOT_EXPORT OmniHand {
  public:
+  std::shared_ptr<const DeviceContext> GetDeviceContext() const { return device_context_; }
+
   // Timestamped counterparts share the existing virtual implementations.
   // These methods are nonvirtual to preserve the existing public ABI.
   TimestampedResult<int16_t> SetJointMotorPosiWithTimestamp(unsigned char index, int16_t position);
@@ -115,8 +119,6 @@ class AGIBOT_EXPORT OmniHand {
   /**
    * @brief 0x02: Gets device information.
    * @return Device information structure containing device ID and communication parameters
-   * @note Serial port communication (RS485) does not support this interface. 
-   *       RS485 implementation returns an empty DeviceInfo structure.
    */
   virtual DeviceInfo GetDeviceInfo() const {
     return {};
@@ -157,44 +159,11 @@ class AGIBOT_EXPORT OmniHand {
     (void)broadcast;
   }
 
-  /**
-   * @brief Sets the current position of every motor as its zero position.
-   * @return true if the device reports success; false if unsupported or failed.
-   * @note Currently supported only by OmniHand 3 Ultra M (H3U_M).
-   */
-  virtual bool SetAllMotor2Zero() {
-    std::fprintf(stderr, "[WARN][OmniHand][SetAllMotor2Zero] unsupported by this product\n");
-    return false;
-  }
-
-  /**
-   * @brief Sets the current position of one motor as its zero position.
-   * @param joint_motor_index Joint motor index, starting from 1.
-   * @return true if the device reports success; false if unsupported or failed.
-   * @note Currently supported only by OmniHand 3 Ultra M (H3U_M).
-   */
-  virtual bool SetMotor2Zero(unsigned char joint_motor_index) {
-    (void)joint_motor_index;
-    std::fprintf(stderr, "[WARN][OmniHand][SetMotor2Zero] unsupported by this product\n");
-    return false;
-  }
-
-  /**
-   * @brief 0x0B/0x00: Calibrates all tactile sensors.
-   * @return true if the device reports success; false if unsupported or failed.
-   */
-  virtual bool CalibrateTactileSensor() {
-    std::fprintf(stderr,
-                 "[WARN][OmniHand][CalibrateTactileSensor] unsupported by this product\n");
-    return false;
-  }
-
   // ============ Current Threshold ============
   /**
    * @brief 0x03: Sets the current threshold of a single joint motor.
    * @param joint_motor_index Joint motor index
    * @param current_threshold Current threshold value
-   * @note Serial port communication (USB/RS485) does not support this interface.
    * @note O10/H3L: not allowed to both SetCurrentThreshold and MixControl at the same time.
    *        If you want to use MixControl, please do not call SetCurrentThreshold.
    */
@@ -204,14 +173,12 @@ class AGIBOT_EXPORT OmniHand {
    * @brief 0x03: Gets the current threshold of a single joint motor.
    * @param joint_motor_index Joint motor index (O10: 1-10, O12: 1-12)
    * @return Current threshold value
-   * @note Serial port communication (RS485) does not support this interface.
    */
   virtual int16_t GetCurrentThreshold(unsigned char joint_motor_index) const { (void)joint_motor_index; return 0; }
   
   /**
    * @brief 0x03: Sets current thresholds of all joint motors in batch.
    * @param current_thresholds Current threshold vector.
-   * @note Serial port communication (USB/RS485) does not support this interface.
    * @note O10/H3L: not allowed to both SetAllCurrentThreshold and MixControl at the same time.
    *        If you want to use MixControl, please do not call SetAllCurrentThreshold.
    */
@@ -222,7 +189,6 @@ class AGIBOT_EXPORT OmniHand {
    * @return Current threshold vector. Length depends on product type:
    *         - OmniHand 2025 (O10): 10 values
    *         - OmniHand Pro 2025 (O12): 12 values
-   * @note Serial port communication (RS485) does not support this interface.
    */
   virtual std::vector<int16_t> GetAllCurrentThreshold() const { return {}; }
 
@@ -389,7 +355,6 @@ class AGIBOT_EXPORT OmniHand {
    * @brief 0x12: Sets the velocity of a single joint motor.
    * @param joint_motor_index Joint motor index (O10: 1-10, O12: 1-12)
    * @param velo Target velocity value
-   * @note Serial port communication (RS485) does not support this interface.
    */
   virtual void SetJointMotorVelo(unsigned char joint_motor_index, int16_t velo) { (void)joint_motor_index; (void)velo; }
   
@@ -397,7 +362,6 @@ class AGIBOT_EXPORT OmniHand {
    * @brief 0x12: Gets the velocity of a single joint motor.
    * @param joint_motor_index Joint motor index (O10: 1-10, O12: 1-12)
    * @return Current velocity value
-   * @note Serial port communication (RS485) does not support this interface.
    */
   virtual int16_t GetJointMotorVelo(unsigned char joint_motor_index) const { (void)joint_motor_index; return 0; }
   
@@ -600,31 +564,29 @@ class AGIBOT_EXPORT OmniHand {
 
   // ============ Debug Interface ============
   /**
-   * @brief Shows send/receive data details.
-   * @param show Whether to show data details (true=show, false=hide)
-   * @param log_callback When set, each log line is passed here; otherwise printed to stdout.
+   * @brief Configures device WARN/ERROR output and optional send/receive details.
+   * @param show Whether to include communication details; does not disable WARN/ERROR.
+   * @param log_callback Optional device log callback; empty keeps the existing callback.
+   * @note The callback runs on the shared log output worker and should return quickly.
    */
   virtual void ShowDataDetails(bool show, DataDetailsLogCallback log_callback = nullptr) const = 0;
 
   // ============ Request Interval Control ============
   /**
-   * @brief Set request interval to control CAN bus communication rate
+   * @brief Sets the minimum interval between communication requests.
    * @param milliseconds Minimum interval between requests in milliseconds (range: 0-100ms, default: 0ms = no throttling)
    * @note 0 = no limit (no throttling, matches CanBusDeviceBase / SerialDevice default),
    *       1-100ms = throttled requests
-   * @note This helps prevent CAN bus congestion and device timeout issues.
+   * @note This helps prevent communication congestion and device timeout issues.
    *       Higher interval = more stable but slower response.
    *       Lower interval = faster but may cause timeouts if device is busy.
-   * @note Only applies to CAN communication. RS485 communication is not affected.
-   * @note Serial port communication (RS485) does not support this interface.
-   *       RS485 implementation does nothing (no-op).
+   * @note Applies to CAN and serial communication (USB/RS485).
    */
   virtual void SetRequestInterval(int milliseconds) = 0;
 
   /**
    * @brief Get current request interval setting
    * @return Request interval in milliseconds (0 = no limit)
-   * @note Serial port communication (RS485) always returns 0 (not applicable).
    */
   virtual int GetRequestInterval() const = 0;
 
@@ -698,17 +660,17 @@ class AGIBOT_EXPORT OmniHand {
  protected:
   /**
    * @brief Constructor - protected to prevent direct instantiation
-   * @note Users should use product-specific classes: OmniHand2025, OmniHandPro2025, or OmniHandDexUMI
+   * @note Users should use product-specific classes: OmniHand2025 or OmniHandPro2025
    */
-  OmniHand() = default;
+  OmniHand() : OmniHand(std::make_shared<DeviceContext>()) {}
+  explicit OmniHand(std::shared_ptr<DeviceContext> context) : device_context_(std::move(context)) {}
 
  public:
   /**
    * @deprecated
    * @brief Sets device ID.
    * @param device_id Device ID
-   * @note Serial port communication (RS485) does not support this interface.
-   *       RS485 implementation does nothing (device ID is fixed at construction time).
+   * @note Use SetHandDeviceId() instead.
    * @warning Changing device ID without proper documentation may result in device inaccessibility.
    */
   virtual void SetDeviceId(unsigned char device_id) {
@@ -754,6 +716,7 @@ class AGIBOT_EXPORT OmniHand {
   void Reset(ProductType product_type, unsigned char device_id, HandType hand_type) {
     product_type_ = product_type;
     device_id_ = device_id;
+    device_context_->device_id.store(device_id_);
     hand_type_ = hand_type;
   }
 
@@ -761,6 +724,7 @@ class AGIBOT_EXPORT OmniHand {
   unsigned char device_id_{DEFAULT_DEVICE_ID};
   HandType hand_type_{HandType::LEFT};
   bool is_init_{false};
+  const std::shared_ptr<DeviceContext> device_context_;
 };
 
 /** mA to 1-byte mix-control torque register (O10/H3L). */

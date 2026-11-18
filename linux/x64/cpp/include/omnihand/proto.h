@@ -54,7 +54,6 @@ inline std::string ToString(HandType hand_type) {
 enum class AGIBOT_EXPORT ProductType : unsigned char {
   OMNIHAND_2025 = 0,        // OmniHand 2025 (O10, 10 DOF)
   OMNIHAND_PRO_2025 = 1,    // OmniHand Pro 2025 (O12, 12 DOF)
-  OMNIHAND_DEX_UMI = 2,     // OmniHand Dex UMI (O10 UMI, 10 DOF)
   OMNIHAND_3_LITE = 3,      // OmniHand 3 Lite S (O4, 4 DOF)
   OMNIHAND_3_ULTRA_M = 4,     // OmniHand 3 Ultra M(O20, 20 DOF)
   OMNI_PICKER_3 = 5,        // OmniPicker 3 (1 DOF)
@@ -71,7 +70,6 @@ inline std::string ToString(ProductType product_type) {
   switch (product_type) {
     case ProductType::OMNIHAND_2025: return "OmniHand 2025";
     case ProductType::OMNIHAND_PRO_2025: return "OmniHand Pro 2025";
-    case ProductType::OMNIHAND_DEX_UMI: return "OmniHand Dex UMI";
     case ProductType::OMNIHAND_3_LITE: return "OmniHand 3 Lite";
     case ProductType::OMNIHAND_3_ULTRA_M: return "OmniHand 3 Ultra M";
     case ProductType::OMNI_PICKER_3: return "OmniPicker 3";

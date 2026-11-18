@@ -80,6 +80,7 @@
  *
  * package.xml:
  *   <depend>rclcpp</depend>
+ *   <depend>rcl_interfaces</depend>         <!-- H3UM joint metadata -->
  *   <depend>sensor_msgs</depend>
  *   <depend>std_msgs</depend>
  *   <depend>omnihand_2025_node_msgs</depend>     <!-- O10 tactile (optional) -->
@@ -87,14 +88,16 @@
  *
  * CMakeLists.txt:
  *   find_package(rclcpp REQUIRED)
+ *   find_package(rcl_interfaces REQUIRED)
  *   find_package(sensor_msgs REQUIRED)
  *   find_package(std_msgs REQUIRED)
  *   find_package(omnihand_2025_node_msgs REQUIRED)
  *   find_package(omnihand_pro_2025_node_msgs REQUIRED)
- *   ament_target_dependencies(your_node rclcpp sensor_msgs std_msgs
+ *   ament_target_dependencies(your_node rclcpp rcl_interfaces sensor_msgs std_msgs
  *       omnihand_2025_node_msgs omnihand_pro_2025_node_msgs)
  *
- * For position control only, tactile message packages are optional; sensor_msgs and std_msgs suffice.
+ * Tactile message packages are optional for position control. H3UM also queries
+ * the node's read-only joint_names parameter through rcl_interfaces before control.
  */
 
 #include <chrono>
@@ -112,7 +115,7 @@
 #include "omnihand_node_msgs/msg/int16_multi_array_stamped.hpp"
 #include "omnihand_2025_node_msgs/msg/tactile_sensor.hpp"
 #include "omnihand_pro_2025_node_msgs/msg/tactile_sensor.hpp"
-#include "ros_multi_array_demo.hpp"
+#include "ros_demo_utils.hpp"
 
 using namespace std::chrono_literals;
 using agilink::omnihand::ros2::PackInt16MultiArray1D;
@@ -352,13 +355,14 @@ int main(int argc, char* argv[]) {
   int16_t current_threshold_ma = 500;
   if (argc > 3) current_threshold_ma = static_cast<int16_t>(std::stoi(argv[3]));
 
-  int num_joints = 10;
-  if (product == "o12")
-    num_joints = 12;
-  else if (product == "h3l")
-    num_joints = 4;
-  else if (product == "h3u_m")
-    num_joints = 20;
+  int num_joints;
+  try {
+    num_joints = agilink::omnihand::ros2::GetJointCount(product, side);
+  } catch (const std::exception& error) {
+    RCLCPP_ERROR(rclcpp::get_logger("joint_cmd_demo"), "%s", error.what());
+    rclcpp::shutdown();
+    return 1;
+  }
 
   auto node = std::make_shared<JointCmdDemo>(product, side, num_joints, current_threshold_ma);
   rclcpp::spin(node);

@@ -4,27 +4,29 @@
 
 The OmniHand SDK provides **product-specific interfaces** for the following products:
 
-- **OmniHand 2025 (O10)**: 10 DOF dexterous hand with 1D tactile sensors
+- **OmniHand 2025 & OmniHand 3 (O10)**: 10 DOF dexterous hand with 1D tactile sensors
 - **OmniHand Pro 2025 (O12)**: 12 DOF dexterous hand with 3D tactile sensors
 - **OmniHand 3 Lite (H3L)**: 4 DOF lightweight dexterous hand
-- **OmniHand Dex UMI (O10 UMI)**: 10 DOF dexterous hand with UMI protocol support
-- **OmniHand 3 Ultra M (H3UM T1.3/T1.5)**: 20/21 DOF dexterous hand with revision-specific tactile data
+- **OmniHand 3 Ultra M (H3UM)**: 20/21 DOF dexterous hand with revision-specific tactile data
+- **OmniHandPicker 2025 (OP1)**: 1 DOF gripper, CAN FD and USB direct
 - **OmniPicker 3 (OP3)**: 1 DOF gripper
 
-Each product has its own interface class (`OmniHand2025`, `OmniHandPro2025`, `OmniHand3Lite`, `OmniHandDexUMI`) with product-specific factory methods and APIs. This design provides better type safety and clearer API organization compared to a unified interface with `ProductType`.
+Each product has its own interface class (`OmniHand2025`, `OmniHandPro2025`, `OmniHand3Lite`) with product-specific factory methods and APIs. This design provides better type safety and clearer API organization compared to a unified interface with `ProductType`.
 
-**C++ typing note:** For **OmniHand 2025 (O10)** and **OmniHand Dex UMI**, factory methods use **`std::uint8_t`** for `hand_device_id` and CAN adapter indices (`canfd_device_id`, `canfd_channel_id`). See the product-specific C++ API pages for full signatures.
+**C++ typing note:** For **OmniHand 2025 & OmniHand 3 (O10)**, factory methods use **`std::uint8_t`** for `hand_device_id` and CAN adapter indices (`canfd_device_id`, `canfd_channel_id`). See the product-specific C++ API pages for full signatures.
 
 ## Product-Specific API Documentation
 
-- **[OmniHand 2025 (O10) C++ API](API_CPP_O10.md)** - 10 DOF, 1D tactile sensors, supports CAN and RS485
+- **[OmniHand 2025 & OmniHand 3 (O10) C++ API](API_CPP_O10.md)** - 10 DOF, 1D tactile sensors, supports CAN and RS485
 - **[OmniHand Pro 2025 (O12) C++ API](API_CPP_O12.md)** - 12 DOF, 3D tactile sensors, CAN only
 - **[OmniHand 3 Lite (H3L) C++ API](API_CPP_H3L.md)** - 4 DOF, tactile compatibility APIs, CAN and RS485
-- **[OmniHand Dex UMI (O10 UMI) C++ API](API_CPP_O10_UMI.md)** - 10 DOF, UMI protocol, active query, CAN only
-- **[OmniHand 3 Ultra M (H3UM T1.3/T1.5) C++ API](API_CPP_H3UM.md)** - 20/21 DOF, CAN FD, revision-specific tactile APIs
+- **[OmniHand 3 Ultra M (H3UM) C++ API](API_CPP_H3UM.md)** - 20/21 DOF, CAN FD, revision-specific tactile APIs
+- **[OmniHandPicker 2025 (OP1) C++ API](API_CPP_OP1.md)** - 1 DOF gripper, CAN FD and USB direct
 - **[OmniPicker 3 (OP3) C++ API](API_CPP_OP3.md)** - 1 DOF gripper; mixed control: `MixControlByPT` only
 
 ## Common Enums and Data Structures
+
+`SerialConnectionInfo` contains only the serial mode and port. The SDK fixes the baud rate internally; see each product's documentation for its value. `CreateHand(context)` and C++ demos do not take a baud-rate option. Legacy factory signatures retain their baud-rate argument for source compatibility and reject values other than the product's fixed rate.
 
 All products share common enums and data structures. These are documented in each product-specific API document, but here's a quick reference:
 
@@ -34,7 +36,6 @@ All products share common enums and data structures. These are documented in eac
 enum class ProductType : unsigned char {
     OMNIHAND_2025        = 0,    // OmniHand 2025 (10 DOF)
     OMNIHAND_PRO_2025    = 1,    // OmniHand Pro 2025 (12 DOF)
-    OMNIHAND_DEX_UMI     = 2,    // OmniHand Dex UMI (O10 UMI) (10 DOF, UMI protocol)
     UNKNOWN = 255   // Unknown
 };
 ```
@@ -83,7 +84,7 @@ enum class ControlMode : unsigned char {
 
 ## Quick Start Examples
 
-### OmniHand 2025 (O10)
+### OmniHand 2025 & OmniHand 3 (O10)
 
 ```cpp
 #include "omnihand/omnihand_2025.h"
@@ -129,33 +130,8 @@ std::vector<double> angles(12, 0.0);  // All joints to zero position
 hand->SetAllActiveJointAngles(angles);
 ```
 
-### OmniHand Dex UMI
-
-```cpp
-#include "omnihand/omnihand_dex_umi.h"
-
-// Create hand instance
-auto hand = OmniHandDexUMI::createHandByZlgcan(
-    HandType::LEFT,
-    1,      // hand_device_id
-    0,      // canfd_device_id
-    0       // canfd_channel_id
-);
-
-if (!hand || !hand->Init()) {
-    std::cerr << "Failed to initialize" << std::endl;
-    return -1;
-}
-
-// Register position report callback
-hand->SetPositionReportCallback([](const std::vector<int16_t>& positions) {
-    std::cout << "Position report received: " << positions.size() << " values" << std::endl;
-}, 100);  // 100 Hz frequency
-```
-
 ## Related Documentation
 
 - [SocketCAN Setup Guide](SOCKETCAN_SETUP.md) - For Linux SocketCAN configuration
-- [OmniHand 2025 (O10) Kinematics Solver C++ API](API_KINEMATICS_CPP_O10.md) - For kinematics calculations
+- [OmniHand 2025 & OmniHand 3 (O10) Kinematics Solver C++ API](API_KINEMATICS_CPP_O10.md) - For kinematics calculations
 - [OmniHand Pro 2025 (O12) Kinematics Solver C++ API](API_KINEMATICS_CPP_O12.md) - For kinematics calculations
-- [Server Interface API](API_SERVER.md) - WebSocket and RESTful server/client API (C++, Python, Web)

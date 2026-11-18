@@ -9,9 +9,8 @@
 - Motor position range: 0-4096 (int16 motor ticks)
 - Supports CAN (ZLG USB CANFD / HCAN) communication
 - Supports SocketCAN (Linux only)
-- Supports ZLG CAN TCP (Linux x64 / Windows only)
 - **No tactile sensors** on the documented H3L hardware; U16 tactile methods remain as protocol/firmware compatibility APIs
-- **No kinematics solver**: angle-based control is unavailable (`SetAllActiveJointAngles` is a stub). Use motor position control (`SetAllJointMotorPosi` / `SetAllJointMotorPosi`) instead.
+- Supports setting and reading four active joint angles in radians over CAN and RS485. An [offline kinematics solver](#kinematics-solver) also converts between active joint angles and motor positions without a device connection. Full active-plus-passive joint-angle kinematics is not supported.
 
 ## Motor Layout
 
@@ -49,17 +48,18 @@ enum class ControlMode : unsigned char {
     TORQUE                    = 3,    // Torque mode (H3L not supported)
     POSITION_TORQUE           = 4,    // Position-Torque mode (Mixed control: position + current)
     VELOCITY_TORQUE           = 5,    // Velocity-Torque mode (H3L not yet available)
-    POSITION_VELOCITY_TORQUE  = 6,    // Position-Velocity-Torque mode (H3L not yet available)
+    POSITION_VELOCITY_TORQUE  = 6,    // Position-Velocity-Torque mode (Mixed control: position + velocity + current)
     UNKNOWN                   = 10    // Unknown mode
 };
 }  // namespace omnihand
 }  // namespace agilink
 ```
 
-**H3L available modes**:
+**H3L control modes and SDK APIs**:
 - `POSITION` (0): Default position control
-- `POSITION_TORQUE` (4): Position + current mixed control
-- Other modes are not available or not yet open
+- `POSITION_TORQUE` (4): Position + current mixed control via `MixControlByPT`
+- `POSITION_VELOCITY_TORQUE` (6): Position + velocity + current mixed control via `MixControlByPVT`
+- See the enum comments above for API restrictions on other modes
 
 ## Data Structures
 
@@ -157,19 +157,6 @@ static std::unique_ptr<OmniHand3Lite> createHandSocketCan(
 #endif
 ```
 
-### ZLG CAN TCP (partial platform support)
-
-```cpp
-#if OMNIHAND_ZLG_TCP_SUPPORTED
-static std::unique_ptr<OmniHand3Lite> createHandByZlgCanTcp(
-    HandType hand_type,
-    uint8_t hand_device_id,
-    const std::string& tcp_host,
-    uint16_t tcp_port,
-    uint8_t canfd_channel_id = 0);
-#endif
-```
-
 ### RS485
 
 ```cpp
@@ -212,13 +199,52 @@ int16_t GetJointMotorPosi(unsigned char joint_motor_index) const;
 std::vector<int16_t> GetAllJointMotorPosi() const;
 ```
 
-### Joint Angle Control (unavailable)
+### Active Joint Angle Control (radians)
 
 ```cpp
-// These methods are stubs on H3L. Use motor position control instead.
 std::vector<double> SetAllActiveJointAngles(const std::vector<double>& angles);
 std::vector<double> GetAllActiveJointAngles() const;
 ```
+
+Both CAN and RS485 support these methods. Vectors contain four values in radians, ordered by `H3LActivateJoint`. The SDK uses the Solver for the hand object's model and side to convert between angles and motor encoder values; the setter returns active joint angles converted from motor feedback.
+
+> **H3L-S Joint Limit Notice**: The angle limits specified in the SDK and URDF are mechanical limits. Refer to the specification for the corresponding model for motor limit ranges. The table below lists SDK active joint angle ranges in radians (rad); degrees are approximate references. The URDF uses higher-precision decimals.
+
+| Array index (zero-based) | Active joint | SDK angle range (rad) | Approx. degrees |
+|---|---|---|---|
+| 0 | Coupled middle/ring/little PIP | [0, 1.396263] | 0°–80° |
+| 1 | Index PIP | [0, 1.396263] | 0°–80° |
+| 2 | Thumb PIP | [0, 1.169370] | 0°–67° |
+| 3 | Thumb abduction/adduction | [0, 1.570796] | 0°–90° |
+
+Both hands use the same angle order, positive directions, and ranges; do not negate angles manually. The SDK Solver handles motor encoder direction differences. The motor position range `[0, 4096]` is a protocol range, not the motor limits specified in the product specification.
+
+### Kinematics Solver
+
+`agilink::omnihand::h3l::OmniHand3LiteSolver` provides offline conversion for H3L-S and H3L-M without connecting to a device.
+
+```cpp
+#include "omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h"
+
+using agilink::omnihand::H3LModel;
+using namespace agilink::omnihand::h3l;
+
+OmniHand3LiteSolver solver(true, H3LModel::H3L_S);  // Left H3L-S; use H3L_M for H3L-M.
+std::vector<int16_t> motor_positions = {0, 0, 0, 0};
+auto angles = solver.ActuatorInput2ActiveJointPos(motor_positions);
+auto actuator = solver.ActiveJointPos2ActuatorInput(angles);
+```
+
+The one-argument constructor `OmniHand3LiteSolver(is_left_hand)` defaults to H3L-S. Vectors must contain four values in `H3LActivateJoint` order: MRP PIP, index PIP, thumb PIP, thumb abduction/adduction. Angles are radians; motor inputs use `[0, 4096]` protocol units. Vector conversions return an empty vector if the input length is wrong.
+
+Single-joint conversions use a zero-based index (`0..3`):
+
+```cpp
+double SingleActuatorInput2ActiveJointPos(std::size_t joint_index, int16_t actuator_input) const;
+int16_t SingleActiveJointPos2ActuatorInput(std::size_t joint_index, double rad) const;
+```
+
+These Solver methods perform numerical calculations without a device connection. To control a device, call `SetAllActiveJointAngles` and `GetAllActiveJointAngles` directly, or pass offline-converted motor positions to `SetAllJointMotorPosi`. Both `GetAllJointAngles()` and its overload taking active joint angles remain stubs: they return four zeros and do not provide full active-plus-passive joint angles.
 
 ### Velocity Control
 
@@ -243,6 +269,8 @@ std::vector<int16_t> GetAllCurrentThreshold() const;
 
 ### Mixed Control
 
+Supports PT (position + current) and PVT (position + velocity + current) mixed control, with single-axis and batch APIs.
+
 ```cpp
 MixCtrl MixControlByPT(uint8_t joint_motor_index,
                        int16_t position,
@@ -257,7 +285,7 @@ std::vector<MixCtrl> MixControlByPVT(const std::vector<int16_t>& positions,
                                      const std::vector<int16_t>& velocities,
                                      const std::vector<int16_t>& torques);
 ```
-- `ctrl_mode_`: only `POSITION_TORQUE` is available
+- `ctrl_mode_`: `MixControlMode::POSITION_TORQUE` (PT) or `MixControlMode::POSITION_VELOCITY_TORQUE` (PVT)
 - `tgt_posi_`: target position (0-4095 encoder raw value)
 - `tgt_torque_`: target current (unit: mA)
 
@@ -347,12 +375,23 @@ int main() {
 }
 ```
 
-## Demo Files
+## C++ Demo
 
-| Demo | Path |
-|------|------|
-| CAN FD (connect by ID) | [H3L_demo_canfd_id.cc](../../../cpp/demo/omnihand_3_lite/H3L_demo_canfd_id.cc) |
-| CAN FD (connect by serial) | [H3L_demo_canfd_serial.cc](../../../cpp/demo/omnihand_3_lite/H3L_demo_canfd_serial.cc) |
+All transports share [demo_omnihand_3_lite.cc](../../../cpp/demo/omnihand_3_lite/demo_omnihand_3_lite.cc), built as `demo_omnihand_3_lite`:
+
+```shell
+./demo_omnihand_3_lite -d zlgcan -i 0 -c 0 --model s
+./demo_omnihand_3_lite -d hcan --serial ADAPTER_SERIAL --model m
+./demo_omnihand_3_lite -d socketcan --can-if can0 --hand right
+./demo_omnihand_3_lite -d rs485 -p COM5
+./demo_omnihand_3_lite -d zlgcan -c 0 --hand both
+```
+
+Windows executables use the `.exe` suffix; Linux serial ports can use `/dev/ttyUSB0`. SocketCAN is Linux-only. Use `--help` for all options. Demos cover normal control and information queries; they do not update firmware, calibrate, set zero offsets, write serial numbers, or write factory parameters.
+
+`--hand both` uses `-c` and the next channel on one CAN adapter. With `--serial` and `--second-serial`, both adapters use the selected channel number. Serial connections require different ports via `-p` and `--second-port`.
+
+The demo runs the PRAYER and SIDE_FIST gestures and reads joint-angle feedback. Gestures adapt to the selected model and hand side. It then reads motor temperatures, currents and errors, initializes tactile metadata, and reads raw U16 pressure data with an 8-point preview per region.
 
 See [CMakeLists.txt](../../../cpp/demo/omnihand_3_lite/CMakeLists.txt) for build instructions.
 

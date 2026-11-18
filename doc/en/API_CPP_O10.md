@@ -1,4 +1,4 @@
-# OmniHand 2025 (O10) C++ API
+# OmniHand 2025 & OmniHand 3 (O10) C++ API
 
 ## Overview
 
@@ -61,16 +61,11 @@ enum class ControlMode : unsigned char {
     VELOCITY = 2,    // Velocity mode (O10 does not support SetControlMode)
     TORQUE = 3,    // Torque mode (O10 not supported)
     POSITION_TORQUE = 4,    // Position-Torque mode (Mixed control: position + current mA, range 0–1000)
-    VELOCITY_TORQUE = 5,    // Velocity-Torque mode (O10 not yet available)
-    POSITION_VELOCITY_TORQUE = 6,    // Position-Velocity-Torque mode (O10 not yet available)
+    VELOCITY_TORQUE = 5,    // Velocity-Torque mode
+    POSITION_VELOCITY_TORQUE = 6,    // Position-Velocity-Torque mode
     UNKNOWN = 10    // Unknown mode
 };
 ```
-
-**O10 available modes**:
-- `POSITION` (0): Default position control
-- `POSITION_TORQUE` (4): Position + current mixed control (torque field is actually current in mA, range 0–1000)
-- Other modes are not available or not yet open
 
 ## Data Structures
 
@@ -110,6 +105,8 @@ struct TactileSensorData {
 ```
 
 ## Factory Methods
+
+`hand_device_id=0` selects the protocol defaults; a nonzero value initializes both protocol IDs. For CAN address discovery, call `GetHandDeviceIdByBroadcast()` after creating the hand.
 
 ### Recommended: ZLG USB CANFD (Zero Configuration)
 
@@ -205,11 +202,11 @@ static std::unique_ptr<OmniHand2025> createHandByHcan(
     uint8_t canfd_channel_id = 0);
 ```
 
-### RS485 Communication (O10 Only)
+### RS485 Communication
 
 ```cpp
 /**
- * @brief Factory method - RS485 communication (OmniHand 2025 only)
+ * @brief Factory method - RS485 communication
  * @param hand_type Hand type (left/right)
  * @param hand_device_id Hand device ID
  * @param uart_port Serial port path (e.g., "/dev/ttyUSB0")
@@ -271,7 +268,6 @@ std::string GetSN() const;
 /**
  * @brief Gets device information.
  * @return DeviceInfo structure containing device ID and communication parameters.
- * @note This interface is not supported for serial port communication (RS485).
  */
 DeviceInfo GetDeviceInfo() const;
 
@@ -475,24 +471,22 @@ The 16 sensors on the finger are arranged as shown below:
 
 ## Control Mode
 
-O10 does not support switching control modes via `SetControlMode`. It operates in **position control mode** by default. Mixed control uses `MixControlByPT` and `MixControlByPVT` (`MixControlMode` 0x3 / 0x5); array length must match active DOF (10). The following control modes are supported:
+O10 does not support switching control modes via `SetControlMode`. Use the following APIs for mixed control; full-hand arrays must contain 10 values.
 
-| Mode Enum | Value | Description |
-|---|---|---|
-| `POSITION` | 0 | Position control (default) |
-| `POSITION_TORQUE` | 4 | Position + torque mixed control |
-| `POSITION_VELOCITY_TORQUE` | 6 | Position + velocity + torque mixed control (**not yet available**) |
-
-> **Non-standard unit note**: In `POSITION_TORQUE` mode, "torque" actually corresponds to motor current in **mA**, range **0–1000**, not the ROS2 standard N·m.
+| API | Description |
+|-----|-------------|
+| `MixControlByPT` | Position + current (mA, 0–1000) |
+| `MixControlByPVT` | Position + velocity + current |
 
 ## Current Threshold Control
+
+Standard serial protocol supports reading and writing current thresholds. With private serial protocol, setters write protective current; getters return `0` or an empty collection.
 
 ```cpp
 /**
  * @brief Sets the current threshold of a single joint motor.
  * @param joint_motor_index The index of the joint motor (1-10).
  * @param current_threshold The current threshold value.
- * @note This interface is not supported for serial port communication (RS485).
  * @note O10/H3L: not allowed to both SetCurrentThreshold and MixControl at the same time.
  *       If you want to use MixControl, please do not call SetCurrentThreshold.
  */
@@ -502,14 +496,12 @@ void SetCurrentThreshold(unsigned char joint_motor_index, int16_t current_thresh
  * @brief Gets the current threshold of a single joint motor.
  * @param joint_motor_index The index of the joint motor (1-10).
  * @return The current threshold value.
- * @note This interface is not supported for serial port communication (RS485).
  */
 int16_t GetCurrentThreshold(unsigned char joint_motor_index) const;
 
 /**
  * @brief Sets the current thresholds of all joint motors in batch.
  * @param current_thresholds A vector of current thresholds. Must have 10 values.
- * @note This interface is not supported for serial port communication (RS485).
  * @note O10/H3L: not allowed to both SetAllCurrentThreshold and MixControl at the same time.
  *       If you want to use MixControl, please do not call SetAllCurrentThreshold.
  */
@@ -518,41 +510,29 @@ void SetAllCurrentThreshold(const std::vector<int16_t>& current_thresholds);
 /**
  * @brief Gets the current thresholds of all joint motors in batch.
  * @return A vector of current thresholds. Returns 10 values.
- * @note This interface is not supported for serial port communication (RS485).
  */
 std::vector<int16_t> GetAllCurrentThreshold() const;
 ```
 
 ## Mixed Control
 
-> **Note**: For O10/H3L, `tgt_torque_` actually corresponds to motor current in **mA**, range **0–1000** (not the standard N·m). `tgt_velo_` velocity parameter is `int16_t`, range **0–32767**. `POSITION_VELOCITY_TORQUE` mode is **not yet available** (velocity is currently hardcoded internally).
+CAN and RS485 support PT and PVT mixed control. Single-joint RS485 calls require the standard serial protocol; the private serial protocol supports full-hand calls only.
 
-Only the following mode is currently available:
-- **POSITION_TORQUE**: Position + current (mA) control
+The torque parameter is motor current in **mA** (0–1000), rather than N·m. Position uses raw motor encoder values. Full-hand arrays must contain 10 values.
 
 ```cpp
-/**
- * @brief Controls joint motors in mixed mode.
- * @param mix_ctrls A vector of mixed control parameters. Each element contains:
- *                   - joint_index_: Joint index (1-10)
- *                   - ctrl_mode_: Control mode (only POSITION_TORQUE is available for O10)
- *                   - tgt_posi_: Target position (0–4095 raw encoder value)
- *                   - tgt_torque_: Target current in mA, range 0–1000 (non-standard, not N·m)
- * @note Pure torque control (TORQUE) is not supported.
- * @note This interface is not supported for serial port communication (RS485).
- */
 MixCtrl MixControlByPT(uint8_t joint_motor_index,
-                       int16_t position,
-                       int16_t torque);
+                      int16_t position,
+                      int16_t torque);
 std::vector<MixCtrl> MixControlByPT(const std::vector<int16_t>& positions,
-                                    const std::vector<int16_t>& torques);
+                                   const std::vector<int16_t>& torques);
 MixCtrl MixControlByPVT(uint8_t joint_motor_index,
-                        int16_t position,
-                        int16_t velocity,
-                        int16_t torque);
+                       int16_t position,
+                       int16_t velocity,
+                       int16_t torque);
 std::vector<MixCtrl> MixControlByPVT(const std::vector<int16_t>& positions,
-                                     const std::vector<int16_t>& velocities,
-                                     const std::vector<int16_t>& torques);
+                                    const std::vector<int16_t>& velocities,
+                                    const std::vector<int16_t>& torques);
 ```
 
 ## Error Handling
@@ -664,18 +644,24 @@ int main() {
 }
 ```
 
-## Demo Files
+## C++ Demo
 
-The SDK release package includes ready-to-compile C++ demo source code:
+All transports share [demo_omnihand_2025.cc](../../../cpp/demo/omnihand_2025/demo_omnihand_2025.cc), built as `demo_omnihand_2025`:
 
-| Demo | Path |
-|------|------|
-| CAN FD (connect by ID) | [O10_demo_canfd_id.cc](../../../cpp/demo/omnihand_2025/O10_demo_canfd_id.cc) |
-| CAN FD (connect by serial) | [O10_demo_canfd_serial.cc](../../../cpp/demo/omnihand_2025/O10_demo_canfd_serial.cc) |
-| SocketCAN | [O10_demo_socketcan.cc](../../../cpp/demo/omnihand_2025/O10_demo_socketcan.cc) |
-| RS485 Serial | [O10_demo_rs485.cc](../../../cpp/demo/omnihand_2025/O10_demo_rs485.cc) |
-| ZLG CAN TCP | [O10_demo_zlgcan_tcp.cc](../../../cpp/demo/omnihand_2025/O10_demo_zlgcan_tcp.cc) |
-| OTA Upgrade | [O10_demo_ota.cc](../../../cpp/demo/omnihand_2025/O10_demo_ota.cc) |
+```shell
+./demo_omnihand_2025 -d zlgcan -i 0 -c 0 --hand left
+./demo_omnihand_2025 -d hcan --serial ADAPTER_SERIAL --hand right
+./demo_omnihand_2025 -d socketcan --can-if can0
+./demo_omnihand_2025 -d usb -p COM3
+./demo_omnihand_2025 -d rs485 -p COM5
+./demo_omnihand_2025 -d zlgcan -c 0 --hand both
+```
+
+Windows executables use the `.exe` suffix; Linux serial ports can use `/dev/ttyUSB0`. SocketCAN is Linux-only. Use `--help` for all options. Demos cover normal control and information queries; they do not update firmware, calibrate, set zero offsets, write serial numbers, or write factory parameters.
+
+`--hand both` uses `-c` and the next channel on one CAN adapter. With `--serial` and `--second-serial`, both adapters use the selected channel number. Serial connections require different ports via `-p` and `--second-port`.
+
+The demo reads the current pose, moves only the index PIP joint to 0.35 and 0.7 rad, and reads feedback after each move. Other joints keep their initial measured targets. It then reads motor temperatures, currents, errors and raw 1D tactile data, previewing the first 8 points of each region.
 
 See [CMakeLists.txt](../../../cpp/demo/omnihand_2025/CMakeLists.txt) for build instructions.
 

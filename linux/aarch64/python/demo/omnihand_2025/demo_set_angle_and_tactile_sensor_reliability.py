@@ -30,7 +30,7 @@ def main():
 
     import argparse
     parser = argparse.ArgumentParser(description='OmniHand 2025 Set Angle and Tactile Sensor Reliability Test')
-    parser.add_argument('-d', '--device', choices=['zlgcan', 'hcan', 'rs485', 'zlgcan_tcp'], default='zlgcan',
+    parser.add_argument('-d', '--device', choices=['zlgcan', 'hcan', 'rs485'], default='zlgcan',
                         help='CAN device type: zlgcan (ZLG USB CANFD) or hcan (HCAN USB CANFD), default: zlgcan')
     args = parser.parse_args()
     
@@ -48,12 +48,6 @@ def main():
             hand = OmniHand2025.create_hand_by_rs485(
                 hand_type=HandType.RIGHT,
                 uart_port='/dev/ttyACM0'
-            )
-        elif args.device == 'zlgcan_tcp':
-            hand = OmniHand2025.create_hand_by_zlgcan_tcp(
-                hand_type=HandType.RIGHT,
-                host='192.168.0.178', 
-                port=8000
             )
         else:  # default: zlgcan
             hand = OmniHand2025.create_hand_by_zlgcan(

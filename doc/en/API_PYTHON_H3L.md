@@ -9,7 +9,6 @@
 - Motor position range: 0-4096 (int16 motor ticks)
 - Supports CAN (ZLG USB CANFD / HCAN) communication
 - Supports SocketCAN (Linux only)
-- Supports ZLG CAN TCP (Linux x64 / Windows only)
 - Supports RS485 communication (default 460800 baud)
 - Six U16 1D tactile sensors: five fingers and palm
 - Active-joint angle control and offline motor/angle conversion through `OmniHand3LiteSolver`
@@ -142,31 +141,6 @@ def create_hand_socketcan(hand_type: HandType,
     """
 ```
 
-### ZLG CAN TCP (partial platform support)
-
-```python
-@staticmethod
-def create_hand_by_zlgcan_tcp(hand_type: HandType,
-                hand_device_id: int,
-                tcp_host: str,
-                tcp_port: int,
-                canfd_channel_id: int = 0) -> 'OmniHand3Lite':
-    """Creates a dexterous hand object (ZLG CANFD over TCP).
-
-    Only supported on Windows and Linux x64 (not Linux aarch64/arm64).
-
-    Args:
-        hand_type: The hand type.
-        hand_device_id: The hand device ID.
-        tcp_host: TCP server IP or hostname.
-        tcp_port: TCP server port.
-        canfd_channel_id: CAN channel index, defaults to 0.
-
-    Returns:
-        OmniHand3Lite: Dexterous hand instance.
-    """
-```
-
 ### RS485
 
 ```python
@@ -272,6 +246,19 @@ class OmniHand3LiteSolver:
     def set_hand_gesture(self, gesture: OmniHand3LiteGesture) -> List[int]: ...
 ```
 
+> **H3L-S Joint Limit Notice**: The angle limits specified in the SDK and URDF are mechanical limits. Refer to the specification for the corresponding model for motor limit ranges. The table below lists SDK active joint angle ranges in radians (rad); degrees are approximate references. The URDF uses higher-precision decimals.
+
+| Array index (zero-based) | Active joint | SDK angle range (rad) | Approx. degrees |
+|---|---|---|---|
+| 0 | Coupled middle/ring/little PIP | [0, 1.396263] | 0°–80° |
+| 1 | Index PIP | [0, 1.396263] | 0°–80° |
+| 2 | Thumb PIP | [0, 1.169370] | 0°–67° |
+| 3 | Thumb abduction/adduction | [0, 1.570796] | 0°–90° |
+
+Both hands use the same angle order, positive directions, and ranges; do not negate angles manually. The SDK Solver handles motor encoder direction differences. The motor position range `[0, 4096]` is a protocol range, not the motor limits specified in the product specification.
+
+`set_all_active_joint_angles`, `get_all_active_joint_angles`, and the solver use the four-value order above. The one-argument constructor `OmniHand3LiteSolver(is_left_hand)` defaults to H3L-S. Solver single-joint indices are `0..3`; the hand object's `get_min_max_activate_joint_angle` takes motor numbers `1..4`.
+
 The solver methods above are pure calculations and do not communicate with the
 device. H3L does not currently provide full active-plus-passive joint-angle
 kinematics.
@@ -298,6 +285,8 @@ def get_all_current_thresholds(self) -> List[int]: ...
 ```
 
 ### Mixed Control
+
+Supports PT (position + current) and PVT (position + velocity + current) mixed control, with single-axis and batch APIs.
 
 ```python
 def mix_control_by_pt(self, positions: List[int], torques: List[int]) -> List[MixCtrl]: ...
@@ -458,8 +447,7 @@ def set_frame_send_timeout(self, milliseconds: int) -> None: ...
 def get_frame_send_timeout(self) -> int: ...
 ```
 
-Frame-send timeout is a CAN transport setting. The RS485 implementation treats
-the setter as a no-op and returns `0` from the getter.
+Frame-send timeout applies to CAN and RS485. On RS485, it controls the timeout for each serial write.
 
 ### Debugging
 
@@ -512,7 +500,6 @@ The SDK release package includes ready-to-run Python demo scripts (under `python
 | CAN FD (connect by ID) | [demo_canfd_id.py](../../../python/demo/omnihand_3_lite/demo_canfd_id.py) |
 | CAN FD (connect by serial) | [demo_canfd_serial.py](../../../python/demo/omnihand_3_lite/demo_canfd_serial.py) |
 | SocketCAN | [demo_socketcan.py](../../../python/demo/omnihand_3_lite/demo_socketcan.py) |
-| ZLG CAN TCP | [demo_zlgcan_tcp.py](../../../python/demo/omnihand_3_lite/demo_zlgcan_tcp.py) |
 | Motor position control | [demo_set_motor.py](../../../python/demo/omnihand_3_lite/demo_set_motor.py) |
 | Hardware info | [demo_get_hardware_info.py](../../../python/demo/omnihand_3_lite/demo_get_hardware_info.py) |
 | Dual-hand control (multi CAN) | [demo_set_motor_via_multicans.py](../../../python/demo/omnihand_3_lite/demo_set_motor_via_multicans.py) |

@@ -4,24 +4,22 @@
 
 The OmniHand SDK provides **product-specific interfaces** for the following products:
 
-- **OmniHand 2025 (O10)**: 10 DOF dexterous hand with 1D tactile sensors
+- **OmniHand 2025 & OmniHand 3 (O10)**: 10 DOF dexterous hand with 1D tactile sensors
 - **OmniHand Pro 2025 (O12)**: 12 DOF dexterous hand with 3D tactile sensors
 - **OmniHand 3 Lite (H3L)**: 4 DOF lightweight dexterous hand
-- **OmniHand Dex UMI (O10 UMI)**: 10 DOF dexterous hand with UMI protocol support
-- **OmniHand 3 Ultra M (H3UM T1.3/T1.5)**: 20/21 DOF dexterous hand and kinematics solver
+- **OmniHand 3 Ultra M (H3UM)**: 20/21 DOF dexterous hand and kinematics solver
 - **OmniPicker 3 (OP3)**: 1 DOF gripper with stroke control and U16 tactile sensors
 
-Each product has its own interface class (`OmniHand2025`, `OmniHandPro2025`, `OmniHand3Lite`, `OmniHandDexUMI`, `OmniHand3UltraM`, `OmniPicker3`) with product-specific factory methods and APIs. This design provides better type safety and clearer API organization compared to a unified interface with `ProductType`.
+Each product has its own interface class (`OmniHand2025`, `OmniHandPro2025`, `OmniHand3Lite`, `OmniHand3UltraM`, `OmniPicker3`) with product-specific factory methods and APIs. This design provides better type safety and clearer API organization compared to a unified interface with `ProductType`.
 
-**Python typing note:** For **OmniHand 2025 (O10)** and **OmniHand Dex UMI**, factory methods take `hand_device_id` and `canfd_*` as Python `int`; the binding forwards them as `uint8_t` to match the C++ headers.
+**Python typing note:** For **OmniHand 2025 & OmniHand 3 (O10)**, factory methods take `hand_device_id` and `canfd_*` as Python `int`; the binding forwards them as `uint8_t` to match the C++ headers.
 
 ## Product-Specific API Documentation
 
-- **[OmniHand 2025 (O10) Python API](API_PYTHON_O10.md)** - 10 DOF, 1D tactile sensors, supports CAN and RS485
+- **[OmniHand 2025 & OmniHand 3 (O10) Python API](API_PYTHON_O10.md)** - 10 DOF, 1D tactile sensors, supports CAN and RS485
 - **[OmniHand Pro 2025 (O12) Python API](API_PYTHON_O12.md)** - 12 DOF, 3D tactile sensors, CAN only
 - **[OmniHand 3 Lite (H3L) Python API](API_PYTHON_H3L.md)** - 4 DOF, tactile compatibility APIs, CAN and RS485
-- **[OmniHand Dex UMI (O10 UMI) Python API](API_PYTHON_UMI.md)** - 10 DOF, UMI protocol, active query, CAN only
-- **[OmniHand 3 Ultra M (H3UM T1.3/T1.5) Python API](API_PYTHON_H3UM.md)** - 20/21 DOF control and kinematics solver
+- **[OmniHand 3 Ultra M (H3UM) Python API](API_PYTHON_H3UM.md)** - 20/21 DOF control and kinematics solver
 - **[OmniPicker 3 (OP3) Python API](API_PYTHON_OP3.md)** - 1 DOF gripper, position/stroke/PT control and U16 tactile data
 
 ## Common Enumerations
@@ -77,7 +75,7 @@ ControlMode.UNKNOWN = 10
 
 ## Quick Start Examples
 
-### OmniHand 2025 (O10)
+### OmniHand 2025 & OmniHand 3 (O10)
 
 ```python
 from omnihand import OmniHand2025, HandType
@@ -121,30 +119,6 @@ angles = [0.0] * 12  # All joints to zero position
 hand.set_all_active_joint_angles(angles)
 ```
 
-### OmniHand Dex UMI
-
-```python
-from omnihand import OmniHandDexUMI, HandType
-
-# Create hand instance
-hand = OmniHandDexUMI.create_hand_by_zlgcan(
-    hand_type=HandType.LEFT,
-    hand_device_id=1,
-    canfd_device_id=0,
-    canfd_channel_id=0,
-)
-
-if not hand.init():
-    print("Failed to initialize")
-    exit(1)
-
-# Register position report callback
-def position_callback(positions):
-    print(f"Position report: {len(positions)} values")
-
-hand.set_position_report_callback(position_callback, frequency=100)  # 100 Hz
-```
-
 ### OmniPicker 3 (OP3)
 
 ```python
@@ -169,6 +143,5 @@ stroke = picker.mix_control_by_stroke(5000, 3000, 2000)
 ## Related Documentation
 
 - [SocketCAN Setup Guide](SOCKETCAN_SETUP.md) - For Linux SocketCAN configuration
-- [OmniHand 2025 (O10) Kinematics Solver Python API](API_KINEMATICS_PYTHON_O10.md) - For kinematics calculations
+- [OmniHand 2025 & OmniHand 3 (O10) Kinematics Solver Python API](API_KINEMATICS_PYTHON_O10.md) - For kinematics calculations
 - [OmniHand Pro 2025 (O12) Kinematics Solver Python API](API_KINEMATICS_PYTHON_O12.md) - For kinematics calculations
-- [Server Interface API](API_SERVER.md) - WebSocket and RESTful server/client API (C++, Python, Web)

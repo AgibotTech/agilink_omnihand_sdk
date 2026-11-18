@@ -9,12 +9,18 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Option to enable/disable tests
 option(BUILD_CPP_TESTS "Build C++ unit tests" ON)
+option(OMNIHAND_BUILD_INTERNAL_TESTS "Build internal maintenance and protocol tests" OFF)
 option(BUILD_OMNIHAND_3_LITE "Build OmniHand 3 Lite tests" ON)
 option(BUILD_OMNIHAND_3_ULTRA_M "Build OmniHand 3 Ultra M tests" ON)
 option(BUILD_OMNI_PICKER_3 "Build OmniPicker 3 tests" ON)
 
 if(NOT BUILD_CPP_TESTS)
   return()
+endif()
+
+if(OMNIHAND_BUILD_INTERNAL_TESTS)
+  add_compile_definitions(OMNIHAND_BUILD_INTERNAL_TESTS)
+  include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../src/internal")
 endif()
 
 # GoogleTest: prefer cpp/third_party/googletest-1.14.0 in repo and use add_subdirectory directly,
@@ -65,7 +71,6 @@ else()
   set(OMNIHAND_TARGET omnihand)
 endif()
 
-# Set output directory for test executables
 # Always use the top-level binary directory to ensure consistent output location
 get_filename_component(TOP_LEVEL_BINARY_DIR "${CMAKE_BINARY_DIR}" DIRECTORY)
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
@@ -103,20 +108,6 @@ set_target_properties(test_omnihand_pro_2025 PROPERTIES
 )
 add_test(NAME OmniHandPro2025Test COMMAND test_omnihand_pro_2025)
 
-# OmniHand Dex UMI Tests
-add_executable(test_omnihand_dex_umi test_omnihand_dex_umi.cc)
-target_link_libraries(
-  test_omnihand_dex_umi
-  PRIVATE
-  ${OMNIHAND_TARGET}
-  GTest::gtest
-  GTest::gtest_main
-)
-set_target_properties(test_omnihand_dex_umi PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY "${TEST_OUTPUT_DIR}"
-)
-add_test(NAME OmniHandDexUMITest COMMAND test_omnihand_dex_umi)
-
 # OmniHand 3 Lite (O4) Tests (conditionally)
 # Note: BUILD_OMNIHAND_3_LITE is defined in the main CMakeLists.txt
 if(BUILD_OMNIHAND_3_LITE)
@@ -134,25 +125,24 @@ if(BUILD_OMNIHAND_3_LITE)
   add_test(NAME OmniHand3LiteTest COMMAND test_omnihand_3_lite)
 endif()
 
-# OmniHand 3 Ultra M T1.3 Tests
+# OmniHand 3 Ultra M T1.3/T1.5 Tests
 if(BUILD_OMNIHAND_3_ULTRA_M)
-  add_executable(test_omnihand_3_ultra_m_t1.3 test_omnihand_3_ultra_m_t1.3.cc)
+  add_executable(test_omnihand_3_ultra_m test_omnihand_3_ultra_m.cc)
   target_link_libraries(
-    test_omnihand_3_ultra_m_t1.3
+    test_omnihand_3_ultra_m
     PRIVATE
     ${OMNIHAND_TARGET}
     GTest::gtest
   )
-  set_target_properties(test_omnihand_3_ultra_m_t1.3 PROPERTIES
+  set_target_properties(test_omnihand_3_ultra_m PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${TEST_OUTPUT_DIR}"
   )
-  add_test(NAME OmniHand3UltraMT1P3Test COMMAND test_omnihand_3_ultra_m_t1.3)
+  add_test(NAME OmniHand3UltraMTest COMMAND test_omnihand_3_ultra_m)
 endif()
 
 # OmniPicker 3 (OP3) Tests
 # Note: BUILD_OMNI_PICKER_3 is defined in the main CMakeLists.txt
-# CANFD only: the RS485 backend needs a serial port name, which does not suit a
-# default ctest run. Use demo_omnipicker_3_rs485 for RS485 verification.
+# Defaults to ZLG CANFD; select RS485 explicitly with -d rs485 -p PORT.
 if(BUILD_OMNI_PICKER_3)
   add_executable(test_omnipicker_3 test_omnipicker_3.cc)
   target_link_libraries(
@@ -166,16 +156,3 @@ if(BUILD_OMNI_PICKER_3)
   )
   add_test(NAME OmniPicker3Test COMMAND test_omnipicker_3)
 endif()
-
-# OmniHand Client tests exercise an externally started Server over public APIs.
-add_executable(test_omnihand_server test_omnihand_server.cc)
-target_link_libraries(
-  test_omnihand_server
-  PRIVATE
-  omnihand_client
-  GTest::gtest_main
-)
-set_target_properties(test_omnihand_server PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY "${TEST_OUTPUT_DIR}"
-)
-add_test(NAME OmniHandServerTest COMMAND test_omnihand_server)

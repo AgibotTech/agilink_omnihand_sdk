@@ -3,7 +3,7 @@
 ## 概述
 
 `OmniPicker3` 是 1 自由度 OmniPicker 3 夹爪的 Python 接口，支持 ZLG CAN
-FD、HCAN、ZLG CAN TCP、Linux SocketCAN 和 RS485。
+FD、HCAN、Linux SocketCAN 和 RS485。
 
 Python 接口有意不开放以下持久化或维护类能力：
 
@@ -62,10 +62,6 @@ OmniPicker3.create_hand_by_hcan(
     canfd_channel_id=0,
 )
 
-OmniPicker3.create_hand_by_zlgcan_tcp(
-    hand_type, hand_device_id, host, port, canfd_channel_id=0
-)
-
 OmniPicker3.create_hand_socketcan(
     hand_type=HandType.UNKNOWN,
     hand_device_id=1,
@@ -80,7 +76,7 @@ OmniPicker3.create_hand_by_rs485(
 )
 ```
 
-ZLG CAN TCP 支持 Windows 和 Linux x64；SocketCAN 仅支持 Linux。OP3
+SocketCAN 仅支持 Linux。OP3
 不区分左右手，除非应用需要保留侧别标签，否则使用 `HandType.UNKNOWN`。
 
 ## 初始化与设备信息
@@ -264,7 +260,7 @@ picker.set_broadcast(False)
 picker.show_data_details(True)
 ```
 
-RS485 不使用帧发送超时，setter 不执行操作，getter 返回 `0`。
+RS485 的帧发送超时用于设置每次串口写入的超时时间。
 `set_broadcast()` 只切换 SDK 请求使用的寻址方式，不会写入新的设备 ID。
 
 ## 硬件 pytest

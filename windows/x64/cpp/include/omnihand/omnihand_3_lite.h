@@ -19,7 +19,6 @@
 #include "omnihand/export_symbols.h"
 #include "omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h"
 #include "omnihand/omnihand.h"
-#include "omnihand/private_omnihand.h"
 #include "omnihand/proto.h"
 #include "omnihand/ota_types.h"
 #include "omnihand/utils.h"
@@ -33,20 +32,29 @@ namespace omnihand {
  * This class provides the public interface for OmniHand 3 Lite S product.
  * 
  * @note O4 does not have tactile sensors. Tactile sensor methods return empty data.
- * @note Currently does not support angle-based control (SetAllActiveJointAngles) as full kinematics solver is not available.
- *       Use motor position control (SetJointMotorPosi, SetAllJointMotorPosi) instead.
- *       Gesture control is available via SetHandGesture() with OmniHand3LiteGesture enum.
+ * @note SetAllActiveJointAngles and GetAllActiveJointAngles support radians over CAN and RS485.
+ * @note Full active-plus-passive joint kinematics (GetAllJointAngles) is not implemented.
+ * @note Gesture control is available via SetHandGesture() with OmniHand3LiteGesture enum.
  */
-class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, public ITactileSensor1DU16 {
+class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public ITactileSensor1DU16 {
  public:
   // Constants
   static constexpr unsigned char kDegreesOfActiveFreedom = 4;  // DoA
-  static constexpr uint8_t kDegreesOfPassiveFreedom = 5; // DoP
+  static constexpr uint8_t kDegreesOfPassiveFreedom = 7; // DoP
   static constexpr uint8_t kDefaultHandDeviceId = 1u;
+
+  virtual uint16_t GetPrivateHandDeviceIdByBroadcast() = 0;
+  virtual uint16_t GetPrivateHandDeviceId() = 0;
 
   virtual ~OmniHand3Lite() = default;
 
   // ============ Factory Methods ============
+  // A zero device ID selects the product's default address.
+  // Creates this product from one context; retains its identity and callback.
+  // Invalid configuration/reuse throws; initialization failure returns nullptr.
+  static std::unique_ptr<OmniHand3Lite> CreateHand(
+      std::shared_ptr<DeviceContext> context);
+
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by canfd_device_id
    * @param hand_type Hand type (left/right)
@@ -95,33 +103,6 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
       uint8_t canfd_channel_id = 0,
       CommunicationLogOptions log_options = {});
 
-#if OMNIHAND_ZLG_TCP_SUPPORTED
-  /**
-   * @brief Factory method - ZLG CANFD over TCP (WiFi/Ethernet to CANFD, this machine acts as TCP client)
-   * @note Only available on Windows and Linux x64 (not supported on Linux aarch64/arm64)
-   * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
-   * @param tcp_host TCP server IP or hostname (e.g. "192.168.0.178")
-   * @param tcp_port TCP server port (e.g. 8000)
-   * @param canfd_channel_id CAN channel index (0 or 1, default 0)
-   * @return A unique pointer to OmniHand3Lite instance
-   */
-  static std::unique_ptr<OmniHand3Lite> createHandByZlgCanTcp(
-      HandType hand_type,
-      uint8_t hand_device_id,
-      const std::string& tcp_host,
-      uint16_t tcp_port,
-      uint8_t canfd_channel_id = 0,
-      CommunicationLogOptions log_options = {});
-
-  static std::unique_ptr<OmniHand3Lite> createHandMByZlgCanTcp(
-      HandType hand_type,
-      uint8_t hand_device_id,
-      const std::string& tcp_host,
-      uint16_t tcp_port,
-      uint8_t canfd_channel_id = 0,
-      CommunicationLogOptions log_options = {});
-#endif  // OMNIHAND_ZLG_TCP_SUPPORTED
 
 #ifdef __linux__
   /**
@@ -229,23 +210,29 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
    */
   [[deprecated("Use SetJointMotorPosi() instead.")]]
   virtual uint16_t SetSingleAxisPos(uint8_t axis_index,
-                                    uint16_t position) override = 0;
+                                    uint16_t position) = 0;
 
   /**
-   * @deprecated Use SetAllJointMotorPosi() instead.
+   * @brief Update one H3L-S tactile sensor through the hand's CAN FD or serial connection.
+   * @param sensor_id Sensor address, 1..6 (request registers F3..F8).
+   * @param file_name UTF-8 path to a raw APP BIN or an image with a sensor OTA header.
+   * @param progress_callback Existing OTA progress/error callback, once per confirmed 2KB block.
+   * @note Blocking. Stop polling and other commands on this connection during OTA.
+   *       Replies are awaited for 200ms. Control commands allow three timeout retries;
+   *       indexed blocks use CRC16; queue-busy retries the last fragment,
+   *       block CRC failure retries the whole block (up to three attempts).
+   *       Silent data timeouts stop the update without retransmitting data.
+   *       Positive error codes are returned by the hand's sensor update bridge.
+   *       H3L-M reports AGILINK_OTA_NOT_SUPPORTED.
    */
-  [[deprecated("Use SetAllJointMotorPosi() instead.")]]
-  virtual SetAllAxisPosResponse SetAllAxisPos(
-      const std::vector<uint16_t>& positions) override = 0;
-
-  /**
-   * @deprecated Use MixControlByPVT() instead.
-   */
-  [[deprecated("Use MixControlByPVT() instead.")]]
-  virtual SetAllAxisPosResponse SetPosSpeedTorqueData(
-      const std::vector<uint16_t>& positions,
-      const std::vector<int16_t>& speeds,
-      const std::vector<uint16_t>& torques) override = 0;
+  virtual void UpdateTactileSensorFirmware(uint8_t /* sensor_id */,
+                                          const std::string& /* file_name */,
+                                          OtaProgressCallback progress_callback = nullptr) {
+    if (progress_callback) {
+      progress_callback(static_cast<int>(OtaErrorCode::AGILINK_OTA_NOT_SUPPORTED), 0,
+                        OtaProgressStatus::AGILINK_OTA_ERROR);
+    }
+  }
 
   // ============ Sensor Utilities ============
   // Note: O4 (OmniHand3Lite) does not support tactile sensors
@@ -304,6 +291,8 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
     return kMixCtrlTorqueRange;
   }
 
+  // H3L-S: SDK/URDF angle limits are mechanical limits (rad).
+  // Refer to the product specification for motor limit ranges.
   static constexpr FloatBound GetMinMaxActivateJointAngle(
       uint8_t joint_motor_index, HandType hand_type,
       h3l::H3LModel model = h3l::H3LModel::H3L_S) {
@@ -327,6 +316,10 @@ class AGIBOT_EXPORT OmniHand3Lite : public OmniHand, public PrivateOmniHand, pub
   std::vector<int16_t> GetHandGesture(int gesture_num) override;
 
  protected:
+  OmniHand3Lite() = default;
+  explicit OmniHand3Lite(std::shared_ptr<DeviceContext> context)
+      : OmniHand(std::move(context)) {}
+
   /**
    * @brief Initialize base class members and kinematics solver
    * @param device_id Device ID

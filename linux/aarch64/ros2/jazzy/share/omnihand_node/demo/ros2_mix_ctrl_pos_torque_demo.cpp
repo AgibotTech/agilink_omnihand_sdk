@@ -64,10 +64,10 @@
  *      ros2 run omnihand_ros2_demo ros2_mix_ctrl_pos_torque_demo left o10
  *      ros2 run omnihand_ros2_demo ros2_mix_ctrl_pos_torque_demo left o10 500   # optional threshold (mA)
  *
- * Arguments: [left|right] [o10|o12|h3l|h3u_m] [current_threshold_mA]
+ * Arguments: [left|right] [o10|o12|h3l] [current_threshold_mA]
  *
  * ======================================================================
- * Topic list (<product> = o10/o12/h3l/h3u_m, <side> = left/right)
+ * Topic list (<product> = o10/o12/h3l, <side> = left/right)
  * ======================================================================
  *   pub: /<product>/<side>/joint_mix_control_cmd  (sensor_msgs/JointState, position+effort)
  *   pub: /<product>/<side>/joint_temperature_cmd  (std_msgs/Empty, trigger)
@@ -128,7 +128,7 @@
 #include "omnihand_node_msgs/msg/int16_multi_array_stamped.hpp"
 #include "omnihand_2025_node_msgs/msg/tactile_sensor.hpp"
 #include "omnihand_pro_2025_node_msgs/msg/tactile_sensor.hpp"
-#include "ros_multi_array_demo.hpp"
+#include "ros_demo_utils.hpp"
 
 using namespace std::chrono_literals;
 using agilink::omnihand::ros2::PackInt16MultiArray1D;
@@ -359,13 +359,15 @@ int main(int argc, char* argv[]) {
   int16_t current_threshold_ma = 500;
   if (argc > 3) current_threshold_ma = static_cast<int16_t>(std::stoi(argv[3]));
 
-  int num_joints = 10;
-  if (product == "o12")
-    num_joints = 12;
-  else if (product == "h3l")
-    num_joints = 4;
-  else if (product == "h3u_m")
-    num_joints = 20;
+  if (product == "h3u_m") {
+    RCLCPP_ERROR(rclcpp::get_logger("mix_ctrl_demo"),
+                 "H3UM node does not support joint_mix_control_cmd; "
+                 "use ros2_joint_cmd_demo instead");
+    rclcpp::shutdown();
+    return 1;
+  }
+
+  const int num_joints = agilink::omnihand::ros2::GetJointCount(product, side);
 
   auto node = std::make_shared<MixCtrlPosTorqueDemo>(product, side, num_joints, current_threshold_ma);
   rclcpp::spin(node);

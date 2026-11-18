@@ -166,7 +166,7 @@ AGIBOT_EXPORT std::ostream& operator<<(std::ostream& os, const Op1CanfdStateFram
 
 struct AGIBOT_EXPORT Op1MotorInfo {
   uint32_t error_code{0};     ///< Motor error code (0 = no error)
-  uint32_t ctrl_mode{0};      ///< Control mode
+  uint8_t ctrl_mode{0};       ///< Control mode
   float current_limit{0};     ///< Current limit (A)
   float velocity_limit{0};    ///< Velocity limit (rad/s)
   float pos_gain{0};          ///< Position gain
@@ -237,6 +237,12 @@ class AGIBOT_EXPORT OmniPicker2025 : public OmniHand {
     ThrowUnsupported("SendFrameSyncByCanfd");
   };
 
+  // RS485 uses the same command and feedback bytes as CAN, with serial framing.
+  virtual std::optional<Op1CanfdStateFrame> SendFrameSyncByRs485(
+      const Op1CanfdCtrlFrame& frame) {
+    ThrowUnsupported("SendFrameSyncByRs485");
+  }
+
   /**
    * @brief Sends one CANFD FD broadcast frame (CAN ID=0, 64 bytes) to up to 8 OP1 nodes simultaneously.
    *
@@ -277,19 +283,6 @@ class AGIBOT_EXPORT OmniPicker2025 : public OmniHand {
     ThrowUnsupported("UpdateFirmwareViaFlash");
   }
 
-  // ============ Calibration (Fibre protocol over USB) ============
-
-  /**
-   * @brief Trigger motor calibration (phase resistance, inductance, encoder offset).
-   * @note Enters STATE_CALIBRATION on the firmware. The motor runs the calibration
-   *       procedure automatically, saves config to flash, and reboots the device on success.
-   *       After reboot, the USB and CAN connections will be lost.
-   * @return true if the calibration request was sent successfully.
-   */
-  virtual bool StartMotorCalibration() {
-    ThrowUnsupported("StartMotorCalibration");
-  };
-
   /**
    * @brief Reboot the device via Fibre USB protocol.
    * @note After reboot, the USB and CAN connections will be lost. The caller must
@@ -318,6 +311,11 @@ class AGIBOT_EXPORT OmniPicker2025 : public OmniHand {
     ThrowUnsupported("GetCanNodeId");
   };
 
+  // Creates this product from one context; retains its identity and callback.
+  // Invalid configuration/reuse throws; initialization failure returns nullptr.
+  static std::unique_ptr<OmniPicker2025> CreateHand(
+      std::shared_ptr<DeviceContext> context);
+
   /**
    * @brief Show device information via USB Fibre protocol (device type, serial number, firmware version, CAN node ID).
    * @note This is equivalent to typing "ref0" in the REF-CLI tool.
@@ -325,7 +323,21 @@ class AGIBOT_EXPORT OmniPicker2025 : public OmniHand {
   virtual Op1DeviceInfo ShowDeviceInfo() const = 0;
 
   // ============ Factory Methods ============
+  // Each instance owns its port; uses custom RS485 framing (8N1).
+  // V1.2 DIP-equipped board: switches 1/2 ON, 3-6 OFF before power-on.
+  // Firmware: rs485_mode=1, modbus_mode=0; save and reboot after changes.
+  // Match the device's baud rate/node ID; uart_stopbits=0 means one stop bit.
+  static std::unique_ptr<OmniPicker2025> createHandByRs485(
+      HandType hand_type, uint8_t hand_device_id,
+      const std::string& serial_port, uint32_t baudrate = 115200,
+      CommunicationLogOptions log_options = {});
+
   static std::unique_ptr<OmniPicker2025> createHandByUSB(
+      CommunicationLogOptions log_options = {});
+  // Exact USB descriptor serial number from ScanUsbDevices(); no fallback to
+  // another device. Empty retains the default first-device selection.
+  static std::unique_ptr<OmniPicker2025> createHandByUSB(
+      const std::string& usb_serial_number,
       CommunicationLogOptions log_options = {});
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by canfd_device_id
@@ -361,25 +373,6 @@ class AGIBOT_EXPORT OmniPicker2025 : public OmniHand {
       uint8_t canfd_channel_id = 0,
       CommunicationLogOptions log_options = {});
 
-#if OMNIHAND_ZLG_TCP_SUPPORTED
-  /**
-   * @brief Factory method - ZLG CANFD over TCP (WiFi/Ethernet to CANFD, this machine acts as TCP client)
-   * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
-   * @param tcp_host TCP server IP or hostname (e.g. "192.168.0.178")
-   * @param tcp_port TCP server port (e.g. 8000)
-   * @param canfd_channel_id CAN channel index (0 or 1, default 0)
-   * @return A unique pointer to OmniPicker2025 instance
-   * @note Only available on Windows and Linux x64 (not supported on Linux aarch64/arm64)
-   */
-  static std::unique_ptr<OmniPicker2025> createHandByZlgCanTcp(
-      HandType hand_type,
-      uint8_t hand_device_id,
-      const std::string& tcp_host,
-      uint16_t tcp_port,
-      uint8_t canfd_channel_id = 0,
-      CommunicationLogOptions log_options = {});
-#endif  // OMNIHAND_ZLG_TCP_SUPPORTED
 
 #ifdef __linux__
   /**
@@ -462,6 +455,10 @@ class AGIBOT_EXPORT OmniPicker2025 : public OmniHand {
   }
 
  protected:
+  OmniPicker2025() = default;
+  explicit OmniPicker2025(std::shared_ptr<DeviceContext> context)
+      : OmniHand(std::move(context)) {}
+
   /**
    * @brief Initialize common base-class metadata for OP1.
    * @param device_id Hand device ID.
