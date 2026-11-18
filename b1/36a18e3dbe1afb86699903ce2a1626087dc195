@@ -1,0 +1,102 @@
+windows/x64/cpp/test/CMakeLists.txt
+  h_b60f00b173c94b 145
+windows/x64/cpp/test/README.md
+  h_b60f00b173c94b 30-39
+windows/x64/cpp/test/README_zh_cn.md
+  h_b60f00b173c94b 109-117
+windows/x64/cpp/test/test_omnipicker_3.cc
+  h_b60f00b173c94b 6,10,12-14,67,76,109,115-118,155-157,515-516,522,526-547,550,557-560,948-959,978-980,994,996-997,1001-1006,1012-1016,1028-1030,1040,1044-1047
+windows/x64/python/demo/omnihand_2025/demo_joint_rad_sweep.py
+  h_b60f00b173c94b 1-213
+windows/x64/python/test/README.md
+  h_b60f00b173c94b 41,43-44,46
+windows/x64/python/test/test_omnihand_pro_2025.py
+  h_b60f00b173c94b 4-7,23-47,49-50,52-93,103-104,107-115,121-122,125-129,447,449-452,457-479,486
+---
+{
+  "schema_version": "authorship/3.1.0",
+  "tlab_version": "0.16.0",
+  "base_commit_sha": "b136a18e3dbe1afb86699903ce2a1626087dc195",
+  "prompts": {},
+  "humans": {
+    "h_b60f00b173c94b": {
+      "author": "xuqigui <xuqigui@agibot.com>"
+    }
+  },
+  "changes": [
+    {
+      "new_path": "windows/x64/python/demo/omnihand_2025/demo_joint_rad_sweep.py",
+      "additions": {
+        "human": 213
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "new_path": "windows/x64/cpp/test/CMakeLists.txt",
+      "additions": {
+        "human": 1
+      },
+      "deletions": {
+        "human": 2
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/README.md",
+      "new_path": "windows/x64/cpp/test/README.md",
+      "additions": {
+        "human": 10
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/README_zh_cn.md",
+      "new_path": "windows/x64/cpp/test/README_zh_cn.md",
+      "additions": {
+        "human": 9
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnihand_3_ultra_m.cc",
+      "new_path": "windows/x64/cpp/test/test_omnihand_3_ultra_m.cc",
+      "deletions": {
+        "human": 14
+      }
+    },
+    {
+      "old_path": "windows/x64/cpp/test/test_omnipicker_3.cc",
+      "new_path": "windows/x64/cpp/test/test_omnipicker_3.cc",
+      "additions": {
+        "human": 82
+      },
+      "deletions": {
+        "human": 14
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/README.md",
+      "new_path": "windows/x64/python/test/README.md",
+      "additions": {
+        "human": 4
+      },
+      "deletions": {
+        "human": 3
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_omnihand_3_ultra_m.py",
+      "new_path": "windows/x64/python/test/test_omnihand_3_ultra_m.py",
+      "deletions": {
+        "human": 8
+      }
+    },
+    {
+      "old_path": "windows/x64/python/test/test_omnihand_pro_2025.py",
+      "new_path": "windows/x64/python/test/test_omnihand_pro_2025.py",
+      "additions": {
+        "human": 120
+      },
+      "deletions": {
+        "human": 151
+      }
+    }
+  ]
+}
