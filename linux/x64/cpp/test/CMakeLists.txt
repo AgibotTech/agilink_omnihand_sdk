@@ -142,8 +142,7 @@ endif()
 
 # OmniPicker 3 (OP3) Tests
 # Note: BUILD_OMNI_PICKER_3 is defined in the main CMakeLists.txt
-# CANFD only: the RS485 backend needs a serial port name, which does not suit a
-# default ctest run. Use demo_omnipicker_3_rs485 for RS485 verification.
+# Defaults to ZLG CANFD; select RS485 explicitly with -d rs485 -p PORT.
 if(BUILD_OMNI_PICKER_3)
   add_executable(test_omnipicker_3 test_omnipicker_3.cc)
   target_link_libraries(

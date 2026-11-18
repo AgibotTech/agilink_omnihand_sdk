@@ -3,13 +3,15 @@
 
 /**
  * @file test_omnipicker_3.cc
- * @brief CANFD tests for OmniPicker 3 (OP3), a 1-DOF gripper
+ * @brief CANFD and RS485 tests for OmniPicker 3 (OP3), a 1-DOF gripper
  *
  * Usage:
  *   ./test_omnipicker_3 [-d TRANSPORT] [-c CHANNEL] [-i CANFD_ID] [-f INTERVAL]
- *                       [--device-id ID] [--can-if IF]
+ *                       [--device-id ID] [--can-if IF] [-p PORT]
  *
- *   -d TRANSPORT     Backend: zlgcan | hcan | socketcan (default: zlgcan)
+ *   -d TRANSPORT     Backend: zlgcan | hcan | socketcan | rs485 (default: zlgcan)
+ *   -p PORT          Serial port for rs485, e.g. /dev/ttyUSB0 or COM7 (required).
+ *                    A positional port after -d rs485 is also accepted.
  *   --device-id ID   Hand device ID to address (default: 1). Unlike the O10 tests this
  *                    is only used to build requests: OP3 tests never call SetDeviceId(),
  *                    because writing the device id is inherently risky and a failed
@@ -62,6 +64,7 @@ enum class CanfdTransport {
   kZlgcan,
   kHcan,
   kSocketCan,
+  kRs485,
 };
 
 CanfdTransport g_transport = CanfdTransport::kZlgcan;
@@ -70,6 +73,7 @@ int g_canfd_id = 0;
 int g_request_interval = 5;
 int g_device_id = oh::OmniPicker3::kDefaultHandDeviceId;
 std::string g_can_if = "can0";
+std::string g_serial_port;
 
 struct CapabilityResult {
   std::string name;
@@ -102,14 +106,16 @@ constexpr size_t kDoF = oh::OmniPicker3::kDegreesOfActiveFreedom;
 constexpr int16_t kDefaultMixCtrlCurrentMa =
     oh::OmniPicker3::GetMinMaxMixCtrlTorque().default_value;
 
-CanfdTransport ParseTransport(std::string s) {
+std::optional<CanfdTransport> ParseTransport(std::string s) {
   std::transform(s.begin(), s.end(), s.begin(),
                  [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
   if (s == "zlgcan") return CanfdTransport::kZlgcan;
   if (s == "hcan") return CanfdTransport::kHcan;
   if (s == "socketcan") return CanfdTransport::kSocketCan;
-  AgilinkLogger::get().warnf(TAG, "[Warning] unknown -d %s, using zlgcan", s.c_str());
-  return CanfdTransport::kZlgcan;
+  if (s == "rs485") return CanfdTransport::kRs485;
+  std::cerr << "Invalid -d value: " << s
+            << "; expected zlgcan, hcan, socketcan or rs485\n";
+  return std::nullopt;
 }
 
 template <typename T>
@@ -146,6 +152,9 @@ std::unique_ptr<oh::OmniPicker3> CreateHandForTransport() {
       AgilinkLogger::get().warnf(TAG, "[Warning] SocketCAN requires Linux; skipping hand creation.");
       return nullptr;
 #endif
+    case CanfdTransport::kRs485:
+      return OmniPicker3::createHandByRs485(kFactoryHandType, device_id,
+                                             g_serial_port);
   }
   return nullptr;
 }
@@ -910,8 +919,18 @@ int main(int argc, char** argv) {
   for (int i = 1; i < argc; ++i) {
     const std::string arg = argv[i];
 
-    if ((arg == "-d" || arg == "--device") && i + 1 < argc) {
-      g_transport = ParseTransport(argv[++i]);
+    if (arg == "-d" || arg == "--device" || arg == "-p" || arg == "--port") {
+      if (i + 1 >= argc || argv[i + 1][0] == '-' || argv[i + 1][0] == '\0') {
+        std::cerr << "Missing value for " << arg << '\n';
+        return 1;
+      }
+      if (arg == "-d" || arg == "--device") {
+        const auto transport = ParseTransport(argv[++i]);
+        if (!transport) return 1;
+        g_transport = *transport;
+      } else {
+        g_serial_port = argv[++i];
+      }
     } else if ((arg == "--device-id" || arg == "--id") && i + 1 < argc) {
       g_device_id = std::stoi(argv[++i]);
     } else if (arg == "-c" && i + 1 < argc) {
@@ -930,7 +949,9 @@ int main(int argc, char** argv) {
           << "OmniPicker 3 Test\n\n"
           << "Usage: " << argv[0] << " [options]\n\n"
           << "Options:\n"
-          << "  -d, --device NAME    zlgcan | hcan | socketcan (default: zlgcan)\n"
+          << "  -d, --device NAME    zlgcan | hcan | socketcan | rs485 (default: zlgcan)\n"
+          << "  -p, --port PORT      RS485 serial port (required for rs485), baudrate 460800\n"
+          << "                       A positional port after -d rs485 is also accepted\n"
           << "  --device-id ID       hand device ID to address (default: 1); never written by this suite\n"
           << "  -c CHANNEL           CAN channel (zlgcan/hcan), default 0\n"
           << "  -i CANFD_ID          adapter index (zlgcan/hcan), default 0\n"
@@ -944,13 +965,27 @@ int main(int argc, char** argv) {
           << "    --id 1     address the gripper as device id 1\n"
           << "    -f 5       5 ms between requests\n"
           << "\nOther transports:\n"
+          << "  " << argv[0] << " -d hcan -i 0 -c 0\n"
           << "  " << argv[0] << " -d socketcan --can-if can0\n"
+          << "  " << argv[0] << " -d rs485 -p /dev/ttyUSB0\n"
+          << "  " << argv[0] << " -d rs485 /dev/ttyUSB0\n"
           << "\nGoogleTest flags are forwarded, e.g. --gtest_filter=*Tactile*\n"
           << std::endl;
       return 0;
+    } else if (g_transport == CanfdTransport::kRs485 && !arg.empty() && arg[0] != '-') {
+      if (!g_serial_port.empty()) {
+        std::cerr << "Multiple RS485 serial ports specified\n";
+        return 1;
+      }
+      g_serial_port = arg;
     } else {
       gtest_args.push_back(argv[i]);
     }
+  }
+
+  if (g_transport == CanfdTransport::kRs485 && g_serial_port.empty()) {
+    std::cerr << "RS485 requires a serial port: -d rs485 -p /dev/ttyUSB0\n";
+    return 1;
   }
 
   AgilinkLogger::get().infof(TAG, "=== OmniPicker 3 Test ===");
@@ -964,6 +999,9 @@ int main(int argc, char** argv) {
     case CanfdTransport::kSocketCan:
       AgilinkLogger::get().infof(TAG, "Transport: socketcan  can_if=%s", g_can_if.c_str());
       break;
+    case CanfdTransport::kRs485:
+      AgilinkLogger::get().infof(TAG, "Transport: rs485  port=%s  baudrate=460800", g_serial_port.c_str());
+      break;
   }
   AgilinkLogger::get().infof(TAG, "Channel ID: %d", g_channel_id);
   AgilinkLogger::get().infof(TAG, "CANFD ID: %d", g_canfd_id);
@@ -973,10 +1011,14 @@ int main(int argc, char** argv) {
   AgilinkLogger::get().infof(TAG, "=========================");
 
   int gtest_argc = static_cast<int>(gtest_args.size());
+  gtest_args.push_back(nullptr);
   ::testing::InitGoogleTest(&gtest_argc, gtest_args.data());
   AgilinkLogger::get().flush();
   const int result = RUN_ALL_TESTS();
-  ReturnToZeroOnce();
+  if (::testing::UnitTest::GetInstance()->test_to_run_count() > 0
+      && !GTEST_FLAG_GET(list_tests)) {
+    ReturnToZeroOnce();
+  }
   // Drain the async logger first, so the summary is not interleaved with buffered log lines.
   AgilinkLogger::get().flush();
   PrintRunSummary();

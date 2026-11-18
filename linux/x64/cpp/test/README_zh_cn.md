@@ -106,6 +106,15 @@ O10 和 O12 测试程序支持 `-f FREQ` 参数来设置 CAN 请求频率：
 - [English Documentation](README.md)
 ## 时间戳接口测试
 
+OP3 gtest 支持 `-d zlgcan`、`-d hcan`、`-d socketcan`（Linux）和
+`-d rs485`。RS485 波特率固定为 460800，必须指定串口：
+
+```sh
+test_omnipicker_3 -d rs485 -p /dev/ttyUSB0
+test_omnipicker_3 -d rs485 /dev/ttyUSB0
+test_omnipicker_3.exe -d rs485 -p COM7
+```
+
 时间戳测试放在 O10、O12、H3L、H3UM、OP3 各自原有测试程序中。
 连接对应设备后，用过滤器只执行时间戳接口测试，例如：
 
