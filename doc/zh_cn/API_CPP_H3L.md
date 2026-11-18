@@ -9,9 +9,8 @@
 - 电机位置范围：0–4096（int16 电机 ticks）
 - 支持 CAN（ZLG USB CANFD / HCAN）通信
 - 支持 SocketCAN（仅 Linux）
-- 支持 ZLG CAN TCP（仅 Linux x64 / Windows）
 - 文档所述 H3L 硬件**无触觉传感器**；U16 触觉方法作为协议/固件兼容接口保留
-- **无运动学求解器**：不支持角度控制（`SetAllActiveJointAngles` 为桩实现）。请使用电机位置控制（`SetAllJointMotorPosi` / `SetAllJointMotorPosi`）
+- 支持通过 CAN 和 RS485 直接设置、读取 4 个主动关节角（单位：弧度）；[离线运动学求解器](#运动学求解器)也可独立完成主动关节角与电机位置换算。尚不支持完整的主动加被动关节角运动学。
 
 ## 电机分布
 
@@ -49,17 +48,18 @@ enum class ControlMode : unsigned char {
     TORQUE                    = 3,    // 力控模式（H3L 不支持）
     POSITION_TORQUE           = 4,    // 位置-力控模式（混合控制：位置 + 电流）
     VELOCITY_TORQUE           = 5,    // 速度-力控模式（H3L 暂未开放）
-    POSITION_VELOCITY_TORQUE  = 6,    // 位置-速度-力控模式（H3L 暂未开放）
+    POSITION_VELOCITY_TORQUE  = 6,    // 位置-速度-力控模式（混合控制：位置 + 速度 + 电流）
     UNKNOWN                   = 10    // 未知模式
 };
 }  // namespace omnihand
 }  // namespace agilink
 ```
 
-**H3L 可用模式**：
+**H3L 控制模式与 SDK 接口**：
 - `POSITION` (0)：默认位置控制
-- `POSITION_TORQUE` (4)：位置+电流混合控制
-- 其余模式不可用或暂未开放
+- `POSITION_TORQUE` (4)：位置+电流混合控制，使用 `MixControlByPT`
+- `POSITION_VELOCITY_TORQUE` (6)：位置+速度+电流混合控制，使用 `MixControlByPVT`
+- 其他模式的接口限制参见上述枚举说明
 
 ## 数据结构
 
@@ -157,19 +157,6 @@ static std::unique_ptr<OmniHand3Lite> createHandSocketCan(
 #endif
 ```
 
-### ZLG CAN TCP（仅部分平台）
-
-```cpp
-#if OMNIHAND_ZLG_TCP_SUPPORTED
-static std::unique_ptr<OmniHand3Lite> createHandByZlgCanTcp(
-    HandType hand_type,
-    uint8_t hand_device_id,
-    const std::string& tcp_host,
-    uint16_t tcp_port,
-    uint8_t canfd_channel_id = 0);
-#endif
-```
-
 ### RS485
 
 ```cpp
@@ -212,13 +199,52 @@ int16_t GetJointMotorPosi(unsigned char joint_motor_index) const;
 std::vector<int16_t> GetAllJointMotorPosi() const;
 ```
 
-### 关节角度控制（不可用）
+### 主动关节角度控制（弧度）
 
 ```cpp
-// 以下方法在 H3L 中为桩实现，不可用。请使用电机位置控制。
 std::vector<double> SetAllActiveJointAngles(const std::vector<double>& angles);
 std::vector<double> GetAllActiveJointAngles() const;
 ```
+
+CAN 和 RS485 均支持上述接口。向量包含 4 个值，单位为弧度（rad），顺序与 `H3LActivateJoint` 一致。SDK 使用手对象对应型号及左右手的 Solver 完成角度与电机编码换算；设置接口返回电机反馈换算后的主动关节角。
+
+> **H3L-S 限位声明**：SDK 及 URDF 中的角度限制均为机械限位，电机限位范围以对应型号的规格书为准。以下为 SDK 主动关节角范围，单位为弧度（rad），角度值仅供参考；URDF 使用更高精度的小数。
+
+| 数组索引（从 0 开始） | 主动关节 | SDK 角度范围（rad） | 约合角度 |
+|---|---|---|---|
+| 0 | 中指/无名指/小指联动 PIP | [0, 1.396263] | 0°～80° |
+| 1 | 食指 PIP | [0, 1.396263] | 0°～80° |
+| 2 | 拇指 PIP | [0, 1.169370] | 0°～67° |
+| 3 | 拇指外展/内收 | [0, 1.570796] | 0°～90° |
+
+左右手使用相同的角度顺序、正方向和范围，无需手动取负；电机编码方向差异由 SDK 的 Solver 处理。电机位置的 `[0, 4096]` 是协议值范围，不代表规格书规定的电机限位。
+
+### 运动学求解器
+
+`agilink::omnihand::h3l::OmniHand3LiteSolver` 提供 H3L-S 和 H3L-M 的离线换算，无需连接设备。
+
+```cpp
+#include "omnihand/kinematics/omnihand_3_lite/omnihand_3_lite_solver.h"
+
+using agilink::omnihand::H3LModel;
+using namespace agilink::omnihand::h3l;
+
+OmniHand3LiteSolver solver(true, H3LModel::H3L_S);  // Left H3L-S; use H3L_M for H3L-M.
+std::vector<int16_t> motor_positions = {0, 0, 0, 0};
+auto angles = solver.ActuatorInput2ActiveJointPos(motor_positions);
+auto actuator = solver.ActiveJointPos2ActuatorInput(angles);
+```
+
+单参数构造 `OmniHand3LiteSolver(is_left_hand)` 默认使用 H3L-S。向量必须包含 4 个值，按 `H3LActivateJoint` 顺序排列：中指/无名指/小指联动 PIP、食指 PIP、拇指 PIP、拇指外展/内收。角度单位为弧度，电机输入使用 `[0, 4096]` 协议值。向量长度不正确时，换算返回空向量。
+
+单关节换算使用从 0 开始的索引（`0..3`）：
+
+```cpp
+double SingleActuatorInput2ActiveJointPos(std::size_t joint_index, int16_t actuator_input) const;
+int16_t SingleActiveJointPos2ActuatorInput(std::size_t joint_index, double rad) const;
+```
+
+以上 Solver 方法仅进行数值计算，无需连接设备。控制设备时可直接调用 `SetAllActiveJointAngles`、`GetAllActiveJointAngles`，也可将离线换算后的电机位置传给 `SetAllJointMotorPosi`。`GetAllJointAngles()` 及其带主动关节角参数的重载仍为桩实现，返回 4 个零值，不提供完整的主动加被动关节角。
 
 ### 速度控制
 
@@ -241,6 +267,8 @@ std::vector<int16_t> GetAllCurrentThreshold() const;
 ```
 
 ### 混合控制
+
+支持 PT（位置+电流）和 PVT（位置+速度+电流）混控，可单轴或批量控制。
 
 ```cpp
 MixCtrl MixControlByPT(uint8_t joint_motor_index,
@@ -347,12 +375,23 @@ int main() {
 }
 ```
 
-## Demo 文件
+## C++ 示例
 
-| Demo | 路径 |
-|------|------|
-| CAN FD（按 ID 连接） | [H3L_demo_canfd_id.cc](../../../cpp/demo/omnihand_3_lite/H3L_demo_canfd_id.cc) |
-| CAN FD（按串号连接） | [H3L_demo_canfd_serial.cc](../../../cpp/demo/omnihand_3_lite/H3L_demo_canfd_serial.cc) |
+各连接方式共用 [demo_omnihand_3_lite.cc](../../../cpp/demo/omnihand_3_lite/demo_omnihand_3_lite.cc)，构建目标为 `demo_omnihand_3_lite`：
+
+```shell
+./demo_omnihand_3_lite -d zlgcan -i 0 -c 0 --model s
+./demo_omnihand_3_lite -d hcan --serial ADAPTER_SERIAL --model m
+./demo_omnihand_3_lite -d socketcan --can-if can0 --hand right
+./demo_omnihand_3_lite -d rs485 -p COM5
+./demo_omnihand_3_lite -d zlgcan -c 0 --hand both
+```
+
+Windows 可执行文件后缀为 `.exe`，Linux 串口可使用 `/dev/ttyUSB0`；SocketCAN 仅适用于 Linux。`--help` 显示完整参数。示例仅演示常规控制与信息读取，不包含固件更新、标定、标零、写 SN 或出厂参数写入。
+
+`--hand both` 在同一 CAN 适配器上使用 `-c` 指定通道及其下一通道；两个适配器可用 `--serial`、`--second-serial` 指定，分别使用同一通道号。串口双手需用 `-p`、`--second-port` 指定不同端口。
+
+示例依次执行 PRAYER、SIDE_FIST 两个预设手势，并读取关节角度反馈；手势随所选型号和左右手适配。随后读取电机温度、电流、错误，并初始化触觉点数、读取各区域的 U16 原始压力数据，只预览前 8 个点。
 
 编译方式参见 [CMakeLists.txt](../../../cpp/demo/omnihand_3_lite/CMakeLists.txt)。
 

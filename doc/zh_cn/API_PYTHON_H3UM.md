@@ -1,44 +1,34 @@
-# OmniHand 3 Ultra M（H3UM T1.3/T1.5）Python API
+# OmniHand 3 Ultra M（H3UM）Python API
 
 ## 概述
 
-Python 使用同一个 `OmniHand3UltraM` 类支持两个版本。T1.3 有 20 个主动关节，默认设备 ID 为 `9`；T1.5 有 21 个主动关节，默认设备 ID 为 `1`。
+`OmniHand3UltraM` 通过工厂函数自动识别硬件版本。需要自动发现设备地址和硬件能力时，显式传入 `hand_device_id=0`。
 
 ```python
-from omnihand import (
-    ControlMode,
-    H3UMRevision,
-    HandType,
-    OmniHand3UltraM,
-    OmniHand3UltraMSolver,
-)
+from omnihand import ControlMode, H3UMRevision, HandType, OmniHand3UltraM, OmniHand3UltraMSolver
 ```
 
 ## 工厂函数
 
 ```python
-# T1.3：create_hand_by_*，20 关节，默认 ID 9
-t1p3 = OmniHand3UltraM.create_hand_by_zlgcan(
+hand = OmniHand3UltraM.create_hand_by_zlgcan(
     hand_type=HandType.LEFT,
-    canfd_device_id=0,
-    canfd_channel_id=0,
-    tactile_soc_ip="192.168.99.2",
-    tactile_soc_port=19009,
-)
-
-# T1.5：create_hand_t1p5_*，21 关节，默认 ID 1
-t1p5 = OmniHand3UltraM.create_hand_t1p5_by_hcan(
-    hand_type=HandType.LEFT,
+    hand_device_id=0,  # 显式启用自动发现。
     canfd_device_id=0,
     canfd_channel_id=0,
 )
+if hand is None:
+    raise RuntimeError("H3UM device discovery failed")
 
-assert t1p3.get_revision() == H3UMRevision.T1P3
-assert t1p5.get_revision() == H3UMRevision.T1P5
-joint_names = t1p5.get_joint_names()  # 按电机索引排列的 21 个名称
+joint_names = hand.get_joint_names()
+joint_count = hand.get_num_of_joint_motors()
 ```
 
-ZLG 和 HCAN 也提供按适配器序列号创建的重载。相应平台还提供 `create_hand_by_zlgcan_tcp(...)` / `create_hand_t1p5_by_zlgcan_tcp(...)`；Linux 还提供 `create_hand_socketcan(...)` / `create_hand_t1p5_socketcan(...)`。T1.3 工厂可通过 `tactile_soc_ip` 和 `tactile_soc_port` 配置 Xense 端点。
+Python 默认值仍为 `hand_device_id=9`：省略此参数或显式传入任意非零 ID 时，直接读取该地址的自由度，不发送广播或回退其他地址。设备地址不决定硬件版本。传入 `0` 时启用地址自动发现：SDK 广播读取设备信息，无回复时回退地址 `9`，再单独读取自由度寄存器。有效的 20 或 21 关节回复决定对应实现，探测失败或自由度不受支持时返回 `None`。地址自动发现适用于所选通道只有一只 H3UM 的场景；同一总线上有多台设备时，请显式传入目标设备 ID。
+
+`create_hand_by_hcan`和 `create_hand_socketcan`（Linux）使用相同的识别流程。ZLG/HCAN 也支持按适配器序列号连接。末尾可选参数 `show_data_details` 默认为 `False`。T1.3 的外部触觉服务默认地址为 `192.168.99.2:19009`；`hand.attach_tactile_soc(ip, 19009)` 可更换地址并重新初始化，IP 为空时断开服务。该方法等待旧线程退出，五指扫描异步执行；T1.5 或端点探测失败时返回 `False`。
+
+已移除专用的 `create_hand_t1p5_by_zlgcan` 创建接口，请使用 `create_hand_by_zlgcan` 自动识别版本。`get_revision()` 仍可用于诊断和离线模型选择。
 
 ## 控制与状态
 
@@ -58,7 +48,16 @@ hand.set_all_control_modes(modes)
 modes = hand.get_all_control_modes()
 ```
 
-绑定还提供电流阈值、速度、温度、电流、错误报告、请求间隔、接收超时、原始触觉、触觉合力和详细日志接口。T1.5 还提供 `get_temperature_of_palm()` 与 `get_temperature_of_power()`。
+绑定还提供电流阈值、速度、温度、电流、错误报告、请求间隔、接收超时和详细日志接口。T1.5 还提供 `get_temperature_of_palm()` 与 `get_temperature_of_power()`。
+
+## 触觉数据
+
+`get_tactile_sensor_data_raw(sensor)` 与 `get_all_tactile_sensor_data_raw()` 根据手对象的版本返回不同类型的数据：
+
+- **T1.3**：3D 触觉力降采样数据，类型为 `TactileSensorData3DI16`，`points` 保存各点有符号 16 位 XYZ 分量。`get_tactile_sensor_resultant_force(sensor)` 与 `get_all_tactile_sensor_resultant_forces()` 用于获取合力，仅支持 T1.3。
+- **T1.5**：1D U16 触觉数据，类型为 `TactileSensorDataU16`，`data_` 保存每点的 `uint16_t` 压力值。T1.5 不支持上述 3D 合力接口。
+
+Python 的 Raw 方法名保持一致，绑定层按版本选择对应的触觉接口。C++ 分别使用 `GetTactileSensor3D()` 和 `GetTactileSensor1D()`，详见 [H3UM C++ API](API_CPP_H3UM.md)。
 
 ## 运动学求解器
 

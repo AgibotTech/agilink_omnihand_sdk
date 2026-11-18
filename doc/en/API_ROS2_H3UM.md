@@ -4,14 +4,14 @@
 
 ## Overview
 
-One `omnihand_3_ultra_m_node` executable supports both revisions. Each hand independently selects its revision in YAML:
+One `omnihand_3_ultra_m_node` executable supports both revisions. The SDK detects each hand's actual revision independently:
 
-| Revision | Active joints | Default device ID | `revision` value |
-|----------|---------------|-------------------|------------------|
-| T1.3 | 20 | 9 | `t1p3` |
-| T1.5 | 21 | 1 | `t1p5` |
+| Revision | Active joints | Factory default device ID |
+|----------|---------------|---------------------------|
+| T1.3 | 20 | 9 |
+| T1.5 | 21 | 1 |
 
-An absent or unrecognized `revision` falls back to T1.3 and logs one warning for backward compatibility. Joint names and array lengths come from the SDK; they are not hard-coded in the node.
+The node no longer configures `revision`. Unified SDK factories detect it from the device's reported active DOF; failed detection fails initialization rather than guessing a revision. Joint names and array lengths come from the SDK; they are not hard-coded in the node.
 
 ## Topics
 
@@ -33,14 +33,15 @@ All topics use `/h3u_m/<side>/`, where `<side>` is `left` or `right`.
 
 All full-hand arrays must contain 20 elements for T1.3 or 21 for T1.5. Incorrect lengths are rejected with a warning. The current H3UM node does not publish tactile topics; use the C++ or Python SDK tactile APIs directly.
 
+After initialization, each hand node exposes a read-only `joint_names` string-array parameter containing the detected SDK joint order (20 or 21 names). Startup overrides are ignored. Scripts and `ros2_joint_cmd_demo` discover the node publishing the selected `joint_states` topic and query this parameter before sending commands. They do not wait for position feedback or send hardware queries; missing, ambiguous, invalid or timed-out metadata stops the example without sending commands. The mixed-control demos do not support the H3UM node.
+
 ## Configuration
 
 The default file is [omnihand_3_ultra_m_node.yaml](../../../node/omnihand_node/config/omnihand_3_ultra_m_node.yaml). Supported transports are `zlgcan`, `hcan`, and Linux `socketcan`.
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `revision` | string | `t1p3` | `t1p3` or `t1p5`; unknown values fall back to T1.3 |
-| `hand_device_id` | int | `-1` | `-1` selects the revision default; explicit IDs must be 1-127 |
+| `hand_device_id` | int | `0` | `0` lets the SDK discover the address; 1-127 queries an explicit address while still detecting the revision |
 | `connection_type` | string | `""` | `zlgcan`, `hcan`, or `socketcan`; empty skips this hand |
 | `canfd_serial_number` | string | `""` | Adapter serial number; preferred over device index |
 | `canfd_device_id` | int | `0` | Adapter index when no serial number is supplied |
@@ -50,20 +51,20 @@ The default file is [omnihand_3_ultra_m_node.yaml](../../../node/omnihand_node/c
 | `frame_recv_timeout_ms` | int | `-1` | `-1` keeps the SDK default |
 | `show_data_details` | bool | `false` | Enables SDK TX/RX logging |
 
-Use explicit revision defaults in deployment YAML for readability:
+Automatic discovery requires one hand per selected CAN channel. If no broadcast reply arrives, the SDK tries the legacy T1.3 default address 9, but still determines the revision from the active DOF reply. Specify each actual device ID when multiple hands share a channel. Replace the old `hand_device_id: -1` with `0` or an actual ID.
+
+This example discovers the devices on two independent CAN channels:
 
 ```yaml
 /**:
   ros__parameters:
     left_hand:
-      revision: "t1p3"
-      hand_device_id: 9
+      hand_device_id: 0
       connection_type: "socketcan"
       can_interface: "can0"
 
     right_hand:
-      revision: "t1p5"
-      hand_device_id: 1
+      hand_device_id: 0
       connection_type: "socketcan"
       can_interface: "can1"
 ```
@@ -73,12 +74,14 @@ Use explicit revision defaults in deployment YAML for readability:
 ```bash
 ros2 launch omnihand_node omnihand_3_ultra_m_node.launch.py
 
-# Position control: final argument selects 20/21-joint example payloads.
-python3 scripts/omnihand_3_ultra_m/joint_cmd.py left h3u_m t1p5
+# Position control: automatically query the detected joint count.
+python3 scripts/omnihand_3_ultra_m/joint_cmd.py left h3u_m
 
-# Set all control modes or current thresholds for T1.5.
-python3 scripts/omnihand_3_ultra_m/joint_control_mode_pub.py 0 left h3u_m t1p5
-python3 scripts/omnihand_3_ultra_m/joint_current_threshold_pub.py 500 left h3u_m t1p5
+# Set all control modes or current thresholds for the connected revision.
+python3 scripts/omnihand_3_ultra_m/joint_control_mode_pub.py 0 left h3u_m
+python3 scripts/omnihand_3_ultra_m/joint_current_threshold_pub.py 500 left h3u_m
+
+ros2 run omnihand_ros2_demo ros2_joint_cmd_demo left h3u_m
 ```
 
 ## Related Documentation

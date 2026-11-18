@@ -6,11 +6,24 @@
 
 H3L ROS2 节点提供 4 自由度灵巧手的统一 Topic 接口，遵循 [ROS2 接口统一规范](API_ROS2.md)。
 
-> **重要**：H3L 无完整运动学求解器（不支持角度控制），`JointState.position` 携带的是**电机 ticks**（int16，范围 0–4096），**非弧度**。节点内部做 double ↔ int16 透明转换。手势控制可通过 SDK 的 `SetHandGesture()` API 使用。
+> **重要**：H3L 支持 4 个主动关节的角度控制，`joint_cmd`、`joint_angle_cmd` 和 `joint_states` 的 `position` 单位为**弧度（rad）**。原始电机 ticks 使用独立的 `joint_position_cmd` / `joint_position_states` 接口。H3L 尚不提供包含被动关节的完整关节角运动学。
 
 ## 电机分布
 
 ![H3L 电机分布](../pic/hand_h3l_motors.png)
+
+## 主动关节角（H3L-S）
+
+> **H3L-S 限位声明**：SDK 及 URDF 中的角度限制均为机械限位，电机限位范围以对应型号的规格书为准。以下为 SDK 主动关节角范围，单位为弧度（rad），角度值仅供参考；URDF 使用更高精度的小数。
+
+| 数组索引（从 0 开始） | 主动关节 | SDK 角度范围（rad） | 约合角度 |
+|---|---|---|---|
+| 0 | 中指/无名指/小指联动 PIP | [0, 1.396263] | 0°～80° |
+| 1 | 食指 PIP | [0, 1.396263] | 0°～80° |
+| 2 | 拇指 PIP | [0, 1.169370] | 0°～67° |
+| 3 | 拇指外展/内收 | [0, 1.570796] | 0°～90° |
+
+左右手使用相同的角度顺序、正方向和范围，无需手动取负；电机编码方向差异由 SDK 的 Solver 处理。电机位置的 `[0, 4096]` 是协议值范围，不代表规格书规定的电机限位。
 
 ## ROS2 Topics
 
@@ -18,11 +31,11 @@ H3L ROS2 节点提供 4 自由度灵巧手的统一 Topic 接口，遵循 [ROS2 
 
 | Topic | 消息类型 | 方向 | 说明 |
 |-------|---------|------|------|
-| `joint_cmd` | `sensor_msgs/JointState` | 订阅 (你发布) | `position[0..3]` = 电机 ticks（0–4095），触发控制+回读 |
-| `joint_states` | `sensor_msgs/JointState` | 发布 (你订阅) | `position[0..3]` = 电机 ticks（0–4095） |
+| `joint_cmd` | `sensor_msgs/JointState` | 订阅 (你发布) | 命令源为 `0`；`position[0..3]` = 主动关节角（rad），触发控制+回读 |
+| `joint_states` | `sensor_msgs/JointState` | 发布 (你订阅) | `position[0..3]` = 主动关节角（rad） |
 | `joint_cmd_source` | `std_msgs/Int8` | 订阅 (你发布) | `0=NORMAL`、`1=ANGLE`、`2=POSITION` |
-| `joint_angle_cmd` | `sensor_msgs/JointState` | 订阅 (你发布) | 命令源为 `1`；H3L 仍通过现有位置路径解释数值 |
-| `joint_position_cmd` | `std_msgs/Int16MultiArray` | 订阅 (你发布) | 命令源为 `2`；电机原始位置 |
+| `joint_angle_cmd` | `sensor_msgs/JointState` | 订阅 (你发布) | 命令源为 `1`；`position[0..3]` = 主动关节角（rad） |
+| `joint_position_cmd` | `std_msgs/Int16MultiArray` | 订阅 (你发布) | 命令源为 `2`；4 个电机原始位置（ticks，范围 [0, 4096]） |
 | `joint_position_states` | `omnihand_node_msgs/Int16MultiArrayStamped` | 发布 (你订阅) | 带时间戳的原始位置回读 |
 | `joint_mix_control_cmd` | `sensor_msgs/JointState` | 订阅 (你发布) | 位置+力矩混合控制（见下文） |
 | `joint_error_cmd` | `std_msgs/Empty` | 订阅 (你发布) | 触发 `GetAllErrorReport()` |
@@ -44,7 +57,7 @@ H3L ROS2 节点提供 4 自由度灵巧手的统一 Topic 接口，遵循 [ROS2 
 
 `joint_mix_control_cmd` 使用 `sensor_msgs/JointState` 进行位置+力矩混合控制：
 
-- `position[]` = 电机原始位置（int16 ticks，范围 0–4095）
+- `position[]` = 电机原始位置（int16 ticks，范围 0–4096）
 - `effort[]` = 电机电流（int16，单位 mA）
 
 > **注意**：`effort` 字段传递的是电流值（mA），而非 ROS2 标准的力矩（N·m）。H3L 混合控制使用 `MixControlByPT`（4 路 position/effort），**无回读**。
@@ -71,10 +84,9 @@ ros2 launch omnihand_node omnihand_3_lite_node.launch.py
 
 ### Python 脚本示例
 
-```bash
-# 发送位置指令 + 订阅位置回读（4 DOF, motor ticks）
-python3 scripts/omnihand_3_lite/joint_cmd.py left
+> 旧版 `joint_cmd.py` 仍发送 ticks，不适用于当前弧度接口；主动关节角控制请使用下文的命令行示例。
 
+```bash
 # 发送混合控制（位置+电流）
 python3 scripts/omnihand_3_lite/mix_control_pt_pub.py left
 
@@ -98,8 +110,9 @@ python3 scripts/omnihand_3_lite/tactile.py left 0
 ### 命令行示例
 
 ```bash
-# 发送位置指令（4 个电机 ticks，范围 0–4095）
-ros2 topic pub --once /h3l/left/joint_cmd sensor_msgs/msg/JointState   "{position: [2048, 2048, 2048, 2048]}"
+# 选择普通命令源，并发送 4 个主动关节角（rad）
+ros2 topic pub --once /h3l/left/joint_cmd_source std_msgs/msg/Int8 '{data: 0}'
+ros2 topic pub --once /h3l/left/joint_cmd sensor_msgs/msg/JointState   "{position: [0.3, 0.3, 0.3, 0.3]}"
 
 # 查看回读
 ros2 topic echo /h3l/left/joint_states
@@ -125,7 +138,7 @@ ros2 topic pub --once /h3l/left/tactile_cmd std_msgs/msg/Float32 '{data: 0.0}'
 
 配置文件默认位于 [config/omnihand_3_lite_node.yaml](../../../node/omnihand_node/config/omnihand_3_lite_node.yaml)，可直接修改或通过启动参数 `config_file` 指定。
 
-H3L 支持的连接方式：`zlgcan`、`hcan`、`socketcan`。（不支持 RS485、USB 直连）
+H3L 支持的连接方式：`zlgcan`、`hcan`、`socketcan`、`rs485`。不支持 USB 直连。
 
 ### 参数说明
 
@@ -134,11 +147,12 @@ H3L 支持的连接方式：`zlgcan`、`hcan`、`socketcan`。（不支持 RS485
 | 参数 | 类型 | 默认值 | 适用连接方式 | 说明 |
 |------|------|--------|-------------|------|
 | `hand_device_id` | int | 1 | 全部 | 手设备 ID（1–255） |
-| `connection_type` | string | "" | — | `"zlgcan"` / `"hcan"` / `"socketcan"`；为空则跳过 |
+| `connection_type` | string | "" | — | `"zlgcan"` / `"hcan"` / `"socketcan"` / `"rs485"`；为空则跳过 |
 | `canfd_serial_number` | string | "" | zlgcan / hcan | 适配器序列号（**推荐**，重启后稳定） |
 | `canfd_device_id` | int | 0 | zlgcan / hcan | 适配器设备索引（`canfd_serial_number` 为空时使用，重启后可能变化） |
 | `canfd_channel_id` | int | 0 | zlgcan / hcan | CAN 通道索引（0 或 1，双通道适配器如 200U 选 0/1，单通道始终为 0） |
 | `can_interface` | string | "can0" | socketcan | SocketCAN 接口名（如 `can0`、`can1`） |
+| `uart_port` | string | "" | rs485 | 串口路径（如 `/dev/ttyUSB0`）；RS485 必填 |
 | `request_interval_ms` | int | -1 | 全部 | 请求最小间隔（ms），0=不限速，范围 0-100，-1=使用 SDK 默认值 |
 | `frame_recv_timeout_ms` | int | -1 | 全部 | 单帧接收超时（ms），范围 10-1000，-1=使用 SDK 默认值（50ms） |
 | `show_data_details` | bool | false | 全部 | 是否在终端打印收发数据详情（调试用） |
@@ -202,6 +216,21 @@ H3L 支持的连接方式：`zlgcan`、`hcan`、`socketcan`。（不支持 RS485
       canfd_channel_id: 1
 ```
 
+**RS485：**
+
+```yaml
+/**:
+  ros__parameters:
+    left_hand:
+      hand_device_id: 1
+      connection_type: "rs485"
+      uart_port: "/dev/ttyUSB0"
+    right_hand:
+      hand_device_id: 1
+      connection_type: "rs485"
+      uart_port: "/dev/ttyUSB1"
+```
+
 **SocketCAN：**
 
 ```yaml
@@ -231,7 +260,7 @@ ros2 launch omnihand_node omnihand_3_lite_node.launch.py config_file:=/path/to/y
 
 | 功能 | Python | C++ |
 |---|---|---|
-| 位置控制 + 状态回读 | [joint_cmd.py](../../../node/omnihand_node/scripts/omnihand_3_lite/joint_cmd.py) | [ros2_joint_cmd_demo.cpp](../../../node/omnihand_node/demo/ros2_joint_cmd_demo.cpp) |
+| 主动关节角控制 + 状态回读 | —（使用上文命令行示例） | [ros2_joint_cmd_demo.cpp](../../../node/omnihand_node/demo/ros2_joint_cmd_demo.cpp) |
 | 混合控制（位置+电流） | [mix_control_pt_pub.py](../../../node/omnihand_node/scripts/omnihand_3_lite/mix_control_pt_pub.py) | [ros2_mix_ctrl_pos_torque_demo.cpp](../../../node/omnihand_node/demo/ros2_mix_ctrl_pos_torque_demo.cpp) |
 | 触觉流启停 | [tactile.py](../../../node/omnihand_node/scripts/omnihand_3_lite/tactile.py) | — |
 | 温度查询 | [joint_temperature.py](../../../node/omnihand_node/scripts/omnihand_3_lite/joint_temperature.py) | [ros2_joint_cmd_demo.cpp](../../../node/omnihand_node/demo/ros2_joint_cmd_demo.cpp) |
@@ -245,11 +274,12 @@ ros2 launch omnihand_node omnihand_3_lite_node.launch.py config_file:=/path/to/y
 | 特性 | H3L | O10 / O12 |
 |------|----|-----------|
 | DOF | 4 | 10 / 12 |
-| 角度控制 | ❌ 不可用（无运动学求解器） | ✅ rad |
-| 电机位置控制 | ✅ 推荐（0–4095 ticks） | ✅ 可选 |
+| 角度控制 | ✅ 主动关节角（rad） | ✅ rad |
+| 电机位置控制 | ✅ `joint_position_cmd`（0–4096 ticks） | ✅ 可选 |
 | 触觉传感器 | ✅ 六区域 `uint16[]` 原始数据 | ✅ 产品专属格式 |
-| RS485 / USB 直连 | ❌ 不支持 | ✅ O10 支持 |
-| `joint_cmd` 单位 | motor ticks（int16） | rad（float64） |
+| RS485 | ✅ 支持 | ✅ O10 支持 |
+| USB 直连 | ❌ 不支持 | ✅ 仅 OmniHand 2025 |
+| `joint_cmd` 单位 | rad（float64） | rad（float64） |
 | namespace | `/h3l` | `/o10` / `/o12` |
 
 ## 相关文档

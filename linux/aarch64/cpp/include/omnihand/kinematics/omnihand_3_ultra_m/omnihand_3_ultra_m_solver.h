@@ -25,12 +25,12 @@
 namespace agilink {
 namespace omnihand {
 
+namespace h3um {
+
 enum class H3UMRevision : uint8_t {
   T1P3 = 20,
   T1P5 = 21,
 };
-
-namespace h3um {
 
 /**
  * @brief H3UM T1.3 active-joint enum, in motor-index / GetJointNames() order.
@@ -94,6 +94,10 @@ enum class H3UMT1P5ActiveJoint {
 
 enum class H3UMGesture : int {
   H3U_M_GESTURE_ALL_ZERO = 0,
+  H3U_M_GESTURE_FRONT_FIST = 1,
+  H3U_M_GESTURE_SIDE_FIST = 2,
+  H3U_M_GESTURE_FINGER_HEART = 3,
+  H3U_M_GESTURE_OPEN = 4,
 };
 
 /**

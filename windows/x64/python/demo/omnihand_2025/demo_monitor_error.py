@@ -4,7 +4,7 @@
 """
 Monitor joint motor error reports for OmniHand 2025 (O10).
 
-Supports multiple connection types: ZLG CANFD, HCAN, RS485, ZLG TCP, USB CDC serial, SocketCAN (Linux only).
+Supports multiple connection types: ZLG CANFD, HCAN, RS485, USB CDC serial, SocketCAN (Linux only).
 Run with -h or --help to see all available options and usage examples.
 """
 
@@ -35,8 +35,8 @@ def main():
         epilog=EXAMPLES,
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    parser.add_argument('-d', '--device', choices=['zlgcan', 'hcan', 'socketcan', 'zlgcan_tcp', 'rs485', 'usb'], default='zlgcan',
-                        help='Device type: zlgcan, hcan, zlgcan_tcp, rs485, usb (CDC serial), socketcan (Linux only), default: zlgcan')
+    parser.add_argument('-d', '--device', choices=['zlgcan', 'hcan', 'socketcan', 'rs485', 'usb'], default='zlgcan',
+                        help='Device type: zlgcan, hcan, rs485, usb (CDC serial), socketcan (Linux only), default: zlgcan')
     parser.add_argument('-t', '--hand-type', choices=['left', 'right'], default='left',
                         help='Hand type: left or right, default: left')
     parser.add_argument('--hand-id', type=int, default=None,
@@ -49,10 +49,6 @@ def main():
                         help='SocketCAN interface (Linux only), default: can0')
     parser.add_argument('--uart-port', type=str, default='COM6',
                         help='Serial port for rs485/usb mode, default: COM6')
-    parser.add_argument('--host', type=str, default='192.168.0.178',
-                        help='ZLG CAN TCP host address, default: 192.168.0.178')
-    parser.add_argument('--port', type=int, default=8000,
-                        help='ZLG CAN TCP port, default: 8000')
     args = parser.parse_args()
 
     hand_type = HandType.LEFT if args.hand_type == 'left' else HandType.RIGHT
@@ -69,12 +65,6 @@ def main():
         hand = OmniHand2025.create_hand_by_rs485(
             hand_type=hand_type,
             uart_port=args.uart_port
-        )
-    elif args.device == 'zlgcan_tcp':
-        hand = OmniHand2025.create_hand_by_zlgcan_tcp(
-            hand_type=hand_type,
-            host=args.host,
-            port=args.port
         )
     elif args.device == 'usb':
         hand = OmniHand2025.create_hand_by_usb(

@@ -1,12 +1,11 @@
 # AGILINK OmniHand SDK C++ 单元测试
 
-**说明：** **OmniHand 2025 (O10)** 与 **OmniHand Dex UMI** 的工厂方法及广播发现接口在 C++ 头文件中使用 `std::uint8_t` 表示 `hand_device_id` 与 `canfd_*` 索引；测试代码使用整型字面量，依赖隐式转换。详见 `release/doc/zh_cn/API_CPP_O10.md` 与 `API_CPP_O10_UMI.md`。
+**说明：** **OmniHand 2025 (O10)** 的工厂方法及广播发现接口在 C++ 头文件中使用 `std::uint8_t` 表示 `hand_device_id` 与 `canfd_*` 索引；测试代码使用整型字面量，依赖隐式转换。详见 `release/doc/zh_cn/API_CPP_O10.md`。
 
 本目录包含基于 GoogleTest 的单元测试，涵盖所有 OmniHand 产品：
 - **OmniHand 2025 (O10)** - 10 自由度，1D 触觉传感器
 - **OmniHand Pro 2025 (O12)** - 12 自由度，3D 触觉传感器
 - **OmniHand 3 Lite (H3L)** - 4 自由度，通过 OmniHand3LiteGesture 枚举进行手势控制
-- **OmniHand Dex UMI (O10 UMI)** - 10 自由度，UMI 协议
 
 ## 编译测试
 
@@ -23,6 +22,8 @@ cmake --build .
 cmake -DBUILD_CPP_TESTS=ON -B build
 cmake --build build
 ```
+
+内部协议和维护测试默认关闭。SDK 维护者可在源码构建时添加 `-DOMNIHAND_BUILD_INTERNAL_TESTS=ON`；这些测试需要内部头文件。
 
 ## 运行测试
 
@@ -48,12 +49,15 @@ ctest
 # 运行 O12 测试，自定义频率（5-500 Hz）
 ./cpp/test/test_omnihand_pro_2025 -f 33
 
-# 运行 O10 UMI 测试
-./cpp/test/test_omnihand_dex_umi
-
 # 运行 H3L 测试
 ./cpp/test/test_omnihand_3_lite
+
+# H3UM：同时选择实物左右手、CAN 适配器索引及通道
+./bin/omnihand/test/test_omnihand_3_ultra_m -d zlgcan -i 0 -c 1 --hand right
 ```
+
+H3UM 默认为 `--hand left`，右手须指定 `--hand right`，也接受 `--hand-type`。
+左右手决定预设动作和角度换算表；T1.3/T1.5 版本识别与左右手选择相互独立。
 
 ### 请求频率参数
 
@@ -63,7 +67,6 @@ O10 和 O12 测试程序支持 `-f FREQ` 参数来设置 CAN 请求频率：
 - **默认值**：10 Hz
 - **用法**：`./test_omnihand_2025 -f 20`（设置频率为 20 Hz）
 
-**注意**：UMI 测试程序不支持频率参数（UMI 协议使用固定的周期上报）。
 
 ## 测试结构
 
@@ -103,7 +106,16 @@ O10 和 O12 测试程序支持 `-f FREQ` 参数来设置 CAN 请求频率：
 - [English Documentation](README.md)
 ## 时间戳接口测试
 
-时间戳测试放在 O10、O12、UMI、H3L、H3UM、OP3 各自原有测试程序中。
+OP3 gtest 支持 `-d zlgcan`、`-d hcan`、`-d socketcan`（Linux）和
+`-d rs485`。RS485 波特率固定为 460800，必须指定串口：
+
+```sh
+test_omnipicker_3 -d rs485 -p /dev/ttyUSB0
+test_omnipicker_3 -d rs485 /dev/ttyUSB0
+test_omnipicker_3.exe -d rs485 -p COM7
+```
+
+时间戳测试放在 O10、O12、H3L、H3UM、OP3 各自原有测试程序中。
 连接对应设备后，用过滤器只执行时间戳接口测试，例如：
 
 ```sh

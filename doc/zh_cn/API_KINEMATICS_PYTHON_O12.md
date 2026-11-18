@@ -13,10 +13,10 @@ from omnihand.omnihand_pro_2025 import OmniHandPro2025Solver
 ## 构造函数
 
 ```python
-OmniHandPro2025Solver(hand_type: bool)
+OmniHandPro2025Solver(is_left_hand: bool)
 ```
 
-- **`hand_type`**: 设置为 `True` 表示左手，`False` 表示右手。
+- **`is_left_hand`**: 设置为 `True` 表示左手，`False` 表示右手。
 
 ## 方法
 
@@ -107,10 +107,11 @@ def get_all_joint_angles(active_joint_angles: List[float]) -> List[float]
 ## 代码示例
 
 ```python
+from omnihand import OmniHandPro2025Gesture
 from omnihand.omnihand_pro_2025 import OmniHandPro2025Solver
 
 # 创建右手求解器
-solver = OmniHandPro2025Solver(hand_type=False)
+solver = OmniHandPro2025Solver(is_left_hand=False)
 
 # 检查并验证关节位置
 active_joint_angles = [0.5, -0.3, 0.6, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.5, 0.3]

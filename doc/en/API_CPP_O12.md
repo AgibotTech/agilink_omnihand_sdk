@@ -698,15 +698,22 @@ int main() {
 }
 ```
 
-## Demo Files
+## C++ Demo
 
-The SDK release package includes ready-to-compile C++ demo source code:
+All transports share [demo_omnihand_pro_2025.cc](../../../cpp/demo/omnihand_pro_2025/demo_omnihand_pro_2025.cc), built as `demo_omnihand_pro_2025`:
 
-| Demo | Path |
-|------|------|
-| CAN FD (connect by ID) | [O12_demo_canfd_id.cc](../../../cpp/demo/omnihand_pro_2025/O12_demo_canfd_id.cc) |
-| CAN FD (connect by serial) | [O12_demo_canfd_serial.cc](../../../cpp/demo/omnihand_pro_2025/O12_demo_canfd_serial.cc) |
-| SocketCAN | [O12_demo_socketcan.cc](../../../cpp/demo/omnihand_pro_2025/O12_demo_socketcan.cc) |
+```shell
+./demo_omnihand_pro_2025 -d zlgcan -i 0 -c 0
+./demo_omnihand_pro_2025 -d hcan --serial ADAPTER_SERIAL
+./demo_omnihand_pro_2025 -d socketcan --can-if can0
+./demo_omnihand_pro_2025 -d zlgcan -c 0 --hand both
+```
+
+Windows executables use the `.exe` suffix; Linux serial ports can use `/dev/ttyUSB0`. SocketCAN is Linux-only. Use `--help` for all options. Demos cover normal control and information queries; they do not update firmware, calibrate, set zero offsets, write serial numbers, or write factory parameters.
+
+`--hand both` uses `-c` and the next channel on one CAN adapter. With `--serial` and `--second-serial`, both adapters use the selected channel number.
+
+The demo reads the current pose, moves only the index PIP joint to 0.35 and 0.7 rad, and reads feedback after each move. Other joints keep their initial measured targets. It then reads motor temperatures, currents, errors and thumb/index 3D tactile data (online state, channels, normal force, tangent force and angle).
 
 See [CMakeLists.txt](../../../cpp/demo/omnihand_pro_2025/CMakeLists.txt) for build instructions.
 

@@ -35,7 +35,7 @@ class AGIBOT_EXPORT IControlMode {
    * @brief Gets the control mode of a single joint motor.
    * @param joint_motor_index Joint motor index (O10: 1-10, O12: 1-12)
    * @return Current control mode
-   * @note Serial port communication (RS485) does not support this interface.
+   * @note Supported by products that implement control mode switching.
    */
   virtual ControlMode GetControlMode(unsigned char joint_motor_index) const { (void)joint_motor_index; return ControlMode::POSITION; }
   
@@ -44,7 +44,7 @@ class AGIBOT_EXPORT IControlMode {
    * @param ctrl_modes Control mode vector. Length depends on product type:
    *                   - OmniHand 2025 (O10): 10 values
    *                   - OmniHand Pro 2025 (O12): 12 values
-   * @note Serial port communication (RS485) does not support this interface.
+   * @note Supported by products that implement control mode switching.
    */
   virtual void SetAllControlMode(const std::vector<unsigned char>& ctrl_modes) { (void)ctrl_modes; }
   
@@ -53,7 +53,7 @@ class AGIBOT_EXPORT IControlMode {
    * @return Control mode vector. Length depends on product type:
    *         - OmniHand 2025 (O10): 10 values
    *         - OmniHand Pro 2025 (O12): 12 values
-   * @note Serial port communication (RS485) does not support this interface.
+   * @note Supported by products that implement control mode switching.
    */
   virtual std::vector<unsigned char> GetAllControlMode() const { return {}; }
 

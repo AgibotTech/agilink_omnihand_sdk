@@ -2,7 +2,24 @@
 
 ## 概述
 
-**OmniPicker 3 (OP3)** 为 1 自由度夹爪，支持 ZLG CAN FD、HCAN、ZLG CAN TCP、SocketCAN 和 RS485。请包含 `omnihand/omnipicker_3.h`；原来的 `omni_picker_3.h` 不再是公开头文件名。
+**OmniPicker 3 (OP3)** 为 1 自由度夹爪，支持 ZLG CAN FD、HCAN、SocketCAN 和 RS485。请包含 `omnihand/omnipicker_3.h`；原来的 `omni_picker_3.h` 不再是公开头文件名。
+
+## C++ 示例
+
+各连接方式共用 [demo_omnipicker_3.cc](../../../cpp/demo/omnipicker_3/demo_omnipicker_3.cc)，构建目标为 `demo_omnipicker_3`：
+
+```shell
+./demo_omnipicker_3 -d zlgcan -i 0 -c 0 --device-id 1
+./demo_omnipicker_3 -d hcan --serial ADAPTER_SERIAL
+./demo_omnipicker_3 -d socketcan --can-if can0
+./demo_omnipicker_3 -d rs485 -p COM5
+```
+
+Windows 可执行文件后缀为 `.exe`，Linux 串口可使用 `/dev/ttyUSB0`；SocketCAN 仅适用于 Linux。`--help` 显示完整参数。示例仅演示常规控制与信息读取，不包含固件更新、标定、标零、写 SN 或出厂参数写入。
+
+示例演示电机位置控制、带速度／电流限制的 50 mm 行程控制、1000 mA 温柔夹持，以及电机温度、电流、错误和两侧触觉读取。流程在夹持后读取传感器，最后再次张开；触觉只打印前 8 个点，完整数据保留在返回向量中。
+
+编译方式参见 [CMakeLists.txt](../../../cpp/demo/omnipicker_3/CMakeLists.txt)。
 
 ## 工厂函数
 
@@ -20,7 +37,7 @@ static std::unique_ptr<OmniPicker3> createHandByRs485(
     const std::string& uart_port, int32_t baudrate = 460800);
 ```
 
-ZLG 和 HCAN 工厂函数还提供序列号重载。ZLG CAN TCP 和 Linux SocketCAN 工厂函数与其他产品类采用相同形式。
+ZLG 和 HCAN 工厂函数还提供序列号重载。Linux SocketCAN 工厂函数与其他产品类采用相同形式。
 
 ## 设备 ID
 

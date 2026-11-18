@@ -2,21 +2,21 @@
 
 ## Introduction
 
-The **OmniHandPro2025Solver** class (namespace: `agilink::omnihand::omnihand::o12`) provides control functionalities for the OmniHand Pro 2025 (O12) robotic hand, including gesture setting and joint position conversion.
+The **OmniHandPro2025Solver** class (namespace: `agilink::omnihand::o12`) provides control functionalities for the OmniHand Pro 2025 (O12) robotic hand, including gesture setting and joint position conversion.
 
 ## Include Header
 
 ```cpp
-#include "kinematics/omnihand_pro_2025/omnihand_pro_2025_solver.h"
+#include "omnihand/kinematics/omnihand_pro_2025/omnihand_pro_2025_solver.h"
 ```
 
 ## Constructor
 
 ```cpp
-agilink::omnihand::omnihand::o12::OmniHandPro2025Solver(const bool& hand_type);
+agilink::omnihand::o12::OmniHandPro2025Solver(const bool& is_left_hand);
 ```
 
-- **`hand_type`**: Set to `true` for a left-hand and `false` for a right-hand.
+- **`is_left_hand`**: Set to `true` for a left-hand and `false` for a right-hand.
 
 ## Methods
 
@@ -96,10 +96,10 @@ std::vector<double> MotorInput2MotorLength(const std::vector<int> &motor_input);
 
 - Converts the motor input value to motor length.
 
-### 9. GetAllJointAngles
+### 9. GetAllJointPos
 
 ```cpp
-std::vector<double> GetAllJointAngles(const std::vector<double>& active_joint_angles);
+std::vector<double> GetAllJointPos(const std::vector<double>& active_joint_angles);
 ```
 
 - Retrieves the angles of all joints, including passive joints, based on the given active joint positions.
@@ -107,23 +107,23 @@ std::vector<double> GetAllJointAngles(const std::vector<double>& active_joint_an
 ## Code Example
 
 ```cpp
-#include "kinematics/omnihand_pro_2025/omnihand_pro_2025_solver.h"
+#include "omnihand/kinematics/omnihand_pro_2025/omnihand_pro_2025_solver.h"
 
 // Create solver for right hand
-agilink::omnihand::omnihand::o12::OmniHandPro2025Solver solver(false);
+agilink::omnihand::o12::OmniHandPro2025Solver solver(false);
 
 // Check and validate joint positions
 std::vector<double> active_joint_angles = {0.5, -0.3, 0.6, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.5, 0.3};
 bool valid = solver.CheckJointPos(active_joint_angles);
 
 // Set a gesture
-std::vector<int> actuator_input = solver.SetHandGesture(OmniHandPro2025Gesture::OMNIHAND_PRO_2025_GESTURE_PAPER); // PAPER gesture
+std::vector<int> actuator_input = solver.SetHandGesture(agilink::omnihand::o12::OmniHandPro2025Gesture::OMNIHAND_PRO_2025_GESTURE_PAPER); // PAPER gesture
 
 // Convert joint positions to actuator input
 std::vector<int> input = solver.ConvertJoint2Actuator(active_joint_angles);
 
 // Get all joint positions (including passive joints)
-std::vector<double> all_joints = solver.GetAllJointAngles(active_joint_angles);
+std::vector<double> all_joints = solver.GetAllJointPos(active_joint_angles);
 ```
 
 ## Related Documentation

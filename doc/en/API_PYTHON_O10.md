@@ -1,4 +1,4 @@
-# OmniHand 2025 (O10) Python API
+# OmniHand 2025 & OmniHand 3 (O10) Python API
 
 ## Overview
 
@@ -101,6 +101,8 @@ class TactileSensorData:
 ```
 
 ## Factory Methods
+
+`hand_device_id=0` selects the protocol defaults; a nonzero value initializes both protocol IDs. For CAN address discovery, call `get_hand_device_id_by_broadcast()` after creating the hand.
 
 ### Recommended: ZLG USB CANFD (Zero Configuration)
 
@@ -210,7 +212,7 @@ def create_hand_by_hcan(hand_type: HandType,
     """
 ```
 
-### RS485 Communication (O10 Only)
+### RS485 Communication
 
 ```python
 @staticmethod
@@ -218,7 +220,7 @@ def create_hand_by_rs485(hand_type: HandType,
                       hand_device_id: int,
                       uart_port: str,
                       baudrate: int = 460800) -> 'OmniHand2025':
-    """Creates a dexterous hand object using RS485 communication (O10 only).
+    """Creates a dexterous hand object using RS485 communication.
 
     Args:
         hand_type: The hand type.
@@ -291,8 +293,6 @@ def get_device_info(self) -> DeviceInfo:
     Returns:
         DeviceInfo: Device info structure containing device ID and communication parameters.
     
-    Note:
-        This interface is not supported for serial port communication (RS485).
     """
 
 def set_device_id(self, device_id: int) -> None:
@@ -301,8 +301,6 @@ def set_device_id(self, device_id: int) -> None:
     Args:
         hand_device_id: The hand device ID.
     
-    Note:
-        This interface is not supported for serial port communication (RS485).
     """
 ```
 
@@ -528,17 +526,16 @@ def get_sensor_order() -> List[int]:
 
 ## Control Mode
 
-O10 does not support switching control modes via `set_control_mode`. It operates in **position control mode** by default. Multiple control modes can be achieved via `mix_control_by_pt` / `mix_control_by_pvt`. The following control modes are supported:
+O10 does not support switching control modes via `set_control_mode`. Use the following APIs for mixed control; full-hand arrays must contain 10 values.
 
-| Mode Enum | Value | Description |
-|---|---|---|
-| `ControlMode.POSITION` | 0 | Position control (default) |
-| `ControlMode.POSITION_TORQUE` | 4 | Position + torque mixed control |
-| `ControlMode.POSITION_VELOCITY_TORQUE` | 6 | Position + velocity + torque mixed control (**not yet available**) |
-
-> **Non-standard unit note**: In `POSITION_TORQUE` mode, "torque" actually corresponds to motor current in **mA**, range **0–1000**, not the ROS2 standard N·m.
+| API | Description |
+|-----|-------------|
+| `mix_control_by_pt` | Position + current (mA, 0–1000) |
+| `mix_control_by_pvt` | Position + velocity + current |
 
 ## Current Threshold Control
+
+Standard serial protocol supports reading and writing current thresholds. With private serial protocol, setters write protective current; getters return `0` or an empty collection.
 
 > **Note**: O10/H3L: not allowed to use current threshold control and MixControl at the same time.
 > If you want to use MixControl, please do not call the current threshold interfaces.
@@ -551,8 +548,6 @@ def set_current_threshold(self, joint_motor_index: int, current_threshold: int) 
         joint_motor_index: Joint motor index (1-10).
         current_threshold: Current threshold value.
     
-    Note:
-        This interface is not supported for serial port communication (RS485).
     """
 
 def get_current_threshold(self, joint_motor_index: int) -> int:
@@ -564,8 +559,6 @@ def get_current_threshold(self, joint_motor_index: int) -> int:
     Returns:
         int: Current threshold value.
     
-    Note:
-        This interface is not supported for serial port communication (RS485).
     """
 
 def set_all_current_thresholds(self, current_thresholds: List[int]) -> None:
@@ -574,8 +567,6 @@ def set_all_current_thresholds(self, current_thresholds: List[int]) -> None:
     Args:
         current_thresholds: List of current thresholds. Must have 10 values.
     
-    Note:
-        This interface is not supported for serial port communication (RS485).
     """
 
 def get_all_current_thresholds(self) -> List[int]:
@@ -584,30 +575,18 @@ def get_all_current_thresholds(self) -> List[int]:
     Returns:
         List[int]: List of current thresholds. Returns 10 values.
     
-    Note:
-        This interface is not supported for serial port communication (RS485).
     """
 ```
 
 ## Mixed Control
 
-> **Note**: For O10/H3L, `tgt_torque` actually corresponds to motor current in **mA**, range **0–1000** (not the standard N·m). `tgt_velo` velocity parameter is `int`, range **0–32767**. `POSITION_VELOCITY_TORQUE` mode is **not yet available** (velocity is currently hardcoded internally).
+CAN and RS485 support PT and PVT mixed control. Single-joint RS485 calls require the standard serial protocol; the private serial protocol supports full-hand calls only.
+
+The torque parameter is motor current in **mA** (0–1000), rather than N·m. Position uses raw motor encoder values. Full-hand arrays must contain 10 values.
 
 ```python
 def mix_control_by_pt(self, positions: List[int], torques: List[int]) -> List[MixCtrl]: ...
 def mix_control_by_pvt(self, positions: List[int], velocities: List[int], torques: List[int]) -> List[MixCtrl]: ...
-    """Controls joint motors in mixed mode.
-    
-    Args:
-        mix_ctrls: List of mixed control parameters.
-            - ctrl_mode: Control mode (only POSITION_TORQUE is available for O10)
-            - tgt_posi: Target position (0–4095 raw encoder value)
-            - tgt_torque: Target current in mA, range 0–1000 (non-standard, not N·m)
-    
-    Note:
-        Pure torque control (TORQUE) is not supported.
-        This interface is not supported for serial port communication (RS485).
-    """
 ```
 
 ## Error Handling
@@ -743,7 +722,6 @@ The SDK release package includes ready-to-run Python demo scripts (under `python
 | CAN FD (connect by ID) | [demo_canfd_id.py](../../../python/demo/omnihand_2025/demo_canfd_id.py) |
 | CAN FD (connect by serial) | [demo_canfd_serial.py](../../../python/demo/omnihand_2025/demo_canfd_serial.py) |
 | SocketCAN | [demo_socketcan.py](../../../python/demo/omnihand_2025/demo_socketcan.py) |
-| ZLG CAN TCP | [demo_zlgcan_tcp.py](../../../python/demo/omnihand_2025/demo_zlgcan_tcp.py) |
 | Position + Torque mixed control | [demo_mix_ctrl_pos_torque.py](../../../python/demo/omnihand_2025/demo_mix_ctrl_pos_torque.py) |
 | Position + Velocity + Torque mixed control | [demo_mix_ctrl_pos_vel_torque.py](../../../python/demo/omnihand_2025/demo_mix_ctrl_pos_vel_torque.py) |
 | Current monitoring | [demo_monitor_current.py](../../../python/demo/omnihand_2025/demo_monitor_current.py) |

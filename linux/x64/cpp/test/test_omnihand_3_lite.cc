@@ -13,6 +13,9 @@
 
 #ifdef BUILD_OMNIHAND_3_LITE
 #include "omnihand/omnihand_3_lite.h"
+#ifdef OMNIHAND_BUILD_INTERNAL_TESTS
+#include "omnihand/private_omnihand.h"
+#endif
 
 using namespace agilink::omnihand;
 using agilink::AgilinkLogger;
@@ -959,16 +962,19 @@ TEST_F(OmniHand3LiteTest, GetSNOfTactileSensor) {
 }
 
 // ============================================================================
+#ifdef OMNIHAND_BUILD_INTERNAL_TESTS
 // PrivateOmniHand (StreamCmd) interface tests
 // ============================================================================
 
 TEST_F(OmniHand3LiteTest, PrivateOmniHandCommands) {
   ASSERT_TRUE(hand_->Init()) << "Failed to initialize device";
-  PrivateOmniHand& private_hand = *hand_;
+  auto* internal_hand = dynamic_cast<PrivateOmniHand*>(hand_.get());
+  ASSERT_NE(internal_hand, nullptr);
+  PrivateOmniHand& private_hand = *internal_hand;
 
   AgilinkLogger::get().infof(TAG, "[StreamCmd] Testing power state commands(0x01/0x02):");
-  EXPECT_TRUE(hand_->SetPowerState(1));
-  EXPECT_LE(hand_->GetPowerState(), 2u);
+  EXPECT_TRUE(private_hand.SetPowerState(1));
+  EXPECT_LE(private_hand.GetPowerState(), 2u);
 
   const uint16_t single_position = private_hand.GetSingleAxisPos(1);
   AgilinkLogger::get().infof(TAG, "[PrivateOmniHand][0x07 GetSingleAxisPos] axis=1, position=%u",
@@ -1073,6 +1079,8 @@ TEST_F(OmniHand3LiteTest, PrivateOmniHandCommands) {
   AgilinkLogger::get().infof(TAG, "[PrivateOmniHand] Firmware: %s",
                             firmware.ToString().c_str());
 }
+
+#endif
 
 // Main function for gtest
 int main(int argc, char** argv) {

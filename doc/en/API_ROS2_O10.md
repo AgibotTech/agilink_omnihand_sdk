@@ -1,4 +1,4 @@
-# OmniHand 2025 (O10) ROS2 Interface
+# OmniHand 2025 & OmniHand 3 (O10) ROS2 Interface
 
 > ⚠️ **Linux Only**: ROS2 interface is only available on Linux. Windows is not supported.
 
@@ -252,7 +252,7 @@ Parameters are organized under `left_hand` / `right_hand` namespaces. If `connec
       can_interface: "can1"
 ```
 
-**RS485 Serial (O10 only):**
+**RS485 Serial:**
 
 ```yaml
 /**:

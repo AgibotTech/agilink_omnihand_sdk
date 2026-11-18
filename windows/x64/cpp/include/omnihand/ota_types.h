@@ -29,7 +29,7 @@ namespace omnihand {
  * | Error Code | Value | Description |
  * |------------|-------|-------------|
  * | AGILINK_SUCCESS | 0 | Operation successful |
- * | AGILINK_OTA_NOT_SUPPORTED | -1 | OTA not supported (e.g., RS485) |
+ * | AGILINK_OTA_NOT_SUPPORTED | -1 | OTA not supported by this implementation |
  * | AGILINK_OTA_FILE_NOT_FOUND | -2 | Firmware file not found |
  * | AGILINK_OTA_FILE_EMPTY | -3 | Firmware file is empty |
  * | AGILINK_OTA_REQUEST_TIMEOUT | -4 | Upgrade request or finish response timeout |
@@ -37,6 +37,10 @@ namespace omnihand {
  * | AGILINK_OTA_TRANSMISSION_TIMEOUT | -6 | Data transmission timeout |
  * | AGILINK_OTA_CRC_CHECK_FAILED | -7 | CRC checksum verification failed |
  * | AGILINK_OTA_DEVICE_DISCONNECTED | -8 | Device disconnected during OTA |
+ * | AGILINK_OTA_INVALID_ARGUMENT | -9 | Invalid OTA target or argument |
+ * | AGILINK_OTA_INVALID_FIRMWARE | -10 | Unsupported image or invalid firmware header |
+ * | AGILINK_OTA_INVALID_RESPONSE | -11 | Unexpected response or ambiguous acknowledgement |
+ * | AGILINK_OTA_BUSY | -12 | Another OTA operation is active |
  * | AGILINK_OTA_DEVICE_UNKNOWN_ERROR | 1 | Device: unknown error |
  * | AGILINK_OTA_DEVICE_DATA_READ_ERROR | 2 | Device: data read error |
  * | AGILINK_OTA_DEVICE_WRITE_ERROR | 3 | Device: write error |
@@ -53,7 +57,7 @@ namespace omnihand {
  */
 enum class AGIBOT_EXPORT OtaErrorCode : int {
   AGILINK_SUCCESS = 0,                    // Operation successful
-  AGILINK_OTA_NOT_SUPPORTED = -1,         // OTA not supported for this communication type (e.g., RS485)
+  AGILINK_OTA_NOT_SUPPORTED = -1,         // OTA not supported by this implementation
   AGILINK_OTA_FILE_NOT_FOUND = -2,        // Firmware file not found or cannot be opened
   AGILINK_OTA_FILE_EMPTY = -3,            // Firmware file is empty
   AGILINK_OTA_REQUEST_TIMEOUT = -4,       // Upgrade request or finish response timeout
@@ -61,6 +65,10 @@ enum class AGIBOT_EXPORT OtaErrorCode : int {
   AGILINK_OTA_TRANSMISSION_TIMEOUT = -6,  // Data transmission timeout
   AGILINK_OTA_CRC_CHECK_FAILED = -7,      // CRC checksum verification failed
   AGILINK_OTA_DEVICE_DISCONNECTED = -8,   // Device disconnected during transmission
+  AGILINK_OTA_INVALID_ARGUMENT = -9,      // Invalid OTA target or argument
+  AGILINK_OTA_INVALID_FIRMWARE = -10,     // Unsupported image or invalid firmware header
+  AGILINK_OTA_INVALID_RESPONSE = -11,     // Unexpected response or ambiguous acknowledgement
+  AGILINK_OTA_BUSY = -12,                 // Another OTA operation is active
   // Device-returned error codes (positive values from OTA result response 0x05)
   AGILINK_OTA_DEVICE_UNKNOWN_ERROR = 1,       // Device: unknown error
   AGILINK_OTA_DEVICE_DATA_READ_ERROR = 2,     // Device: data read error
@@ -93,6 +101,10 @@ inline const char* OtaErrorCodeToString(OtaErrorCode code) {
     case OtaErrorCode::AGILINK_OTA_TRANSMISSION_TIMEOUT:    return "Data transmission timeout";
     case OtaErrorCode::AGILINK_OTA_CRC_CHECK_FAILED:        return "CRC checksum verification failed";
     case OtaErrorCode::AGILINK_OTA_DEVICE_DISCONNECTED:     return "Device disconnected during OTA";
+    case OtaErrorCode::AGILINK_OTA_INVALID_ARGUMENT:        return "Invalid OTA argument";
+    case OtaErrorCode::AGILINK_OTA_INVALID_FIRMWARE:        return "Invalid firmware image";
+    case OtaErrorCode::AGILINK_OTA_INVALID_RESPONSE:        return "Invalid OTA response";
+    case OtaErrorCode::AGILINK_OTA_BUSY:                    return "OTA operation already active";
     case OtaErrorCode::AGILINK_OTA_DEVICE_UNKNOWN_ERROR:    return "Device: unknown error";
     case OtaErrorCode::AGILINK_OTA_DEVICE_DATA_READ_ERROR:  return "Device: data read error";
     case OtaErrorCode::AGILINK_OTA_DEVICE_WRITE_ERROR:      return "Device: write error";
@@ -124,18 +136,6 @@ constexpr int kOtaPacketSizeBytes = 2048;
 
 /** Single packet type: fixed 2KB, padded with 0xFF if less than 2KB */
 using OtaPacket = std::array<std::uint8_t, kOtaPacketSizeBytes>;
-
-/**
- * @brief Result of loading a firmware file only (no device communication)
- * @note Check error_code == OtaErrorCode::AGILINK_SUCCESS to determine success
- * @note packets are chunked into 2KB blocks, with the last packet padded with 0xFF; can be reused by UpdateFirmware
- */
-struct AGIBOT_EXPORT FirmwareLoadResult {
-  int total_packets{0};          ///< Total number of packets (calculated by kOtaPacketSizeBytes)
-  size_t file_size_bytes{0};     ///< File size in bytes
-  OtaErrorCode error_code{OtaErrorCode::AGILINK_SUCCESS};  ///< AGILINK_SUCCESS on success, specific error code on failure
-  std::vector<OtaPacket> packets;  ///< Loaded and chunked data, last packet padded with 0xFF if less than 2KB
-};
 
 /**
  * @brief OTA upgrade progress status
@@ -223,14 +223,6 @@ inline std::string OtaVersionToString(int packed_version) {
  */
 using OtaProgressCallback = std::function<void(int current_packet, int total_packets, 
                                                OtaProgressStatus status)>;
-
-/**
- * @brief Load firmware file only and calculate packet count, without device communication
- * @param file_name UTF-8 encoded firmware file path
- * @return FirmwareLoadResult containing total_packets, file_size_bytes, packets, and error_code (AGILINK_SUCCESS on success)
- * @note Consistent with the internal chunking rules of UpdateFirmware; packets are chunked into 2KB blocks with the last packet padded with 0xFF, and can be reused by the update interface
- */
-AGIBOT_EXPORT FirmwareLoadResult LoadFirmwareOnly(const std::string& file_name);
 
 }  // namespace omnihand
 }  // namespace agilink

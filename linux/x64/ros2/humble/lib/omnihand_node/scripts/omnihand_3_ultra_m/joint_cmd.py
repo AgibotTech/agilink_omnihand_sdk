@@ -7,8 +7,8 @@ Topic:
   pub: /<product>/<side>/joint_cmd     (sensor_msgs/JointState, position[] = rad)
   sub: /<product>/<side>/joint_states  (sensor_msgs/JointState, position[] = rad)
 
-Usage:  python3 joint_cmd.py [left|right] [product] [t1p3|t1p5]
-        default: side=left, product=h3u_m, revision=t1p3
+Usage:  python3 joint_cmd.py [left|right] [product]
+        default: side=left, product=h3u_m
 """
 
 import sys
@@ -17,6 +17,8 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import JointState
 
+from joint_info import get_joint_names
+
 
 # topic:
 # /h3u_m/left/joint_cmd; /h3u_m/right/joint_cmd;
@@ -24,21 +26,18 @@ from sensor_msgs.msg import JointState
 
 
 class JointCmdNode(Node):
-    def __init__(self, hand_side: str, product: str, revision: str):
+    def __init__(self, hand_side: str, product: str):
         super().__init__(f'{product}_{hand_side}_joint_cmd')
         self.hand_side = hand_side
         self.product = product
-        if revision not in ('t1p3', 't1p5'):
-            self.get_logger().warning(
-                f'Unknown revision {revision!r}; falling back to t1p3')
-            revision = 't1p3'
-        self.revision = revision
-        self.num_joints = 21 if revision == 't1p5' else 20
         self.publisher = self.create_publisher(
             JointState, f'/{product}/{hand_side}/joint_cmd', 10)
         self.subscription = self.create_subscription(
             JointState, f'/{product}/{hand_side}/joint_states',
             self.callback, 10)
+
+    def start(self):
+        self.num_joints = len(get_joint_names(self, self.product, self.hand_side))
         self.pose_open = [0.0] * self.num_joints
         self.pose_close = [0.0] * self.num_joints
         self.pose_close[-1] = 0.6
@@ -46,8 +45,8 @@ class JointCmdNode(Node):
         self.cycle_count = 0
         self.timer = self.create_timer(0.002, self.publish_joint_cmd)
         self.get_logger().info(
-            f'{product}/{hand_side} joint_cmd started '
-            f'({revision}, {self.num_joints} DOF, 500Hz, position in rad)')
+            f'{self.product}/{self.hand_side} joint_cmd started '
+            f'({self.num_joints} DOF, 500Hz, position in rad)')
 
     def _make_msg(self, positions_rad):
         msg = JointState()
@@ -74,10 +73,13 @@ def main(args=None):
     rclpy.init(args=args)
     hand_side = sys.argv[1].lower() if len(sys.argv) > 1 else 'left'
     product = sys.argv[2].lower() if len(sys.argv) > 2 else 'h3u_m'
-    revision = sys.argv[3].lower() if len(sys.argv) > 3 else 't1p3'
-    node = JointCmdNode(hand_side, product, revision)
+    node = JointCmdNode(hand_side, product)
     try:
+        node.start()
         rclpy.spin(node)
+    except RuntimeError as error:
+        node.get_logger().error(str(error))
+        raise SystemExit(1)
     except KeyboardInterrupt:
         pass
     finally:

@@ -2,7 +2,7 @@
 
 本目录包含 AGILINK OmniHand SDK Python 接口的单元测试，使用 pytest 框架。
 
-**说明：** O10 / Dex UMI 工厂参数中的 `hand_device_id`、`canfd_device_id`、`canfd_channel_id` 在 Python 中为 `int`，绑定层传入 C++ 时为 `uint8_t`（见 `release/doc/zh_cn/API_PYTHON_O10.md`）。
+**说明：** O10 工厂参数中的 `hand_device_id`、`canfd_device_id`、`canfd_channel_id` 在 Python 中为 `int`，绑定层传入 C++ 时为 `uint8_t`（见 `release/doc/zh_cn/API_PYTHON_O10.md`）。
 
 ## 要求
 
@@ -31,7 +31,6 @@ pytest -v test_omnihand_2025.py
 python3 test_omnihand_2025.py -f 0
 python3 test_omnihand_2025.py -d hcan -c 0 -i 0
 python3 test_omnihand_2025.py -d socketcan --can-if can0
-python3 test_omnihand_2025.py -d zlgcantcp --tcp-host 192.168.0.178 --tcp-port 8000
 python3 test_omnihand_2025.py -d usb -p /dev/ttyACM0
 python3 test_omnihand_2025.py -d rs485 -p /dev/ttyUSB0
 
@@ -45,12 +44,6 @@ pytest -v test_omnihand_pro_2025.py
 # O12 测试（直接使用 Python 运行 - 支持 -f 参数）
 python3 test_omnihand_pro_2025.py -f 0
 
-# UMI 测试（直接使用 pytest）
-pytest -v test_omnihand_dex_umi.py
-
-# UMI 测试（直接使用 Python）
-python3 test_omnihand_dex_umi.py
-
 # H3L 测试（直接使用 pytest）
 pytest -v test_omnihand_3_lite.py
 
@@ -60,16 +53,16 @@ python3 test_omnihand_3_lite.py
 # H3L 默认与 gtest 一致：每项重新创建设备，请求间隔 5 ms、接收超时 100 ms
 python3 test_omnihand_3_lite.py -d hcan --request-interval 5 --model s
 
-# H3UM T1.3 测试（pytest 文件名使用 t1_3，避免模块名中的点号）
-pytest -sv test_omnihand_3_ultra_m_t1_3.py
-python3 test_omnihand_3_ultra_m_t1_3.py -d hcan -c 0 -i 0
-python3 test_omnihand_3_ultra_m_t1_3.py -d socketcan --can-if can0
+# H3UM 测试（自动识别 T1.3/T1.5，设备 ID 默认为 0）
+pytest -sv test_omnihand_3_ultra_m.py
+python3 test_omnihand_3_ultra_m.py -d zlgcan -i 0 -c 1 --hand right
+python3 test_omnihand_3_ultra_m.py -d hcan -i 0 -c 0 --device-id 0
+python3 test_omnihand_3_ultra_m.py -d socketcan --can-if can0
 ```
 
 **注意**：
 - 直接使用 Python 运行时，`-f` 参数指定请求间隔（毫秒，CAN 为 0-100ms，USB 为 0-500ms）。使用 `0` 表示禁用间隔限制。
 - 直接使用 `pytest` 时，使用环境变量：`OMNIHAND_REQUEST_INTERVAL=0 pytest -v test_omnihand_2025.py`
-- UMI 测试不支持 `-f` 间隔参数，因为 UMI 协议使用固定的周期上报。
 - 直接使用 Python 运行测试会自动启用详细模式（`-v`）以显示详细的测试结果。
 
 ### 运行特定测试
@@ -98,11 +91,13 @@ pytest -s
 
 测试组织方式与 C++ gtest 结构类似：
 
-- **test_omnihand_2025.py**：OmniHand 2025 (O10, 10 DOF) 各传输方式的统一测试（CANFD + USB/RS485），由原 `test_omnihand_2025_canfd.py` / `test_omnihand_2025_usb.py` / `test_omnihand_2025_zlgcan_tcp.py` 合并而来
+- **test_omnihand_2025.py**：OmniHand 2025 (O10, 10 DOF) 各传输方式的统一测试（CANFD + USB/RS485），由原 `test_omnihand_2025_canfd.py` / `test_omnihand_2025_usb.py` 合并而来
 - **test_omnihand_pro_2025.py**：OmniHand Pro 2025 (O12, 12 DOF) 的测试
 - **test_omnihand_3_lite.py**：OmniHand 3 Lite (H3L, 4 DOF) 的测试
-- **test_omnihand_3_ultra_m_t1_3.py**：OmniHand 3 Ultra M T1.3 (H3UM, 20 DOF) 的测试
-- **test_omnihand_dex_umi.py**：OmniHand Dex UMI (UMI 协议) 的测试
+- **test_omnihand_3_ultra_m.py**：H3UM T1.3/T1.5（20/21 自由度）的 ZLG/HCAN/SocketCAN 硬件测试。动作使用 SDK 的“侧握拳／打开”预设；触觉按识别的版本整手读取 XYZ／uint16 数据。通过 pytest 指定设备 ID 时可设置 `OMNIHAND_DEVICE_ID` 环境变量。
+
+H3UM 默认按左手创建；右手需指定 `--hand right`（也接受 `--hand-type right`）。
+通过 pytest 运行时可设置 `OMNIHAND_HAND_TYPE=right`。
 
 ## 测试覆盖
 
@@ -119,7 +114,6 @@ pytest -s
 - 温度报告
 - 电流报告
 - 运动学求解器
-- UMI 特定功能（回调、上报频率）
 
 ## 注意事项
 

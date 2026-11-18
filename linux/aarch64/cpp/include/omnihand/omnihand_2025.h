@@ -15,7 +15,6 @@
 #include <string>
 #include <vector>
 #include "omnihand/omnihand.h"
-#include "omnihand/private_omnihand.h"
 #include "omnihand/i_o10_tactile_sensor_1d.h"
 #include "omnihand/proto.h"
 #include "omnihand/ota_types.h"
@@ -32,23 +31,33 @@ namespace omnihand {
  * 
  * @note Inherits from IO10TactileSensor1D for 1D tactile sensor interface.
  */
-class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, public IO10TactileSensor1D{
+class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public IO10TactileSensor1D{
  public:
-  TimestampedResult<std::vector<TactileSensorData>> GetAllTactileSensorDataWithTimestamp() const;
-
   // Constants
   static constexpr unsigned char kDegreesOfActiveFreedom = 10;  // DoA
   static constexpr unsigned char kDegreesOfPassiveFreedom = 6;  // DoP
   /** @brief Default hand device ID on the bus for O10 (protocol value 1). Pass explicitly to factories. */
   static constexpr uint8_t kDefaultHandDeviceId = 1u;
 
+  virtual uint16_t GetPrivateHandDeviceIdByBroadcast() = 0;
+  virtual uint16_t GetPrivateHandDeviceId() = 0;
+
+  TimestampedResult<std::vector<TactileSensorData>> GetAllTactileSensorDataWithTimestamp() const;
+
   virtual ~OmniHand2025() = default;
 
   // ============ Factory Methods ============
+  // Zero selects default IDs; it does not request address discovery.
+  // For CAN discovery, call GetHandDeviceIdByBroadcast() after creation.
+  // Creates this product from one context; retains its identity and callback.
+  // Invalid configuration/reuse throws; initialization failure returns nullptr.
+  static std::unique_ptr<OmniHand2025> CreateHand(
+      std::shared_ptr<DeviceContext> context);
+
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by canfd_device_id
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 uses protocol defaults (standard=1, private=9); nonzero initializes both target IDs.
    * @param canfd_device_id USB CANFD adapter device index
    * @param canfd_channel_id CAN channel index (default 0)
    *        - Dual-channel (USBCANFD-200U): can0=0, can1=1
@@ -65,7 +74,7 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by serial number
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 uses protocol defaults (standard=1, private=9); nonzero initializes both target IDs.
    * @param usbcanfd_serial_number USB CANFD device serial number (supports partial matching)
    * @param canfd_channel_id CAN channel index (default 0)
    *        - Dual-channel (USBCANFD-200U): can0=0, can1=1
@@ -79,32 +88,13 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
       uint8_t canfd_channel_id = 0,
       CommunicationLogOptions log_options = {});
 
-#if OMNIHAND_ZLG_TCP_SUPPORTED
-  /**
-   * @brief Factory method - ZLG CANFD over TCP (e.g. WiFi/Ethernet adapter as TCP server)
-   * @note Only available on Windows and Linux x64 (not supported on Linux aarch64/arm64)
-   * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
-   * @param host TCP server IP or hostname (e.g. "192.168.0.178")
-   * @param port TCP server port (e.g. 8000)
-   * @param canfd_channel_id Logical channel (default 0)
-   * @return A unique pointer to OmniHand2025 instance
-   */
-  static std::unique_ptr<OmniHand2025> createHandByZlgCanTcp(
-      HandType hand_type,
-      uint8_t hand_device_id,
-      const std::string& host,
-      uint16_t port,
-      uint8_t canfd_channel_id = 0,
-      CommunicationLogOptions log_options = {});
-#endif  // OMNIHAND_ZLG_TCP_SUPPORTED
 
   /**
-   * @brief Factory method - RS485 communication (OmniHand 2025 only)
+   * @brief Factory method - RS485 communication
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 uses protocol defaults (standard=1, private=9); nonzero initializes both target IDs.
    * @param uart_port Serial port path (e.g., "/dev/ttyUSB0")
-   * @param baudrate Baud rate (default 460800)
+   * @param baudrate Compatibility parameter; must be 460800.
    * @return A unique pointer to OmniHand2025 instance
    */
   static std::unique_ptr<OmniHand2025> createHandByRs485(
@@ -118,9 +108,9 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
    * @brief Factory method - USB communication (OmniHand 2025 only)
    * @note Pass `kDefaultHandDeviceId` explicitly; `uart_port` has no default.
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 uses protocol defaults (standard=1, private=9); nonzero initializes both target IDs.
    * @param uart_port Serial port path (e.g., "/dev/ttyACM0" or "COM3")
-   * @param baudrate Baud rate (default 460800)
+   * @param baudrate Compatibility parameter; must be 460800.
    * @return A unique pointer to OmniHand2025 instance
    */
   static std::unique_ptr<OmniHand2025> createHandByUsb(
@@ -134,7 +124,7 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
   /**
    * @brief Factory method - SocketCAN communication (Linux native CAN interface)
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 uses protocol defaults (standard=1, private=9); nonzero initializes both target IDs.
    * @param can_interface CAN interface name (e.g., "can0", "can1")
    * @return A unique pointer to OmniHand2025 instance
    */
@@ -148,7 +138,7 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
   /**
    * @brief Factory method - HCAN USB CANFD communication (by canfd_device_id)
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 uses protocol defaults (standard=1, private=9); nonzero initializes both target IDs.
    * @param canfd_device_id HCAN device index
    * @param canfd_channel_id CAN channel index (default 0)
    * @return A unique pointer to OmniHand2025 instance
@@ -163,7 +153,7 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
   /**
    * @brief Factory method - HCAN USB CANFD communication (by serial number)
    * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
+   * @param hand_device_id 0 uses protocol defaults (standard=1, private=9); nonzero initializes both target IDs.
    * @param hcan_serial_number HCAN device serial number (supports partial matching)
    * @param canfd_channel_id CAN channel index (default 0)
    * @return A unique pointer to OmniHand2025 instance, or nullptr if device not found
@@ -288,6 +278,10 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
   std::vector<int16_t> GetHandGesture(int gesture_num) override;
 
  protected:
+  OmniHand2025() = default;
+  explicit OmniHand2025(std::shared_ptr<DeviceContext> context)
+      : OmniHand(std::move(context)) {}
+
   /**
    * @brief Initialize base class members and kinematics solver
    * @param device_id Device ID
@@ -298,11 +292,11 @@ class AGIBOT_EXPORT OmniHand2025 : public OmniHand, public PrivateOmniHand, publ
   void Reset(unsigned char device_id, HandType hand_type) {
     OmniHand::Reset(ProductType::OMNIHAND_2025, device_id, hand_type);
     // Automatically initialize kinematics solver
-    kinematics_solver_ = std::make_unique<o10::OmniHand2025Solver>(hand_type_ == HandType::LEFT);
+    kinematics_solver_ = std::make_unique<o10::OmniHand2025Solver>(device_context_, hand_type_ == HandType::LEFT);
   }
 
   void OnHandTypeChanged() override {
-    kinematics_solver_ = std::make_unique<o10::OmniHand2025Solver>(hand_type_ == HandType::LEFT);
+    kinematics_solver_ = std::make_unique<o10::OmniHand2025Solver>(device_context_, hand_type_ == HandType::LEFT);
   }
 
   virtual uint8_t GetDefaultNonPrivateHandDeviceId() const = 0;

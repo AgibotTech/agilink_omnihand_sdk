@@ -9,8 +9,8 @@ Topic:
 
 ControlMode values: 0=POSITION(CSP), 7=PROFILE_POSITION(PP)
 
-Usage:  python3 joint_control_mode_pub.py <mode> [left|right] [product] [t1p3|t1p5]
-        default: mode=0, side=left, product=h3u_m, revision=t1p3
+Usage:  python3 joint_control_mode_pub.py <mode> [left|right] [product]
+        default: mode=0, side=left, product=h3u_m
 """
 
 import os
@@ -24,6 +24,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Int8MultiArray
 from omnihand_node_msgs.msg import Int8MultiArrayStamped
+from joint_info import get_joint_names, wait_for_subscription
 from ros_multi_array_utils import make_int8_multi_array
 
 # topic:
@@ -32,27 +33,29 @@ from ros_multi_array_utils import make_int8_multi_array
 
 
 class ControlModePubSub(Node):
-    def __init__(self, hand_side: str, product: str, mode: int, revision: str):
+    def __init__(self, hand_side: str, product: str):
         super().__init__(f'{product}_{hand_side}_control_mode_pub')
         self.product = product
         self.hand_side = hand_side
-        if revision not in ('t1p3', 't1p5'):
-            self.get_logger().warning(
-                f'Unknown revision {revision!r}; falling back to t1p3')
-            revision = 't1p3'
-        num_joints = 21 if revision == 't1p5' else 20
+        self.command_sent = False
         self.publisher = self.create_publisher(
             Int8MultiArray, f'/{product}/{hand_side}/joint_control_mode_cmd', 10)
         self.subscription = self.create_subscription(
             Int8MultiArrayStamped, f'/{product}/{hand_side}/joint_control_mode_states', self.callback, 10)
 
+    def start(self, mode):
+        num_joints = len(get_joint_names(self, self.product, self.hand_side))
+        wait_for_subscription(self, self.publisher)
         payload = [mode] * num_joints
+        self.command_sent = True
         self.publisher.publish(make_int8_multi_array(payload))
         self.get_logger().info(
-            f'{product}/{hand_side} set control_mode={mode} for all '
-            f'{num_joints} {revision} joints')
+            f'{self.product}/{self.hand_side} set control_mode={mode} for all '
+            f'{num_joints} joints')
 
     def callback(self, msg: Int8MultiArrayStamped):
+        if not self.command_sent:
+            return
         pairs = [f'joint_{i}={msg.data[i]}' for i in range(len(msg.data))]
         self.get_logger().info(f'{self.product}/{self.hand_side} control_mode read-back: [{", ".join(pairs)}]')
         raise SystemExit(0)
@@ -63,12 +66,15 @@ def main(args=None):
     mode = int(sys.argv[1]) if len(sys.argv) > 1 else 0
     hand_side = sys.argv[2].lower() if len(sys.argv) > 2 else 'left'
     product = sys.argv[3].lower() if len(sys.argv) > 3 else 'h3u_m'
-    revision = sys.argv[4].lower() if len(sys.argv) > 4 else 't1p3'
-    node = ControlModePubSub(hand_side, product, mode, revision)
+    node = ControlModePubSub(hand_side, product)
     try:
+        node.start(mode)
         rclpy.spin(node)
     except SystemExit:
         pass
+    except RuntimeError as error:
+        node.get_logger().error(str(error))
+        raise SystemExit(1)
     except KeyboardInterrupt:
         pass
     finally:

@@ -1,4 +1,4 @@
-# OmniHand 2025 (O10) ROS2 接口
+# OmniHand 2025 & OmniHand 3 (O10) ROS2 接口
 
 > ⚠️ **仅支持 Linux**：ROS2 接口仅在 Linux 上可用，不支持 Windows。
 
@@ -245,7 +245,7 @@ O10 支持的连接方式：`zlgcan`、`hcan`、`socketcan`、`rs485`、`usb`。
       can_interface: "can1"
 ```
 
-**RS485 串口（仅 O10）：**
+**RS485 串口：**
 
 ```yaml
 /**:

@@ -50,6 +50,12 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
 
   // ============ Factory Methods ============
 
+  // A zero device ID selects the product's default address.
+  // Creates this product from one context; retains its identity and callback.
+  // Invalid configuration/reuse throws; initialization failure returns nullptr.
+  static std::unique_ptr<OmniPicker3> CreateHand(
+      std::shared_ptr<DeviceContext> context);
+
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by canfd_device_id
    * @param hand_type Hand type; stored and returned by GetHandType() but not used in any OP3 control logic -- any value is accepted
@@ -84,25 +90,6 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
       uint8_t canfd_channel_id = 0,
       CommunicationLogOptions log_options = {});
 
-#if OMNIHAND_ZLG_TCP_SUPPORTED
-  /**
-   * @brief Factory method - ZLG CANFD over TCP (WiFi/Ethernet to CANFD, this machine acts as TCP client)
-   * @param hand_type Hand type; stored and returned by GetHandType() but not used in any OP3 control logic -- any value is accepted
-   * @param hand_device_id Hand device ID
-   * @param tcp_host TCP server IP or hostname (e.g. "192.168.0.178")
-   * @param tcp_port TCP server port (e.g. 8000)
-   * @param canfd_channel_id CAN channel index (0 or 1, default 0)
-   * @return A unique pointer to OmniPicker3 instance
-   * @note Only available on Windows and Linux x64 (not supported on Linux aarch64/arm64)
-   */
-  static std::unique_ptr<OmniPicker3> createHandByZlgCanTcp(
-      HandType hand_type,
-      uint8_t hand_device_id,
-      const std::string& tcp_host,
-      uint16_t tcp_port,
-      uint8_t canfd_channel_id = 0,
-      CommunicationLogOptions log_options = {});
-#endif  // OMNIHAND_ZLG_TCP_SUPPORTED
 
 #ifdef __linux__
   /**
@@ -158,7 +145,7 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
    * @param hand_type Hand type; stored and returned by GetHandType() but not used in any OP3 control logic -- any value is accepted
    * @param hand_device_id Hand device ID
    * @param uart_port Serial port path (e.g., "/dev/ttyUSB0" or "COM3")
-   * @param baudrate Baud rate (default 460800)
+   * @param baudrate Compatibility parameter; must be 460800.
    * @return A unique pointer to OmniPicker3 instance
    */
   static std::unique_ptr<OmniPicker3> createHandByRs485(
@@ -244,12 +231,13 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
    *       current is given the other is filled with the documented firmware default
    *       (GetMinMaxStrokeMixSpeed() / GetMinMaxMixCtrlCurrent() default_value).
    * @return Actual stroke from the device reply, sampled when the command arrives (not the
-   *         target), or -1 on failure. The stroke can be slightly negative near the fully
-   *         closed end (hardware-observed -449), so -1 is a valid reading too; check the log.
+   *         target), or std::nullopt on failure (timeout, short reply, or a transport that
+   *         does not implement it). The stroke can be negative near the fully closed end
+   *         (hardware-observed -449), which is why no in-range value can signal failure.
    */
-  virtual int16_t MixControlByStroke(int16_t stroke,
-                                     std::optional<int16_t> speed = std::nullopt,
-                                     std::optional<int16_t> current = std::nullopt);
+  virtual std::optional<int16_t> MixControlByStroke(
+      int16_t stroke, std::optional<int16_t> speed = std::nullopt,
+      std::optional<int16_t> current = std::nullopt);
 
   /**
    * @brief 0x15: enters gentle grip mode.
@@ -259,15 +247,6 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
    */
   virtual std::vector<uint8_t> SetGentleGrip(
       std::optional<uint16_t> iq_limit_ma = std::nullopt);
-
-  /**
-   * @brief 0x80/0x07: writes the production-test stroke calibration K and S.
-   * @return true only if the device replied to the write and a read-back matches the written values;
-   *         false for NaN/Inf input, no reply, an unreadable read-back, or a mismatch.
-   * @warning Overwrites factory calibration data on the device. Takes effect immediately and is
-   *          persisted, so avoid calling it repeatedly (e.g. in loops or CI) to spare flash endurance.
-   */
-  virtual bool SetProductionStrokeCalib(const StrokeCalib& calib);
 
   /**
    * @brief 0x80/0x07: reads the production-test stroke calibration K and S.
@@ -294,13 +273,12 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
   std::vector<int16_t> GetHandGesture(int gesture_num) override;
 
  protected:
-  // Transport hooks for 0x80/0x07; the encode/verify logic lives once in the base class.
-  // Appended after the public virtuals so the vtable order of existing slots is unchanged.
+  OmniPicker3() = default;
+  explicit OmniPicker3(std::shared_ptr<DeviceContext> context)
+      : OmniHand(std::move(context)) {}
+
+  // Shared reader for the production stroke calibration register.
   static constexpr size_t kStrokeCalibPayloadLen = 8;
-  // The firmware silently drops a write when |K| is below this, so the SDK rejects it first.
-  static constexpr float kStrokeCalibMinAbsK = 1.0f;
-  // Sends the write frame; true once the device replied (the ack format is not specified).
-  virtual bool WriteStrokeCalibRaw(const uint8_t* data, size_t len);
   // Sends the read frame; returns the reply payload verbatim, nullopt on no reply.
   virtual std::optional<std::vector<uint8_t>> ReadStrokeCalibRaw() const;
 
@@ -310,7 +288,10 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
    * @param hand_type Hand type; stored only, not used in any OP3 control logic
    */
   void Reset(unsigned char device_id, HandType hand_type) {
-    OmniHand::Reset(ProductType::OMNI_PICKER_3, device_id, hand_type);
+    OmniHand::Reset(
+        ProductType::OMNI_PICKER_3,
+        device_id == kBroadcastHandDeviceId ? kDefaultHandDeviceId : device_id,
+        hand_type);
   }
 
   static constexpr Int16Bound kMotorPositionBound = {0, 4095};
@@ -320,6 +301,10 @@ class AGIBOT_EXPORT OmniPicker3 : public OmniHand, public ITactileSensor1DU16 {
   static constexpr Int16Range kStrokeMixSpeedRange = {0, 5000, 3000}; // unit: rpm
   static constexpr Int16Range kMixCtrlCurrentRange = {0, 3500, 3000}; // unit: mA
   static constexpr uint8_t kDefaultHandDevideId = 0x01;
+
+ public:
+  // 0x14 mode=5 read: stroke in 0.01 mm without moving the gripper; nullopt on failure.
+  virtual std::optional<int16_t> GetStroke() const;
 };
 
 }  // namespace omnihand

@@ -43,6 +43,11 @@ class AGIBOT_EXPORT OmniHandPro2025 : public OmniHand, public IControlMode {
   virtual ~OmniHandPro2025() = default;
 
   // ============ Factory Methods ============
+  // Creates this product from one context; retains its identity and callback.
+  // Invalid configuration/reuse throws; initialization failure returns nullptr.
+  static std::unique_ptr<OmniHandPro2025> CreateHand(
+      std::shared_ptr<DeviceContext> context);
+
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by canfd_device_id
    * @param hand_type Hand type (left/right)
@@ -77,25 +82,6 @@ class AGIBOT_EXPORT OmniHandPro2025 : public OmniHand, public IControlMode {
       uint8_t canfd_channel_id = 0,
       CommunicationLogOptions log_options = {});
 
-#if OMNIHAND_ZLG_TCP_SUPPORTED
-  /**
-   * @brief Factory method - ZLG CANFD over TCP (e.g. WiFi/Ethernet adapter as TCP server)
-   * @note Only available on Windows and Linux x64 (not supported on Linux aarch64/arm64)
-   * @param hand_type Hand type (left/right)
-   * @param hand_device_id Hand device ID
-   * @param host TCP server IP or hostname (e.g. "192.168.0.178")
-   * @param port TCP server port (e.g. 8000)
-   * @param canfd_channel_id Logical channel (default 0)
-   * @return A unique pointer to OmniHandPro2025 instance
-   */
-  static std::unique_ptr<OmniHandPro2025> createHandByZlgCanTcp(
-      HandType hand_type,
-      uint8_t hand_device_id,
-      const std::string& host,
-      uint16_t port,
-      uint8_t canfd_channel_id = 0,
-      CommunicationLogOptions log_options = {});
-#endif  // OMNIHAND_ZLG_TCP_SUPPORTED
 
 #ifdef __linux__
   /**
@@ -409,6 +395,10 @@ class AGIBOT_EXPORT OmniHandPro2025 : public OmniHand, public IControlMode {
   std::vector<int16_t> GetHandGesture(int gesture_num) override;
 
  protected:
+  OmniHandPro2025() = default;
+  explicit OmniHandPro2025(std::shared_ptr<DeviceContext> context)
+      : OmniHand(std::move(context)) {}
+
   /**
    * @brief Initialize base class members and kinematics solver
    * @param device_id Device ID
