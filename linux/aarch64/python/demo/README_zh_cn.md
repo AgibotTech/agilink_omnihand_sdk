@@ -47,6 +47,21 @@
 - `omnihand_3_lite/demo_canfd_serial.py` - CANFD通信示例（通过序列号）
 - `omnihand_3_lite/demo_socketcan.py` - SocketCAN 示例（仅 Linux）
 
+## OmniHand 3 Ultra M（T1.3/T1.5）示例
+
+`omnihand_3_ultra_m/demo_omnihand_3_ultra_m.py` 使用统一创建接口自动识别
+T1.3/T1.5，演示小指 PIP 的两个角度，并读取电机反馈及原始触觉数据。
+T1.3 返回 XYZ 三维点，T1.5 通过整手查询读取压力。请安装配套重新编译的 Python wheel。
+
+```bash
+python omnihand_3_ultra_m/demo_omnihand_3_ultra_m.py -d zlgcan -i 0 -c 0
+python omnihand_3_ultra_m/demo_omnihand_3_ultra_m.py -d hcan -i 0 -c 1 --hand right
+python omnihand_3_ultra_m/demo_omnihand_3_ultra_m.py -d socketcan --can-if can0
+```
+
+设备 ID 默认为 `0`，在所选通道上自动发现地址；已知地址可传 `--device-id ID`。
+`-i` 为 CAN 适配器索引，`-c` 为通道号。
+
 ## 使用说明
 
 ```bash

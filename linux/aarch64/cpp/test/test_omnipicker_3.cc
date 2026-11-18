@@ -3,13 +3,15 @@
 
 /**
  * @file test_omnipicker_3.cc
- * @brief CANFD tests for OmniPicker 3 (OP3), a 1-DOF gripper
+ * @brief CANFD and RS485 tests for OmniPicker 3 (OP3), a 1-DOF gripper
  *
  * Usage:
  *   ./test_omnipicker_3 [-d TRANSPORT] [-c CHANNEL] [-i CANFD_ID] [-f INTERVAL]
- *                       [--device-id ID] [--can-if IF]
+ *                       [--device-id ID] [--can-if IF] [-p PORT]
  *
- *   -d TRANSPORT     Backend: zlgcan | hcan | socketcan (default: zlgcan)
+ *   -d TRANSPORT     Backend: zlgcan | hcan | socketcan | rs485 (default: zlgcan)
+ *   -p PORT          Serial port for rs485, e.g. /dev/ttyUSB0 or COM7 (required).
+ *                    A positional port after -d rs485 is also accepted.
  *   --device-id ID   Hand device ID to address (default: 1). Unlike the O10 tests this
  *                    is only used to build requests: OP3 tests never call SetDeviceId(),
  *                    because writing the device id is inherently risky and a failed
@@ -41,7 +43,7 @@
 #include <vector>
 
 // Deliberately not <windows.h>: it defines an ERROR macro (via wingdi.h) that collides
-// with OmniLogger<>::Level::ERROR in agilink_logger.h below. Only _isatty is needed, and
+// with LogLevel::ERROR in agilink_logger.h below. Only _isatty is needed, and
 // <io.h> provides it on its own. GoogleTest has already enabled VT processing on the
 // console by the time this file's summary runs, so no SetConsoleMode call is required.
 #if defined(_WIN32)
@@ -62,6 +64,7 @@ enum class CanfdTransport {
   kZlgcan,
   kHcan,
   kSocketCan,
+  kRs485,
 };
 
 CanfdTransport g_transport = CanfdTransport::kZlgcan;
@@ -70,6 +73,7 @@ int g_canfd_id = 0;
 int g_request_interval = 5;
 int g_device_id = oh::OmniPicker3::kDefaultHandDeviceId;
 std::string g_can_if = "can0";
+std::string g_serial_port;
 
 struct CapabilityResult {
   std::string name;
@@ -102,14 +106,16 @@ constexpr size_t kDoF = oh::OmniPicker3::kDegreesOfActiveFreedom;
 constexpr int16_t kDefaultMixCtrlCurrentMa =
     oh::OmniPicker3::GetMinMaxMixCtrlTorque().default_value;
 
-CanfdTransport ParseTransport(std::string s) {
+std::optional<CanfdTransport> ParseTransport(std::string s) {
   std::transform(s.begin(), s.end(), s.begin(),
                  [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
   if (s == "zlgcan") return CanfdTransport::kZlgcan;
   if (s == "hcan") return CanfdTransport::kHcan;
   if (s == "socketcan") return CanfdTransport::kSocketCan;
-  AgilinkLogger::get().warnf(TAG, "[Warning] unknown -d %s, using zlgcan", s.c_str());
-  return CanfdTransport::kZlgcan;
+  if (s == "rs485") return CanfdTransport::kRs485;
+  std::cerr << "Invalid -d value: " << s
+            << "; expected zlgcan, hcan, socketcan or rs485\n";
+  return std::nullopt;
 }
 
 template <typename T>
@@ -146,6 +152,9 @@ std::unique_ptr<oh::OmniPicker3> CreateHandForTransport() {
       AgilinkLogger::get().warnf(TAG, "[Warning] SocketCAN requires Linux; skipping hand creation.");
       return nullptr;
 #endif
+    case CanfdTransport::kRs485:
+      return OmniPicker3::createHandByRs485(kFactoryHandType, device_id,
+                                             g_serial_port);
   }
   return nullptr;
 }
@@ -441,19 +450,22 @@ TEST_F(OmniPicker3Test, MixControlByStroke) {
   RequireDevice();
 
   constexpr int16_t kTarget = 5000;  // 50.00 mm
-  const int16_t pure = hand_->MixControlByStroke(kTarget);
-  AgilinkLogger::get().infof(TAG, "[MixControlByStroke] stroke-only reply=%d", pure);
+  const std::optional<int16_t> pure = hand_->MixControlByStroke(kTarget);
+  ASSERT_TRUE(pure.has_value()) << "no reply to the stroke-only command";
+  AgilinkLogger::get().infof(TAG, "[MixControlByStroke] stroke-only reply=%d", *pure);
   std::this_thread::sleep_for(kStrokeSettleTime);
 
-  const int16_t full = hand_->MixControlByStroke(kTarget, 3000, 3000);
-  AgilinkLogger::get().infof(TAG, "[MixControlByStroke] stroke/speed/current reply=%d", full);
-  EXPECT_NEAR(full, kTarget, kStrokeTolerance) << "reply is not in 0.01 mm or did not reach the target";
+  const std::optional<int16_t> full = hand_->MixControlByStroke(kTarget, 3000, 3000);
+  ASSERT_TRUE(full.has_value()) << "no reply to the stroke/speed/current command";
+  AgilinkLogger::get().infof(TAG, "[MixControlByStroke] stroke/speed/current reply=%d", *full);
+  EXPECT_NEAR(*full, kTarget, kStrokeTolerance) << "reply is not in 0.01 mm or did not reach the target";
   std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
   // Only current given: the 7-byte form, speed filled with the 3000 rpm firmware default.
-  const int16_t partial = hand_->MixControlByStroke(kTarget, std::nullopt, 2000);
-  AgilinkLogger::get().infof(TAG, "[MixControlByStroke] current-only reply=%d", partial);
-  EXPECT_NEAR(partial, kTarget, kStrokeTolerance);
+  const std::optional<int16_t> partial = hand_->MixControlByStroke(kTarget, std::nullopt, 2000);
+  ASSERT_TRUE(partial.has_value()) << "no reply to the current-only command";
+  AgilinkLogger::get().infof(TAG, "[MixControlByStroke] current-only reply=%d", *partial);
+  EXPECT_NEAR(*partial, kTarget, kStrokeTolerance);
 }
 
 // A stroke of 12000 is sent as 11200 (with a warn log), so the gripper settles at the limit.
@@ -462,20 +474,92 @@ TEST_F(OmniPicker3Test, MixControlByStroke) {
 TEST_F(OmniPicker3Test, ClampOutOfRangeStrokeAndCurrent) {
   RequireDevice();
 
-  const int16_t first = hand_->MixControlByStroke(12000);
-  AgilinkLogger::get().infof(TAG, "[Clamp] MixControlByStroke(12000) reply=%d", first);
+  const std::optional<int16_t> first = hand_->MixControlByStroke(12000);
+  ASSERT_TRUE(first.has_value()) << "no reply to the over-limit stroke command";
+  AgilinkLogger::get().infof(TAG, "[Clamp] MixControlByStroke(12000) reply=%d", *first);
   std::this_thread::sleep_for(kStrokeSettleTime);
 
-  const int16_t at_limit = hand_->MixControlByStroke(12000);
-  AgilinkLogger::get().infof(TAG, "[Clamp] settled reply=%d", at_limit);
-  EXPECT_NEAR(at_limit, oh::OmniPicker3::GetMinMaxStroke().max_value, kStrokeTolerance);
-  EXPECT_LE(at_limit, oh::OmniPicker3::GetMinMaxStroke().max_value);
+  const std::optional<int16_t> at_limit = hand_->MixControlByStroke(12000);
+  ASSERT_TRUE(at_limit.has_value()) << "no reply at the stroke limit";
+  AgilinkLogger::get().infof(TAG, "[Clamp] settled reply=%d", *at_limit);
+  EXPECT_NEAR(*at_limit, oh::OmniPicker3::GetMinMaxStroke().max_value, kStrokeTolerance);
+  EXPECT_LE(*at_limit, oh::OmniPicker3::GetMinMaxStroke().max_value);
 
-  const int16_t clamped_current = hand_->MixControlByStroke(5000, 3000, 5000);
+  const std::optional<int16_t> clamped_current = hand_->MixControlByStroke(5000, 3000, 5000);
+  ASSERT_TRUE(clamped_current.has_value()) << "no reply to the clamped-current command";
   AgilinkLogger::get().infof(TAG, "[Clamp] MixControlByStroke(current=5000) reply=%d",
-                             clamped_current);
-  EXPECT_NE(clamped_current, -1) << "no reply to the clamped-current command";
+                             *clamped_current);
   std::this_thread::sleep_for(kStrokeSettleTime);
+}
+
+// The fully closed end reads slightly negative (hardware-observed -449 CAN / -233 RS485), so a
+// negative stroke must come back as a value rather than be mistaken for a failure. The reply is
+// sampled when the command arrives, hence the second call after settling.
+TEST_F(OmniPicker3Test, MixControlByStrokeNegativeAtClosedEnd) {
+  RequireDevice();
+
+  const int16_t closed_target = oh::OmniPicker3::GetMinMaxStroke().min_value;
+  ASSERT_TRUE(hand_->MixControlByStroke(closed_target).has_value()) << "no reply to the close command";
+  std::this_thread::sleep_for(kStrokeSettleTime);
+
+  const std::optional<int16_t> closed = hand_->MixControlByStroke(closed_target);
+  ASSERT_TRUE(closed.has_value()) << "no reply at the closed end";
+  AgilinkLogger::get().infof(TAG, "[NegativeStroke] closed-end reply=%d", *closed);
+  EXPECT_LT(*closed, 0) << "closed end did not read negative";
+
+  // Leave the gripper mid-stroke so later cases start from the same state as before.
+  hand_->MixControlByStroke(5000);
+  std::this_thread::sleep_for(kStrokeSettleTime);
+}
+
+// GetStroke is a read-only 0x14 request. Confirm the gripper has settled near
+// the target before measuring drift; a fixed delay can end during its approach.
+TEST_F(OmniPicker3Test, GetStrokeReadsWithoutMoving) {
+  RequireDevice();
+
+  constexpr int16_t kTarget = 5000;  // 50.00 mm
+  constexpr int16_t kMaxDriftAtRest = 50;  // 0.50 mm
+  const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+  ASSERT_TRUE(hand_->MixControlByStroke(kTarget).has_value()) << "no reply to the move command";
+  std::this_thread::sleep_for(kStrokeSettleTime);
+
+  std::vector<int> settling_reads;
+  bool settled = false;
+  while (std::chrono::steady_clock::now() < deadline) {
+    const auto stroke = hand_->GetStroke();
+    ASSERT_TRUE(stroke.has_value()) << "no reply while waiting for the stroke to settle";
+    settling_reads.push_back(*stroke);
+    if (settling_reads.size() >= 5) {
+      const auto first = settling_reads.end() - 5;
+      const auto [lo, hi] = std::minmax_element(first, settling_reads.end());
+      if (*hi - *lo <= 10 && *lo >= kTarget - kStrokeTolerance
+          && *hi <= kTarget + kStrokeTolerance) {
+        settled = true;
+        break;
+      }
+    }
+    std::this_thread::sleep_until(std::min(deadline,
+        std::chrono::steady_clock::now() + std::chrono::milliseconds(200)));
+  }
+  AgilinkLogger::get().infof(TAG, "[GetStroke] settling reads: %s", JoinValues(settling_reads).c_str());
+  ASSERT_TRUE(settled) << "stroke did not settle near " << kTarget
+                       << " within 5 seconds: " << JoinValues(settling_reads);
+
+  std::vector<int> reads;
+  for (int i = 0; i < 5; ++i) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    const std::optional<int16_t> stroke = hand_->GetStroke();
+    ASSERT_TRUE(stroke.has_value()) << "no reply to read " << i;
+    reads.push_back(*stroke);
+  }
+  AgilinkLogger::get().infof(TAG, "[GetStroke] reads at rest: %s", JoinValues(reads).c_str());
+
+  for (const int stroke : reads) {
+    EXPECT_NEAR(stroke, kTarget, kStrokeTolerance) << "read does not match the settled target";
+  }
+  reads.push_back(settling_reads.back());
+  const auto [lo, hi] = std::minmax_element(reads.begin(), reads.end());
+  EXPECT_LE(*hi - *lo, kMaxDriftAtRest) << "stroke changed between read-only requests";
 }
 
 // Hardware-observed 0x15 reply (2026-10-13, CAN and RS485): 4 bytes, mode(1) contact(1)
@@ -861,8 +945,18 @@ int main(int argc, char** argv) {
   for (int i = 1; i < argc; ++i) {
     const std::string arg = argv[i];
 
-    if ((arg == "-d" || arg == "--device") && i + 1 < argc) {
-      g_transport = ParseTransport(argv[++i]);
+    if (arg == "-d" || arg == "--device" || arg == "-p" || arg == "--port") {
+      if (i + 1 >= argc || argv[i + 1][0] == '-' || argv[i + 1][0] == '\0') {
+        std::cerr << "Missing value for " << arg << '\n';
+        return 1;
+      }
+      if (arg == "-d" || arg == "--device") {
+        const auto transport = ParseTransport(argv[++i]);
+        if (!transport) return 1;
+        g_transport = *transport;
+      } else {
+        g_serial_port = argv[++i];
+      }
     } else if ((arg == "--device-id" || arg == "--id") && i + 1 < argc) {
       g_device_id = std::stoi(argv[++i]);
     } else if (arg == "-c" && i + 1 < argc) {
@@ -881,7 +975,9 @@ int main(int argc, char** argv) {
           << "OmniPicker 3 Test\n\n"
           << "Usage: " << argv[0] << " [options]\n\n"
           << "Options:\n"
-          << "  -d, --device NAME    zlgcan | hcan | socketcan (default: zlgcan)\n"
+          << "  -d, --device NAME    zlgcan | hcan | socketcan | rs485 (default: zlgcan)\n"
+          << "  -p, --port PORT      RS485 serial port (required for rs485), baudrate 460800\n"
+          << "                       A positional port after -d rs485 is also accepted\n"
           << "  --device-id ID       hand device ID to address (default: 1); never written by this suite\n"
           << "  -c CHANNEL           CAN channel (zlgcan/hcan), default 0\n"
           << "  -i CANFD_ID          adapter index (zlgcan/hcan), default 0\n"
@@ -895,13 +991,27 @@ int main(int argc, char** argv) {
           << "    --id 1     address the gripper as device id 1\n"
           << "    -f 5       5 ms between requests\n"
           << "\nOther transports:\n"
+          << "  " << argv[0] << " -d hcan -i 0 -c 0\n"
           << "  " << argv[0] << " -d socketcan --can-if can0\n"
+          << "  " << argv[0] << " -d rs485 -p /dev/ttyUSB0\n"
+          << "  " << argv[0] << " -d rs485 /dev/ttyUSB0\n"
           << "\nGoogleTest flags are forwarded, e.g. --gtest_filter=*Tactile*\n"
           << std::endl;
       return 0;
+    } else if (g_transport == CanfdTransport::kRs485 && !arg.empty() && arg[0] != '-') {
+      if (!g_serial_port.empty()) {
+        std::cerr << "Multiple RS485 serial ports specified\n";
+        return 1;
+      }
+      g_serial_port = arg;
     } else {
       gtest_args.push_back(argv[i]);
     }
+  }
+
+  if (g_transport == CanfdTransport::kRs485 && g_serial_port.empty()) {
+    std::cerr << "RS485 requires a serial port: -d rs485 -p /dev/ttyUSB0\n";
+    return 1;
   }
 
   AgilinkLogger::get().infof(TAG, "=== OmniPicker 3 Test ===");
@@ -915,6 +1025,9 @@ int main(int argc, char** argv) {
     case CanfdTransport::kSocketCan:
       AgilinkLogger::get().infof(TAG, "Transport: socketcan  can_if=%s", g_can_if.c_str());
       break;
+    case CanfdTransport::kRs485:
+      AgilinkLogger::get().infof(TAG, "Transport: rs485  port=%s  baudrate=460800", g_serial_port.c_str());
+      break;
   }
   AgilinkLogger::get().infof(TAG, "Channel ID: %d", g_channel_id);
   AgilinkLogger::get().infof(TAG, "CANFD ID: %d", g_canfd_id);
@@ -924,10 +1037,14 @@ int main(int argc, char** argv) {
   AgilinkLogger::get().infof(TAG, "=========================");
 
   int gtest_argc = static_cast<int>(gtest_args.size());
+  gtest_args.push_back(nullptr);
   ::testing::InitGoogleTest(&gtest_argc, gtest_args.data());
   AgilinkLogger::get().flush();
   const int result = RUN_ALL_TESTS();
-  ReturnToZeroOnce();
+  if (::testing::UnitTest::GetInstance()->test_to_run_count() > 0
+      && !GTEST_FLAG_GET(list_tests)) {
+    ReturnToZeroOnce();
+  }
   // Drain the async logger first, so the summary is not interleaved with buffered log lines.
   AgilinkLogger::get().flush();
   PrintRunSummary();

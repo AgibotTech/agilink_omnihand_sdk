@@ -47,6 +47,22 @@
 - `omnihand_3_lite/demo_canfd_serial.py` - CANFD communication example (by serial number)
 - `omnihand_3_lite/demo_socketcan.py` - SocketCAN example (Linux only)
 
+## OmniHand 3 Ultra M (T1.3/T1.5) Example
+
+`omnihand_3_ultra_m/demo_omnihand_3_ultra_m.py` uses the unified factories to detect
+T1.3/T1.5, moves the pinky PIP through two angles, and reads motor feedback and raw
+tactile data. T1.3 returns XYZ points; T1.5 reads pressure through a whole-hand query.
+Use a matching rebuilt Python wheel.
+
+```bash
+python omnihand_3_ultra_m/demo_omnihand_3_ultra_m.py -d zlgcan -i 0 -c 0
+python omnihand_3_ultra_m/demo_omnihand_3_ultra_m.py -d hcan -i 0 -c 1 --hand right
+python omnihand_3_ultra_m/demo_omnihand_3_ultra_m.py -d socketcan --can-if can0
+```
+
+Device ID defaults to `0` for address discovery on the selected channel. Use
+`--device-id ID` for a known address; `-i` selects the CAN adapter and `-c` its channel.
+
 ## Usage
 
 ```bash

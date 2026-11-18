@@ -10,7 +10,11 @@
 #ifndef AGILINK_OMNIHAND_3_ULTRA_M_H
 #define AGILINK_OMNIHAND_3_ULTRA_M_H
 
+// Lets clients retain support for SDK releases without motor discovery and OTA.
+#define OMNIHAND_H3UM_MOTOR_OTA_API 6
+
 #include <cstdint>
+#include <functional>
 #include <map>
 #include <memory>
 #include <optional>
@@ -18,7 +22,6 @@
 #include <vector>
 #include "omnihand/export_symbols.h"
 #include "omnihand/i_control_mode.h"
-#include "omnihand/i_omnihand_calibrator.h"
 #include "omnihand/i_tactile_sensor_3d_i16.h"
 #include "omnihand/i_tactile_sensor_1d_u16.h"
 #include "omnihand/kinematics/omnihand_3_ultra_m/omnihand_3_ultra_m_solver.h"
@@ -185,8 +188,7 @@ inline std::string H3UMErrorReportToString(const JointMotorErrorReport& report) 
  *   name/index are still placeholder implementations.
  */
 class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
-                                      public IControlMode,
-                                      public IOmniHandCalibrator {
+                                      public IControlMode {
  public:
   // Constants
   static constexpr unsigned char kT1P3DegreesOfActiveFreedom = 20;
@@ -199,8 +201,8 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   static constexpr char kDefaultTactileSocIp[] = "192.168.99.2";
   static constexpr uint16_t kDefaultTactileSocPort = 19009;
 
-  static constexpr uint8_t GetDefaultHandDeviceId(H3UMRevision revision) {
-    return revision == H3UMRevision::T1P5
+  static constexpr uint8_t GetDefaultHandDeviceId(h3um::H3UMRevision revision) {
+    return revision == h3um::H3UMRevision::T1P5
         ? kT1P5DefaultHandDeviceId
         : kT1P3DefaultHandDeviceId;
   }
@@ -210,27 +212,21 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   // ============ Factory Methods ============
   // Address discovery assumes one hand on the selected CAN channel.
   // Without a broadcast reply, discovery tries kT1P3DefaultHandDeviceId.
+  // Creates this product from one context; retains its identity and callback.
+  // Invalid configuration/reuse throws; initialization failure returns nullptr.
+  static std::unique_ptr<OmniHand3UltraM> CreateHand(
+      std::shared_ptr<DeviceContext> context);
+
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by canfd_device_id
-   * @note Both zero and nonzero IDs detect T1.3/T1.5 by querying active DOF.
+   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
    * @param hand_type Hand type (left/right)
    * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param canfd_device_id CANFD device ID
    * @param canfd_channel_id CANFD channel ID
-   * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
-   * @param tactile_soc_port Tactile SoC data port
    * @return A hand instance, or nullptr if connection or revision detection fails.
    */
   static std::unique_ptr<OmniHand3UltraM> createHandByZlgcan(
-      HandType hand_type,
-      uint8_t hand_device_id,
-      uint8_t canfd_device_id,
-      uint8_t canfd_channel_id = 0,
-      const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-      uint16_t tactile_soc_port = kDefaultTactileSocPort,
-      CommunicationLogOptions log_options = {});
-
-  static std::unique_ptr<OmniHand3UltraM> createHandT1P5ByZlgcan(
       HandType hand_type,
       uint8_t hand_device_id,
       uint8_t canfd_device_id,
@@ -239,25 +235,14 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 
   /**
    * @brief Factory method - CAN communication (ZLG USB CANFD) by serial number
-   * @note Both zero and nonzero IDs detect T1.3/T1.5 by querying active DOF.
+   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
    * @param hand_type Hand type (left/right)
    * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param usbcanfd_serial_number USB CANFD serial number
    * @param canfd_channel_id CANFD channel ID
-   * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
-   * @param tactile_soc_port Tactile SoC data port
    * @return A hand instance, or nullptr if connection or revision detection fails.
    */
   static std::unique_ptr<OmniHand3UltraM> createHandByZlgcan(
-      HandType hand_type,
-      uint8_t hand_device_id,
-      const std::string& usbcanfd_serial_number,
-      uint8_t canfd_channel_id = 0,
-      const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-      uint16_t tactile_soc_port = kDefaultTactileSocPort,
-      CommunicationLogOptions log_options = {});
-
-  static std::unique_ptr<OmniHand3UltraM> createHandT1P5ByZlgcan(
       HandType hand_type,
       uint8_t hand_device_id,
       const std::string& usbcanfd_serial_number,
@@ -268,20 +253,16 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 #ifdef __linux__
   /**
    * @brief Factory method - SocketCAN communication (Linux native CAN interface)
-   * @note Both zero and nonzero IDs detect T1.3/T1.5 by querying active DOF.
+   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
    * @param hand_type Hand type (left/right)
    * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param can_interface CAN interface name (e.g. "can0")
-   * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
-   * @param tactile_soc_port Tactile SoC data port
    * @return A hand instance, or nullptr if connection or revision detection fails.
    */
   static std::unique_ptr<OmniHand3UltraM> createHandSocketCan(
       HandType hand_type,
       uint8_t hand_device_id,
       const std::string& can_interface = "can0",
-      const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-      uint16_t tactile_soc_port = kDefaultTactileSocPort,
       CommunicationLogOptions log_options = {});
 
   static std::unique_ptr<OmniHand3UltraM> createHandT1P5SocketCan(
@@ -293,13 +274,11 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 
   /**
    * @brief Factory method - HCAN USB CANFD communication (by canfd_device_id)
-   * @note Both zero and nonzero IDs detect T1.3/T1.5 by querying active DOF.
+   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
    * @param hand_type Hand type (left/right)
    * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param canfd_device_id CANFD device ID
    * @param canfd_channel_id CANFD channel ID
-   * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
-   * @param tactile_soc_port Tactile SoC data port
    * @return A hand instance, or nullptr if connection or revision detection fails.
    */
   static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
@@ -307,8 +286,6 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
       uint8_t hand_device_id,
       uint8_t canfd_device_id,
       uint8_t canfd_channel_id = 0,
-      const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-      uint16_t tactile_soc_port = kDefaultTactileSocPort,
       CommunicationLogOptions log_options = {});
 
   static std::unique_ptr<OmniHand3UltraM> createHandT1P5ByHcan(
@@ -320,13 +297,11 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
 
   /**
    * @brief Factory method - HCAN USB CANFD communication (by serial number)
-   * @note Both zero and nonzero IDs detect T1.3/T1.5 by querying active DOF.
+   * @note Automatically detects T1.3/T1.5 from the reported active DOF.
    * @param hand_type Hand type (left/right)
    * @param hand_device_id 0 broadcasts to discover the device ID; nonzero skips broadcast.
    * @param hcan_serial_number HCAN serial number
    * @param canfd_channel_id CANFD channel ID
-   * @param tactile_soc_ip Tactile SoC IP for palm and Xense (empty = disabled)
-   * @param tactile_soc_port Tactile SoC data port
    * @return A hand instance, or nullptr if connection or revision detection fails.
    */
   static std::unique_ptr<OmniHand3UltraM> createHandByHcan(
@@ -334,8 +309,6 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
       uint8_t hand_device_id,
       const std::string& hcan_serial_number,
       uint8_t canfd_channel_id = 0,
-      const std::string& tactile_soc_ip = kDefaultTactileSocIp,
-      uint16_t tactile_soc_port = kDefaultTactileSocPort,
       CommunicationLogOptions log_options = {});
 
   static std::unique_ptr<OmniHand3UltraM> createHandT1P5ByHcan(
@@ -357,7 +330,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   *       binding; ROS2 node code should call this instead of hard-coding the list.
   */
   std::vector<std::string> GetJointNames() const override {
-    return revision_ == H3UMRevision::T1P5
+    return revision_ == h3um::H3UMRevision::T1P5
         ? h3um::OmniHand3UltraMSolver::kT1P5JointNames
         : h3um::OmniHand3UltraMSolver::kT1P3JointNames;
   }
@@ -385,7 +358,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
       const std::vector<int16_t>& positions, HandType source_hand,
       HandType target_hand) const override;
 
-  H3UMRevision GetRevision() const {
+  h3um::H3UMRevision GetRevision() const {
     return revision_;
   }
 
@@ -404,7 +377,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
         joint_motor_index > GetNumOfJointMotors()) {
       return {0, 0, 0};
     }
-    return revision_ == H3UMRevision::T1P5
+    return revision_ == h3um::H3UMRevision::T1P5
         ? kT1P5MixCtrlTorqueRange
         : kT1P3MixCtrlTorqueRange;
   }
@@ -447,6 +420,12 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   virtual size_t GetSensorDataLength(Finger sensor) const = 0;
   virtual const std::vector<Finger>& GetSensorOrder() const;
 
+  // T1.3 only: empty IP detaches; replacing an endpoint waits for old workers.
+  // Returns true on detach or successful probe; finger scanning is asynchronous.
+  virtual bool AttachTactileSoc(
+      const std::string& tactile_soc_ip,
+      uint16_t tactile_soc_port = kDefaultTactileSocPort);
+
   // ============ Xense Tactile Sensing ============
   // Cached frames retain their first SDK host receive time; vendor clocks are unchanged.
   TimestampedResult<bool> GetFingerTactileWithTimestamp(uint8_t finger_index, XenseFrame& frame);
@@ -476,6 +455,29 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
   virtual bool GetAllTactile(AllTactileFrame& frame) { (void)frame; return false; }
 
   // ============ T1.5 Extended API ============
+  // Synchronous Eyou motor upgrade, currently supported over T1.5 CAN only.
+  // Owns pass-through entry and cleanup on success, failure and exceptions.
+  // Suspend other hand requests until this returns. Do not reenter hand
+  // methods from progress callbacks. Progress counts acknowledged 1KB blocks;
+  // errors use SDK OtaErrorCode values, not the motor's raw status byte.
+  // Success requires all block CRC replies, App detection and exit command delivery.
+  // Returns the confirmed App version on success, or empty on failure.
+  // An interrupted upgrade can be restarted from offset 0 when the motor is in Boot.
+  // Wait 0~60000 ms after each pass-through switch; default 180 ms.
+  virtual std::string UpdateJointMotorFirmware(
+      uint8_t node_id, const std::string& file_name,
+      OtaProgressCallback progress_callback = nullptr,
+      int pass_through_wait_ms = 180) {
+    (void)node_id;
+    (void)file_name;
+    (void)pass_through_wait_ms;
+    if (progress_callback) {
+      progress_callback(static_cast<int>(OtaErrorCode::AGILINK_OTA_NOT_SUPPORTED),
+                        0, OtaProgressStatus::AGILINK_OTA_ERROR);
+    }
+    return {};
+  }
+
   // Read register 0x28 for motor indices 1~21; returns empty on failure or unsupported revision.
   virtual std::string GetMotorVersion(uint8_t joint_motor_index) const {
     (void)joint_motor_index;
@@ -512,47 +514,33 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
    */
   virtual int16_t GetTemperatureOfPower() const = 0;
 
-  // ---- IOmniHandCalibrator interface ----
-
-  // Pn23 (0x17): Single axis actual (calibration) position
-  // int16_t, unit: 0.1 degree, range: -1800 ~ 1800 (i.e. -180.0° ~ 180.0°), default: 0
-  int16_t SetSingleActualAxisPos(uint8_t axis_index, int16_t position) override { (void)axis_index; (void)position; return 0; }
-  int16_t GetSingleActualAxisPos(uint8_t axis_index) const override { (void)axis_index; return 0; }
-
-  // Pn23 (0x17): All axes actual (calibration) positions
-  std::vector<int16_t> SetAllActualAxisPos(const std::vector<int16_t>& positions) override { (void)positions; return {}; }
-  std::vector<int16_t> GetAllActualAxisPos() const override { return {}; }
-
-  // Pn9 (0x09): Set axis homing (zero reference) position
-  // axis_index: 0=all axes (pos ignored), 1-20=single axis
-  bool SetAxisHoming(uint8_t axis_index, int16_t pos) override { (void)axis_index; (void)pos; return false; }
-
-  // Pn8 (0x08): Set single axis minimum position limit
-  // int16_t, unit: 0.1 degree, range: -1800 ~ 1800, default: 0
-  bool SetAxisMinPos(uint8_t axis_index, int16_t min_pos) override { (void)axis_index; (void)min_pos; return false; }
-
-  // Pn7 (0x07): Set single axis maximum position limit
-  // int16_t, unit: 0.1 degree, range: -1800 ~ 1800, default: 0
-  bool SetAxisMaxPos(uint8_t axis_index, int16_t max_pos) override { (void)axis_index; (void)max_pos; return false; }
-
-  // Get all axes position limits (Pn7 & Pn8)
-  AxisLimitPos GetAxisLimitPos() const override { return {}; }
-
-  // Clear all axis position limits (not supported on H3UM, always returns false)
-  bool ClearAllLimitPos() override { return false; }
-
-  // Pn10 (0x0A): Save parameters to flash
-  // Parameters set via Pn7~Pn9 are NOT persisted until this command is sent.
-  bool SaveParam() override { return false; }
-
-  // Pn24 (0x18): Start auto calibration for all motors
-  virtual bool StartAutoCalibration() { return false; }
-
   // Clear error report
   virtual void ClearAllErrorReport() {}
   virtual void ClearErrorReport(unsigned char joint_motor_index) { (void)joint_motor_index; }
 
+  // Append new virtual APIs to preserve the slots of existing declarations.
+  // Scan global nodes 1~21 over T1.5 CAN; owns pass-through entry and cleanup.
+  // Attempts cleanup before returning or propagating a callback exception.
+  // Each valid reply invokes callback(node_id, in_boot, version) synchronously.
+  // Probe Boot first, then CANopen on no valid Boot reply; absent nodes are skipped.
+  // Returns true after a completed scan and exit delivery, even with no nodes.
+  // Suspend other hand requests until this returns.
+  // Callbacks must not reenter hand methods.
+  // Callback exceptions propagate to the caller. No Python binding.
+  // Wait 0~60000 ms after each pass-through switch; default 20 ms.
+  virtual bool ScanJointMotorFirmware(
+      std::function<void(uint8_t node_id, bool in_boot,
+                         const std::string& version)> callback,
+      int pass_through_wait_ms = 20) {
+    (void)callback;
+    (void)pass_through_wait_ms;
+    return false;
+  }
+
  protected:
+  OmniHand3UltraM() = default;
+  explicit OmniHand3UltraM(std::shared_ptr<DeviceContext> context) : OmniHand(std::move(context)) {}
+
   /**
    * @brief Initialize base class members and per-joint rad <-> tick solver.
    * @param device_id Device ID
@@ -561,7 +549,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
    *       Solver is built here so derived impls (CAN / Serial / ...) can use
    *       joint_motor_solver_ directly without re-implementing init logic.
    */
-  void Reset(uint8_t device_id, HandType hand_type, H3UMRevision revision);
+  void Reset(uint8_t device_id, HandType hand_type, h3um::H3UMRevision revision);
   void OnHandTypeChanged() override;
 
   /**
@@ -570,7 +558,7 @@ class AGIBOT_EXPORT OmniHand3UltraM : public OmniHand,
    *        Shared by every transport implementation.
    */
   std::unique_ptr<h3um::OmniHand3UltraMSolver> joint_motor_solver_;
-  H3UMRevision revision_{H3UMRevision::T1P3};
+  h3um::H3UMRevision revision_{h3um::H3UMRevision::T1P3};
   std::optional<h3um::H3UMGesture> previous_gesture_;
   std::map<Finger, size_t> tactile_points_map_;
   static constexpr Int16Bound kActualMotorPositionBound = {-1800, 1800};

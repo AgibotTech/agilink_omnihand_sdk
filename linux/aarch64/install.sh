@@ -26,6 +26,8 @@ sudo rm -f "$PREFIX/lib/libusb-1.0.so"* 2>/dev/null || true
 sudo rm -f "$PREFIX/lib/libcanbus.so"* 2>/dev/null || true
 
 sudo mkdir -p "$PREFIX/bin" "$PREFIX/include" "$PREFIX/lib" "$PREFIX/share/cmake/omnihand"
+sudo rm -f "$PREFIX/include/omnihand/private_omnihand.h" \
+    "$PREFIX/include/omnihand/i_omnihand_calibrator.h"
 # Remove retired files left by an older SDK installation.
 sudo rm -f "$PREFIX/include/omnihand/omnihand_dex_umi.h"
 sudo rm -f "$PREFIX/bin/omnihand_server"
