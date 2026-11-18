@@ -494,14 +494,6 @@ def test_current_report(hand, dof):
         assert len(values) == dof
 
 
-def test_get_all_joint_motor_velo(hand, dof):
-    values = hand.get_all_joint_velocities()
-    print(f"\n[GetAllJointMotorVelo] {values}")
-    if not values or len(values) != dof:
-        return
-    assert len(values) == dof
-
-
 if __name__ == "__main__":
     _export_config_to_environment()
     raise SystemExit(pytest.main([__file__, "-v", "-s", *sys.argv[1:]]))

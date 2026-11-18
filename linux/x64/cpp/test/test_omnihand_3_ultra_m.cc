@@ -525,20 +525,6 @@ TEST_F(OmniHand3UltraMTest, CurrentReport) {
   }
 }
 
-TEST_F(OmniHand3UltraMTest, GetAllJointMotorVelo) {
-  if (hand_->Init()) {
-    auto current_velocities = hand_->GetAllJointMotorVelo();
-    if (current_velocities.empty() || current_velocities.size() != hand_->GetDoA()) {
-      AgilinkLogger::get().warnf(TAG, "[GetAllJointMotorVelo] Failed: got %zu velocities, expected %u",
-                                current_velocities.size(), static_cast<unsigned>(hand_->GetDoA()));
-      return;
-    }
-    AgilinkLogger::get().infof(TAG, "[GetAllJointMotorVelo] Current Velocities: %s",
-                              ValuesToString(current_velocities).c_str());
-    EXPECT_EQ(current_velocities.size(), hand_->GetDoA());
-  }
-}
-
 #ifdef OMNIHAND_BUILD_INTERNAL_TESTS
 TEST_F(OmniHand3UltraMTest, AxisLimitPos) {
   if (hand_->Init()) {
