@@ -53,10 +53,11 @@ python3 test_omnihand_3_lite.py
 # H3L 默认与 gtest 一致：每项重新创建设备，请求间隔 5 ms、接收超时 100 ms
 python3 test_omnihand_3_lite.py -d hcan --request-interval 5 --model s
 
-# H3UM T1.3 测试（pytest 文件名使用 t1_3，避免模块名中的点号）
-pytest -sv test_omnihand_3_ultra_m_t1_3.py
-python3 test_omnihand_3_ultra_m_t1_3.py -d hcan -c 0 -i 0
-python3 test_omnihand_3_ultra_m_t1_3.py -d socketcan --can-if can0
+# H3UM 测试（自动识别 T1.3/T1.5，设备 ID 默认为 0）
+pytest -sv test_omnihand_3_ultra_m.py
+python3 test_omnihand_3_ultra_m.py -d zlgcan -i 0 -c 1 --hand right
+python3 test_omnihand_3_ultra_m.py -d hcan -i 0 -c 0 --device-id 0
+python3 test_omnihand_3_ultra_m.py -d socketcan --can-if can0
 ```
 
 **注意**：
@@ -93,7 +94,10 @@ pytest -s
 - **test_omnihand_2025.py**：OmniHand 2025 (O10, 10 DOF) 各传输方式的统一测试（CANFD + USB/RS485），由原 `test_omnihand_2025_canfd.py` / `test_omnihand_2025_usb.py` 合并而来
 - **test_omnihand_pro_2025.py**：OmniHand Pro 2025 (O12, 12 DOF) 的测试
 - **test_omnihand_3_lite.py**：OmniHand 3 Lite (H3L, 4 DOF) 的测试
-- **test_omnihand_3_ultra_m_t1_3.py**：OmniHand 3 Ultra M T1.3 (H3UM, 20 DOF) 的测试
+- **test_omnihand_3_ultra_m.py**：H3UM T1.3/T1.5（20/21 自由度）的 ZLG/HCAN/SocketCAN 硬件测试。动作使用 SDK 的“侧握拳／打开”预设；触觉按识别的版本整手读取 XYZ／uint16 数据。通过 pytest 指定设备 ID 时可设置 `OMNIHAND_DEVICE_ID` 环境变量。
+
+H3UM 默认按左手创建；右手需指定 `--hand right`（也接受 `--hand-type right`）。
+通过 pytest 运行时可设置 `OMNIHAND_HAND_TYPE=right`。
 
 ## 测试覆盖
 

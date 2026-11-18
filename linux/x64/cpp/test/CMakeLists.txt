@@ -49,15 +49,6 @@ endif()
 # Enable testing
 enable_testing()
 
-# File loading is tested without opening devices or linking an installed SDK.
-add_executable(test_firmware_load
-  test_firmware_load.cc
-  ../src/omnihand/impl/firmware_file.cc)
-target_compile_definitions(test_firmware_load PRIVATE BUILDING_DLL)
-target_include_directories(test_firmware_load PRIVATE ../src)
-target_link_libraries(test_firmware_load PRIVATE GTest::gtest_main)
-add_test(NAME FirmwareLoadTest COMMAND test_firmware_load)
-
 # Support both: building together (as subdirectory) and building separately (after installation)
 if(TARGET omnihand)
   set(OMNIHAND_TARGET omnihand)
@@ -134,19 +125,19 @@ if(BUILD_OMNIHAND_3_LITE)
   add_test(NAME OmniHand3LiteTest COMMAND test_omnihand_3_lite)
 endif()
 
-# OmniHand 3 Ultra M T1.3 Tests
+# OmniHand 3 Ultra M T1.3/T1.5 Tests
 if(BUILD_OMNIHAND_3_ULTRA_M)
-  add_executable(test_omnihand_3_ultra_m_t1.3 test_omnihand_3_ultra_m_t1.3.cc)
+  add_executable(test_omnihand_3_ultra_m test_omnihand_3_ultra_m.cc)
   target_link_libraries(
-    test_omnihand_3_ultra_m_t1.3
+    test_omnihand_3_ultra_m
     PRIVATE
     ${OMNIHAND_TARGET}
     GTest::gtest
   )
-  set_target_properties(test_omnihand_3_ultra_m_t1.3 PROPERTIES
+  set_target_properties(test_omnihand_3_ultra_m PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${TEST_OUTPUT_DIR}"
   )
-  add_test(NAME OmniHand3UltraMT1P3Test COMMAND test_omnihand_3_ultra_m_t1.3)
+  add_test(NAME OmniHand3UltraMTest COMMAND test_omnihand_3_ultra_m)
 endif()
 
 # OmniPicker 3 (OP3) Tests

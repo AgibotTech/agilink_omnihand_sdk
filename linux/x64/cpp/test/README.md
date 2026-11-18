@@ -62,7 +62,14 @@ Or run individual test executables:
 
 # Run H3L tests
 ./cpp/test/test_omnihand_3_lite
+
+# H3UM: select the physical hand as well as the CAN adapter/channel
+./bin/omnihand/test/test_omnihand_3_ultra_m -d zlgcan -i 0 -c 1 --hand right
 ```
+
+H3UM defaults to `--hand left`; use `--hand right` for a right hand. The hand
+side selects the preset and angle conversion tables; revision detection selects
+T1.3/T1.5 independently. `--hand-type` is also accepted.
 
 ### Request Frequency Parameter
 

@@ -12,8 +12,8 @@ set_target_properties(omnihand_3_lite_node_msgs::omnihand_3_lite_node_msgs__rosi
   IMPORTED_SONAME_RELEASE "libomnihand_3_lite_node_msgs__rosidl_generator_py.so"
   )
 
-list(APPEND _cmake_import_check_targets omnihand_3_lite_node_msgs::omnihand_3_lite_node_msgs__rosidl_generator_py )
-list(APPEND _cmake_import_check_files_for_omnihand_3_lite_node_msgs::omnihand_3_lite_node_msgs__rosidl_generator_py "${_IMPORT_PREFIX}/lib/libomnihand_3_lite_node_msgs__rosidl_generator_py.so" )
+list(APPEND _IMPORT_CHECK_TARGETS omnihand_3_lite_node_msgs::omnihand_3_lite_node_msgs__rosidl_generator_py )
+list(APPEND _IMPORT_CHECK_FILES_FOR_omnihand_3_lite_node_msgs::omnihand_3_lite_node_msgs__rosidl_generator_py "${_IMPORT_PREFIX}/lib/libomnihand_3_lite_node_msgs__rosidl_generator_py.so" )
 
 # Commands beyond this point should not need to know the version.
 set(CMAKE_IMPORT_FILE_VERSION)
